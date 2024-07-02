@@ -1,5 +1,5 @@
 import { setActivePinia, createPinia } from "pinia";
-import { it, expect, describe, beforeEach, test } from 'vitest'
+import { it, expect, describe, beforeEach } from 'vitest'
 import { mount } from "@vue/test-utils"
 import { useThemeProviderStore, ThemeStyle } from './themeProvider'
 import ThemeProvider from "./ThemeProvider.vue";
@@ -32,7 +32,7 @@ describe('Theme Provider Functionality', () => {
         expect(wrapper.classes()[0]).toBe(ThemeStyle.Light)
     });
 
-    test('Switch theme to dark', async () => {
+    it('Switch theme to dark', async () => {
         const themeProviderStore = useThemeProviderStore();  
         const wrapper = mount(ThemeProvider)   
         // Note: Even though themeProviderStore.setActiveTheme is not async, async is 
