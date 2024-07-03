@@ -8,7 +8,7 @@ describe('Typography Rendering Tests', () => {
     const wrapper = mount(Typography);
 
     it('Wrapper was mounted', () => {
-        expect(wrapper.html().startsWith('<div')).toBeTruthy
+        expect(wrapper.html().startsWith('<div')).toBeTruthy()
     })
 
     HeadingVariants.forEach(variant => {
