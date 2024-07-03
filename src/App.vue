@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import ThemeProvider from './stores/ThemeProvider/ThemeProvider.vue';
-import TypographyDemo from './components/typography/TypographyDemo.vue';
+import Typography from './components/typography/Typography.vue';
 </script>
 
 <template>
   <ThemeProvider>
-    <TypographyDemo />
+    <Typography />
   </ThemeProvider>
 </template>

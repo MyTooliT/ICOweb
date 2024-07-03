@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Dict } from '@/types/types';
-
-type HeadingVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+import { HeadingVariant } from '@/types/types';
 
 const headingStyles: Dict<HeadingVariant, String> = {
   h1: 'mb-4 text-6xl',

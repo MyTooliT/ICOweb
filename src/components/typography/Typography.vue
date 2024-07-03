@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// NOTE: This wrapper is both for demo and testing purposes.
+
 import H1 from './heading/H1.vue';
 import H2 from './heading/H2.vue';
 import H3 from './heading/H3.vue';
@@ -10,7 +12,7 @@ import Text from './body/Text.vue';
 </script>
 
 <template>
-  <div class="text-left">
+  <div class="mb-3 rounded-lg border border-primary p-3 text-left">
     <H1>Heading 1</H1>
     <H2>Heading 2</H2>
     <H3>Heading 3</H3>
