@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "tailwind": "tailwindcss -i .\\src\\styles\\tailwind.css -o .\\src\\styles\\tailwind-output.css --watch"
   },
   "dependencies": {
     "pinia": "^2.1.7",
