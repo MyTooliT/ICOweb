@@ -1,8 +1,3 @@
-enum ThemeStyle {
-    Dark = "dark",
-    DarkMediumContrast = "dark-mc",
-    DarkHighContrast = "dark-hc",
-    Light = "light",
-    LightMediumContrast = "light-mc",
-    LightHighContrast = "light-hc"
+export type Dict<Key extends keyof any, Value> = {
+    [key in Key]: Value;
 }
