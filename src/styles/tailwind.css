@@ -1,18 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer components {
-  .btn-primary {
-    @apply bg-primary text-on-primary shadow-primary disabled:bg-primary-fixed-dim disabled:hover:bg-primary-fixed-dim;
-  }
-  .btn-secondary {
-    @apply bg-secondary text-on-secondary shadow-secondary disabled:bg-secondary-fixed-dim disabled:hover:bg-secondary-fixed-dim;
-  }
-  .btn-tertiary {
-    @apply bg-tertiary text-on-tertiary shadow-tertiary disabled:bg-tertiary-fixed-dim disabled:hover:bg-tertiary-fixed-dim;
-  }
-  .btn-error {
-    @apply bg-error text-on-error shadow-error disabled:bg-error-container disabled:hover:bg-error-container;
-  }
-}

@@ -637,74 +637,10 @@ video {
   line-height: 1;
 }
 
-.outline {
-  outline-style: solid;
-}
-
 .transition-all {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-}
-
-.data-\[color\=primary\]\:btn-primary[data-color=primary] {
-  background-color: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
-  --tw-shadow-color: var(--md-sys-color-primary);
-  --tw-shadow: var(--tw-shadow-colored);
-}
-
-.data-\[color\=primary\]\:btn-primary[data-color=primary]:disabled {
-  background-color: var(--md-sys-color-primary-fixed-dim);
-}
-
-.data-\[color\=primary\]\:btn-primary[data-color=primary]:hover:disabled {
-  background-color: var(--md-sys-color-primary-fixed-dim);
-}
-
-.data-\[color\=secondary\]\:btn-secondary[data-color=secondary] {
-  background-color: var(--md-sys-color-secondary);
-  color: var(--md-sys-color-on-secondary);
-  --tw-shadow-color: var(--md-sys-color-secondary);
-  --tw-shadow: var(--tw-shadow-colored);
-}
-
-.data-\[color\=secondary\]\:btn-secondary[data-color=secondary]:disabled {
-  background-color: var(--md-sys-color-secondary-fixed-dim);
-}
-
-.data-\[color\=secondary\]\:btn-secondary[data-color=secondary]:hover:disabled {
-  background-color: var(--md-sys-color-secondary-fixed-dim);
-}
-
-.data-\[color\=tertiary\]\:btn-tertiary[data-color=tertiary] {
-  background-color: var(--md-sys-color-tertiary);
-  color: var(--md-sys-color-on-tertiary);
-  --tw-shadow-color: var(--md-sys-color-tertiary);
-  --tw-shadow: var(--tw-shadow-colored);
-}
-
-.data-\[color\=tertiary\]\:btn-tertiary[data-color=tertiary]:disabled {
-  background-color: var(--md-sys-color-tertiary-fixed-dim);
-}
-
-.data-\[color\=tertiary\]\:btn-tertiary[data-color=tertiary]:hover:disabled {
-  background-color: var(--md-sys-color-tertiary-fixed-dim);
-}
-
-.data-\[color\=error\]\:btn-error[data-color=error] {
-  background-color: var(--md-sys-color-error);
-  color: var(--md-sys-color-on-error);
-  --tw-shadow-color: var(--md-sys-color-error);
-  --tw-shadow: var(--tw-shadow-colored);
-}
-
-.data-\[color\=error\]\:btn-error[data-color=error]:disabled {
-  background-color: var(--md-sys-color-error-container);
-}
-
-.data-\[color\=error\]\:btn-error[data-color=error]:hover:disabled {
-  background-color: var(--md-sys-color-error-container);
 }
 
 .hover\:border-0:hover {
@@ -723,10 +659,90 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.data-\[color\=primary\]\:bg-primary[data-color=primary] {
+.data-primary\:bg-primary[data-color~="primary"] {
   background-color: var(--md-sys-color-primary);
 }
 
-.data-\[color\=primary\]\:text-on-primary[data-color=primary] {
+.data-primary\:text-on-primary[data-color~="primary"] {
   color: var(--md-sys-color-on-primary);
+}
+
+.data-primary\:shadow-primary[data-color~="primary"] {
+  --tw-shadow-color: var(--md-sys-color-primary);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.data-primary\:disabled\:bg-primary-fixed-dim:disabled[data-color~="primary"] {
+  background-color: var(--md-sys-color-primary-fixed-dim);
+}
+
+.data-primary\:disabled\:hover\:bg-primary-fixed-dim:hover:disabled[data-color~="primary"] {
+  background-color: var(--md-sys-color-primary-fixed-dim);
+}
+
+.data-secondary\:bg-secondary[data-color~="secondary"] {
+  background-color: var(--md-sys-color-secondary);
+}
+
+.data-secondary\:text-on-secondary[data-color~="secondary"] {
+  color: var(--md-sys-color-on-secondary);
+}
+
+.data-secondary\:shadow-secondary[data-color~="secondary"] {
+  --tw-shadow-color: var(--md-sys-color-secondary);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.data-secondary\:disabled\:bg-secondary-fixed-dim:disabled[data-color~="secondary"] {
+  background-color: var(--md-sys-color-secondary-fixed-dim);
+}
+
+.data-secondary\:disabled\:hover\:bg-secondary-fixed-dim:hover:disabled[data-color~="secondary"] {
+  background-color: var(--md-sys-color-secondary-fixed-dim);
+}
+
+.data-tertiary\:bg-tertiary[data-color~="tertiary"] {
+  background-color: var(--md-sys-color-tertiary);
+}
+
+.data-tertiary\:text-on-tertiary[data-color~="tertiary"] {
+  color: var(--md-sys-color-on-tertiary);
+}
+
+.data-tertiary\:shadow-tertiary[data-color~="tertiary"] {
+  --tw-shadow-color: var(--md-sys-color-tertiary);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.data-tertiary\:disabled\:bg-tertiary-fixed-dim:disabled[data-color~="tertiary"] {
+  background-color: var(--md-sys-color-tertiary-fixed-dim);
+}
+
+.data-tertiary\:disabled\:hover\:bg-tertiary-fixed-dim:hover:disabled[data-color~="tertiary"] {
+  background-color: var(--md-sys-color-tertiary-fixed-dim);
+}
+
+.data-error\:bg-error[data-color~="error"] {
+  background-color: var(--md-sys-color-error);
+}
+
+.data-error\:text-on-error[data-color~="error"] {
+  color: var(--md-sys-color-on-error);
+}
+
+.data-error\:shadow-error[data-color~="error"] {
+  --tw-shadow-color: var(--md-sys-color-error);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.data-error\:disabled\:bg-error-container:disabled[data-color~="error"] {
+  background-color: var(--md-sys-color-error-container);
+}
+
+.data-error\:disabled\:text-secondary:disabled[data-color~="error"] {
+  color: var(--md-sys-color-secondary);
+}
+
+.data-error\:disabled\:hover\:bg-error-container:hover:disabled[data-color~="error"] {
+  background-color: var(--md-sys-color-error-container);
 }
