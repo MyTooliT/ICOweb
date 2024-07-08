@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+/* eslint-disable max-len */
 import { ButtonProps } from './types';
 
 withDefaults(defineProps<ButtonProps>(), {
@@ -7,7 +8,6 @@ withDefaults(defineProps<ButtonProps>(), {
 </script>
 
 <template>
-  <!-- eslint-disable max-len  -->
   <button
     :data-color="color"
     class="
