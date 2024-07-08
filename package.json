@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test-watch": "vitest",
-    "tailwind": "tailwindcss -i .\\src\\styles\\tailwind.css -o .\\src\\styles\\tailwind-output.css --watch"
+    "tailwind": "tailwindcss -i .\\src\\styles\\tailwind\\tailwind.css -o .\\src\\styles\\tailwind\\tailwind-output.css --watch"
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.4",
