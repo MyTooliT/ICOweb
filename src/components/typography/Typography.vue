@@ -1,26 +1,26 @@
 <script lang="ts" setup>
 // NOTE: This wrapper is both for demo and testing purposes.
 
-import H1 from './heading/H1.vue';
-import H2 from './heading/H2.vue';
-import H3 from './heading/H3.vue';
-import H4 from './heading/H4.vue';
-import H5 from './heading/H5.vue';
-import H6 from './heading/H6.vue';
+import Heading1 from './heading/Heading1.vue';
+import Heading2 from './heading/Heading2.vue';
+import Heading3 from './heading/Heading3.vue';
+import Heading4 from './heading/Heading4.vue';
+import Heading5 from './heading/Heading5.vue';
+import Heading6 from './heading/Heading6.vue';
 import Paragraph from './body/Paragraph.vue';
 import Text from './body/Text.vue';
 </script>
 
 <template>
   <div class="mb-3 rounded-lg border border-primary p-3 text-left">
-    <H1>Heading 1</H1>
-    <H2>Heading 2</H2>
-    <H3>Heading 3</H3>
-    <H4>Heading 4</H4>
-    <H5>Heading 5</H5>
-    <H6>Heading 6</H6>
-    <Paragraph
-      >Paragraph: Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
+    <Heading1>Heading 1</Heading1>
+    <Heading2>Heading 2</Heading2>
+    <Heading3>Heading 3</Heading3>
+    <Heading4>Heading 4</Heading4>
+    <Heading5>Heading 5</Heading5>
+    <Heading6>Heading 6</Heading6>
+    <Paragraph>
+      Paragraph: Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
       dolor quisquam rerum vero, cum rem neque in error? Mollitia exercitationem
       tempora impedit obcaecati dolorem reprehenderit possimus eum aliquam magni
       odit! Quia provident laboriosam amet laudantium minima ducimus perferendis
@@ -31,8 +31,8 @@ import Text from './body/Text.vue';
       totam ad asperiores eaque possimus fugiat aspernatur sint reprehenderit,
       nihil ratione eveniet. Blanditiis facere amet cum doloremque non, delectus
       distinctio tempore. Adipisci exercitationem officia asperiores?
-      Dolores.</Paragraph
-    >
+      Dolores.
+    </Paragraph>
     <Text>Textelement</Text>
   </div>
 </template>
