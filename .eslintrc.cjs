@@ -14,4 +14,7 @@ module.exports = {
     ],
     'vue/html-closing-bracket-newline': 'off'
   },
+  settings: {
+    "import/core-modules": ["vue-router/auto-routes"]
+  }
 };
