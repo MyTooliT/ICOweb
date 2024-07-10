@@ -583,8 +583,24 @@ video {
   margin-top: auto;
 }
 
+.mb-0 {
+  margin-bottom: 0px;
+}
+
+.-mb-1 {
+  margin-bottom: -0.25rem;
+}
+
+.-mb-4 {
+  margin-bottom: -1rem;
+}
+
 .flex {
   display: flex;
+}
+
+.table {
+  display: table;
 }
 
 .aspect-square {
@@ -621,6 +637,10 @@ video {
 
 .flex-col {
   flex-direction: column;
+}
+
+.justify-between {
+  justify-content: space-between;
 }
 
 .rounded-lg {
