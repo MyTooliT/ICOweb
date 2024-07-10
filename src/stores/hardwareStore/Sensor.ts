@@ -1,17 +1,16 @@
-export type physicalDimension = string;
-export type physicalUnit = string;
-export type lowerBound = number;
-export type upperBound = number;
+export type TPhysicalDimension = string;
+export type TPhysicalUnit = string;
+export type TBound = number;
 
 export class Sensor {
-  private physicalDimension: physicalDimension;
+  private physicalDimension: TPhysicalDimension;
   private readonly sensorRange: SensorRange;
 
   constructor(
-    physicalDimension: physicalDimension,
-    physicalUnit: physicalUnit,
-    lowerBound: lowerBound,
-    upperBound: upperBound,
+    physicalDimension: TPhysicalDimension,
+    physicalUnit: TPhysicalUnit,
+    lowerBound: TBound,
+    upperBound: TBound,
   ) {
     this.physicalDimension = physicalDimension;
     this.sensorRange = new SensorRange(physicalUnit, lowerBound, upperBound);
@@ -19,25 +18,25 @@ export class Sensor {
 
   public getSensorRange(): SensorRange { return this.sensorRange; }
 
-  public getPhysicalDimension(): physicalDimension {
+  public getPhysicalDimension(): TPhysicalDimension {
     return this.physicalDimension;
   }
 
-  public setPhysicalDimension(physicalDimension: physicalDimension): void {
+  public setPhysicalDimension(physicalDimension: TPhysicalDimension): void {
     this.physicalDimension = physicalDimension;
   }
 }
 
 export class SensorRange {
-  private physicalUnit: physicalUnit;
-  private lowerBound: lowerBound;
-  private upperBound: upperBound;
+  private physicalUnit: TPhysicalUnit;
+  private lowerBound: TBound;
+  private upperBound: TBound;
   private readonly isSymmetricThreshold: number;
 
   constructor(
-    physicalUnit: physicalUnit,
-    lowerBound: lowerBound,
-    upperBound: upperBound,
+    physicalUnit: TPhysicalUnit,
+    lowerBound: TBound,
+    upperBound: TBound,
     isSymmetricThreshold: number = 0.001
   ) {
     this.physicalUnit = physicalUnit;
@@ -46,19 +45,19 @@ export class SensorRange {
     this.isSymmetricThreshold = isSymmetricThreshold;
   }
 
-  public getPhysicalUnit(): physicalUnit {
+  public getPhysicalUnit(): TPhysicalUnit {
     return this.physicalUnit;
   }
 
-  public setPhysicalUnit(physicalUnit: physicalUnit): void {
+  public setPhysicalUnit(physicalUnit: TPhysicalUnit): void {
     this.physicalUnit = physicalUnit;
   }
 
-  public getLowerBound(): lowerBound {
+  public getLowerBound(): TBound {
     return this.lowerBound;
   }
 
-  public setLowerBound(lowerBound: lowerBound): void {
+  public setLowerBound(lowerBound: TBound): void {
     if(lowerBound >= this.upperBound) {
       console.error(
         'The lower bounds must be lower than the upper bound. ' +
@@ -68,11 +67,11 @@ export class SensorRange {
     this.lowerBound = lowerBound;
   }
 
-  public getUpperBound(): upperBound {
+  public getUpperBound(): TBound {
     return this.upperBound;
   }
 
-  public setUpperBound(upperBound: upperBound): void {
+  public setUpperBound(upperBound: TBound): void {
     if(upperBound <= this.lowerBound) {
       console.error(
         'The upper bounds must be greater than the lower bound. ' +
