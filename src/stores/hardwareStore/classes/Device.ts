@@ -2,7 +2,9 @@ export type TId = number;
 export type TName = string;
 export type TMac = string;
 
-export type TDeviceConnectionStatus = 'connected' | 'disconnected';
+// TODO: Somehow test the intermediate 'connecting' state
+export type TDeviceConnectionStatus
+  = 'connected' | 'connecting' | 'disconnected';
 
 
 /**
@@ -57,7 +59,7 @@ export class MockConnection {
   private status: TDeviceConnectionStatus = 'disconnected';
   public connect(): Promise<TDeviceConnectionStatus> {
     this.status = 'connected'
-    return Promise.resolve('connected');
+    return Promise.resolve('connected')
   }
   public disconnect(): Promise<TDeviceConnectionStatus> {
     this.status = 'disconnected';
