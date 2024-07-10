@@ -21,13 +21,13 @@
     "noFallthroughCasesInSwitch": true,
 
     /* vitest in-source testing */
-    "types": ["vitest/importMeta"],
+    "types": ["vitest/importMeta", "unplugin-vue-router/client"],
 
     /* VS Code Intellisense */
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "typed-router.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
