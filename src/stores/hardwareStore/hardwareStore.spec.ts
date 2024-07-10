@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useHardwareStore } from './hardwareStore';
-import { Sensor } from './Sensor';
+import { Sensor } from './classes/Sensor.ts';
 
 describe('hardwareStore', () => {
   beforeEach(() => {

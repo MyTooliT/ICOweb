@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { Sensor } from './Sensor.ts';
+import { Sensor } from './classes/Sensor.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
   const _sensorList: Ref<Array<Sensor>> = ref([]);
