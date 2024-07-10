@@ -4,7 +4,13 @@ export type Dict<Key extends keyof any, Value> = {
 
 // TYPOGRAPHY
 
-// NOTE: Why this two-step approach? For testing purposes - the array is iterable.
+// NOTE: Why this approach? For testing purposes - the array is iterable.
 //       https://danielbarta.com/literal-iteration-typescript/
-export const HeadingVariants = ['h1' , 'h2' , 'h3' , 'h4' , 'h5' , 'h6'] as const
+export const HeadingVariants = [
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6'] as const
 export type HeadingVariant = typeof HeadingVariants[number]
