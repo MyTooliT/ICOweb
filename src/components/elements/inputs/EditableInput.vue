@@ -73,6 +73,8 @@ function save(): void {
       :id="id"
       ref="inputRef"
       v-model="content"
+      :data-state="currentState"
+      class="data-[state=readyToEdit]:bg-inherit"
       type="text"
       :placeholder="placeholder"
       :disabled="currentState == 'readyToEdit'"
