@@ -14,6 +14,13 @@ export class STHDevice extends Device<ISTHActions> {
   private rssi: TRssi;
   // TODO: Add default sensor config
 
+  // Note:  This allows all standard 8-bit ASCII characters up to a length of
+  //        29 characters to adhere to a common interpretation of the BTLE spec.
+  //        eslint-disable-next-line max-len
+  //        https://stackoverflow.com/questions/65568893/how-to-know-the-maximum-length-of-bt-name
+  // eslint-disable-next-line max-len
+  public static readonly nameRegex: RegExp = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$');
+
   constructor(
     id: TId,
     name: TName,
