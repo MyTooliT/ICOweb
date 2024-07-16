@@ -32,6 +32,9 @@ export class STHDevice extends Device<ISTHActions> {
   }
 
   public getRssi(): typeof this.rssi { return this.rssi }
+  public getRssiRepr(): string {
+    return `-${this.rssi}dB`;
+  }
   public setRssi(rssi: TRssi) {
     this.rssi = rssi;
   }
