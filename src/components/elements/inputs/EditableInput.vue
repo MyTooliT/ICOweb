@@ -49,7 +49,8 @@ const contentValid: ComputedRef<boolean> = computed(() => {
 const emits = defineEmits<{
   blur: [void],
   edit: [string],
-  save: [string]
+  save: [string],
+  input: [Event]
 }>()
 
 function edit(): void {
@@ -75,8 +76,9 @@ function save(): void {
       type="text"
       :placeholder="placeholder"
       :disabled="currentState == 'readyToEdit'"
-      @input="() => {
+      @input="(e) => {
         currentState = contentValid ? 'readyToSave' : 'editing'
+        emits('input', e)
       }"
       @keyup.enter="() => {
         contentValid ? save() : () => {}
