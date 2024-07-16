@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   Device,
   IConnection,
@@ -37,6 +38,18 @@ export class STHDevice extends Device<ISTHActions> {
   }
   public setRssi(rssi: TRssi) {
     this.rssi = rssi;
+  }
+
+  public override setName(name: string): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      if(STHDevice.nameRegex.test(name)) {
+        await axios.get('http://localhost:8000/delay')
+        this.name = name;
+        resolve(true);
+      } else {
+        reject(false);
+      }
+    })
   }
 }
 
