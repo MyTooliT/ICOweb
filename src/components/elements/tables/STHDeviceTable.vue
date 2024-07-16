@@ -2,8 +2,8 @@
 import { Reactive } from 'vue';
 import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import DeviceTable from './DeviceTable.vue';
-import DeviceTableRow from '@/components/elements/tables/DeviceTableRow.vue';
 import DeviceTableEntry from './DeviceTableEntry.vue';
+import STHDeviceTableRow from './STHDeviceTableRow.vue';
 
 defineProps<{
   devices: Reactive<STHDevice[]>
@@ -22,7 +22,7 @@ defineProps<{
         <DeviceTableEntry>Action</DeviceTableEntry>
       </tr>
     </template>
-    <DeviceTableRow
+    <STHDeviceTableRow
       v-for="STH in devices"
       :key="STH.getMac()"
       :device="STH as STHDevice"

@@ -76,11 +76,11 @@ function save(): void {
       :placeholder="placeholder"
       :disabled="currentState == 'readyToEdit'"
       @input="() => {
-          currentState = contentValid ? 'readyToSave' : 'editing'
-        }"
+        currentState = contentValid ? 'readyToSave' : 'editing'
+      }"
       @keyup.enter="() => {
-          contentValid ? save() : () => {}
-        }"
+        contentValid ? save() : () => {}
+      }"
     >
     <EditButton
       :state="currentState"
