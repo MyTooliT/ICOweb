@@ -3,6 +3,12 @@ import ThemeProvider from './stores/ThemeProvider/ThemeProvider.vue';
 // eslint-disable-next-line max-len
 import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue';
 import logo from '@/assets/img/ift_logo.jpg';
+import {
+  ChartBarIcon,
+  Cog6ToothIcon,
+  ComputerDesktopIcon,
+  WrenchIcon
+} from '@heroicons/vue/16/solid';
 </script>
 
 <template>
@@ -11,16 +17,28 @@ import logo from '@/assets/img/ift_logo.jpg';
       <nav class="bg-surface-container flex flex-col">
         <RouterLinkButton
           name="Devices"
-          to="/" />
+          to="/">
+          <WrenchIcon class="size-8 pb-1" />
+          Devices
+        </RouterLinkButton>
         <RouterLinkButton
           name="Measure"
-          to="/measure" />
+          to="/measure">
+          <ChartBarIcon class="size-8 pb-1" />
+          Measure
+        </RouterLinkButton>
         <RouterLinkButton
           name="Config"
-          to="/config/storage" />
+          to="/config/storage">
+          <Cog6ToothIcon class="size-8 pb-1" />
+          Config
+        </RouterLinkButton>
         <RouterLinkButton
           name="Analyze"
-          to="/analyze" />
+          to="/analyze">
+          <ComputerDesktopIcon class="size-8 pb-1" />
+          Analyze
+        </RouterLinkButton>
         <RouterLinkButton
           name="Help"
           to="/help"
