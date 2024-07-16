@@ -14,7 +14,7 @@ export type TDeviceConnectionStatus
  */
 export class Device<ActionType> {
   private id: TId;
-  private name: TName;
+  protected name: TName;
   private mac: TMac;
   private readonly connection: ActionType;
 
@@ -33,9 +33,9 @@ export class Device<ActionType> {
   public setId(id: number) {this.id = id}
 
   public getName(): typeof this.name { return this.name }
-  public setName(name: string) {
-    // TODO: Add checks for maxlength & characters
+  public setName(name: string): Promise<boolean> {
     this.name = name
+    return Promise.resolve(true);
   }
 
   public getMac(): typeof this.mac { return this.mac }
