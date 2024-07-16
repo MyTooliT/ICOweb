@@ -3,9 +3,8 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Heading3 from '@/components/typography/heading/Heading3.vue';
 import OutlineButton from '@/components/elements/buttons/OutlineButton.vue';
 import {
-  ref,
-  Ref,
-  UnwrapRef
+  reactive,
+  Reactive
 } from 'vue';
 
 /* eslint-disable max-len */
@@ -13,8 +12,9 @@ import {
   MockSTHActions,
   STHDevice
 } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
 
-const devices: Ref<UnwrapRef<STHDevice[]>> = ref([
+const devices: Reactive<STHDevice[]> = reactive([
   new STHDevice(1, 'Messerkopf', 'AA:BB:CC:DD:EE:FF', 0, new MockSTHActions()),
   new STHDevice(2, 'Messerkopf', 'AA:BB:CC:DD:EE:00', 0, new MockSTHActions())
 ])
@@ -28,28 +28,7 @@ const devices: Ref<UnwrapRef<STHDevice[]>> = ref([
       <Heading3>Sensory Tool Holders</Heading3>
       <OutlineButton>Reload</OutlineButton>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <td>#</td>
-          <td>Name</td>
-          <td>MAC</td>
-          <td>RSSI</td>
-          <td>Default Sensor Config</td>
-          <td>Action</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="STHDevice in devices" :key="STHDevice.getMac()">
-          <td>{{ STHDevice.getId() }}</td>
-          <td>{{ STHDevice.getName() }}</td>
-          <td>{{ STHDevice.getMac() }}</td>
-          <td>{{ STHDevice.getRssi() }}</td>
-          <td>-</td>
-          <td>-</td>
-        </tr>
-        </tbody>
-    </table>
+    <STHDeviceTable :devices="devices" />
   </DefaultLayout>
 </template>
 
