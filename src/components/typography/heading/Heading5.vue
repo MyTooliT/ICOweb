@@ -1,9 +1,9 @@
 <template>
-  <h1 class="mb-2 text-2xl">
+  <h5 class="mb-2 text-lg">
     <slot>
       {{ text }}
     </slot>
-  </h1>
+  </h5>
 </template>
 
 <script setup lang="ts">

@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import Heading5 from '@/components/typography/heading/Heading5.vue';
+import Heading3 from '@/components/typography/heading/Heading3.vue';
 import OutlineButton from '@/components/elements/buttons/OutlineButton.vue';
-import { ref, Ref, UnwrapRef } from 'vue';
+import {
+  ref,
+  Ref,
+  UnwrapRef
+} from 'vue';
 
 /* eslint-disable max-len */
-import { MockSTHActions, STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import {
+  MockSTHActions,
+  STHDevice
+} from '@/stores/hardwareStore/classes/STHDevice.ts';
 
 const devices: Ref<UnwrapRef<STHDevice[]>> = ref([
   new STHDevice(1, 'Messerkopf', 'AA:BB:CC:DD:EE:FF', 0, new MockSTHActions()),
@@ -18,7 +25,7 @@ const devices: Ref<UnwrapRef<STHDevice[]>> = ref([
 <template>
   <DefaultLayout>
     <div class="flex flex-row justify-between">
-      <Heading5>Sensory Tool Holders</Heading5>
+      <Heading3>Sensory Tool Holders</Heading3>
       <OutlineButton>Reload</OutlineButton>
     </div>
     <table>
