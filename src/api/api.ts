@@ -1,6 +1,3 @@
-// TODO:  Type this into a generic once it works. For now, only params and
-//        return type are somewhat typed.
-
 async function sendRequest<ResponseType>(
   endpoint: string, method: string, body: any
 ): Promise<ResponseType> {
