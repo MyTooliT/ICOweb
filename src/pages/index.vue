@@ -2,22 +2,10 @@
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Heading3 from '@/components/typography/heading/Heading3.vue';
 import OutlineButton from '@/components/elements/buttons/OutlineButton.vue';
-import {
-  reactive,
-  Reactive
-} from 'vue';
-
-/* eslint-disable max-len */
-import {
-  MockSTHActions,
-  STHDevice
-} from '@/stores/hardwareStore/classes/STHDevice.ts';
 import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
 
-const devices: Reactive<STHDevice[]> = reactive([
-  new STHDevice(1, 'Messerkopf', 'AA:BB:CC:DD:EE:FF', 0, new MockSTHActions()),
-  new STHDevice(2, 'Messerkopf', 'AA:BB:CC:DD:EE:00', 0, new MockSTHActions())
-])
+/* eslint-disable max-len */
+
 /* eslint-enable max-len*/
 
 </script>
@@ -28,7 +16,9 @@ const devices: Reactive<STHDevice[]> = reactive([
       <Heading3>Sensory Tool Holders</Heading3>
       <OutlineButton>Reload</OutlineButton>
     </div>
-    <STHDeviceTable :devices="devices" />
+    <Suspense>
+      <STHDeviceTable />
+    </Suspense>
   </DefaultLayout>
 </template>
 

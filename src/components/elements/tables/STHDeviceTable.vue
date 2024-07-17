@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import { Reactive } from 'vue';
-import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { ref } from 'vue';
+import {
+  MockSTHActions,
+  STHDevice
+} from '@/stores/hardwareStore/classes/STHDevice.ts';
 import DeviceTable from './DeviceTable.vue';
 import DeviceTableEntry from './DeviceTableEntry.vue';
 import STHDeviceTableRow from './STHDeviceTableRow.vue';
+import { getSTHDevicesMeta } from '@/api/requests.ts';
 
-defineProps<{
-  devices: Reactive<STHDevice[]>
-}>()
+const devices = ref<STHDevice[]>([])
+const devs = await getSTHDevicesMeta();
+devs.forEach(entry => {
+  devices.value.push(
+    new STHDevice(entry, new MockSTHActions()),
+  );
+})
 </script>
 
 <template>
+  <!--  <pre>
+    {{ devices }}
+  </pre>-->
   <DeviceTable :devices="devices">
     <template #head>
       <tr class="py-2">
@@ -24,7 +35,7 @@ defineProps<{
     </template>
     <STHDeviceTableRow
       v-for="STH in devices"
-      :key="STH.getMac()"
+      :key="STH.Meta().mac"
       :device="STH as STHDevice"
     />
   </DeviceTable>

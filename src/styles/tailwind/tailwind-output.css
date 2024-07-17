@@ -637,11 +637,6 @@ video {
   max-width: 4rem;
 }
 
-.rotate-0 {
-  --tw-rotate: 0deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -809,10 +804,6 @@ video {
 
 .duration-100 {
   transition-duration: 100ms;
-}
-
-.duration-200 {
-  transition-duration: 200ms;
 }
 
 .hover\:border-0:hover {

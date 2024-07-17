@@ -1,18 +1,17 @@
 // TODO:  Type this into a generic once it works. For now, only params and
 //        return type are somewhat typed.
 
-async function sendRequest(
+async function sendRequest<ResponseType>(
   endpoint: string, method: string, body: any
-): Promise<any> {
+): Promise<ResponseType> {
   return new Promise((resolve, reject) => {
-    const protocol = import.meta.env.VITE_APP_TAL_PROTOCOL;
-    const hostname = import.meta.env.VITE_APP_TAL_HOSTNAME;
-    const port = import.meta.env.VITE_APP_TAL_PORT;
-    const version = import.meta.env.VITE_APP_VERSION;
+    const protocol = import.meta.env.VITE_API_PROTOCOL;
+    const hostname = import.meta.env.VITE_API_HOSTNAME;
+    const port = import.meta.env.VITE_API_PORT;
+    const version = import.meta.env.VITE_API_VERSION;
 
-    const requestOptions = {
+    const requestOptions= {
       method: method,
-      headers: { 'Content-Type': 'application/json' },
       body: body !== undefined ? JSON.stringify(body) : body,
     };
     fetch(
@@ -31,7 +30,7 @@ async function sendRequest(
             ),
           );
         } else {
-          resolve(await response.json());
+          resolve(await response.json() as ResponseType);
         }
       })
       .catch((err) => {
@@ -43,33 +42,38 @@ async function sendRequest(
   });
 }
 
-export async function get(endpoint: string) {
+// eslint-disable-next-line max-len
+export async function get<ResponseType>(endpoint: string): Promise<ResponseType> {
   return new Promise((resolve, reject) => {
-    sendRequest(endpoint, 'GET', undefined)
+    sendRequest<ResponseType>(endpoint, 'GET', undefined)
       .then(resolve)
       .catch(reject);
   });
 }
 
-export async function post(endpoint: string, body: any) {
+// eslint-disable-next-line max-len
+export async function post<BodyType, ResponseType>(endpoint: string, body: BodyType): Promise<ResponseType> {
   return new Promise((resolve, reject) => {
-    sendRequest(endpoint, 'POST', body)
+    sendRequest<ResponseType>(endpoint, 'POST', body)
       .then(resolve)
       .catch(reject);
   });
 }
 
-export async function put(endpoint: string, body: any) {
+// eslint-disable-next-line max-len
+export async function put<BodyType, ResponseType>(endpoint: string, body: BodyType): Promise<ResponseType> {
   return new Promise((resolve, reject) => {
-    sendRequest(endpoint, 'PUT', body)
+    sendRequest<ResponseType>(endpoint, 'PUT', body)
       .then(resolve)
       .catch(reject);
   });
 }
 
-export async function del(endpoint: string, body: any) {
+// eslint-disable-next-line max-len
+export async function del<BodyType, ResponseType>(endpoint: string, body: BodyType):
+  Promise<ResponseType> {
   return new Promise((resolve, reject) => {
-    sendRequest(endpoint, 'DELETE', body)
+    sendRequest<ResponseType>(endpoint, 'DELETE', body)
       .then(resolve)
       .catch(reject);
   });

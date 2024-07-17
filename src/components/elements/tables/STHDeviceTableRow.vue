@@ -31,18 +31,18 @@ async function saveName(
 
 <template>
   <DeviceTableRow>
-    <DeviceTableEntry>{{ device.getId() }}</DeviceTableEntry>
+    <DeviceTableEntry>{{ device.Meta().id }}</DeviceTableEntry>
     <td>
       <EditableInput
-        :id="`${device.getMac()}`"
+        :id="`${device.Meta().id}`"
         class="py-3 pr-3 flex flex-row items-center justify-start"
-        placeholder="ASDF"
+        placeholder="Device"
         :disabled="false"
-        :regex="STHDevice.nameRegex"
-        :initial-value="device.getName()"
+        :regex="device.Meta().regex"
+        :initial-value="device.Meta().name"
         :save-fn="saveName" />
     </td>
-    <DeviceTableEntry>{{ device.getMac() }}</DeviceTableEntry>
+    <DeviceTableEntry>{{ device.Meta().mac }}</DeviceTableEntry>
     <DeviceTableEntry>{{ device.getRssiRepr() }}</DeviceTableEntry>
     <DeviceTableEntry>-</DeviceTableEntry>
     <DeviceTableEntry>-</DeviceTableEntry>
