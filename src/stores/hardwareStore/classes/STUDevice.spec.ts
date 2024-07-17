@@ -1,6 +1,18 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { MockSTUActions, STUDevice } from './STUDevice.ts';
-import { TId, TMac, TName } from './Device.ts';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it
+} from 'vitest';
+import {
+  MockSTUActions,
+  STUDevice
+} from './STUDevice.ts';
+import {
+  TId,
+  TMac,
+  TName
+} from './Device.ts';
 
 describe('device', () => {
   let device: STUDevice;
@@ -10,19 +22,21 @@ describe('device', () => {
   const mockSTUActions = new MockSTUActions();
 
   beforeEach(() => {
-    device = new STUDevice(id, name, mac, mockSTUActions);
+    device = new STUDevice({
+      id: id, name: name, mac: mac
+    }, mockSTUActions);
   });
 
   it('should perform OTA operations correctly', async () => {
-    expect(device.getConnection().getOTAState()).toBe('disabled');
+    expect(device.Connection().getOTAState()).toBe('disabled');
 
-    await device.getConnection().enableOTA();
-    expect(device.getConnection().getOTAState()).toBe('enabled');
+    await device.Connection().enableOTA();
+    expect(device.Connection().getOTAState()).toBe('enabled');
 
-    await device.getConnection().disableOTA();
-    expect(device.getConnection().getOTAState()).toBe('disabled');
+    await device.Connection().disableOTA();
+    expect(device.Connection().getOTAState()).toBe('disabled');
 
-    await device.getConnection().reset();
-    expect(device.getConnection().getOTAState()).toBe('disabled');
+    await device.Connection().reset();
+    expect(device.Connection().getOTAState()).toBe('disabled');
   });
 });

@@ -1,55 +1,45 @@
-import axios from 'axios';
 import {
   Device,
   IConnection,
   MockConnection,
   TDeviceConnectionStatus,
-  TId,
-  TMac,
-  TName
+  TDeviceMetaData
 } from './Device.ts';
+
+import { delay } from '@/api/requests.ts';
 
 export type TRssi = number;
 
-export class STHDevice extends Device<ISTHActions> {
-  private rssi: TRssi;
+export type TSTHDeviceMetaData = TDeviceMetaData & {
+  rssi: TRssi;
+  regex: RegExp
+}
+
+export class STHDevice extends Device<TSTHDeviceMetaData, ISTHActions> {
   // TODO: Add default sensor config
 
-  // Note:  This allows all standard 8-bit ASCII characters up to a length of
-  //        29 characters to adhere to a common interpretation of the BTLE spec.
-  //        eslint-disable-next-line max-len
-  //        https://stackoverflow.com/questions/65568893/how-to-know-the-maximum-length-of-bt-name
-  // eslint-disable-next-line max-len
-  public static readonly nameRegex: RegExp = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$');
-
   constructor(
-    id: TId,
-    name: TName,
-    mac: TMac,
-    rssi: TRssi,
-    connection: ISTHActions = new BackendSTHActions()) {
-    super(id, name, mac, connection)
-    this.rssi = rssi;
+    meta: TSTHDeviceMetaData,
+    connection: ISTHActions = new BackendSTHActions()
+  ) {
+    super(meta, connection)
   }
 
-  public getRssi(): typeof this.rssi { return this.rssi }
+  public getRssi(): TRssi { return this.Meta().rssi }
   public getRssiRepr(): string {
-    return `-${this.rssi}dB`;
+    return `-${this.Meta().rssi}dB`;
   }
   public setRssi(rssi: TRssi) {
-    this.rssi = rssi;
+    this.Meta().rssi = rssi;
   }
 
-  public override setName(name: string): Promise<boolean> {
-    return new Promise<boolean>(async (resolve, reject) => {
-      if(STHDevice.nameRegex.test(name)) {
-        await axios.get('http://localhost:8000/delay')
-        this.name = name;
-        resolve(true);
-      } else {
-        reject(false);
-      }
-    })
+  public async setName(name: string): Promise<void> {
+    await delay()
+    this.Meta().name = name;
+  }
+
+  public async measure(): Promise<void> {
+    return this.Connection().measure()
   }
 }
 

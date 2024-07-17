@@ -6,46 +6,33 @@ export type TMac = string;
 export type TDeviceConnectionStatus
   = 'connected' | 'connecting' | 'disconnected';
 
+export type TDeviceMetaData = {
+  id: TId;
+  name: TName;
+  mac: TMac;
+}
 
 /**
  * Represents a Device.
+ * @template Metatype - The type of the device's metadata, fetched via API.
  * @template ActionType - The type of the device's connection.
  * THIS SHOULD NEVER BE INSTANTIATED EXCEPT FOR TESTING
  */
-export class Device<ActionType> {
-  private id: TId;
-  protected name: TName;
-  private mac: TMac;
+export class Device<MetaType, ActionType> {
+  private readonly meta: MetaType;
   private readonly connection: ActionType;
 
   constructor(
-    id: TId,
-    name: TName,
-    mac: TMac,
+    meta: MetaType,
     connection: ActionType) {
-    this.id = id;
-    this.name = name;
-    this.mac = mac;
+    this.meta = meta;
     this.connection = connection;
   }
-
-  public getId(): typeof this.id { return this.id }
-  public setId(id: number) {this.id = id}
-
-  public getName(): typeof this.name { return this.name }
-  public setName(name: string): Promise<boolean> {
-    this.name = name
-    return Promise.resolve(true);
-  }
-
-  public getMac(): typeof this.mac { return this.mac }
-  public setMac(mac: TMac) {
-    // TODO: Add regex check for MAC address
-    this.mac = mac;
-  }
-
-  public getConnection(): ActionType {
+  public Connection(): ActionType {
     return this.connection;
+  }
+  public Meta(): MetaType {
+    return this.meta;
   }
 }
 

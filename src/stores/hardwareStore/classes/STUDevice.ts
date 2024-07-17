@@ -2,20 +2,16 @@ import {
   Device,
   IConnection,
   MockConnection,
-  TId,
-  TMac,
-  TName
+  TDeviceMetaData
 } from './Device.ts';
 
 export type TOTAState = 'enabled' | 'disabled'
 
-export class STUDevice extends Device<ISTUActions> {
+export class STUDevice extends Device<TDeviceMetaData, ISTUActions> {
   constructor(
-    id: TId,
-    name: TName,
-    mac: TMac,
+    meta: TDeviceMetaData,
     connection: ISTUActions = new MockSTUActions()) {
-    super(id, name, mac, connection);
+    super(meta, connection);
   }
 }
 

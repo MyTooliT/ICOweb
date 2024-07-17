@@ -1,18 +1,29 @@
-import { describe, expect, it } from 'vitest';
-import { MockSTHActions, STHDevice, TRssi } from './STHDevice.ts';
+import {
+  describe,
+  expect,
+  it
+} from 'vitest';
+import {
+  MockSTHActions,
+  STHDevice
+} from './STHDevice.ts';
 
 describe('STHDevice', () => {
-  const rssi: TRssi = -60;
-  const device: STHDevice
-    = new STHDevice(1, 'Test', 'mac', rssi, new MockSTHActions());
+  const device: STHDevice = new STHDevice({
+    id: 1,
+    name: 'STH 1',
+    mac: 'AA:BB:CC:DD:EE:FF',
+    rssi: -60,
+    regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$')
+  }, new MockSTHActions());
 
   it('correctly sets and gets rssi', () => {
-    expect(device.getRssi()).toBe(rssi)
+    expect(device.getRssi()).toBe(-60)
     device.setRssi(-72);
     expect(device.getRssi()).toBe(-72)
   })
 
   it('measures correctly', async () => {
-    await expect(device.getConnection().measure()).resolves.not.toThrow()
+    await expect(device.measure()).resolves.not.toThrow()
   });
 });
