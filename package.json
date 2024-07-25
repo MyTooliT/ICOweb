@@ -14,8 +14,11 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.4",
+    "@primevue/themes": "^4.0.0",
     "@vueuse/core": "^10.11.0",
     "pinia": "^2.1.7",
+    "primevue": "^4.0.0",
+    "tailwindcss-primeui": "^0.3.4",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0"
   },

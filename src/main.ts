@@ -10,9 +10,16 @@ import './styles/material-theme/dark-mc.css';
 import './styles/material-theme/dark-hc.css';
 import router from './router';
 import App from './App.vue';
+import PrimeVue from 'primevue/config';
+import { myPreset } from '../primevue.ts';
 
 const pinia = createPinia();
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
+app.use(PrimeVue, {
+  theme: {
+    preset: myPreset
+  }
+})
 app.mount('#app')

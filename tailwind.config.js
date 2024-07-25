@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{html,js,vue}'],
+  plugins: [require('tailwindcss-primeui')],
   theme: {
     data: {
       primary: 'color~="primary"',
@@ -67,6 +68,5 @@ export default {
       }
     },
   },
-  plugins: [],
 }
 
