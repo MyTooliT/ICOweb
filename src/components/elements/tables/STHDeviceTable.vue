@@ -12,6 +12,9 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
+import Button from 'primevue/button';
+// eslint-disable-next-line max-len
+import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
 
 const devices = ref<STHDevice[]>([])
 const devs = await getSTHDevicesMeta();
@@ -35,7 +38,9 @@ async function save(
 
 <template>
   <DataTable :value="devices">
-    <Column field="meta.id" header="ID"></Column>
+    <Column
+      field="meta.id"
+      header="ID" />
     <Column header="Name">
       <template #body="{ data, index }">
         <EditableInput
@@ -48,13 +53,34 @@ async function save(
             state: Ref<EditState>,
             content: string,
             focused: Ref<boolean>
-            ) => save(state, content, focused, devices[index] as STHDevice)" />
+          ) => save(state, content, focused, devices[index] as STHDevice)" />
       </template>
     </Column>
-    <Column field="meta.mac" header="MAC"></Column>
+    <Column
+      field="meta.mac"
+      header="MAC" />
     <Column header="RSSI">
       <template #body="slotProps">
         {{ devices[slotProps.index].getRssiRepr() }}
+      </template>
+    </Column>
+    <Column header="Actions">
+      <template #body="{ index }">
+        <ConnectionButton
+          class="mr-3"
+          :device="devices[index]"
+          @connect="() => devices[index].Connection().connect()"
+          @disconnect="() => devices[index].Connection().disconnect()"
+        />
+        <Button
+          rounded
+          size="small"
+          label="Measure"
+          icon="pi pi-chart-bar"
+          :disabled="devices[index].Connection()
+            .getConnectionStatus() !== 'connected'"
+          @click="$router.push('/measure')"
+        />
       </template>
     </Column>
   </DataTable>

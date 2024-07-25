@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import 'primeicons/primeicons.css';
 import './styles/style.css';
 import './styles/tailwind/tailwind-output.css';
 import './styles/material-theme/light.css';

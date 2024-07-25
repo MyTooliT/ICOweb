@@ -1,3 +1,5 @@
+import { delay } from '@/api/requests.ts';
+
 export type TId = number;
 export type TName = string;
 export type TMac = string;
@@ -44,7 +46,9 @@ export interface IConnection {
 
 export class MockConnection {
   private status: TDeviceConnectionStatus = 'disconnected';
-  public connect(): Promise<TDeviceConnectionStatus> {
+  public async connect(): Promise<TDeviceConnectionStatus> {
+    this.status = 'connecting'
+    await delay()
     this.status = 'connected'
     return Promise.resolve('connected')
   }
