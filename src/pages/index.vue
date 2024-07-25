@@ -3,16 +3,11 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Heading3 from '@/components/typography/heading/Heading3.vue';
 import OutlineButton from '@/components/elements/buttons/OutlineButton.vue';
 import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
-
-/* eslint-disable max-len */
-
-/* eslint-enable max-len*/
-
 </script>
 
 <template>
   <DefaultLayout>
-    <div class="flex flex-row justify-between">
+    <div class="flex flex-row justify-between py-3">
       <Heading3>Sensory Tool Holders</Heading3>
       <OutlineButton>Reload</OutlineButton>
     </div>

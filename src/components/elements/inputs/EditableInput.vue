@@ -34,6 +34,8 @@ const editContainer: Ref<HTMLDivElement | null> = ref(null)
 const inputRef: Ref<HTMLInputElement | null> = ref(null)
 
 onClickOutside(editContainer as MaybeElementRef, () => {
+  if(currentState.value === 'loading') return
+  content.value = props.initialValue
   currentState.value = 'readyToEdit'
   emits('blur')
 })
@@ -68,7 +70,7 @@ function save(): void {
 </script>
 
 <template>
-  <div ref="editContainer">
+  <div ref="editContainer" class="flex">
     <input
       :id="id"
       ref="inputRef"

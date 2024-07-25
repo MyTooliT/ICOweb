@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {
+  Ref,
+  ref
+} from 'vue';
 import {
   MockSTHActions,
   STHDevice
 } from '@/stores/hardwareStore/classes/STHDevice.ts';
-import DeviceTable from './DeviceTable.vue';
-import DeviceTableEntry from './DeviceTableEntry.vue';
-import STHDeviceTableRow from './STHDeviceTableRow.vue';
 import { getSTHDevicesMeta } from '@/api/requests.ts';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import EditableInput from '@/components/elements/inputs/EditableInput.vue';
+import { EditState } from '@/components/elements/buttons/types.ts';
 
 const devices = ref<STHDevice[]>([])
 const devs = await getSTHDevicesMeta();
@@ -16,29 +20,44 @@ devs.forEach(entry => {
     new STHDevice(entry, new MockSTHActions()),
   );
 })
+async function save(
+  state: Ref<EditState>,
+  content: string,
+  focused: Ref<boolean>,
+  device: STHDevice
+) {
+  state.value = 'loading'
+  await device.setName(content)
+  state.value = 'readyToEdit'
+  focused.value = false
+}
 </script>
 
 <template>
-  <!--  <pre>
-    {{ devices }}
-  </pre>-->
-  <DeviceTable :devices="devices">
-    <template #head>
-      <tr class="py-2">
-        <DeviceTableEntry>#</DeviceTableEntry>
-        <DeviceTableEntry>Name</DeviceTableEntry>
-        <DeviceTableEntry>MAC</DeviceTableEntry>
-        <DeviceTableEntry>RSSI</DeviceTableEntry>
-        <DeviceTableEntry>Default Sensor Config</DeviceTableEntry>
-        <DeviceTableEntry>Action</DeviceTableEntry>
-      </tr>
-    </template>
-    <STHDeviceTableRow
-      v-for="STH in devices"
-      :key="STH.Meta().mac"
-      :device="STH as STHDevice"
-    />
-  </DeviceTable>
+  <DataTable :value="devices">
+    <Column field="meta.id" header="ID"></Column>
+    <Column header="Name">
+      <template #body="{ data, index }">
+        <EditableInput
+          :id="`mac-${data.meta.mac}`"
+          :regex="data.meta.regex"
+          :initial-value="data.meta.name"
+          :disabled="false"
+          placeholder="Device Name"
+          :save-fn="(
+            state: Ref<EditState>,
+            content: string,
+            focused: Ref<boolean>
+            ) => save(state, content, focused, devices[index] as STHDevice)" />
+      </template>
+    </Column>
+    <Column field="meta.mac" header="MAC"></Column>
+    <Column header="RSSI">
+      <template #body="slotProps">
+        {{ devices[slotProps.index].getRssiRepr() }}
+      </template>
+    </Column>
+  </DataTable>
 </template>
 
 <style scoped>
