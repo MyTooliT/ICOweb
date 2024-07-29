@@ -1,15 +1,6 @@
 <script setup lang="ts">
-import {
-  onMounted,
-  Ref,
-  ref
-} from 'vue';
-import {
-  MockSTHActions,
-  STHDevice,
-  TSTHDeviceMetaData
-} from '@/stores/hardwareStore/classes/STHDevice.ts';
-import { getSTHDevicesMeta } from '@/api/requests.ts';
+import { Ref } from 'vue';
+import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
@@ -17,8 +8,9 @@ import { EditState } from '@/components/elements/buttons/types.ts';
 import Button from 'primevue/button';
 // eslint-disable-next-line max-len
 import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 
-const devices = ref<STHDevice[]>([])
+const store = useHardwareStore()
 
 async function save(
   state: Ref<EditState>,
@@ -31,21 +23,10 @@ async function save(
   state.value = 'readyToEdit'
   focused.value = false
 }
-const loading = ref<boolean>(false)
-onMounted(async () => {
-  loading.value = true
-  const devs: TSTHDeviceMetaData[] = await getSTHDevicesMeta()
-  devs.forEach(entry => {
-    devices.value.push(
-      new STHDevice(entry, new MockSTHActions()),
-    );
-  })
-  loading.value = false
-})
 </script>
 
 <template>
-  <DataTable :value="devices" :loading="loading">
+  <DataTable :value="store.getSTHDeviceList" :loading="store.STHDevicesLoading">
     <Column
       header="ID">
       <template #body="{ data }: { data: STHDevice }">

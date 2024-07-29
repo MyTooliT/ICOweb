@@ -33,9 +33,12 @@ export const useHardwareStore = defineStore('hardware', () => {
     return _STHDeviceList.value
   })
   async function updateSTHDeviceList(): Promise<void> {
+    STHDevicesLoading.value = true
     const meta = await getSTHDevicesMeta()
     _STHDeviceList.value = consumeNewMetadata(_STHDeviceList.value, meta)
+    STHDevicesLoading.value = false
   }
+  const STHDevicesLoading: Ref<boolean> = ref(false)
 
   return {
     getSensorList,
@@ -43,6 +46,7 @@ export const useHardwareStore = defineStore('hardware', () => {
     clearSensorList,
     removeSensor,
     getSTHDeviceList,
-    updateSTHDeviceList
+    updateSTHDeviceList,
+    STHDevicesLoading
   }
 })
