@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { Ref } from 'vue';
-import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+//import { Ref } from 'vue';
+//import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import EditableInput from '@/components/elements/inputs/EditableInput.vue';
-import { EditState } from '@/components/elements/buttons/types.ts';
-import Button from 'primevue/button';
+//import { EditState } from '@/components/elements/buttons/types.ts';
 // eslint-disable-next-line max-len
-import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 
 const store = useHardwareStore()
 
+/*
 async function save(
   state: Ref<EditState>,
   content: string,
@@ -22,48 +21,32 @@ async function save(
   await device.setName(content)
   state.value = 'readyToEdit'
   focused.value = false
-}
+}*/
 </script>
 
 <template>
   <DataTable
-    :value="store.getSTHDeviceList"
-    :loading="store.STHDevicesLoading">
+    :value="store.getSTUDeviceList"
+    :loading="store.STUDeviceLoading">
     <Column
       header="ID">
-      <template #body="{ data }: { data: STHDevice }">
+      <template #body="{ data }: { data: STUDevice }">
         {{ data.Meta().device_number }}
       </template>
     </Column>
     <Column header="Name">
-      <template #body="{ data }: { data: STHDevice }">
-        <EditableInput
-          :id="`mac-${data.Meta().mac_address}`"
-          :regex="data.regex"
-          :initial-value="data.Meta().name"
-          :disabled="false"
-          placeholder="Device Name"
-          :save-fn="(
-            state: Ref<EditState>,
-            content: string,
-            focused: Ref<boolean>
-          ) => save(state, content, focused, data)" />
+      <template #body="{ data }: { data: STUDevice }">
+        {{ data.Meta().name }}
       </template>
     </Column>
     <Column
       header="MAC">
-      <template #body="{ data }: { data: STHDevice }">
+      <template #body="{ data }: { data: STUDevice }">
         {{ data.Meta().mac_address }}
       </template>
     </Column>
-    <Column
-      header="MAC">
-      <template #body="{ data }: { data: STHDevice }">
-        {{ data.getRssiRepr() }}
-      </template>
-    </Column>
-    <Column header="Actions">
-      <template #body="{ data }: { data: STHDevice }">
+    <!--    <Column header="Actions">
+      <template #body="{ data }: { data: STUDevice }">
         <ConnectionButton
           class="mr-3"
           :device="data"
@@ -80,7 +63,7 @@ async function save(
           @click="$router.push('/measure')"
         />
       </template>
-    </Column>
+    </Column>-->
   </DataTable>
 </template>
 

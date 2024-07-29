@@ -8,8 +8,8 @@ export type TDeviceConnectionStatus
 
 export type TDeviceMetaData = {
   device_number: TDeviceNumber;
-  name: TName;
-  mac_address: TMac;
+  name?: TName;
+  mac_address?: TMac;
 }
 
 /**
