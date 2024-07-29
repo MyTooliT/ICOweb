@@ -12,7 +12,10 @@ const store = useHardwareStore()
   <DefaultLayout>
     <div class="flex flex-row justify-between py-3">
       <Heading3>Sensory Tool Holders</Heading3>
-      <Button label="Reload" outlined @click="store.updateSTHDeviceList()" />
+      <Button
+        label="Reload"
+        outlined
+        @click="store.updateSTHDeviceList()" />
     </div>
     <Suspense>
       <STHDeviceTable />

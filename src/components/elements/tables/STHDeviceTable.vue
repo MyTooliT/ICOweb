@@ -26,7 +26,9 @@ async function save(
 </script>
 
 <template>
-  <DataTable :value="store.getSTHDeviceList" :loading="store.STHDevicesLoading">
+  <DataTable
+    :value="store.getSTHDeviceList"
+    :loading="store.STHDevicesLoading">
     <Column
       header="ID">
       <template #body="{ data }: { data: STHDevice }">
