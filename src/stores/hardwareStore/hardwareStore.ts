@@ -1,6 +1,14 @@
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, Ref, ref } from 'vue';
+import {
+  computed,
+  ComputedRef,
+  Ref,
+  ref
+} from 'vue';
 import { Sensor } from './classes/Sensor.ts';
+import { STHDevice } from './classes/STHDevice.ts';
+import { getSTHDevicesMeta } from '@/api/requests.ts';
+import { consumeNewMetadata } from './helper.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
   const _sensorList: Ref<Array<Sensor>> = ref([]);
@@ -20,5 +28,21 @@ export const useHardwareStore = defineStore('hardware', () => {
     }
   }
 
-  return {getSensorList, addSensor, clearSensorList, removeSensor}
+  const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
+  const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
+    return _STHDeviceList.value
+  })
+  async function updateSTHDeviceList(): Promise<void> {
+    const meta = await getSTHDevicesMeta()
+    _STHDeviceList.value = consumeNewMetadata(_STHDeviceList.value, meta)
+  }
+
+  return {
+    getSensorList,
+    addSensor,
+    clearSensorList,
+    removeSensor,
+    getSTHDeviceList,
+    updateSTHDeviceList
+  }
 })

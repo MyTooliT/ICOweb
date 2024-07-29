@@ -53,7 +53,7 @@ export class MockSTHActions extends MockConnection implements ISTHActions {
   }
 }
 
-class BackendSTHActions implements ISTHActions {
+export class BackendSTHActions implements ISTHActions {
   private status: TDeviceConnectionStatus = 'disconnected';
   public connect(): Promise<TDeviceConnectionStatus> {
     return Promise.reject('Not Implemented');

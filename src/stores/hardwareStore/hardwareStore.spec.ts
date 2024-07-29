@@ -1,9 +1,22 @@
-import { createPinia, setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  createPinia,
+  setActivePinia
+} from 'pinia';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it
+} from 'vitest';
 import { useHardwareStore } from './hardwareStore';
 import { Sensor } from './classes/Sensor.ts';
+import {
+  STHDevice,
+  TSTHDeviceMetaData
+} from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { consumeNewMetadata } from '@/stores/hardwareStore/helper.ts';
 
-describe('hardwareStore', () => {
+describe('hardwareStore Sensor', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
   });
@@ -49,3 +62,59 @@ describe('hardwareStore', () => {
     expect(store.getSensorList.indexOf(sensor2)).toBe(-1)
   });
 });
+
+describe('hardwareStore STHDeviceList', async () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+  it('initializes with an empty STH device list', async () => {
+    const store = useHardwareStore();
+    expect(store.getSTHDeviceList.length).toBe(0)
+    await store.updateSTHDeviceList();
+  })
+  // Note:  Since the store function 'updateSTHDeviceList' requests new data
+  //        from the REST API, we have side effects. This is why we do not test
+  //        the function itself, but the helper.
+  //        Bad form, I know. I am trying my best. :^)
+  it('helper properly consumes new metadata', () => {
+    const currentList: Array<STHDevice> = [
+      new STHDevice({
+        id: 1,
+        name: 'STH 1',
+        mac: 'AA:BB:CC:DD:EE:FF',
+        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        rssi: 0
+      }),
+      new STHDevice({
+        id: 2,
+        name: 'Messerkopf',
+        mac: 'AA:BB:CC:DD:EE:EE',
+        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        rssi: -44
+      })
+    ]
+    const newList: Array<TSTHDeviceMetaData> = [
+      {
+        id: 1,
+        name: 'STH 1',
+        mac: 'AA:BB:CC:DD:EE:FF',
+        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        rssi: 0
+      },
+      {
+        id: 3,
+        name: 'Mini Mill',
+        mac: 'AA:BB:CC:DD:EE:DD',
+        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        rssi: -24
+      }
+    ]
+    expect(consumeNewMetadata(currentList, newList).map(entry => {
+      return entry.Meta().id
+    })).toStrictEqual([1, 3])
+
+  })
+
+
+
+})
