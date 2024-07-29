@@ -1,6 +1,4 @@
-import { delay } from '@/api/requests.ts';
-
-export type TId = number;
+export type TDeviceNumber = number;
 export type TName = string;
 export type TMac = string;
 
@@ -9,9 +7,9 @@ export type TDeviceConnectionStatus
   = 'connected' | 'connecting' | 'disconnected';
 
 export type TDeviceMetaData = {
-  id: TId;
+  device_number: TDeviceNumber;
   name: TName;
-  mac: TMac;
+  mac_address: TMac;
 }
 
 /**
@@ -48,7 +46,7 @@ export class MockConnection {
   private status: TDeviceConnectionStatus = 'disconnected';
   public async connect(): Promise<TDeviceConnectionStatus> {
     this.status = 'connecting'
-    await delay()
+    await new Promise(resolve => setTimeout(resolve, 1000));
     this.status = 'connected'
     return Promise.resolve('connected')
   }

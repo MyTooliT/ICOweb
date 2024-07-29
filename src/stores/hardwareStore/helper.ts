@@ -21,12 +21,12 @@ export function consumeNewMetadata(
 ): Array<STHDevice> {
   const assembledList: Array<STHDevice> = [];
   list.forEach(item => {
-    const matching = newList.find(newItem => newItem.mac === item.Meta().mac)
+    const matching = newList
+      .find(newItem => newItem.mac_address === item.Meta().mac_address)
     if (matching) {
-      item.Meta().id = matching.id
+      item.Meta().device_number = matching.device_number
       item.Meta().name = matching.name
       item.Meta().rssi = matching.rssi
-      item.Meta().regex = matching.regex
 
       assembledList.push(item)
 

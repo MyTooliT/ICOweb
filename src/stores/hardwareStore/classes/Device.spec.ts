@@ -9,41 +9,41 @@ import {
   IConnection,
   MockConnection,
   TDeviceMetaData,
-  TId,
+  TDeviceNumber,
   TMac,
   TName
 } from './Device.ts';
 
 describe('Device', () => {
   let device: Device<TDeviceMetaData, IConnection>;
-  const id: TId = 1;
+  const device_number: TDeviceNumber = 1;
   const name: TName = 'Test Device';
-  const mac: TMac = '00:00:00:00:00:00';
+  const mac_address: TMac = '00:00:00:00:00:00';
 
   beforeEach(() => {
     device = new Device({
-      id: id, name: name, mac: mac
+      device_number: device_number, name: name, mac_address: mac_address
     }, new MockConnection());
   });
 
   it('correctly constructs a device', () => {
-    expect(device.Meta().id).toBe(id);
+    expect(device.Meta().device_number).toBe(device_number);
     expect(device.Meta().name).toBe(name);
-    expect(device.Meta().mac).toBe(mac);
+    expect(device.Meta().mac_address).toBe(mac_address);
   });
 
   it('correctly sets device properties', () => {
-    const newId: TId = 2;
+    const newDeviceNumber: TDeviceNumber = 2;
     const newName: TName = 'New device';
     const newMac: TMac = '01:23:45:67:89:AB';
 
-    device.Meta().id = newId;
+    device.Meta().device_number = newDeviceNumber;
     device.Meta().name = newName;
-    device.Meta().mac = newMac;
+    device.Meta().mac_address = newMac;
 
-    expect(device.Meta().id).toBe(newId);
+    expect(device.Meta().device_number).toBe(newDeviceNumber);
     expect(device.Meta().name).toBe(newName);
-    expect(device.Meta().mac).toBe(newMac);
+    expect(device.Meta().mac_address).toBe(newMac);
   });
 
   it('connects and disconnects correctly', async () => {

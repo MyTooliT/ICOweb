@@ -70,7 +70,6 @@ describe('hardwareStore STHDeviceList', async () => {
   it('initializes with an empty STH device list', async () => {
     const store = useHardwareStore();
     expect(store.getSTHDeviceList.length).toBe(0)
-    await store.updateSTHDeviceList();
   })
   // Note:  Since the store function 'updateSTHDeviceList' requests new data
   //        from the REST API, we have side effects. This is why we do not test
@@ -79,38 +78,34 @@ describe('hardwareStore STHDeviceList', async () => {
   it('helper properly consumes new metadata', () => {
     const currentList: Array<STHDevice> = [
       new STHDevice({
-        id: 1,
+        device_number: 1,
         name: 'STH 1',
-        mac: 'AA:BB:CC:DD:EE:FF',
-        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        mac_address: 'AA:BB:CC:DD:EE:FF',
         rssi: 0
       }),
       new STHDevice({
-        id: 2,
+        device_number: 2,
         name: 'Messerkopf',
-        mac: 'AA:BB:CC:DD:EE:EE',
-        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        mac_address: 'AA:BB:CC:DD:EE:EE',
         rssi: -44
       })
     ]
     const newList: Array<TSTHDeviceMetaData> = [
       {
-        id: 1,
+        device_number: 1,
         name: 'STH 1',
-        mac: 'AA:BB:CC:DD:EE:FF',
-        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        mac_address: 'AA:BB:CC:DD:EE:FF',
         rssi: 0
       },
       {
-        id: 3,
+        device_number: 3,
         name: 'Mini Mill',
-        mac: 'AA:BB:CC:DD:EE:DD',
-        regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+        mac_address: 'AA:BB:CC:DD:EE:DD',
         rssi: -24
       }
     ]
     expect(consumeNewMetadata(currentList, newList).map(entry => {
-      return entry.Meta().id
+      return entry.Meta().device_number
     })).toStrictEqual([1, 3])
 
   })

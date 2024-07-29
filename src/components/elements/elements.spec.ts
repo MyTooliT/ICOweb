@@ -76,7 +76,7 @@ describe('Editable Input Component Test', () => {
   beforeEach(() => {
     inputWrapper = mount(EditableInput, {
       props: {
-        id: 'input-id',
+        device_number: 'input-id',
         placeholder: 'Enter value...',
         disabled: false,
         regex: /^[a-zA-Z0-9]+$/,
@@ -97,7 +97,7 @@ describe('Editable Input Component Test', () => {
   it('EditableInput is disabled when the disabled prop is true', () => {
     const inputWrapperWithDisabled = mount(EditableInput, {
       props: {
-        id: 'input-id',
+        device_number: 'input-id',
         placeholder: 'Enter value...',
         disabled: true,
         regex: /^[a-zA-Z0-9]+$/,
@@ -113,7 +113,7 @@ describe('Editable Input Component Test', () => {
     const newValue = 'New Value';
     const inputWrapperWithValue = mount(EditableInput, {
       props: {
-        id: 'input-id',
+        device_number: 'input-id',
         placeholder: 'Enter value...',
         disabled: true,
         regex: /^[a-zA-Z0-9]+$/,

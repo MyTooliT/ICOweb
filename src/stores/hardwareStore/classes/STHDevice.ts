@@ -12,7 +12,6 @@ export type TRssi = number;
 
 export type TSTHDeviceMetaData = TDeviceMetaData & {
   rssi: TRssi;
-  regex: RegExp
 }
 
 export class STHDevice extends Device<TSTHDeviceMetaData, ISTHActions> {
@@ -25,9 +24,11 @@ export class STHDevice extends Device<TSTHDeviceMetaData, ISTHActions> {
     super(meta, connection)
   }
 
+  public regex = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$')
+
   public getRssi(): TRssi { return this.Meta().rssi }
   public getRssiRepr(): string {
-    return `-${this.Meta().rssi}dB`;
+    return `${this.Meta().rssi}dB`;
   }
   public setRssi(rssi: TRssi) {
     this.Meta().rssi = rssi;

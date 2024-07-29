@@ -9,21 +9,21 @@ import {
   STUDevice
 } from './STUDevice.ts';
 import {
-  TId,
+  TDeviceNumber,
   TMac,
   TName
 } from './Device.ts';
 
 describe('device', () => {
   let device: STUDevice;
-  const id: TId = 1;
+  const device_number: TDeviceNumber = 1;
   const name: TName = 'Test Device';
-  const mac: TMac = '00:00:00:00:00:00';
+  const mac_address: TMac = '00:00:00:00:00:00';
   const mockSTUActions = new MockSTUActions();
 
   beforeEach(() => {
     device = new STUDevice({
-      id: id, name: name, mac: mac
+      device_number: device_number, name: name, mac_address: mac_address
     }, mockSTUActions);
   });
 

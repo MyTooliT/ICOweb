@@ -10,11 +10,10 @@ import {
 
 describe('STHDevice', () => {
   const device: STHDevice = new STHDevice({
-    id: 1,
+    device_number: 1,
     name: 'STH 1',
-    mac: 'AA:BB:CC:DD:EE:FF',
+    mac_address: 'AA:BB:CC:DD:EE:FF',
     rssi: -60,
-    regex: new RegExp('^[\x20-\x7E]{1,29}[^\\s]$')
   }, new MockSTHActions());
 
   it('correctly sets and gets rssi', () => {

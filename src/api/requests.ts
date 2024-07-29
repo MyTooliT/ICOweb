@@ -11,16 +11,7 @@ export async function delay(): Promise<any> {
 export async function getSTHDevicesMeta(): Promise<TSTHDeviceMetaData[]> {
   return new Promise((resolve, reject) => {
     get<(TSTHDeviceMetaData& {regex_str?: string})[]>('devices')
-      .then((data) => {
-        data.forEach(entry => {
-          if(entry.regex_str) {
-            try {
-              entry.regex = new RegExp(entry.regex_str)
-              delete entry.regex_str
-            } catch(e){}
-          }
-        })
-      resolve(data)
-    }).catch(reject)
+      .then(data => resolve(data))
+      .catch(reject)
   })
 }
