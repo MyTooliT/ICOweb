@@ -3,8 +3,10 @@ import {
   put
 } from './api.ts';
 // eslint-disable-next-line max-len
-import { TSTHDeviceMetaData } from '@/stores/hardwareStore/classes/STHDevice.ts';
-import { TDeviceMetaData } from '@/stores/hardwareStore/classes/Device.ts';
+import {
+  STHDeviceResponseModel,
+  STUDeviceResponseModel
+} from '@/client';
 
 export async function delay(): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -12,17 +14,17 @@ export async function delay(): Promise<any> {
   })
 }
 
-export async function getSTHDevicesMeta(): Promise<TSTHDeviceMetaData[]> {
+export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
-    get<(TSTHDeviceMetaData& {regex_str?: string})[]>('devices/sth')
+    get<(STHDeviceResponseModel)[]>('devices/sth')
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function getSTUDevices(): Promise<TDeviceMetaData[]> {
+export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
-    get<TDeviceMetaData[]>('devices/stu')
+    get<STUDeviceResponseModel[]>('devices/stu')
       .then(data => resolve(data))
       .catch(reject)
   })

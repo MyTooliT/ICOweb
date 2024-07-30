@@ -15,18 +15,18 @@ const store = useHardwareStore()
     <Column
       header="ID">
       <template #body="{ data }: { data: STUDevice }">
-        {{ data.Meta().device_number }}
+        {{ data.getDeviceNumber() }}
       </template>
     </Column>
     <Column header="Name">
       <template #body="{ data }: { data: STUDevice }">
-        {{ data.Meta().name }}
+        {{ data.getName() }}
       </template>
     </Column>
     <Column
       header="MAC">
       <template #body="{ data }: { data: STUDevice }">
-        {{ data.Meta().mac_address }}
+        {{ data.getMacAddress() }}
       </template>
     </Column>
     <Column header="Actions">
@@ -36,7 +36,7 @@ const store = useHardwareStore()
           size="small"
           label="Reset"
           icon="pi pi-sync"
-          @click="data.Connection().reset()"
+          @click="data.reset()"
         />
       </template>
     </Column>

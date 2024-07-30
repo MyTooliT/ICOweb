@@ -10,11 +10,9 @@ import {
 } from 'vitest';
 import { useHardwareStore } from './hardwareStore';
 import { Sensor } from './classes/Sensor.ts';
-import {
-  STHDevice,
-  TSTHDeviceMetaData
-} from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import { consumeNewMetadata } from '@/stores/hardwareStore/helper.ts';
+import { STHDeviceResponseModel } from '@/client';
 
 describe('hardwareStore Sensor', () => {
   beforeEach(() => {
@@ -77,20 +75,20 @@ describe('hardwareStore STHDeviceList', async () => {
   //        Bad form, I know. I am trying my best. :^)
   it('helper properly consumes new metadata', () => {
     const currentList: Array<STHDevice> = [
-      new STHDevice({
-        device_number: 1,
-        name: 'STH 1',
-        mac_address: 'AA:BB:CC:DD:EE:FF',
-        rssi: 0
-      }),
-      new STHDevice({
-        device_number: 2,
-        name: 'Messerkopf',
-        mac_address: 'AA:BB:CC:DD:EE:EE',
-        rssi: -44
-      })
+      new STHDevice(
+        1,
+        'STH 1',
+        'AA:BB:CC:DD:EE:FF',
+        0
+      ),
+      new STHDevice(
+        2,
+        'Messerkopf',
+        'AA:BB:CC:DD:EE:EE',
+        -44
+      ),
     ]
-    const newList: Array<TSTHDeviceMetaData> = [
+    const newList: Array<STHDeviceResponseModel> = [
       {
         device_number: 1,
         name: 'STH 1',
@@ -105,7 +103,7 @@ describe('hardwareStore STHDeviceList', async () => {
       }
     ]
     expect(consumeNewMetadata(currentList, newList).map(entry => {
-      return entry.Meta().device_number
+      return entry.getDeviceNumber()
     })).toStrictEqual([1, 3])
 
   })

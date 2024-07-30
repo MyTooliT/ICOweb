@@ -12,10 +12,7 @@ import {
   getSTUDevices
 } from '@/api/requests.ts';
 import { consumeNewMetadata } from './helper.ts';
-import {
-  BackendSTUActions,
-  STUDevice
-} from '@/stores/hardwareStore/classes/STUDevice.ts';
+import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
   const _sensorList: Ref<Array<Sensor>> = ref([]);
@@ -56,7 +53,11 @@ export const useHardwareStore = defineStore('hardware', () => {
     STUDeviceLoading.value = true
     const meta = await getSTUDevices()
     _STUDeviceList.value = meta.map(entry => {
-      return new STUDevice(entry, new BackendSTUActions())
+      return new STUDevice(
+        entry.device_number,
+        entry.name,
+        entry.mac_address
+      )
     })
     STUDeviceLoading.value = false
   }

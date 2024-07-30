@@ -13,7 +13,7 @@ const emits = defineEmits<{
 }>()
 
 const label = computed<string>(() => {
-  switch(props.device.Connection().getConnectionStatus()) {
+  switch(props.device.getConnectionStatus()) {
     case 'connected':
       return 'Disconnect'
 
@@ -26,7 +26,7 @@ const label = computed<string>(() => {
 })
 
 const icon = computed<string>(() => {
-  switch(props.device.Connection().getConnectionStatus()) {
+  switch(props.device.getConnectionStatus()) {
     case 'connected':
       return 'check'
 
@@ -39,7 +39,7 @@ const icon = computed<string>(() => {
 })
 
 function clickHandler(): void {
-  const state = props.device.Connection().getConnectionStatus()
+  const state = props.device.getConnectionStatus()
   if(state === 'disconnected') { emits('connect') }
   if(state === 'connected') { emits('disconnect') }
 }
@@ -51,7 +51,7 @@ function clickHandler(): void {
   rounded
   :label="label"
   :icon="`pi pi-${icon}`"
-  :loading="props.device.Connection().getConnectionStatus() === 'connecting'"
+  :loading="props.device.getConnectionStatus() === 'connecting'"
   @click="clickHandler" />
 </template>
 

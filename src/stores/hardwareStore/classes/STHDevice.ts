@@ -1,61 +1,63 @@
 import {
   Device,
-  IConnection,
-  MockConnection,
   TDeviceConnectionStatus,
-  TDeviceMetaData
+  TDeviceNumber,
+  TMac,
+  TName
 } from './Device.ts';
-
-import { delay } from '@/api/requests.ts';
 
 export type TRssi = number;
 
-export type TSTHDeviceMetaData = TDeviceMetaData & {
-  rssi: TRssi;
-}
-
-export class STHDevice extends Device<TSTHDeviceMetaData, ISTHActions> {
+export class STHDevice extends Device {
   // TODO: Add default sensor config
+  private readonly regex = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$')
+  private rssi: number = 0;
 
   constructor(
-    meta: TSTHDeviceMetaData,
-    connection: ISTHActions = new BackendSTHActions()
+    device_number: TDeviceNumber,
+    name: TName,
+    mac_address: TMac,
+    rssi: number,
+    status: TDeviceConnectionStatus = 'disconnected',
+    regex: RegExp = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
   ) {
-    super(meta, connection)
+    super(device_number, name, mac_address, status)
+    this.regex = regex
+    this.rssi = rssi
   }
 
-  public regex = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$')
-
-  public getRssi(): TRssi { return this.Meta().rssi }
   public getRssiRepr(): string {
-    return `${this.Meta().rssi}dB`;
-  }
-  public setRssi(rssi: TRssi) {
-    this.Meta().rssi = rssi;
+    return `${this.rssi}dB`;
   }
 
-  public async setName(name: string): Promise<void> {
-    await delay()
-    this.Meta().name = name;
+  public getRegex(): RegExp {
+    return this.regex
   }
 
-  public async measure(): Promise<void> {
-    return this.Connection().measure()
+  public setName(name: string): boolean {
+    if(this.regex.test(name)) {
+      this.name = name;
+      return true
+    }
+    return false
   }
-}
 
-export interface ISTHActions extends IConnection{
-  measure(): Promise<void>;
-}
-
-export class MockSTHActions extends MockConnection implements ISTHActions {
-  public measure(): Promise<void> {
-    return Promise.resolve()
+  public setMetadata(body: {
+    device_number: TDeviceNumber,
+    name: TName,
+    mac_address: TMac,
+    rssi: TRssi
+  }): void {
+    this.device_number = body.device_number;
+    this.name = body.name;
+    this.mac_address = body.mac_address;
+    this.rssi = body.rssi
   }
-}
 
-export class BackendSTHActions implements ISTHActions {
-  private status: TDeviceConnectionStatus = 'disconnected';
+  public dump() {
+
+  }
+
   public connect(): Promise<TDeviceConnectionStatus> {
     return Promise.reject('Not Implemented');
   }
@@ -66,6 +68,6 @@ export class BackendSTHActions implements ISTHActions {
     return Promise.reject('Not Implemented')
   }
   public getConnectionStatus(): TDeviceConnectionStatus {
-    return this.status;
+    return this.connection_status;
   }
 }

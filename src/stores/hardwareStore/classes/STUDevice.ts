@@ -1,52 +1,28 @@
 import {
   Device,
-  MockConnection,
-  TDeviceMetaData
+  TDeviceConnectionStatus,
+  TDeviceNumber,
+  TMac,
+  TName
 } from './Device.ts';
+import { resetSTUDevice } from '@/api/requests.ts';
 
 export type TOTAState = 'enabled' | 'disabled'
 
-export class STUDevice extends Device<TDeviceMetaData, ISTUActions> {
+export class STUDevice extends Device {
+  private OTAState: TOTAState;
   constructor(
-    meta: TDeviceMetaData,
-    connection: ISTUActions = new BackendSTUActions()) {
-    super(meta, connection);
+    device_number: TDeviceNumber,
+    name: TName,
+    mac_address: TMac,
+    status: TDeviceConnectionStatus = 'disconnected',
+    ota: TOTAState = 'disabled'
+  ) {
+    super(device_number, name, mac_address, status);
+    this.OTAState = ota
   }
-}
-
-interface ISTUActions {
-  reset(): Promise<void>;
-  enableOTA(): Promise<void>;
-  disableOTA(): Promise<void>;
-  getOTAState(): TOTAState;
-}
-
-export class MockSTUActions extends MockConnection implements ISTUActions {
-  private otaState: TOTAState = 'disabled';
-  public reset(): Promise<void> {
-    this.otaState = 'disabled'
-    return Promise.resolve()
-  }
-
-  public enableOTA(): Promise<void> {
-    this.otaState = 'enabled'
-    return Promise.resolve()
-  }
-
-  public disableOTA(): Promise<void> {
-    this.otaState = 'disabled'
-    return Promise.resolve()
-  }
-
-  public getOTAState(): TOTAState {
-    return this.otaState
-  }
-}
-
-export class BackendSTUActions implements ISTUActions {
-  private otaState: TOTAState = 'disabled';
-  public reset(): Promise<void> {
-    return Promise.reject('Not Implemented');
+  public async reset(): Promise<void> {
+    await resetSTUDevice(self.name)
   }
 
   public enableOTA(): Promise<void> {
@@ -58,7 +34,6 @@ export class BackendSTUActions implements ISTUActions {
   }
 
   public getOTAState(): TOTAState {
-    return this.otaState
+    return this.OTAState
   }
 }
-

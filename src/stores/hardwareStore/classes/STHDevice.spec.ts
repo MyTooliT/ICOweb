@@ -3,26 +3,22 @@ import {
   expect,
   it
 } from 'vitest';
-import {
-  MockSTHActions,
-  STHDevice
-} from './STHDevice.ts';
+import { STHDevice } from './STHDevice.ts';
 
 describe('STHDevice', () => {
-  const device: STHDevice = new STHDevice({
-    device_number: 1,
-    name: 'STH 1',
-    mac_address: 'AA:BB:CC:DD:EE:FF',
-    rssi: -60,
-  }, new MockSTHActions());
+  const device: STHDevice = new STHDevice(
+    1,
+    'STH 1',
+    'AA:BB:CC:DD:EE:FF',
+    0);
 
-  it('correctly sets and gets rssi', () => {
-    expect(device.getRssi()).toBe(-60)
-    device.setRssi(-72);
-    expect(device.getRssi()).toBe(-72)
+  it('correctly sets and gets metadata', () => {
+    device.setMetadata({
+      device_number: 2,
+      name: 'New Name',
+      mac_address: '11:22:33:44:55:66',
+      rssi: 10
+    })
+    expect(JSON.stringify(device)).toStrictEqual('{"device_number":2,"name":"New Name","mac_address":"11:22:33:44:55:66","connection_status":"disconnected","regex":{},"rssi":10}')
   })
-
-  it('measures correctly', async () => {
-    await expect(device.measure()).resolves.not.toThrow()
-  });
 });

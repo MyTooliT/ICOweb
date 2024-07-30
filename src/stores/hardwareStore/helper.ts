@@ -1,9 +1,5 @@
-import {
-  BackendSTHActions,
-  STHDevice,
-  TSTHDeviceMetaData
-} from './classes/STHDevice.ts';
-
+import { STHDevice } from './classes/STHDevice.ts';
+import { STHDeviceResponseModel } from '@/client';
 
 /*
  * This function consumes new metadata, creates a new list of STHDevices, and
@@ -17,26 +13,27 @@ import {
  */
 export function consumeNewMetadata(
   list: Array<STHDevice>,
-  newList: Array<TSTHDeviceMetaData>
+  newList: Array<STHDeviceResponseModel>
 ): Array<STHDevice> {
   const assembledList: Array<STHDevice> = [];
   list.forEach(item => {
     const matching = newList
-      .find(newItem => newItem.mac_address === item.Meta().mac_address)
+      .find(newItem => newItem.mac_address === item.getMacAddress())
     if (matching) {
-      item.Meta().device_number = matching.device_number
-      item.Meta().name = matching.name
-      item.Meta().rssi = matching.rssi
-
+      item.setMetadata(matching)
       assembledList.push(item)
-
       const index = newList.indexOf(matching)
       newList.splice(index, 1)
     }
   })
   if(newList.length > 0) {
     newList.forEach(item => {
-      assembledList.push(new STHDevice(item, new BackendSTHActions()))
+      assembledList.push(new STHDevice(
+        item.device_number,
+        item.name,
+        item.mac_address,
+        item.rssi
+      ))
     })
   }
   return assembledList

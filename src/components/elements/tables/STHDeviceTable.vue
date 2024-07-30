@@ -32,15 +32,15 @@ async function save(
     <Column
       header="ID">
       <template #body="{ data }: { data: STHDevice }">
-        {{ data.Meta().device_number }}
+        {{ data.getDeviceNumber() }}
       </template>
     </Column>
     <Column header="Name">
       <template #body="{ data }: { data: STHDevice }">
         <EditableInput
-          :id="`mac-${data.Meta().mac_address}`"
-          :regex="data.regex"
-          :initial-value="data.Meta().name"
+          :id="`mac-${data.getMacAddress()}`"
+          :regex="data.getRegex()"
+          :initial-value="data.getName()"
           :disabled="false"
           placeholder="Device Name"
           :save-fn="(
@@ -53,7 +53,7 @@ async function save(
     <Column
       header="MAC">
       <template #body="{ data }: { data: STHDevice }">
-        {{ data.Meta().mac_address }}
+        {{ data.getMacAddress() }}
       </template>
     </Column>
     <Column
@@ -67,16 +67,15 @@ async function save(
         <ConnectionButton
           class="mr-3"
           :device="data"
-          @connect="() => data.Connection().connect()"
-          @disconnect="() => data.Connection().disconnect()"
+          @connect="() => data.connect()"
+          @disconnect="() => data.disconnect()"
         />
         <Button
           rounded
           size="small"
           label="Measure"
           icon="pi pi-chart-bar"
-          :disabled="data.Connection()
-            .getConnectionStatus() !== 'connected'"
+          :disabled="data.getConnectionStatus() !== 'connected'"
           @click="$router.push('/measure')"
         />
       </template>
