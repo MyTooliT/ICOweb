@@ -1,6 +1,7 @@
 import { get } from './api.ts';
 // eslint-disable-next-line max-len
 import { TSTHDeviceMetaData } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { TDeviceMetaData } from '@/stores/hardwareStore/classes/Device.ts';
 
 export async function delay(): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -16,18 +17,10 @@ export async function getSTHDevicesMeta(): Promise<TSTHDeviceMetaData[]> {
   })
 }
 
-export async function getSTUHealth(nr: number): Promise<boolean> {
+export async function getSTUDevices(): Promise<TDeviceMetaData[]> {
   return new Promise((resolve, reject) => {
-    get<boolean>(`devices/stu/alive/${nr}`)
-      .then(alive => resolve(alive))
-      .catch(reject)
-  })
-}
-
-export async function getSTUMAC(nr: number): Promise<string> {
-  return new Promise((resolve, reject) => {
-    get<string>(`devices/stu/mac/${nr}`)
-      .then(alive => resolve(alive))
+    get<TDeviceMetaData[]>('devices/stu')
+      .then(data => resolve(data))
       .catch(reject)
   })
 }
