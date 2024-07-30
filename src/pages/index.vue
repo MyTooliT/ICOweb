@@ -12,16 +12,6 @@ const store = useHardwareStore()
 <template>
   <DefaultLayout>
     <div class="flex flex-row justify-between py-3">
-      <Heading3>Sensory Tool Holders</Heading3>
-      <Button
-        label="Reload"
-        outlined
-        @click="store.updateSTHDeviceList()" />
-    </div>
-    <Suspense>
-      <STHDeviceTable />
-    </Suspense>
-    <div class="flex flex-row justify-between py-3">
       <Heading3>Stationary Transceiver Units</Heading3>
       <Button
         label="Reload"
@@ -30,6 +20,16 @@ const store = useHardwareStore()
     </div>
     <Suspense>
       <STUDeviceTable />
+    </Suspense>
+    <div class="flex flex-row justify-between py-3">
+      <Heading3>Sensory Tool Holders</Heading3>
+      <Button
+        label="Reload"
+        outlined
+        @click="store.updateSTHDeviceList()" />
+    </div>
+    <Suspense>
+      <STHDeviceTable />
     </Suspense>
   </DefaultLayout>
 </template>
