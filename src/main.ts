@@ -12,6 +12,7 @@ import './styles/material-theme/dark-hc.css';
 import router from './router';
 import App from './App.vue';
 import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
 import { myPreset } from '../primevue.ts';
 
 const pinia = createPinia();
@@ -23,4 +24,5 @@ app.use(PrimeVue, {
     preset: myPreset
   }
 })
+app.use(ToastService)
 app.mount('#app')

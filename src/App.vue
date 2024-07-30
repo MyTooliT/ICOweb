@@ -9,6 +9,7 @@ import {
   ComputerDesktopIcon,
   WrenchIcon
 } from '@heroicons/vue/16/solid';
+import Toast from 'primevue/toast';
 </script>
 
 <template>
@@ -54,5 +55,6 @@ import {
         <router-view />
       </div>
     </div>
+    <Toast />
   </ThemeProvider>
 </template>
