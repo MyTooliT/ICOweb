@@ -711,12 +711,30 @@ video {
   background-color: var(--md-sys-color-surface-container);
 }
 
+.bg-red-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
+}
+
+.bg-blue-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 246 255 / var(--tw-bg-opacity));
+}
+
+.bg-error-container {
+  background-color: var(--md-sys-color-error-container);
+}
+
 .p-0 {
   padding: 0px;
 }
 
 .p-1 {
   padding: 0.25rem;
+}
+
+.p-1\.5 {
+  padding: 0.375rem;
 }
 
 .p-3 {
@@ -738,12 +756,36 @@ video {
   padding-bottom: 0.75rem;
 }
 
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.px-1\.5 {
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+}
+
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 .pb-1 {
   padding-bottom: 0.25rem;
 }
 
 .text-left {
   text-align: left;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .text-2xl {
@@ -764,6 +806,10 @@ video {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-on-error-container {
+  color: var(--md-sys-color-on-error-container);
 }
 
 .opacity-0 {
@@ -1037,6 +1083,19 @@ video {
   background-color: inherit;
 }
 
+.data-\[state\~\=true\]\:bg-red-500[data-state~=true] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
+.data-\[state\~\=true\]\:bg-primary[data-state~=true] {
+  background-color: var(--md-sys-color-primary);
+}
+
+.data-\[state\~\=true\]\:bg-primary-container[data-state~=true] {
+  background-color: var(--md-sys-color-primary-container);
+}
+
 .data-\[active\=true\]\:text-primary[data-active=true] {
   color: var(--md-sys-color-primary);
 }
@@ -1049,6 +1108,10 @@ video {
 .data-\[state\=readyToSave\]\:text-black[data-state=readyToSave] {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.data-\[state\~\=true\]\:text-on-primary-container[data-state~=true] {
+  color: var(--md-sys-color-on-primary-container);
 }
 
 .data-\[state\=editing\]\:opacity-100[data-state=editing] {

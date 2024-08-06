@@ -14,6 +14,12 @@ export async function delay(): Promise<any> {
   })
 }
 
+export async function ping(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    get<any>('ping').then(resolve).catch(reject)
+  })
+}
+
 export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
     get<(STHDeviceResponseModel)[]>('devices/sth')

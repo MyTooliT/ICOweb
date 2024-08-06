@@ -10,6 +10,7 @@ import {
   WrenchIcon
 } from '@heroicons/vue/16/solid';
 import Toast from 'primevue/toast';
+import APIAvailabilityBar from '@/components/elements/misc/APIAvailabilityBar.vue';
 </script>
 
 <template>
@@ -51,8 +52,9 @@ import Toast from 'primevue/toast';
           >
         </RouterLinkButton>
       </nav>
-      <div>
+      <div class="flex flex-col w-full">
         <router-view />
+        <APIAvailabilityBar class="mt-auto" />
       </div>
     </div>
     <Toast />
