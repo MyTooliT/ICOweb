@@ -22,7 +22,7 @@ export class STUDevice extends Device {
     this.OTAState = ota
   }
   public async reset(): Promise<void> {
-    await resetSTUDevice(self.name)
+    await resetSTUDevice(this.name)
   }
 
   public enableOTA(): Promise<void> {

@@ -10,6 +10,7 @@ import {
   WrenchIcon
 } from '@heroicons/vue/16/solid';
 import Toast from 'primevue/toast';
+// eslint-disable-next-line max-len
 import APIAvailabilityBar from '@/components/elements/misc/APIAvailabilityBar.vue';
 </script>
 

@@ -36,9 +36,9 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   })
 }
 
-export async function resetSTUDevice(name: string): Promise<void> {
+export async function resetSTUDevice(deviceName: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ name: string }, void>('devices/stu/reset', { name })
+    put<{ name: string }, void>('devices/stu/reset', { 'name': deviceName })
       .then(data => resolve(data))
       .catch(reject)
   })
