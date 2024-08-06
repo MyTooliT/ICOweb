@@ -38,7 +38,23 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
 
 export async function resetSTUDevice(deviceName: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ name: string }, void>('devices/stu/reset', { 'name': deviceName })
+    put<any, void>('devices/stu/reset', { name : deviceName })
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function enableSTUOTA(deviceName: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<any, void>('devices/stu/ota/enable', { name : deviceName })
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function disableSTUOTA(deviceName: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<{ name: string }, void>('devices/stu/ota/disable', { name: deviceName })
       .then(data => resolve(data))
       .catch(reject)
   })

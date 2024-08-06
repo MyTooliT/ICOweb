@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BottomBar from './BottomBar.vue';
-import { ping } from '@/api/requests';
+import { ping } from '@/api/requests.ts';
 import {
   onBeforeUnmount,
   onMounted,

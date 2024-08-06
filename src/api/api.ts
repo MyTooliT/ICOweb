@@ -10,6 +10,9 @@ async function sendRequest<ResponseType>(
     const requestOptions= {
       method: method,
       body: body !== undefined ? JSON.stringify(body) : body,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     };
     fetch(
       `${protocol}://${hostname}:${port}/api/${version}/${endpoint}`,
