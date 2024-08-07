@@ -18,6 +18,7 @@ async function save(
   focused: Ref<boolean>,
   device: STHDevice
 ) {
+  console.log(content);
   state.value = 'loading'
   await device.setName(content)
   state.value = 'readyToEdit'

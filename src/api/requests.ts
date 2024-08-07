@@ -5,6 +5,8 @@ import {
 // eslint-disable-next-line max-len
 import {
   STHDeviceResponseModel,
+  STHRenameRequestModel,
+  STHRenameResponseModel,
   STUDeviceResponseModel
 } from '@/client';
 
@@ -40,6 +42,15 @@ export async function connectSTHDevice(mac_address: string): Promise<void> {
 export async function disconnectSTHDevice(): Promise<void> {
   return new Promise((resolve, reject) => {
     put<any, void>('sth/disconnect', {})
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+// eslint-disable-next-line max-len
+export async function renameSTHDevice(model: STHRenameRequestModel): Promise<STHRenameResponseModel> {
+  return new Promise((resolve, reject) => {
+    put<STHRenameRequestModel, STHRenameResponseModel>('sth/rename', model)
       .then(data => resolve(data))
       .catch(reject)
   })

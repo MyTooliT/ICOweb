@@ -7,14 +7,15 @@ import {
 } from './Device.ts';
 import {
   connectSTHDevice,
-  disconnectSTHDevice
+  disconnectSTHDevice,
+  renameSTHDevice
 } from '@/api/requests.ts';
 
 export type TRssi = number;
 
 export class STHDevice extends Device {
   // TODO: Add default sensor config
-  private readonly regex = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$')
+  private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
 
   constructor(
@@ -23,7 +24,7 @@ export class STHDevice extends Device {
     mac_address: TMac,
     rssi: number,
     status: TDeviceConnectionStatus = 'disconnected',
-    regex: RegExp = new RegExp('^[\x20-\x7E]{1,29}[^\\s]$'),
+    regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
   ) {
     super(device_number, name, mac_address, status)
     this.regex = regex
@@ -38,12 +39,18 @@ export class STHDevice extends Device {
     return this.regex
   }
 
-  public setName(name: string): boolean {
+  public async setName(name: string): Promise<void> {
     if(this.regex.test(name)) {
-      this.name = name;
-      return true
+      try {
+        const response = await renameSTHDevice({
+          new_name: name,
+          mac_address: this.mac_address
+        })
+        this.name = response.name
+      } catch(e) {
+        throw e
+      }
     }
-    return false
   }
 
   public setMetadata(body: {
