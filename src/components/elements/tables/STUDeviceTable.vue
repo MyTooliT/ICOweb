@@ -57,6 +57,7 @@ const loading = ref<boolean>(false)
           rounded
           size="small"
           label="Enable OTA"
+          class="mx-3"
           icon="pi pi-sync"
           :loading="data.getOTAState() === 'enabling'"
           :disabled="['enabled', 'disabling'].includes(data.getOTAState())"
