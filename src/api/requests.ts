@@ -20,6 +20,7 @@ export async function ping(): Promise<any> {
   })
 }
 
+// eslint-disable-next-line max-len
 export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
     get<(STHDeviceResponseModel)[]>('devices/sth')
@@ -28,6 +29,7 @@ export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   })
 }
 
+// eslint-disable-next-line max-len
 export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
     get<STUDeviceResponseModel[]>('devices/stu')

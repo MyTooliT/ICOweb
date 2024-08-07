@@ -19,7 +19,15 @@ async function sendRequest<ResponseType>(
       requestOptions,
     )
       .then(async (response) => {
-        if (response.status !== 200) {
+        if ([200, 201, 202, 203, 204].includes(response.status)) {
+          try {
+            const ret = await response.json() as ResponseType
+            resolve(ret);
+          } catch(e) {
+            // Note: This feels very sketchy.
+            resolve(undefined as ResponseType)
+          }
+        } else {
           reject(
             Object.assign(
               {
@@ -29,8 +37,6 @@ async function sendRequest<ResponseType>(
               await response.json(),
             ),
           );
-        } else {
-          resolve(await response.json() as ResponseType);
         }
       })
       .catch((err) => {

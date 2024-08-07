@@ -51,14 +51,18 @@ export const useHardwareStore = defineStore('hardware', () => {
   const STUDeviceLoading: Ref<boolean> = ref(false)
   async function updateSTUDeviceList(): Promise<void> {
     STUDeviceLoading.value = true
-    const meta = await getSTUDevices()
-    _STUDeviceList.value = meta.map(entry => {
-      return new STUDevice(
-        entry.device_number,
-        entry.name,
-        entry.mac_address
-      )
-    })
+    try {
+      const meta = await getSTUDevices()
+      _STUDeviceList.value = meta.map(entry => {
+        return new STUDevice(
+          entry.device_number,
+          entry.name,
+          entry.mac_address
+        )
+      })
+    } catch(e) {
+      throw e
+    }
     STUDeviceLoading.value = false
   }
 

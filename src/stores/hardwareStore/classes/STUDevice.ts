@@ -5,9 +5,13 @@ import {
   TMac,
   TName
 } from './Device.ts';
-import { resetSTUDevice } from '@/api/requests.ts';
+import {
+  disableSTUOTA,
+  enableSTUOTA,
+  resetSTUDevice
+} from '@/api/requests.ts';
 
-export type TOTAState = 'enabled' | 'disabled'
+export type TOTAState = 'enabled' | 'enabling' | 'disabled' | 'disabling'
 
 export class STUDevice extends Device {
   private OTAState: TOTAState;
@@ -22,15 +26,31 @@ export class STUDevice extends Device {
     this.OTAState = ota
   }
   public async reset(): Promise<void> {
-    await resetSTUDevice(this.name)
+    try {
+      await resetSTUDevice(this.name)
+    } catch(e) {
+      throw e
+    }
   }
 
-  public enableOTA(): Promise<void> {
-    return Promise.reject('Not Implemented');
+  public async enableOTA(): Promise<void> {
+    try {
+      this.OTAState = 'enabling'
+      await enableSTUOTA(this.name)
+      this.OTAState = 'enabled'
+    } catch(e) {
+      throw e;
+    }
   }
 
-  public disableOTA(): Promise<void> {
-    return Promise.reject('Not Implemented');
+  public async disableOTA(): Promise<void> {
+    try {
+      this.OTAState = 'disabling'
+      await disableSTUOTA(this.name)
+      this.OTAState = 'disabled'
+    } catch(e) {
+      throw e;
+    }
   }
 
   public getOTAState(): TOTAState {

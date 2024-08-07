@@ -5,7 +5,9 @@ import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
 import STUDeviceTable from '@/components/elements/tables/STUDeviceTable.vue';
 import Button from 'primevue/button';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast()
 const store = useHardwareStore()
 </script>
 
@@ -16,7 +18,17 @@ const store = useHardwareStore()
       <Button
         label="Reload"
         outlined
-        @click="store.updateSTUDeviceList()" />
+        :loading="store.STUDeviceLoading"
+        @click="store.updateSTUDeviceList().then(() => {
+          if(store.getSTUDeviceList.length === 0) {
+            toast.add({
+              summary: 'No STU connected',
+              detail: 'Check your CAN adapter',
+              severity: 'error',
+              life: 3000
+            })
+          }
+        })" />
     </div>
     <Suspense>
       <STUDeviceTable />
@@ -26,7 +38,17 @@ const store = useHardwareStore()
       <Button
         label="Reload"
         outlined
-        @click="store.updateSTHDeviceList()" />
+        :loading="store.STHDevicesLoading"
+        @click="store.updateSTHDeviceList().then(() => {
+          if(store.getSTUDeviceList.length === 0) {
+            toast.add({
+              summary: 'No STH found',
+              detail: 'Check battery',
+              severity: 'error',
+              life: 3000
+            })
+          }
+        })" />
     </div>
     <Suspense>
       <STHDeviceTable />
