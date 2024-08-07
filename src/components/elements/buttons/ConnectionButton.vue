@@ -22,6 +22,12 @@ const label = computed<string>(() => {
 
     case 'disconnected':
       return 'Connect'
+
+    case 'disconnecting':
+      return 'Disconnecting'
+
+    default:
+      return ''
   }
 })
 
@@ -35,6 +41,12 @@ const icon = computed<string>(() => {
 
     case 'disconnected':
       return 'wifi'
+
+    case 'disconnecting':
+      return 'spinner'
+
+    default:
+      return ''
   }
 })
 
@@ -46,13 +58,14 @@ function clickHandler(): void {
 </script>
 
 <template>
-<Button
-  size="small"
-  rounded
-  :label="label"
-  :icon="`pi pi-${icon}`"
-  :loading="props.device.getConnectionStatus() === 'connecting'"
-  @click="clickHandler" />
+  <Button
+    size="small"
+    rounded
+    :label="label"
+    :icon="`pi pi-${icon}`"
+    :loading="['connecting', 'disconnecting']
+      .includes(props.device.getConnectionStatus())"
+    @click="clickHandler" />
 </template>
 
 <style scoped>

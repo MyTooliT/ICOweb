@@ -3,7 +3,7 @@ export type TName = string;
 export type TMac = string;
 
 export type TDeviceConnectionStatus
-  = 'connected' | 'connecting' | 'disconnected';
+  = 'connected' | 'connecting' | 'disconnected' | 'disconnecting';
 
 export class Device {
   protected device_number: TDeviceNumber

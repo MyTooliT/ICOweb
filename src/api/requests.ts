@@ -29,9 +29,17 @@ export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   })
 }
 
-export async function connectSTHDevice(mac: string): Promise<void> {
+export async function connectSTHDevice(mac_address: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ mac: string }, void>('sth/connect', {mac: mac})
+    put<{ mac: string }, void>('sth/connect', {mac: mac_address})
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function disconnectSTHDevice(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<any, void>('sth/disconnect', {})
       .then(data => resolve(data))
       .catch(reject)
   })
