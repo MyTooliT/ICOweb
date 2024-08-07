@@ -40,7 +40,7 @@ const store = useHardwareStore()
         outlined
         :loading="store.STHDevicesLoading"
         @click="store.updateSTHDeviceList().then(() => {
-          if(store.getSTUDeviceList.length === 0) {
+          if(store.getSTHDeviceList.length === 0) {
             toast.add({
               summary: 'No STH found',
               detail: 'Check battery',

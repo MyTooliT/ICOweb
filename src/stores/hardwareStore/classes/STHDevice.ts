@@ -5,6 +5,7 @@ import {
   TMac,
   TName
 } from './Device.ts';
+import { connectSTHDevice } from '@/api/requests.ts';
 
 export type TRssi = number;
 
@@ -58,8 +59,16 @@ export class STHDevice extends Device {
 
   }
 
-  public connect(): Promise<TDeviceConnectionStatus> {
-    return Promise.reject('Not Implemented');
+  public async connect(): Promise<void> {
+    this.connection_status = 'connecting'
+    try {
+      await connectSTHDevice(this.mac_address)
+      this.connection_status = 'connected';
+    } catch(e) {
+      this.connection_status = 'disconnected';
+      throw e
+    }
+
   }
   public disconnect(): Promise<TDeviceConnectionStatus> {
     return Promise.reject('Not Implemented');

@@ -29,6 +29,14 @@ export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   })
 }
 
+export async function connectSTHDevice(mac: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<{ mac: string }, void>('sth/connect', {mac: mac})
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
 // eslint-disable-next-line max-len
 export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
