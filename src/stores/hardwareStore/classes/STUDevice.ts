@@ -56,4 +56,16 @@ export class STUDevice extends Device {
   public getOTAState(): TOTAState {
     return this.OTAState
   }
+
+  public toJSON() {
+    return {
+      device_number: this.device_number,
+      name: this.name,
+      mac_address: this.mac_address,
+      status: this.connection_status,
+      ota: this.OTAState,
+      classtype: 'STU'
+    }
+  }
 }
+

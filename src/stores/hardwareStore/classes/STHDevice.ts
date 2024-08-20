@@ -95,4 +95,16 @@ export class STHDevice extends Device {
   public getConnectionStatus(): TDeviceConnectionStatus {
     return this.connection_status;
   }
+
+  public toJSON() {
+    return {
+      device_number: this.device_number,
+      name: this.name,
+      mac_address: this.mac_address,
+      rssi: this.rssi,
+      status: this.connection_status,
+      regex: this.regex,
+      classtype: 'STH'
+    }
+  }
 }

@@ -13,6 +13,7 @@ import {
 } from '@/api/requests.ts';
 import { consumeNewMetadata } from './helper.ts';
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
+import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
   const _sensorList: Ref<Array<Sensor>> = ref([]);
@@ -76,6 +77,16 @@ export const useHardwareStore = defineStore('hardware', () => {
     STHDevicesLoading,
     STUDeviceLoading,
     getSTUDeviceList,
-    updateSTUDeviceList
+    updateSTUDeviceList,
+    _STUDeviceList,
+    _STHDeviceList
   }
+}, {
+  persist: {
+    debug: true,
+    serializer: {
+      serialize: JSON.stringify,
+      deserialize: deserializeWithClassParsing
+    }
+  },
 })

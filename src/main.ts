@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import 'primeicons/primeicons.css';
 import './styles/style.css';
 import './styles/tailwind/tailwind-output.css';
@@ -16,6 +17,7 @@ import ToastService from 'primevue/toastservice';
 import { myPreset } from '../primevue.ts';
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
