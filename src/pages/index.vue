@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Heading3 from '@/components/typography/heading/Heading3.vue';
 import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
 import STUDeviceTable from '@/components/elements/tables/STUDeviceTable.vue';
+import Chart from '@/components/elements/Chart.vue'
 import Button from 'primevue/button';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useToast } from 'primevue/usetoast';
@@ -53,6 +54,7 @@ const store = useHardwareStore()
     <Suspense>
       <STHDeviceTable />
     </Suspense>
+    <Chart />
   </DefaultLayout>
 </template>
 
