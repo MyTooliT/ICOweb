@@ -1,9 +1,84 @@
 <script setup lang="ts">
 
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import Heading3 from '@/components/typography/heading/Heading3.vue';
+import Chart from '@/components/elements/Chart.vue';
+import Button from 'primevue/button';
+import ToggleSwitch from 'primevue/toggleswitch';
+import InputNumber from 'primevue/inputnumber';
+import { useRouter } from 'vue-router';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import Heading5 from '@/components/typography/heading/Heading5.vue';
+import {
+  updateChartData,
+  useMeasurementStore,
+  useMeasurementWebsocket
+} from '@/stores/measurementStore/measurementStore.ts';
+
+const router = useRouter()
+const hwStore = useHardwareStore()
+const mStore = useMeasurementStore()
+const {
+  open,
+  close,
+  state
+} = useMeasurementWebsocket(
+  mStore.parsedDataWrapper,
+  true,
+  () => updateChartData(mStore.parsedData, mStore.chartDataWrapper)
+)
+
+function startStopClickHandler() {
+  if(state.value === 'closed') {
+    if(hwStore.activeSTH?.getMacAddress()) {
+      open(hwStore.activeSTH.getMacAddress())
+    }
+  } else {
+    close()
+  }
+}
 </script>
 
 <template>
-<h1>Measure</h1>
+  <DefaultLayout>
+    <div class="flex flex-row justify-start pb-3 mb-3 border-b">
+      <Heading3 class="inline-block mr-3 !mb-0">
+        Selected Devices: {{ hwStore.activeSTU?.getName() }} / {{ hwStore.activeSTH?.getName() }}
+      </Heading3>
+      <Button
+        outlined
+        icon="pi pi-pencil"
+        :loading="false"
+        @click="router.push('/')" />
+    </div>
+    <div class="flex flex-row">
+      <Chart class="flex flex-col flex-grow" />
+      <div class="flex flex-col flex-grow">
+        <Heading5>Measure</Heading5>
+        <div class="flex flex-row">
+          <ToggleSwitch
+            v-model="mStore.continuous"
+            input-id="continuous" />
+          <label
+            for="continuous"
+            class="ml-3">Run&nbsp;continuously</label>
+        </div>
+        <div class="flex flex-row justify-between mt-3">
+          <InputNumber
+            v-model="mStore.acquisitionTime"
+            input-id="acqTime"
+            suffix=" s"
+            :min="0"
+            :fluid="false"
+            :disabled="mStore.continuous" />
+          <Button
+            :label="state === 'open' ? 'Stop' : 'Start'"
+            @click="startStopClickHandler"
+          />
+        </div>
+      </div>
+    </div>
+  </DefaultLayout>
 </template>
 
 <style scoped>

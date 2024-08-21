@@ -580,6 +580,10 @@ video {
   margin-right: auto;
 }
 
+.\!mb-0 {
+  margin-bottom: 0px !important;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -596,12 +600,28 @@ video {
   margin-bottom: 1rem;
 }
 
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
 .mr-3 {
   margin-right: 0.75rem;
 }
 
+.mr-auto {
+  margin-right: auto;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
 .mt-auto {
   margin-top: auto;
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .flex {
@@ -630,6 +650,11 @@ video {
   height: 100dvh;
 }
 
+.h-min {
+  height: -moz-min-content;
+  height: min-content;
+}
+
 .w-dvw {
   width: 100dvw;
 }
@@ -640,6 +665,10 @@ video {
 
 .max-w-16 {
   max-width: 4rem;
+}
+
+.flex-grow {
+  flex-grow: 1;
 }
 
 @keyframes spin {
@@ -676,12 +705,20 @@ video {
   align-items: center;
 }
 
+.justify-start {
+  justify-content: flex-start;
+}
+
 .justify-center {
   justify-content: center;
 }
 
 .justify-between {
   justify-content: space-between;
+}
+
+.self-center {
+  align-self: center;
 }
 
 .rounded {
@@ -704,6 +741,10 @@ video {
   border-width: 2px;
 }
 
+.border-b {
+  border-bottom-width: 1px;
+}
+
 .border-primary {
   border-color: var(--md-sys-color-primary);
 }
@@ -718,6 +759,14 @@ video {
 
 .bg-surface-container {
   background-color: var(--md-sys-color-surface-container);
+}
+
+.\!bg-primary {
+  background-color: var(--md-sys-color-primary) !important;
+}
+
+.\!bg-primary-container {
+  background-color: var(--md-sys-color-primary-container) !important;
 }
 
 .p-0 {
@@ -756,12 +805,20 @@ video {
   padding-bottom: 0.25rem;
 }
 
+.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
 .text-left {
   text-align: left;
 }
 
 .text-right {
   text-align: right;
+}
+
+.align-middle {
+  vertical-align: middle;
 }
 
 .text-2xl {
@@ -779,6 +836,11 @@ video {
   line-height: 1.75rem;
 }
 
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -786,6 +848,14 @@ video {
 
 .text-on-error-container {
   color: var(--md-sys-color-on-error-container);
+}
+
+.\!text-on-primary {
+  color: var(--md-sys-color-on-primary) !important;
+}
+
+.\!text-on-primary-container {
+  color: var(--md-sys-color-on-primary-container) !important;
 }
 
 .opacity-0 {

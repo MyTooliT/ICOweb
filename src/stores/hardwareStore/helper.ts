@@ -38,3 +38,33 @@ export function consumeNewMetadata(
   }
   return assembledList
 }
+
+
+/**
+ * Function that calculates the sum of an array of numbers.
+ * @param {number[]} arr - The array of numbers.
+ * @return {number} The sum of all numbers in the array.
+ */
+export function sum(arr: number[]): number {
+  let acc = 0
+  arr.forEach((item) => {acc += item})
+  return acc
+}
+
+
+/**
+ * Function that calculates the floating average of an array of numbers over a
+ * specified window.
+ * @param {number[]} arr - The array of numbers.
+ * @param {number} window - The length of the window over which to calculate
+ *   the average.
+ * @return {number[]} An array of the calculated averages for each window of
+ *   numbers.
+ */
+export function floatingAverage(arr: number[], window: number = 50): number[] {
+  const avg = []
+  for(let i = 0; i < arr.length - window; i++) {
+    avg.push(sum(arr.slice(i, i + window)) / window);
+  }
+  return avg
+}

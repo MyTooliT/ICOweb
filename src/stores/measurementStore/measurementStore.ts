@@ -1,0 +1,161 @@
+import { ChartData } from 'chart.js';
+import { defineStore } from 'pinia';
+import {
+  computed,
+  Ref,
+  ref
+} from 'vue';
+import { floatingAverage } from '@/stores/hardwareStore/helper.ts';
+
+export type TParsedData = {
+  value: number,
+  unit: string,
+  timestamp: number,
+  counter: number
+}
+
+export type TWSState = 'open' | 'closed' | 'connecting'
+
+export const useMeasurementStore = defineStore('measurement', () => {
+  const parsedData: Ref<Array<TParsedData>> = ref([])
+  const continuous = ref<Boolean>(false);
+  const acquisitionTime = ref<Number>(10)
+
+  const parsedDataWrapper = computed(() => {
+    return parsedData
+  })
+
+  const chartData = ref<ChartData<'line'>>({
+    labels: [],
+    datasets: [{
+      label: 'Raw Data',
+      data: []
+    }]
+  })
+
+  const chartDataWrapper = computed(() => {
+    return chartData
+  })
+
+  return {
+    parsedData,
+    parsedDataWrapper,
+    continuous,
+    acquisitionTime,
+    chartData,
+    chartDataWrapper
+  }
+}, {
+  persist: true
+})
+
+export function useMeasurementWebsocket(
+  storage: Ref<Array<TParsedData>>,
+  shouldUpdate: Boolean = false,
+  update: () => void = () => {}
+): {
+  open: (mac: string) => void,
+  close: () => void,
+  ws: Ref<WebSocket | undefined>,
+  state: Ref<TWSState>
+} {
+  const ws = ref<WebSocket | undefined>(undefined)
+  const state = ref<TWSState>('closed')
+
+  function open(mac: string): void {
+    state.value = 'connecting'
+    const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
+    const hostname = import.meta.env.VITE_API_HOSTNAME;
+    const port = import.meta.env.VITE_API_PORT;
+    const prefix = import.meta.env.VITE_API_WS_PREFIX;
+
+    ws.value = new WebSocket(
+      `${protocol}://${hostname}:${port}/${prefix}/${mac}`
+    )
+
+    ws.value.onopen = () => {
+      state.value = 'open'
+    }
+
+    ws.value.onerror = () => {
+      state.value = 'closed'
+    }
+
+    ws.value.onmessage = (event: any) => {
+      const parsed = parseData(event.data)
+      if(parsed) {
+        storage.value.push(parsed);
+
+        if(shouldUpdate) {
+          update();
+        }
+      }
+    }
+  }
+
+  function close() {
+    if(ws.value) {
+      ws.value.close()
+      state.value = 'closed'
+    }
+  }
+
+  return {
+    open,
+    close,
+    ws,
+    state
+  }
+
+}
+
+function parseData(raw: string): TParsedData | undefined
+{
+  const valueRegex = /[-+]?[0-9]*\.?[0-9]+/;
+  const unitRegex = /[-+]?[0-9]*\.?[0-9]+\s([a-zA-Z_0-9]+)/;
+  const timestampRegex = /@([0-9]*\.?[0-9]+)/;
+  const counterRegex = /\((\d+)\)/;
+
+  const valueMatch = raw.match(valueRegex);
+  const value = valueMatch ? parseFloat(valueMatch[0]) : undefined;
+
+  const unitMatch = raw.match(unitRegex);
+  const unit = unitMatch ? unitMatch[1] : undefined;
+
+  const timestampMatch = raw.match(timestampRegex);
+  const timestamp = timestampMatch ? parseFloat(timestampMatch[1]) : undefined;
+
+  const counterMatch = raw.match(counterRegex);
+  const counter = counterMatch ? parseInt(counterMatch[1]) : undefined;
+
+  if(value && unit && timestamp && counter) {
+    return {
+      value: value,
+      unit: unit,
+      timestamp: timestamp,
+      counter: counter,
+    }
+  }
+  return undefined
+}
+
+// eslint-disable-next-line max-len
+export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>): void {
+  const x = rawData.map(entry => entry.timestamp)
+  const y = rawData.map(entry => entry.value)
+  chartData.value = {
+    labels: x,
+    datasets: [
+      {
+        label: 'Raw Data',
+        data: y,
+        pointRadius: 0
+      }, {
+        label: 'Floating Average',
+        data: floatingAverage(y),
+        backgroundColor: 'rgb(255, 0, 0)',
+        pointRadius: 1
+      }
+    ]
+  }
+}
