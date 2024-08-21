@@ -13,6 +13,12 @@ import {
   Tooltip
 } from 'chart.js';
 import { Line } from 'vue-chartjs';
+import {
+  useMeasurementStore
+} from '@/stores/measurementStore/measurementStore.ts';
+import {
+  computed,
+} from 'vue';
 
 Chart.register(
   LineController,
@@ -25,10 +31,29 @@ Chart.register(
   Legend
 );
 
-const options: ChartOptions<'line'> = {
-  animation: false,
-  responsive: true
-}
+const mStore = useMeasurementStore()
+
+const options = computed<ChartOptions<'line'>>(() => {
+  return {
+    animation: false,
+    responsive: true,
+    scales: {
+      x: {
+        type: 'linear',
+        max: mStore.acquisitionTime,
+        min: 0,
+        ticks: {
+          stepSize: 1
+        },
+        title: {
+          text: 'Seconds passed',
+          align: 'center',
+          display: true
+        }
+      }
+    }
+  }
+})
 
 defineProps<{ data: ChartData<'line'> }>()
 </script>
@@ -36,7 +61,7 @@ defineProps<{ data: ChartData<'line'> }>()
 <template>
   <div>
     <Line
-      ref="chart"
+      ref="chartInstance"
       :data="data"
       :options="options" />
   </div>

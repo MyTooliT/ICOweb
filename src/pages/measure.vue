@@ -6,6 +6,7 @@ import Chart from '@/components/elements/Chart.vue';
 import Button from 'primevue/button';
 import ToggleSwitch from 'primevue/toggleswitch';
 import InputNumber from 'primevue/inputnumber';
+import InputGroup from 'primevue/inputgroup';
 import { useRouter } from 'vue-router';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import Heading5 from '@/components/typography/heading/Heading5.vue';
@@ -47,6 +48,8 @@ function startStopClickHandler() {
     close()
   }
 }
+
+const chart = ref(undefined)
 </script>
 
 <template>
@@ -65,8 +68,10 @@ function startStopClickHandler() {
     </div>
     <div class="flex flex-row">
       <Chart
+        ref="chart"
         class="flex flex-col flex-grow"
-        :data="chartData" />
+        :data="chartData"
+      />
       <div class="flex flex-col flex-grow">
         <Heading5>Measure</Heading5>
         <div class="flex flex-row">
@@ -78,17 +83,20 @@ function startStopClickHandler() {
             class="ml-3">Run&nbsp;continuously</label>
         </div>
         <div class="flex flex-row justify-between mt-3">
-          <InputNumber
-            v-model="mStore.acquisitionTime"
-            input-id="acqTime"
-            suffix=" s"
-            :min="0"
-            :fluid="false"
-            :disabled="mStore.continuous" />
-          <Button
-            :label="state === 'open' ? 'Stop' : 'Start'"
-            @click="startStopClickHandler"
-          />
+          <InputGroup>
+            <InputNumber
+              v-model="mStore.acquisitionTime"
+              input-id="acqTime"
+              suffix=" s"
+              :min="0"
+              :disabled="mStore.continuous"
+            />
+            <Button
+              :label="state === 'open' ? 'Stop Recording' : 'Start Recording'"
+              class="!px-5"
+              @click="startStopClickHandler"
+            />
+          </InputGroup>
         </div>
       </div>
     </div>

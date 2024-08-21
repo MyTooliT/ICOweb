@@ -152,7 +152,15 @@ function parseData(raw: string): TParsedData | undefined
 
 // eslint-disable-next-line max-len
 export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>): void {
-  const x = rawData.map(entry => entry.timestamp)
+  let start = 0
+  const x = rawData.map((entry, index) => {
+    if(index === 0) {
+      start = entry.timestamp
+      return 0
+    } else {
+      return entry.timestamp - start
+    }
+  })
   const y = rawData.map(entry => entry.value)
   chartData.value = {
     labels: x,
