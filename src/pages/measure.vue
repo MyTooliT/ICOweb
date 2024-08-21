@@ -14,6 +14,16 @@ import {
   useMeasurementStore,
   useMeasurementWebsocket
 } from '@/stores/measurementStore/measurementStore.ts';
+import { ref } from 'vue';
+import { ChartData } from 'chart.js';
+
+const chartData = ref<ChartData<'line'>>({
+  labels: [],
+  datasets: [{
+    label: 'Raw Data',
+    data: []
+  }]
+})
 
 const router = useRouter()
 const hwStore = useHardwareStore()
@@ -21,17 +31,17 @@ const mStore = useMeasurementStore()
 const {
   open,
   close,
-  state
+  state,
+  storage,
 } = useMeasurementWebsocket(
-  mStore.parsedDataWrapper,
   true,
-  () => updateChartData(mStore.parsedData, mStore.chartDataWrapper)
+  () => updateChartData(storage.value, chartData)
 )
 
 function startStopClickHandler() {
   if(state.value === 'closed') {
     if(hwStore.activeSTH?.getMacAddress()) {
-      open(hwStore.activeSTH.getMacAddress())
+      open(hwStore.activeSTH.getMacAddress(), mStore.acquisitionTime)
     }
   } else {
     close()
@@ -43,7 +53,9 @@ function startStopClickHandler() {
   <DefaultLayout>
     <div class="flex flex-row justify-start pb-3 mb-3 border-b">
       <Heading3 class="inline-block mr-3 !mb-0">
-        Selected Devices: {{ hwStore.activeSTU?.getName() }} / {{ hwStore.activeSTH?.getName() }}
+        Selected Devices:
+        {{ hwStore.activeSTU?.getName() }} /
+        {{ hwStore.activeSTH?.getName() }}
       </Heading3>
       <Button
         outlined
@@ -52,7 +64,9 @@ function startStopClickHandler() {
         @click="router.push('/')" />
     </div>
     <div class="flex flex-row">
-      <Chart class="flex flex-col flex-grow" />
+      <Chart
+        class="flex flex-col flex-grow"
+        :data="chartData" />
       <div class="flex flex-col flex-grow">
         <Heading5>Measure</Heading5>
         <div class="flex flex-row">

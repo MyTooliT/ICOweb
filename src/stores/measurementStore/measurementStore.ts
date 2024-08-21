@@ -17,9 +17,9 @@ export type TParsedData = {
 export type TWSState = 'open' | 'closed' | 'connecting'
 
 export const useMeasurementStore = defineStore('measurement', () => {
-  const parsedData: Ref<Array<TParsedData>> = ref([])
+  const parsedData: Array<TParsedData> = []
   const continuous = ref<Boolean>(false);
-  const acquisitionTime = ref<Number>(10)
+  const acquisitionTime = ref<number>(10)
 
   const parsedDataWrapper = computed(() => {
     return parsedData
@@ -50,19 +50,21 @@ export const useMeasurementStore = defineStore('measurement', () => {
 })
 
 export function useMeasurementWebsocket(
-  storage: Ref<Array<TParsedData>>,
   shouldUpdate: Boolean = false,
   update: () => void = () => {}
 ): {
-  open: (mac: string) => void,
+  open: (mac: string, time: number) => void,
   close: () => void,
   ws: Ref<WebSocket | undefined>,
-  state: Ref<TWSState>
+  state: Ref<TWSState>,
+  storage: Ref<Array<TParsedData>>,
 } {
   const ws = ref<WebSocket | undefined>(undefined)
   const state = ref<TWSState>('closed')
+  const storage = ref<Array<TParsedData>>([])
+  let intervalId: number | undefined = undefined
 
-  function open(mac: string): void {
+  function open(mac: string, time: number): void {
     state.value = 'connecting'
     const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
     const hostname = import.meta.env.VITE_API_HOSTNAME;
@@ -70,26 +72,31 @@ export function useMeasurementWebsocket(
     const prefix = import.meta.env.VITE_API_WS_PREFIX;
 
     ws.value = new WebSocket(
-      `${protocol}://${hostname}:${port}/${prefix}/${mac}`
+      `${protocol}://${hostname}:${port}/${prefix}/${mac}/${time}`
     )
 
     ws.value.onopen = () => {
       state.value = 'open'
+      storage.value = []
     }
 
     ws.value.onerror = () => {
       state.value = 'closed'
     }
 
+    ws.value.onclose = () => {
+      close()
+    }
+
     ws.value.onmessage = (event: any) => {
       const parsed = parseData(event.data)
       if(parsed) {
-        storage.value.push(parsed);
-
-        if(shouldUpdate) {
-          update();
-        }
+        storage.value.push(parsed)
       }
+    }
+
+    if(shouldUpdate) {
+      intervalId = window.setInterval(update, 1/10)
     }
   }
 
@@ -98,13 +105,17 @@ export function useMeasurementWebsocket(
       ws.value.close()
       state.value = 'closed'
     }
+    if(intervalId) {
+      window.clearInterval(intervalId)
+    }
   }
 
   return {
     open,
     close,
     ws,
-    state
+    state,
+    storage
   }
 
 }

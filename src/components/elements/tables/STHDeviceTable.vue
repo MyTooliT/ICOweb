@@ -26,6 +26,7 @@ async function save(
 }
 
 function rowClass(data: STHDevice) {
+  // eslint-disable-next-line max-len
   return [{'!bg-primary-container !text-on-primary-container': data.getSelected()}]
 }
 </script>
@@ -34,7 +35,7 @@ function rowClass(data: STHDevice) {
   <DataTable
     :value="store.getSTHDeviceList"
     :loading="store.STHDevicesLoading"
-    :rowClass="rowClass"
+    :row-class="rowClass"
   >
     <Column
       header="ID">

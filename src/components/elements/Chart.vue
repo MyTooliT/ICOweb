@@ -2,6 +2,7 @@
 import {
   CategoryScale,
   Chart,
+  ChartData,
   ChartOptions,
   Legend,
   LinearScale,
@@ -12,7 +13,6 @@ import {
   Tooltip
 } from 'chart.js';
 import { Line } from 'vue-chartjs';
-import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
 
 Chart.register(
   LineController,
@@ -24,18 +24,20 @@ Chart.register(
   Tooltip,
   Legend
 );
-const mStore = useMeasurementStore()
+
 const options: ChartOptions<'line'> = {
   animation: false,
   responsive: true
 }
+
+defineProps<{ data: ChartData<'line'> }>()
 </script>
 
 <template>
   <div>
     <Line
       ref="chart"
-      :data="mStore.chartData"
+      :data="data"
       :options="options" />
   </div>
 </template>
