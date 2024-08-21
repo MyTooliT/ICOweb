@@ -33,7 +33,8 @@ function parseItem(item: any): any {
       item.mac_address,
       item.rssi,
       item.connection_status,
-      item.regex
+      item.regex,
+      item.isSelected
     )
   } else {
     return item

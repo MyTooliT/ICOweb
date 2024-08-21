@@ -24,12 +24,18 @@ async function save(
   state.value = 'readyToEdit'
   focused.value = false
 }
+
+function rowClass(data: STHDevice) {
+  return [{'!bg-primary-container !text-on-primary-container': data.getSelected()}]
+}
 </script>
 
 <template>
   <DataTable
     :value="store.getSTHDeviceList"
-    :loading="store.STHDevicesLoading">
+    :loading="store.STHDevicesLoading"
+    :rowClass="rowClass"
+  >
     <Column
       header="ID">
       <template #body="{ data }: { data: STHDevice }">
@@ -58,7 +64,7 @@ async function save(
       </template>
     </Column>
     <Column
-      header="MAC">
+      header="RSSI">
       <template #body="{ data }: { data: STHDevice }">
         {{ data.getRssiRepr() }}
       </template>
@@ -73,11 +79,21 @@ async function save(
         />
         <Button
           rounded
+          class="mr-3"
           size="small"
           label="Measure"
           icon="pi pi-chart-bar"
           :disabled="data.getConnectionStatus() !== 'connected'"
           @click="$router.push('/measure')"
+        />
+        <Button
+          rounded
+          size="small"
+          :label="data.getSelected() ? 'Deselect' : 'Select'"
+          @click="() => {
+            store.deselectSTHDevices()
+            data.setSelected(!data.getSelected())
+          }"
         />
       </template>
     </Column>

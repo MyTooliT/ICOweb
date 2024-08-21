@@ -17,6 +17,7 @@ export class STHDevice extends Device {
   // TODO: Add default sensor config
   private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
+  private isSelected: Boolean = false;
 
   constructor(
     device_number: TDeviceNumber,
@@ -25,10 +26,12 @@ export class STHDevice extends Device {
     rssi: number,
     status: TDeviceConnectionStatus = 'disconnected',
     regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
+    isSelected: Boolean = false
   ) {
     super(device_number, name, mac_address, status)
     this.regex = regex
     this.rssi = rssi
+    this.isSelected = isSelected
   }
 
   public getRssiRepr(): string {
@@ -63,6 +66,14 @@ export class STHDevice extends Device {
     this.name = body.name;
     this.mac_address = body.mac_address;
     this.rssi = body.rssi
+  }
+
+  public getSelected(): Boolean {
+    return this.isSelected;
+  }
+
+  public setSelected(value: Boolean = true): void {
+    this.isSelected = value;
   }
 
   public dump() {
@@ -104,6 +115,7 @@ export class STHDevice extends Device {
       rssi: this.rssi,
       status: this.connection_status,
       regex: this.regex,
+      isSelected: this.isSelected,
       classtype: 'STH'
     }
   }

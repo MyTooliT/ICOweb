@@ -44,7 +44,12 @@ export const useHardwareStore = defineStore('hardware', () => {
     _STHDeviceList.value = consumeNewMetadata(_STHDeviceList.value, meta)
     STHDevicesLoading.value = false
   }
-
+  const activeSTH = computed<STHDevice | undefined>(() => {
+    return _STHDeviceList.value.filter(entry => entry.getSelected())[0]
+  })
+  function deselectSTHDevices() {
+    _STHDeviceList.value.forEach(device => device.setSelected(false));
+  }
   const _STUDeviceList: Ref<Array<STUDevice>> = ref([])
   const getSTUDeviceList: ComputedRef<Array<STUDevice>> = computed(() => {
     return _STUDeviceList.value
@@ -66,6 +71,10 @@ export const useHardwareStore = defineStore('hardware', () => {
     }
     STUDeviceLoading.value = false
   }
+  const activeSTU = computed<STUDevice>(() => {
+    // TODO: Implement more STU support
+    return _STUDeviceList.value[0]
+  })
 
   return {
     getSensorList,
@@ -79,7 +88,10 @@ export const useHardwareStore = defineStore('hardware', () => {
     getSTUDeviceList,
     updateSTUDeviceList,
     _STUDeviceList,
-    _STHDeviceList
+    _STHDeviceList,
+    activeSTU,
+    activeSTH,
+    deselectSTHDevices
   }
 }, {
   persist: {
