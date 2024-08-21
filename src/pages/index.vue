@@ -3,7 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Heading3 from '@/components/typography/heading/Heading3.vue';
 import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
 import STUDeviceTable from '@/components/elements/tables/STUDeviceTable.vue';
-import Chart from '@/components/elements/Chart.vue'
+import Chart from '@/components/elements/Chart.vue';
 import Button from 'primevue/button';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useToast } from 'primevue/usetoast';
@@ -20,6 +20,7 @@ const store = useHardwareStore()
         label="Reload"
         outlined
         :loading="store.STUDeviceLoading"
+        :disabled="store.STHDevicesLoading"
         @click="store.updateSTUDeviceList().then(() => {
           if(store.getSTUDeviceList.length === 0) {
             toast.add({
@@ -40,6 +41,7 @@ const store = useHardwareStore()
         label="Reload"
         outlined
         :loading="store.STHDevicesLoading"
+        :disabled="!store.activeSTU || store.STUDeviceLoading"
         @click="store.updateSTHDeviceList().then(() => {
           if(store.getSTHDeviceList.length === 0) {
             toast.add({
