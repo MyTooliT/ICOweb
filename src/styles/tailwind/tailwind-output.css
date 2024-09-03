@@ -628,6 +628,10 @@ video {
   display: flex;
 }
 
+.table {
+  display: table;
+}
+
 .grid {
   display: grid;
 }
@@ -857,6 +861,10 @@ video {
 
 .opacity-0 {
   opacity: 0;
+}
+
+.outline {
+  outline-style: solid;
 }
 
 .blur {
