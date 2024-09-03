@@ -5,15 +5,24 @@ export type TBound = number;
 export class Sensor {
   private physicalDimension: TPhysicalDimension;
   private readonly sensorRange: SensorRange;
+  public expose: boolean
+  private channel: number
+  private name: string
 
   constructor(
     physicalDimension: TPhysicalDimension,
     physicalUnit: TPhysicalUnit,
     lowerBound: TBound,
     upperBound: TBound,
+    expose: boolean = true,
+    channel: number,
+    name: string
   ) {
     this.physicalDimension = physicalDimension;
     this.sensorRange = new SensorRange(physicalUnit, lowerBound, upperBound);
+    this.expose = expose;
+    this.channel = channel;
+    this.name = name;
   }
 
   public getSensorRange(): SensorRange { return this.sensorRange; }
@@ -24,6 +33,30 @@ export class Sensor {
 
   public setPhysicalDimension(physicalDimension: TPhysicalDimension): void {
     this.physicalDimension = physicalDimension;
+  }
+
+  public getExpose(): boolean {
+    return this.expose;
+  }
+
+  public setExpose(expose: boolean): void {
+    this.expose = expose;
+  }
+
+  public getChannel(): number {
+    return this.channel;
+  }
+
+  public setChannel(channel: number): void {
+    this.channel = channel;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public setName(name: string): void {
+    this.name = name;
   }
 }
 
@@ -87,8 +120,9 @@ export class SensorRange {
   }
 
   public text(): string {
+    if(this.physicalUnit === '-') return '-'
     return this.isSymmetric() ?
       `+-${this.upperBound}${this.physicalUnit}` :
-      `${this.lowerBound}/${this.upperBound}${this.physicalUnit}`
+      `${this.lowerBound}-${this.upperBound}${this.physicalUnit}`
   }
 }

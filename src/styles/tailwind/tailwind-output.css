@@ -753,6 +753,11 @@ video {
   border-color: var(--md-sys-color-primary);
 }
 
+.border-gray-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity));
+}
+
 .\!bg-primary-container {
   background-color: var(--md-sys-color-primary-container) !important;
 }

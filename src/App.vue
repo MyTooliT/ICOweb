@@ -32,7 +32,7 @@ import APIAvailabilityBar from '@/components/elements/misc/APIAvailabilityBar.vu
         </RouterLinkButton>
         <RouterLinkButton
           name="Config"
-          to="/config/storage">
+          to="/config/sensors">
           <Cog6ToothIcon class="size-8 pb-1" />
           Config
         </RouterLinkButton>

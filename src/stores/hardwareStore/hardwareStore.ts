@@ -16,20 +16,17 @@ import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
-  const _sensorList: Ref<Array<Sensor>> = ref([]);
-  const getSensorList: ComputedRef<Array<Sensor>> = computed(() => {
-    return _sensorList.value
-  })
+  const sensorList = ref<Array<Sensor>>(sensorListPreset);
   function addSensor(newSensor: Sensor) {
-    _sensorList.value.push(newSensor);
+    sensorList.value.push(newSensor);
   }
   function clearSensorList() {
-    _sensorList.value = []
+    sensorList.value.length = 0
   }
   function removeSensor(sensor: Sensor) {
-    const index = _sensorList.value.indexOf(sensor);
+    const index = sensorList.value.indexOf(sensor);
     if (index > -1) {
-      _sensorList.value.splice(index, 1);
+      sensorList.value.splice(index, 1);
     }
   }
 
@@ -77,7 +74,7 @@ export const useHardwareStore = defineStore('hardware', () => {
   })
 
   return {
-    getSensorList,
+    sensorList,
     addSensor,
     clearSensorList,
     removeSensor,
@@ -102,3 +99,17 @@ export const useHardwareStore = defineStore('hardware', () => {
     }
   },
 })
+
+// eslint-disable max-line-width
+const sensorListPreset = Array<Sensor>(
+  new Sensor('Acceleration', 'g', -100, 100, true, 1, 'X Axis 100g'),
+  new Sensor('Acceleration', 'g', -40, 40, true, 2, 'Y Axis 40'),
+  new Sensor('Acceleration', 'g', -40, 40, true, 3, 'Z Axis 40'),
+  new Sensor('Acceleration', 'g', -40, 40, true, 4, 'X Axis 40'),
+  new Sensor('Temperature', 'K', 0, 1000, true, 5, 'Tool Temperature'),
+  new Sensor('Light', 'cd', 0, 1000, true, 6, 'Light'),
+  new Sensor('Backpack', '-', 0, 0, true, 7, 'Backpack-Slot Channel 1'),
+  new Sensor('Backpack', '-', 0, 0, true, 8, 'Backpack-Slot Channel 2'),
+  new Sensor('Backpack', '-', 0, 0, true, 9, 'Backpack-Slot Channel 3'),
+  new Sensor('Voltage', 'V', 0, 3.7, true, 10, 'Battery Voltage')
+)
