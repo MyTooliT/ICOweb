@@ -34,6 +34,7 @@ const {
   close,
   state,
   storage,
+  ws
 } = useMeasurementWebsocket(
   true,
   () => updateChartData(storage.value, chartData)
@@ -42,7 +43,16 @@ const {
 function startStopClickHandler() {
   if(state.value === 'closed') {
     if(hwStore.activeSTH?.getMacAddress()) {
-      open(hwStore.activeSTH.getMacAddress(), mStore.acquisitionTime)
+      open()
+      ws.value?.addEventListener('opened', () => {
+        ws.value?.send(JSON.stringify({
+          first: 1,
+          second: 0,
+          third: 0,
+          mac: hwStore.activeSTH?.getMacAddress(),
+          time: mStore.acquisitionTime
+        }));
+      })
     }
   } else {
     close()

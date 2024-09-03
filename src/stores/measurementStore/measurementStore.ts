@@ -53,7 +53,7 @@ export function useMeasurementWebsocket(
   shouldUpdate: Boolean = false,
   update: () => void = () => {}
 ): {
-  open: (mac: string, time: number) => void,
+  open: () => void,
   close: () => void,
   ws: Ref<WebSocket | undefined>,
   state: Ref<TWSState>,
@@ -64,7 +64,7 @@ export function useMeasurementWebsocket(
   const storage = ref<Array<TParsedData>>([])
   let intervalId: number | undefined = undefined
 
-  function open(mac: string, time: number): void {
+  function open(): void {
     state.value = 'connecting'
     const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
     const hostname = import.meta.env.VITE_API_HOSTNAME;
@@ -72,12 +72,13 @@ export function useMeasurementWebsocket(
     const prefix = import.meta.env.VITE_API_WS_PREFIX;
 
     ws.value = new WebSocket(
-      `${protocol}://${hostname}:${port}/${prefix}/${mac}/${time}`
+      `${protocol}://${hostname}:${port}/${prefix}/measure`
     )
 
     ws.value.onopen = () => {
       state.value = 'open'
       storage.value = []
+      ws.value?.dispatchEvent(new Event('opened'))
     }
 
     ws.value.onerror = () => {
