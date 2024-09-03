@@ -5,7 +5,8 @@ import {
   ComputedRef,
   nextTick,
   ref,
-  Ref
+  Ref,
+  watch
 } from 'vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
 import {
@@ -26,6 +27,12 @@ const props = withDefaults(defineProps<{
   placeholder: 'Enter value...',
   disabled: false,
   initialValue: ''
+})
+
+watch(props, () => {
+  if(content.value !== props.initialValue) {
+    content.value = props.initialValue;
+  }
 })
 
 const content: Ref<string> = ref(props.initialValue)

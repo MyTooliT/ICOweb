@@ -102,7 +102,7 @@ export const useHardwareStore = defineStore('hardware', () => {
 
 // eslint-disable max-line-width
 const sensorListPreset = Array<Sensor>(
-  new Sensor('Acceleration', 'g', -100, 100, true, 1, 'X Axis 100g'),
+  new Sensor('Acceleration', 'g', -100, 100, true, 11, 'X Axis 100g'),
   new Sensor('Acceleration', 'g', -40, 40, true, 2, 'Y Axis 40'),
   new Sensor('Acceleration', 'g', -40, 40, true, 3, 'Z Axis 40'),
   new Sensor('Acceleration', 'g', -40, 40, true, 4, 'X Axis 40'),

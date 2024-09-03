@@ -6,7 +6,7 @@ export class Sensor {
   private physicalDimension: TPhysicalDimension;
   private readonly sensorRange: SensorRange;
   public expose: boolean
-  private channel: number
+  public channel: number
   private name: string
 
   constructor(
@@ -35,14 +35,6 @@ export class Sensor {
     this.physicalDimension = physicalDimension;
   }
 
-  public getExpose(): boolean {
-    return this.expose;
-  }
-
-  public setExpose(expose: boolean): void {
-    this.expose = expose;
-  }
-
   public getChannel(): number {
     return this.channel;
   }
@@ -57,6 +49,19 @@ export class Sensor {
 
   public setName(name: string): void {
     this.name = name;
+  }
+
+  public toJSON() {
+    return {
+      physicalDimension: this.physicalDimension,
+      physicalUnit: this.sensorRange.getPhysicalUnit(),
+      lowerBound: this.sensorRange.getLowerBound(),
+      upperBound: this.sensorRange.getUpperBound(),
+      expose: this.expose,
+      channel: this.channel,
+      name: this.name,
+      classtype: 'Sensor'
+    }
   }
 }
 
