@@ -11,13 +11,13 @@ import {
 } from '@heroicons/vue/16/solid';
 import Toast from 'primevue/toast';
 // eslint-disable-next-line max-len
-import APIAvailabilityBar from '@/components/elements/misc/APIAvailabilityBar.vue';
+import BottomBar from '@/components/elements/misc/BottomBar.vue';
 </script>
 
 <template>
   <ThemeProvider>
-    <div class="flex flex-row h-dvh w-dvw bg-surface">
-      <nav class="bg-surface-container flex flex-col">
+    <div class="flex flex-row h-dvh w-dvw bg-surface overflow-hidden">
+      <nav class="bg-surface-container flex flex-col z-50">
         <RouterLinkButton
           name="Devices"
           to="/">
@@ -53,9 +53,11 @@ import APIAvailabilityBar from '@/components/elements/misc/APIAvailabilityBar.vu
           >
         </RouterLinkButton>
       </nav>
-      <div class="flex flex-col w-full">
-        <router-view />
-        <APIAvailabilityBar class="mt-auto" />
+      <div class="flex flex-col w-full relative">
+        <div class="w-full overflow-auto ">
+          <router-view />
+        </div>
+        <BottomBar class="mt-auto" />
       </div>
     </div>
     <Toast />
