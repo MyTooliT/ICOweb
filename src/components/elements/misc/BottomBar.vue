@@ -39,7 +39,7 @@ function clearCache() {
   <div
     :data-state="apiReachable"
     class="
-      w-full pr-6 pb-1 text-right absolute bottom-0 right-0
+      w-full pr-6 pb-1 text-right
       flex flex-row justify-end items-center
       data-[state~=true]:bg-primary-container bg-error-container
       data-[state~=true]:text-on-primary-container text-on-error-container"
