@@ -33,7 +33,9 @@ function rangeRemovable(r: SensorRange): boolean {
         class="flex flex-row justify-between border-b border-gray-200 pb-3 mb-3"
       >
         <div>
-          <h2>Global Sensor Table</h2>
+          <h2 class="font-medium text-lg">
+            Global Sensor Table
+          </h2>
           <h6>
             The general sensor table.
             Here you can define what is accessible globally.
@@ -61,7 +63,7 @@ function rangeRemovable(r: SensorRange): boolean {
           range or type is not in use.
         </h6>
         <div class="flex flex-row">
-          <div class="flex flex-col mr-5">
+          <div class="flex flex-col">
             <h3 class="mb-3 font-medium">
               Sensor Types
             </h3>
@@ -77,6 +79,7 @@ function rangeRemovable(r: SensorRange): boolean {
               }"
             />
           </div>
+          <div class="border-gray-200 border-x mx-5" />
           <div class="flex flex-col">
             <h3 class="mb-3 font-medium">
               Available Ranges
