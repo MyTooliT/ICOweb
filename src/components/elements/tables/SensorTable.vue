@@ -66,6 +66,9 @@ const store = useHardwareStore()
           class="w-full"
           @change="(e) => {
             Object.assign(data.sensorType, e.value)
+            Object.assign(data.sensorRange, store.sensorRangeList.filter(
+              range => range.physicalUnit === data.sensorType.physicalUnit
+            )[0])
           }"
         />
       </template>
@@ -113,8 +116,9 @@ const store = useHardwareStore()
         <Button
           rounded
           size="small"
-          label="delete"
+          label="Delete"
           icon="pi pi-times"
+          icon-pos="right"
           severity="danger"
           @click="store.removeSensor(data)"
         />

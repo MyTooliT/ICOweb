@@ -57,6 +57,15 @@ export const useHardwareStore = defineStore('hardware', () => {
     new SensorRange('-', 0, 0)
   ])
 
+  function sensorRangeListForUnit(unit: string) {
+    return sensorRangeList.value.filter(range => range.physicalUnit === unit)
+  }
+
+  function removeRangesByType(type: SensorType) {
+    // eslint-disable-next-line max-len
+    sensorRangeList.value = sensorRangeList.value.filter(range => range.physicalUnit !== type.physicalUnit)
+  }
+
   const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
   const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
     return _STHDeviceList.value
@@ -118,7 +127,9 @@ export const useHardwareStore = defineStore('hardware', () => {
     deselectSTHDevices,
     sensorDimensionList,
     removeDimension,
-    sensorRangeList
+    sensorRangeList,
+    sensorRangeListForUnit,
+    removeRangesByType
   }
 }, {
   persist: {
