@@ -22,11 +22,13 @@ const props = withDefaults(defineProps<{
   regex: RegExp,
   initialValue: string,
   saveFn: (state: Ref<EditState>, content: string, focused: Ref<boolean>)
-    => Promise<void>
+    => Promise<void>,
+  classes?: string
 }>(), {
   placeholder: 'Enter value...',
   disabled: false,
-  initialValue: ''
+  initialValue: '',
+  classes: ''
 })
 
 watch(props, () => {
@@ -77,13 +79,17 @@ function save(): void {
 </script>
 
 <template>
-  <div ref="editContainer" class="flex">
+  <div
+    ref="editContainer"
+    class="flex"
+  >
     <input
       :id="id"
       ref="inputRef"
       v-model="content"
       :data-state="currentState"
       class="data-[state=readyToEdit]:bg-inherit"
+      :class="props.classes"
       type="text"
       :placeholder="placeholder"
       :disabled="currentState == 'readyToEdit'"

@@ -34,6 +34,7 @@ const store = useHardwareStore()
           :initial-value="data.getChannel().toString()"
           :disabled="false"
           placeholder="Ch."
+          classes="w-8 flex-grow"
           :save-fn="(
             state: Ref<EditState>,
             content: string,
