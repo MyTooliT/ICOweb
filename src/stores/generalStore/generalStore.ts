@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia';
-import { computed, type ComputedRef, type Ref, ref } from 'vue';
+import {
+    computed,
+    type ComputedRef,
+    type Ref,
+    ref
+} from 'vue';
 
 export enum ThemeStyle {
     Light = 'light',
@@ -10,7 +15,7 @@ export enum ThemeStyle {
     DarkHighContrast = 'dark-high-contrast',
 }
 
-export const useThemeProviderStore = defineStore('theme', () => {
+export const useGeneralStore = defineStore('general', () => {
     const _activeTheme: Ref<ThemeStyle> = ref<ThemeStyle>(ThemeStyle.Light);
     /* eslint-disable-next-line max-len */
     const getActiveTheme: ComputedRef<ThemeStyle> = computed(() => _activeTheme.value)

@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useThemeProviderStore } from './themeProvider';
-const theme = useThemeProviderStore();
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+
+const theme = useGeneralStore();
 </script>
