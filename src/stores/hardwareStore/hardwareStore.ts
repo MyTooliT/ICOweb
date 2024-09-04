@@ -66,6 +66,20 @@ export const useHardwareStore = defineStore('hardware', () => {
     sensorRangeList.value = sensorRangeList.value.filter(range => range.physicalUnit !== type.physicalUnit)
   }
 
+  const nextFreeSensorChannel = computed<number>(() => {
+    const usedChannels = sensorList.value.map(sensor => sensor.channel).sort()
+    let found = false
+    let guess = 1
+    while (!found) {
+      if (usedChannels.includes(guess)) {
+        guess++
+      } else {
+        found = true
+      }
+    }
+    return guess
+  })
+
   const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
   const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
     return _STHDeviceList.value
@@ -129,7 +143,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     removeDimension,
     sensorRangeList,
     sensorRangeListForUnit,
-    removeRangesByType
+    removeRangesByType,
+    nextFreeSensorChannel
   }
 }, {
   persist: {

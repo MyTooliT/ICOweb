@@ -5,6 +5,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import SensorTable from '@/components/elements/tables/SensorTable.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
+  Sensor,
   SensorRange,
   SensorType
 } from '@/stores/hardwareStore/classes/Sensor.ts';
@@ -23,6 +24,24 @@ function rangeRemovable(r: SensorRange): boolean {
   const isUnused = store.sensorList.map(sensor => sensor.sensorRange.getRangeRepr()).indexOf(r.getRangeRepr()) === -1
   const isLastItem = store.sensorRangeListForUnit(r.physicalUnit).length === 1
   return isUnused && !isLastItem
+}
+
+function handleNewSensor(): void {
+  const { physicalDimension, physicalUnit } = store.sensorDimensionList[0]
+  const {
+    upperBound,
+    lowerBound
+  } = store.sensorRangeListForUnit(physicalUnit)[0]
+  const sens = new Sensor(
+    physicalDimension,
+    physicalUnit,
+    lowerBound,
+    upperBound,
+    true,
+      store.nextFreeSensorChannel,
+    `New Sensor #${store.nextFreeSensorChannel}`
+  );
+  store.addSensor(sens)
 }
 </script>
 
@@ -45,6 +64,7 @@ function rangeRemovable(r: SensorRange): boolean {
           outlined
           label="Add"
           icon="pi pi-plus"
+          @click="handleNewSensor"
         />
       </div>
       <SensorTable />
