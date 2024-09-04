@@ -5,7 +5,10 @@ import Column from 'primevue/column';
 import ToggleSwitch from 'primevue/toggleswitch';
 import Button from 'primevue/button';
 import Select from 'primevue/select';
-import { Sensor } from '@/stores/hardwareStore/classes/Sensor.ts';
+import {
+  Sensor,
+  SensorRange
+} from '@/stores/hardwareStore/classes/Sensor.ts';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { Ref } from 'vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
@@ -58,7 +61,7 @@ const store = useHardwareStore()
         <Select
           :model-value="data.sensorType"
           :options="store.sensorDimensionList"
-          optionLabel="repr"
+          option-label="repr"
           placeholder="Select Dimension"
           class="w-full"
           @change="(e) => {
@@ -70,7 +73,17 @@ const store = useHardwareStore()
     <Column
       header="Range">
       <template #body="{ data }: { data: Sensor }">
-        {{ data.getSensorRange().text() }}
+        <Select
+          :model-value="data.sensorRange"
+          :options="store.sensorRangeList.filter(
+            range => range.physicalUnit === data.sensorType.physicalUnit)"
+          :option-label="(entry: SensorRange) => entry.getRangeRepr()"
+          class="w-full"
+          placeholder="Select Range"
+          @change="(e) => {
+            Object.assign(data.sensorRange, e.value)
+          }"
+        />
       </template>
     </Column>
     <Column
@@ -82,12 +95,14 @@ const store = useHardwareStore()
           :initial-value="data.getName()"
           :disabled="false"
           placeholder="Ch."
-          :save-fn="(state: Ref<EditState>, content: string, focused: Ref<boolean>) => {
-            state.value = 'loading'
-            data.setName(content)
-            focused.value = false
-            state.value = 'readyToEdit'
-          }"
+          :save-fn="
+            (state: Ref<EditState>, content: string, focused: Ref<boolean>) =>
+            {
+              state.value = 'loading'
+              data.setName(content)
+              focused.value = false
+              state.value = 'readyToEdit'
+            }"
         />
       </template>
     </Column>

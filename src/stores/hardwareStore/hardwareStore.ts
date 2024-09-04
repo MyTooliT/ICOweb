@@ -17,6 +17,7 @@ import {
 } from '@/api/requests.ts';
 import { consumeNewMetadata } from './helper.ts';
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
+// eslint-disable-next-line max-len
 import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
@@ -47,7 +48,14 @@ export const useHardwareStore = defineStore('hardware', () => {
       sensorDimensionList.value.splice(index, 1);
     }
   }
-  const sensorRangeList = ref<Array<SensorRange>>([])
+  const sensorRangeList = ref<Array<SensorRange>>([
+    new SensorRange('g', -100, 100),
+    new SensorRange('g', -40, 40),
+    new SensorRange('K', 0, 1000),
+    new SensorRange('cd', 0, 1000),
+    new SensorRange('V', 0, 3.7),
+    new SensorRange('-', 0, 0)
+  ])
 
   const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
   const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {

@@ -3,6 +3,7 @@ import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import {
   Sensor,
+  SensorRange,
   SensorType
 } from '@/stores/hardwareStore/classes/Sensor.ts';
 
@@ -23,39 +24,51 @@ export function deserializeWithClassParsing(value: string): StateTree {
 
 function parseItem(item: any): any {
   if(item instanceof Object && !Array.isArray(item)) {
-    if(item['classtype'] === 'STU') {
-      return new STUDevice(
-        item.device_number,
-        item.name,
-        item.mac_address,
-        item.connection_status,
-        item.OTAState,
-      )
-    } else if(item['classtype'] === 'STH') {
-      return new STHDevice(
-        item.device_number,
-        item.name,
-        item.mac_address,
-        item.rssi,
-        item.connection_status,
-        item.regex,
-        item.isSelected
-      )
-    } else if(item['classtype'] === 'Sensor') {
-      return new Sensor(
-        item.physicalDimension,
-        item.physicalUnit,
-        item.lowerBound,
-        item.upperBound,
-        item.expose,
-        item.channel,
-        item.name
-      )
-    } else if(item['classtype'] === 'SensorType') {
-      return new SensorType(
-        item.physicalDimension,
-        item.physicalUnit
-      )
+    switch(item['classtype']) {
+      case 'STU':
+        return new STUDevice(
+          item.device_number,
+          item.name,
+          item.mac_address,
+          item.connection_status,
+          item.OTAState,
+        )
+
+      case 'STH':
+        return new STHDevice(
+          item.device_number,
+          item.name,
+          item.mac_address,
+          item.rssi,
+          item.connection_status,
+          item.regex,
+          item.isSelected
+        )
+
+      case 'Sensor':
+        return new Sensor(
+          item.physicalDimension,
+          item.physicalUnit,
+          item.lowerBound,
+          item.upperBound,
+          item.expose,
+          item.channel,
+          item.name
+        )
+
+      case 'SensorType':
+        return new SensorType(
+          item.physicalDimension,
+          item.physicalUnit
+        )
+
+      case 'SensorRange':
+        return new SensorRange(
+          item.physicalUnit,
+          item.lowerBound,
+          item.upperBound,
+          item.isSymmetricThreshold,
+        )
     }
   } else {
     return item

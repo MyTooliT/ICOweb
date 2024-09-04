@@ -4,7 +4,7 @@ export type TBound = number;
 
 export class Sensor {
   public sensorType: SensorType
-  private readonly sensorRange: SensorRange;
+  public sensorRange: SensorRange;
   public expose: boolean
   public channel: number
   private name: string
@@ -42,15 +42,6 @@ export class Sensor {
   public setName(name: string): void {
     this.name = name;
   }
-
-  public getRangeRepr(): string {
-    if(this.sensorType.physicalUnit === '-') return '-'
-    return this.sensorRange.isSymmetric() ?
-      `+-${this.sensorRange.upperBound}${this.sensorType.physicalUnit}` :
-      // eslint-disable-next-line max-len
-      `${this.sensorRange.lowerBound}-${this.sensorRange.upperBound}${this.sensorType.physicalUnit}`
-  }
-
 
   public toJSON() {
     return {
@@ -123,6 +114,23 @@ export class SensorRange {
   public isSymmetric(): boolean {
     if(this.lowerBound === 0 || this.upperBound === 0) {return false}
     return ((this.upperBound / this.lowerBound) + 1) < this.isSymmetricThreshold
+  }
+
+  public getRangeRepr(): string {
+    if(this.physicalUnit === '-') return '-'
+    return this.isSymmetric() ?
+      `±${this.upperBound}${this.physicalUnit}` :
+      `${this.lowerBound}-${this.upperBound}${this.physicalUnit}`
+  }
+
+  public toJSON() {
+    return {
+      physicalUnit: this.physicalUnit,
+      lowerBound: this.lowerBound,
+      upperBound: this.upperBound,
+      isSymmetricThreshold: this.isSymmetricThreshold,
+      classtype: 'SensorRange'
+    }
   }
 }
 
