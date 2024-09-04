@@ -3,7 +3,7 @@ export type TPhysicalUnit = string;
 export type TBound = number;
 
 export class Sensor {
-  private physicalDimension: TPhysicalDimension;
+  public sensorType: SensorType
   private readonly sensorRange: SensorRange;
   public expose: boolean
   public channel: number
@@ -18,7 +18,7 @@ export class Sensor {
     channel: number,
     name: string
   ) {
-    this.physicalDimension = physicalDimension;
+    this.sensorType = new SensorType(physicalDimension, physicalUnit);
     this.sensorRange = new SensorRange(physicalUnit, lowerBound, upperBound);
     this.expose = expose;
     this.channel = channel;
@@ -26,14 +26,6 @@ export class Sensor {
   }
 
   public getSensorRange(): SensorRange { return this.sensorRange; }
-
-  public getPhysicalDimension(): TPhysicalDimension {
-    return this.physicalDimension;
-  }
-
-  public setPhysicalDimension(physicalDimension: TPhysicalDimension): void {
-    this.physicalDimension = physicalDimension;
-  }
 
   public getChannel(): number {
     return this.channel;
@@ -51,10 +43,19 @@ export class Sensor {
     this.name = name;
   }
 
+  public getRangeRepr(): string {
+    if(this.sensorType.physicalUnit === '-') return '-'
+    return this.sensorRange.isSymmetric() ?
+      `+-${this.sensorRange.upperBound}${this.sensorType.physicalUnit}` :
+      // eslint-disable-next-line max-len
+      `${this.sensorRange.lowerBound}-${this.sensorRange.upperBound}${this.sensorType.physicalUnit}`
+  }
+
+
   public toJSON() {
     return {
-      physicalDimension: this.physicalDimension,
-      physicalUnit: this.sensorRange.getPhysicalUnit(),
+      physicalDimension: this.sensorType.physicalDimension,
+      physicalUnit: this.sensorType.physicalUnit,
       lowerBound: this.sensorRange.getLowerBound(),
       upperBound: this.sensorRange.getUpperBound(),
       expose: this.expose,
@@ -66,10 +67,10 @@ export class Sensor {
 }
 
 export class SensorRange {
-  private physicalUnit: TPhysicalUnit;
-  private lowerBound: TBound;
-  private upperBound: TBound;
-  private readonly isSymmetricThreshold: number;
+  public physicalUnit: TPhysicalUnit;
+  public lowerBound: TBound;
+  public upperBound: TBound;
+  public isSymmetricThreshold: number;
 
   constructor(
     physicalUnit: TPhysicalUnit,
@@ -123,11 +124,27 @@ export class SensorRange {
     if(this.lowerBound === 0 || this.upperBound === 0) {return false}
     return ((this.upperBound / this.lowerBound) + 1) < this.isSymmetricThreshold
   }
+}
 
-  public text(): string {
-    if(this.physicalUnit === '-') return '-'
-    return this.isSymmetric() ?
-      `+-${this.upperBound}${this.physicalUnit}` :
-      `${this.lowerBound}-${this.upperBound}${this.physicalUnit}`
+export class SensorType {
+  public physicalDimension: TPhysicalDimension;
+  public physicalUnit: TPhysicalUnit;
+  public repr: string
+
+  constructor(
+    physicalDimension: TPhysicalDimension,
+    physicalUnit: TPhysicalUnit
+  ) {
+    this.physicalDimension = physicalDimension;
+    this.physicalUnit = physicalUnit;
+    this.repr = `${physicalDimension} [${physicalUnit}]`
+  }
+
+  public toJSON() {
+    return {
+      physicalDimension: this.physicalDimension,
+      physicalUnit: this.physicalUnit,
+      classtype: 'SensorType'
+    }
   }
 }

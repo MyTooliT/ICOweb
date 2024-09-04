@@ -1,7 +1,10 @@
 import { StateTree } from 'pinia';
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
-import { Sensor } from '@/stores/hardwareStore/classes/Sensor.ts';
+import {
+  Sensor,
+  SensorType
+} from '@/stores/hardwareStore/classes/Sensor.ts';
 
 export function deserializeWithClassParsing(value: string): StateTree {
   const deserialized = JSON.parse(value)
@@ -47,6 +50,11 @@ function parseItem(item: any): any {
         item.expose,
         item.channel,
         item.name
+      )
+    } else if(item['classtype'] === 'SensorType') {
+      return new SensorType(
+        item.physicalDimension,
+        item.physicalUnit
       )
     }
   } else {

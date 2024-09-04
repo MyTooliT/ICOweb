@@ -5,7 +5,11 @@ import {
   Ref,
   ref
 } from 'vue';
-import { Sensor } from './classes/Sensor.ts';
+import {
+  Sensor,
+  SensorRange,
+  SensorType
+} from './classes/Sensor.ts';
 import { STHDevice } from './classes/STHDevice.ts';
 import {
   getSTHDevicesMeta,
@@ -29,6 +33,21 @@ export const useHardwareStore = defineStore('hardware', () => {
       sensorList.value.splice(index, 1);
     }
   }
+
+  const sensorDimensionList = ref<Array<SensorType>>([
+    new SensorType('Acceleration', 'g'),
+    new SensorType('Temperature', 'K'),
+    new SensorType('Light', 'cd'),
+    new SensorType('Voltage', 'V'),
+    new SensorType('Backpack', '-'),
+  ])
+  function removeDimension(dim: SensorType): void {
+    const index = sensorDimensionList.value.indexOf(dim);
+    if(index > -1) {
+      sensorDimensionList.value.splice(index, 1);
+    }
+  }
+  const sensorRangeList = ref<Array<SensorRange>>([])
 
   const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
   const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
@@ -88,7 +107,10 @@ export const useHardwareStore = defineStore('hardware', () => {
     _STHDeviceList,
     activeSTU,
     activeSTH,
-    deselectSTHDevices
+    deselectSTHDevices,
+    sensorDimensionList,
+    removeDimension,
+    sensorRangeList
   }
 }, {
   persist: {

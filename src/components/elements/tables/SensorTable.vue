@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ToggleSwitch from 'primevue/toggleswitch';
 import Button from 'primevue/button';
+import Select from 'primevue/select';
 import { Sensor } from '@/stores/hardwareStore/classes/Sensor.ts';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { Ref } from 'vue';
@@ -17,6 +18,8 @@ const store = useHardwareStore()
     :value="store.sensorList"
     sort-field="channel"
     :sort-order="1"
+    size="small"
+    :resizable-columns="true"
   >
     <Column
       header="Expose">
@@ -26,6 +29,7 @@ const store = useHardwareStore()
     </Column>
     <Column
       header="Ch."
+
     >
       <template #body="{ data }: { data: Sensor }">
         <EditableInput
@@ -51,7 +55,16 @@ const store = useHardwareStore()
     <Column
       header="Type">
       <template #body="{ data }: { data: Sensor }">
-        {{ data.getPhysicalDimension() }}
+        <Select
+          :model-value="data.sensorType"
+          :options="store.sensorDimensionList"
+          optionLabel="repr"
+          placeholder="Select Dimension"
+          class="w-full"
+          @change="(e) => {
+            Object.assign(data.sensorType, e.value)
+          }"
+        />
       </template>
     </Column>
     <Column
