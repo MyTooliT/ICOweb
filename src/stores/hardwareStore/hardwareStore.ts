@@ -48,6 +48,11 @@ export const useHardwareStore = defineStore('hardware', () => {
       sensorDimensionList.value.splice(index, 1);
     }
   }
+  function addSensorDimension(dim: string, unit: string) {
+    sensorDimensionList.value.push(
+      new SensorType(dim, unit)
+    )
+  }
   const sensorRangeList = ref<Array<SensorRange>>([
     new SensorRange('g', -100, 100),
     new SensorRange('g', -40, 40),
@@ -141,6 +146,7 @@ export const useHardwareStore = defineStore('hardware', () => {
     deselectSTHDevices,
     sensorDimensionList,
     removeDimension,
+    addSensorDimension,
     sensorRangeList,
     sensorRangeListForUnit,
     removeRangesByType,

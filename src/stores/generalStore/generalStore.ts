@@ -27,5 +27,22 @@ export const useGeneralStore = defineStore('general', () => {
         return false
     }
 
-    return { getActiveTheme, setActiveTheme }
+
+    /*
+    ******************************************************
+    *                  Modal State                       *
+    ******************************************************
+    */
+
+    const newRangeModalVisible = ref<boolean>(false)
+    const newTypeModalVisible = ref<boolean>(false)
+
+
+
+    return {
+        getActiveTheme,
+        setActiveTheme,
+        newRangeModalVisible,
+        newTypeModalVisible
+    }
 })

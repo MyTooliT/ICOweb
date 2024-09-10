@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ThemeProvider from './stores/ThemeProvider/ThemeProvider.vue';
+import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
 // eslint-disable-next-line max-len
 import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue';
 import logo from '@/assets/img/ift_logo.jpg';

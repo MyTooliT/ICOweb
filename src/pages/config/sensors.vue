@@ -9,8 +9,11 @@ import {
   SensorRange,
   SensorType
 } from '@/stores/hardwareStore/classes/Sensor.ts';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import NewSensorTypeModal from '@/components/elements/modals/NewSensorTypeModal.vue';
 
 const store = useHardwareStore()
+const generalStore = useGeneralStore()
 
 function dimensionRemovable(dim: SensorType): boolean {
   // eslint-disable-next-line max-len
@@ -43,6 +46,15 @@ function handleNewSensor(): void {
   );
   store.addSensor(sens)
 }
+
+function handleNewRange() {}
+
+function handleNewType() {
+  generalStore.newTypeModalVisible = true
+}
+
+
+
 </script>
 
 <template>
@@ -84,9 +96,20 @@ function handleNewSensor(): void {
         </h6>
         <div class="flex flex-row">
           <div class="flex flex-col">
-            <h3 class="mb-3 font-medium">
-              Sensor Types
-            </h3>
+            <div class="flex flex-row items-start">
+              <h3 class="mb-3 font-medium">
+                Sensor Types
+              </h3>
+              <Button
+                icon="pi pi-plus"
+                aria-label="Add sensor type"
+                size="small"
+                link
+                class="!p-0"
+                @click="handleNewType"
+              />
+              <NewSensorTypeModal />
+            </div>
             <Chip
               v-for="dim in store.sensorDimensionList"
               :key="dim"
@@ -101,9 +124,19 @@ function handleNewSensor(): void {
           </div>
           <div class="border-gray-200 border-x mx-5" />
           <div class="flex flex-col">
-            <h3 class="mb-3 font-medium">
-              Available Ranges
-            </h3>
+            <div class="flex flex-row items-start">
+              <h3 class="mb-3 font-medium">
+                Available Ranges
+              </h3>
+              <Button
+                icon="pi pi-plus"
+                aria-label="Add sensor range"
+                size="small"
+                link
+                class="!p-0"
+                @click="handleNewRange"
+              />
+            </div>
             <div
               v-for="dim in store.sensorDimensionList"
               :key="dim.repr"

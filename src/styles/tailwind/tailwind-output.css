@@ -554,20 +554,8 @@ video {
   --tw-contain-style:  ;
 }
 
-.absolute {
-  position: absolute;
-}
-
 .relative {
   position: relative;
-}
-
-.bottom-0 {
-  bottom: 0px;
-}
-
-.right-0 {
-  right: 0px;
 }
 
 .z-0 {
@@ -595,6 +583,11 @@ video {
   margin-right: 0.75rem;
 }
 
+.mx-5 {
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -603,11 +596,6 @@ video {
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
-}
-
-.mx-5 {
-  margin-left: 1.25rem;
-  margin-right: 1.25rem;
 }
 
 .\!mb-0 {
@@ -642,10 +630,6 @@ video {
   margin-right: 0.75rem;
 }
 
-.mr-5 {
-  margin-right: 1.25rem;
-}
-
 .mr-auto {
   margin-right: auto;
 }
@@ -656,6 +640,10 @@ video {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.ml-auto {
+  margin-left: auto;
 }
 
 .inline-block {
@@ -695,6 +683,10 @@ video {
 .h-min {
   height: -moz-min-content;
   height: min-content;
+}
+
+.w-24 {
+  width: 6rem;
 }
 
 .w-8 {
@@ -747,6 +739,10 @@ video {
   place-content: center;
 }
 
+.items-start {
+  align-items: flex-start;
+}
+
 .items-center {
   align-items: center;
 }
@@ -767,6 +763,10 @@ video {
   justify-content: space-between;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .self-center {
   align-self: center;
 }
@@ -777,10 +777,6 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
-}
-
-.overflow-x-scroll {
-  overflow-x: scroll;
 }
 
 .rounded {
@@ -816,10 +812,6 @@ video {
   border-top-width: 1px;
 }
 
-.border-r {
-  border-right-width: 1px;
-}
-
 .border-gray-200 {
   --tw-border-opacity: 1;
   border-color: rgb(229 231 235 / var(--tw-border-opacity));
@@ -827,10 +819,6 @@ video {
 
 .border-primary {
   border-color: var(--md-sys-color-primary);
-}
-
-.border-on-surface {
-  border-color: var(--md-sys-color-on-surface);
 }
 
 .\!bg-primary-container {
@@ -847,6 +835,10 @@ video {
 
 .bg-surface-container {
   background-color: var(--md-sys-color-surface-container);
+}
+
+.\!p-0 {
+  padding: 0px !important;
 }
 
 .p-0 {
@@ -883,10 +875,6 @@ video {
 
 .pb-1 {
   padding-bottom: 0.25rem;
-}
-
-.pb-10 {
-  padding-bottom: 2.5rem;
 }
 
 .pb-3 {
@@ -932,6 +920,10 @@ video {
 
 .font-medium {
   font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .\!text-on-primary-container {
