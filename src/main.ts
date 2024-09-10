@@ -15,16 +15,19 @@ import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import { myPreset } from '../primevue.ts';
+import Ripple from 'primevue/ripple';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 app.use(pinia)
 app.use(router)
+app.directive('ripple', Ripple);
 app.use(PrimeVue, {
   theme: {
     preset: myPreset
-  }
+  },
+  ripple: false
 })
 app.use(ToastService)
 app.mount('#app')

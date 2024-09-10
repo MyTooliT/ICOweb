@@ -14,6 +14,10 @@ import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import NewSensorTypeModal from '@/components/elements/modals/NewSensorTypeModal.vue';
 // eslint-disable-next-line max-len
 import NewSensorRangeModal from '@/components/elements/modals/NewSensorRangeModal.vue';
+import {
+  onBeforeMount,
+  onMounted
+} from 'vue';
 
 const store = useHardwareStore()
 const generalStore = useGeneralStore()
@@ -58,8 +62,13 @@ function handleNewType() {
   generalStore.newTypeModalVisible = true
 }
 
+onBeforeMount(() => {
+  console.log('before mount');
+})
 
-
+onMounted(() => {
+  console.log('mounted');
+})
 </script>
 
 <template>

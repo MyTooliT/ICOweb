@@ -12,8 +12,12 @@ import {
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { Ref } from 'vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 
 const store = useHardwareStore()
+const gs = useGeneralStore()
+
+
 </script>
 
 <template>
@@ -23,6 +27,8 @@ const store = useHardwareStore()
     :sort-order="1"
     size="small"
     :resizable-columns="true"
+    state-storage="session"
+    state-key="dt-state-demo-session"
   >
     <Column
       header="Expose">
