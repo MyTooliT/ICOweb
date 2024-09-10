@@ -10,7 +10,10 @@ import {
   SensorType
 } from '@/stores/hardwareStore/classes/Sensor.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+// eslint-disable-next-line max-len
 import NewSensorTypeModal from '@/components/elements/modals/NewSensorTypeModal.vue';
+// eslint-disable-next-line max-len
+import NewSensorRangeModal from '@/components/elements/modals/NewSensorRangeModal.vue';
 
 const store = useHardwareStore()
 const generalStore = useGeneralStore()
@@ -47,7 +50,9 @@ function handleNewSensor(): void {
   store.addSensor(sens)
 }
 
-function handleNewRange() {}
+function handleNewRange() {
+  generalStore.newRangeModalVisible = true
+}
 
 function handleNewType() {
   generalStore.newTypeModalVisible = true
@@ -136,6 +141,7 @@ function handleNewType() {
                 class="!p-0"
                 @click="handleNewRange"
               />
+              <NewSensorRangeModal />
             </div>
             <div
               v-for="dim in store.sensorDimensionList"

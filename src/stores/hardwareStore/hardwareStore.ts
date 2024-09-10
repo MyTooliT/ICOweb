@@ -62,6 +62,12 @@ export const useHardwareStore = defineStore('hardware', () => {
     new SensorRange('-', 0, 0)
   ])
 
+  function addSensorRange(unit: string, lower: number, upper: number) {
+    sensorRangeList.value.push(
+      new SensorRange(unit, lower, upper)
+    )
+  }
+
   function sensorRangeListForUnit(unit: string) {
     return sensorRangeList.value.filter(range => range.physicalUnit === unit)
   }
@@ -150,7 +156,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     sensorRangeList,
     sensorRangeListForUnit,
     removeRangesByType,
-    nextFreeSensorChannel
+    nextFreeSensorChannel,
+    addSensorRange
   }
 }, {
   persist: {
