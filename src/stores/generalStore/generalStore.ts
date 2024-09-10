@@ -27,6 +27,25 @@ export const useGeneralStore = defineStore('general', () => {
         return false
     }
 
+    /*
+    ******************************************************
+    *                  LoaderState                       *
+    ******************************************************
+    */
+
+    const loaderDelay = ref<number>(1000)
+    const navigationLoader = ref<boolean>(false)
+    const globalLoader = ref<boolean>(false)
+    function setGlobalLoader(state: boolean): void {
+        if(window) {
+            window.setTimeout(() => {
+                globalLoader.value = state
+            }, loaderDelay.value)
+        } else {
+            globalLoader.value = state
+        }
+    }
+
 
     /*
     ******************************************************
@@ -43,6 +62,9 @@ export const useGeneralStore = defineStore('general', () => {
         getActiveTheme,
         setActiveTheme,
         newRangeModalVisible,
-        newTypeModalVisible
+        newTypeModalVisible,
+        globalLoader,
+        setGlobalLoader,
+        navigationLoader
     }
 })

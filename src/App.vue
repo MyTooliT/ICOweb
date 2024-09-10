@@ -12,6 +12,10 @@ import {
 import Toast from 'primevue/toast';
 // eslint-disable-next-line max-len
 import BottomBar from '@/components/elements/misc/BottomBar.vue';
+import ProgressSpinner from 'primevue/progressspinner';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+
+const store = useGeneralStore()
 </script>
 
 <template>
@@ -54,12 +58,28 @@ import BottomBar from '@/components/elements/misc/BottomBar.vue';
         </RouterLinkButton>
       </nav>
       <div class="flex flex-col w-full relative">
+        <div
+          v-if="store.globalLoader"
+          class="
+            absolute w-full h-full flex
+            justify-center items-center z-40 backdrop-blur">
+          <ProgressSpinner />
+        </div>
         <div class="w-full overflow-auto ">
           <router-view />
         </div>
-        <BottomBar class="mt-auto" />
+        <BottomBar class="mt-auto z-50" />
       </div>
     </div>
     <Toast />
   </ThemeProvider>
 </template>
+
+<style>
+circle {
+  --p-progressspinner-color-1: var(--md-sys-color-primary) !important;
+  --p-progressspinner-color-2: var(--md-sys-color-primary) !important;
+  --p-progressspinner-color-3: var(--md-sys-color-primary) !important;
+  --p-progressspinner-color-4: var(--md-sys-color-primary) !important;
+}
+</style>
