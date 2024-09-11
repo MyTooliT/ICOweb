@@ -11,13 +11,9 @@ import {
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { Ref } from 'vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
-import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import DeleteButton from '@/components/elements/buttons/DeleteButton.vue';
 
 const store = useHardwareStore()
-const gs = useGeneralStore()
-
-
 </script>
 
 <template>

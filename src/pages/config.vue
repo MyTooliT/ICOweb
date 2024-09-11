@@ -4,13 +4,15 @@ import TabList from 'primevue/tablist';
 import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import { useRouter } from 'vue-router';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 
 const router = useRouter()
+const store = useGeneralStore()
 </script>
 
 <template>
   <div class="card">
-    <Tabs value="0">
+    <Tabs v-model:value="store.tabIndex">
       <TabList>
         <Tab
           value="0"
@@ -37,7 +39,10 @@ const router = useRouter()
           Files & Storage
         </Tab>
       </TabList>
-      <TabPanels>
+      <TabPanels
+        unstyled
+        class="bg-inherit"
+      >
         <router-view />
       </TabPanels>
     </Tabs>

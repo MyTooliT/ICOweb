@@ -46,6 +46,14 @@ export const useGeneralStore = defineStore('general', () => {
         }
     }
 
+    /*
+    ******************************************************
+    *                  Tabs State                        *
+    ******************************************************
+    */
+
+    const tabIndex = ref<string>('0')
+
 
     /*
     ******************************************************
@@ -55,16 +63,20 @@ export const useGeneralStore = defineStore('general', () => {
 
     const newRangeModalVisible = ref<boolean>(false)
     const newTypeModalVisible = ref<boolean>(false)
-
+    const addHolderModalVisible = ref<boolean>(false)
 
 
     return {
         getActiveTheme,
         setActiveTheme,
+        tabIndex,
         newRangeModalVisible,
         newTypeModalVisible,
+        addHolderModalVisible,
         globalLoader,
         setGlobalLoader,
         navigationLoader
     }
+}, {
+    persist: true
 })

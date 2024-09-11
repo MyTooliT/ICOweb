@@ -19,6 +19,8 @@ import { consumeNewMetadata } from './helper.ts';
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 // eslint-disable-next-line max-len
 import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
+import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import { findNextFree } from '@/utils/helper.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
   const sensorList = ref<Array<Sensor>>(sensorListPreset);
@@ -77,20 +79,6 @@ export const useHardwareStore = defineStore('hardware', () => {
     sensorRangeList.value = sensorRangeList.value.filter(range => range.physicalUnit !== type.physicalUnit)
   }
 
-  const nextFreeSensorChannel = computed<number>(() => {
-    const usedChannels = sensorList.value.map(sensor => sensor.channel).sort()
-    let found = false
-    let guess = 1
-    while (!found) {
-      if (usedChannels.includes(guess)) {
-        guess++
-      } else {
-        found = true
-      }
-    }
-    return guess
-  })
-
   const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
   const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
     return _STHDeviceList.value
@@ -134,6 +122,67 @@ export const useHardwareStore = defineStore('hardware', () => {
     return _STUDeviceList.value[0]
   })
 
+  /*
+  ******************************************************
+  *                  HolderConfig State                *
+  ******************************************************
+  */
+
+  const holderList = ref<Array<HolderConfig>>(holderListPreset)
+
+  function getHolder(id: string): HolderConfig | undefined {
+    const holder = holderList.value.find(holder => holder.id === id)
+    return holder as HolderConfig ?? undefined
+  }
+
+  function removeHolderById(id: string): void {
+    const index = holderList.value.map(holder => holder.id).indexOf(id)
+    if(index > -1) {
+      holderList.value.splice(index, 1)
+    }
+  }
+
+  function removeSensorFromHolder(
+    holderId: string,
+    sensorConfig: { channel: number, sensor: Sensor }
+  ) {
+    const holder = getHolder(holderId)
+    if(holder) {
+      const index = holder.sensors.indexOf(sensorConfig)
+      if(index > -1) {
+        holder.sensors.splice(index, 1)
+      }
+    }
+  }
+
+  function addSensorToHolder(holderId: string) {
+    const holder = getHolder(holderId)
+    if(holder) {
+      const channels = holder.sensors.map(sensor => sensor.channel).sort()
+      // Note: Apparently, 255 is the limit of the firmware according to CB
+      if(channels.length >= 255) { return }
+      holder.sensors.push({
+        channel: findNextFree(channels),
+        sensor: sensorList.value[0]
+      })
+    }
+  }
+
+  function addHolder(id: string, name: string) {
+    const holder = new HolderConfig(id, name, sensorListPreset.slice(0, 3)
+      .map((preset, index) => {
+      return {
+        channel: index + 1,
+        sensor: preset
+      }
+    }))
+    holderList.value.push(holder)
+  }
+
+  function holderIDIsViable(id: string): boolean {
+    return !holderList.value.map(holder => holder.id).includes(id)
+  }
+
   return {
     sensorList,
     addSensor,
@@ -156,8 +205,13 @@ export const useHardwareStore = defineStore('hardware', () => {
     sensorRangeList,
     sensorRangeListForUnit,
     removeRangesByType,
-    nextFreeSensorChannel,
-    addSensorRange
+    addSensorRange,
+    holderList,
+    removeHolderById,
+    removeSensorFromHolder,
+    addSensorToHolder,
+    addHolder,
+    holderIDIsViable
   }
 }, {
   persist: {
@@ -171,14 +225,37 @@ export const useHardwareStore = defineStore('hardware', () => {
 
 // eslint-disable max-line-width
 const sensorListPreset = Array<Sensor>(
-  new Sensor('Acceleration', 'g', -100, 100, true, 11, 'X Axis 100g'),
-  new Sensor('Acceleration', 'g', -40, 40, true, 2, 'Y Axis 40'),
-  new Sensor('Acceleration', 'g', -40, 40, true, 3, 'Z Axis 40'),
-  new Sensor('Acceleration', 'g', -40, 40, true, 4, 'X Axis 40'),
-  new Sensor('Temperature', 'K', 0, 1000, true, 5, 'Tool Temperature'),
-  new Sensor('Light', 'cd', 0, 1000, true, 6, 'Light'),
-  new Sensor('Backpack', '-', 0, 0, true, 7, 'Backpack-Slot Channel 1'),
-  new Sensor('Backpack', '-', 0, 0, true, 8, 'Backpack-Slot Channel 2'),
-  new Sensor('Backpack', '-', 0, 0, true, 9, 'Backpack-Slot Channel 3'),
-  new Sensor('Voltage', 'V', 0, 3.7, true, 10, 'Battery Voltage')
+  new Sensor('Acceleration', 'g', -100, 100, true, 'X Axis 100g'),
+  new Sensor('Acceleration', 'g', -40, 40, true, 'Y Axis 40'),
+  new Sensor('Acceleration', 'g', -40, 40, true, 'Z Axis 40'),
+  new Sensor('Acceleration', 'g', -40, 40, true, 'X Axis 40'),
+  new Sensor('Temperature', 'K', 0, 1000, true, 'Tool Temperature'),
+  new Sensor('Light', 'cd', 0, 1000, true, 'Light'),
+  new Sensor('Backpack', '-', 0, 0, true, 'Backpack-Slot Channel 1'),
+  new Sensor('Backpack', '-', 0, 0, true, 'Backpack-Slot Channel 2'),
+  new Sensor('Backpack', '-', 0, 0, true, 'Backpack-Slot Channel 3'),
+  new Sensor('Voltage', 'V', 0, 3.7, true, 'Battery Voltage')
+)
+
+const holderListPreset = Array<HolderConfig>(
+  new HolderConfig('Demo STH', 'sth-demo', [
+    {channel: 1, sensor: sensorListPreset[0]},
+    {channel: 2, sensor: sensorListPreset[1]},
+    {channel: 3, sensor: sensorListPreset[2]},
+  ]),
+  new HolderConfig('Demo STH 22', 'sth-demo-2', [
+    {channel: 1, sensor: sensorListPreset[3]},
+    {channel: 2, sensor: sensorListPreset[4]},
+    {channel: 3, sensor: sensorListPreset[5]},
+  ]),
+  new HolderConfig('Demo STH', 'sth-demo-3', [
+    {channel: 1, sensor: sensorListPreset[0]},
+    {channel: 2, sensor: sensorListPreset[1]},
+    {channel: 3, sensor: sensorListPreset[2]},
+  ]),
+  new HolderConfig('Demo STH 22', 'sth-demo-4', [
+    {channel: 1, sensor: sensorListPreset[3]},
+    {channel: 2, sensor: sensorListPreset[4]},
+    {channel: 3, sensor: sensorListPreset[5]},
+  ])
 )

@@ -5,6 +5,7 @@ import Button from 'primevue/button';
 <template>
   <Button
     rounded
+    outlined
     size="small"
     label="Delete"
     icon="pi pi-times"

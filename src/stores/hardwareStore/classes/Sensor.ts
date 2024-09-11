@@ -6,8 +6,7 @@ export class Sensor {
   public sensorType: SensorType
   public sensorRange: SensorRange;
   public expose: boolean
-  public channel: number
-  private name: string
+  public name: string
 
   constructor(
     physicalDimension: TPhysicalDimension,
@@ -15,25 +14,15 @@ export class Sensor {
     lowerBound: TBound,
     upperBound: TBound,
     expose: boolean = true,
-    channel: number,
     name: string
   ) {
     this.sensorType = new SensorType(physicalDimension, physicalUnit);
     this.sensorRange = new SensorRange(physicalUnit, lowerBound, upperBound);
     this.expose = expose;
-    this.channel = channel;
     this.name = name;
   }
 
   public getSensorRange(): SensorRange { return this.sensorRange; }
-
-  public getChannel(): number {
-    return this.channel;
-  }
-
-  public setChannel(channel: number): void {
-    this.channel = channel;
-  }
 
   public getName(): string {
     return this.name;
@@ -43,6 +32,11 @@ export class Sensor {
     this.name = name;
   }
 
+  public getFullRepr(): string {
+    // eslint-disable-next-line max-len
+    return `${this.name} (${this.sensorType.physicalDimension} | ${this.sensorRange.getRangeRepr()})`
+  }
+
   public toJSON() {
     return {
       physicalDimension: this.sensorType.physicalDimension,
@@ -50,7 +44,6 @@ export class Sensor {
       lowerBound: this.sensorRange.getLowerBound(),
       upperBound: this.sensorRange.getUpperBound(),
       expose: this.expose,
-      channel: this.channel,
       name: this.name,
       classtype: 'Sensor'
     }

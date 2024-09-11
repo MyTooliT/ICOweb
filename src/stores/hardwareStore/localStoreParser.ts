@@ -6,6 +6,7 @@ import {
   SensorRange,
   SensorType
 } from '@/stores/hardwareStore/classes/Sensor.ts';
+import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 
 export function deserializeWithClassParsing(value: string): StateTree {
   const deserialized = JSON.parse(value)
@@ -52,7 +53,6 @@ function parseItem(item: any): any {
           item.lowerBound,
           item.upperBound,
           item.expose,
-          item.channel,
           item.name
         )
 
@@ -68,6 +68,25 @@ function parseItem(item: any): any {
           item.lowerBound,
           item.upperBound,
           item.isSymmetricThreshold,
+        )
+
+      case 'Holder':
+        return new HolderConfig(
+          item.name,
+          item.id,
+          item.sensors.map((entry: any) => {
+            return {
+              channel: entry.channel,
+              sensor: new Sensor(
+                entry.sensor.physicalDimension,
+                entry.sensor.physicalUnit,
+                entry.sensor.lowerBound,
+                entry.sensor.upperBound,
+                entry.sensor.expose,
+                entry.sensor.name
+              )
+            }
+          })
         )
     }
   } else {
