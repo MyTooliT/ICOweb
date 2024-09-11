@@ -18,6 +18,7 @@ import {
   onBeforeMount,
   onMounted
 } from 'vue';
+import TextBlock from '@/components/elements/misc/TextBlock.vue';
 
 const store = useHardwareStore()
 const generalStore = useGeneralStore()
@@ -48,8 +49,7 @@ function handleNewSensor(): void {
     lowerBound,
     upperBound,
     true,
-      store.nextFreeSensorChannel,
-    `New Sensor #${store.nextFreeSensorChannel}`
+    'New Sensor'
   );
   store.addSensor(sens)
 }
@@ -74,98 +74,81 @@ onMounted(() => {
 <template>
   <DefaultLayout>
     <div class="flex flex-col">
-      <div
-        class="flex flex-row justify-between border-b border-gray-200 pb-3 mb-3"
-      >
-        <div>
-          <h2 class="font-medium text-lg">
-            Global Sensor Table
-          </h2>
-          <h6>
-            The general sensor table.
-            Here you can define what is accessible globally.
-          </h6>
-        </div>
-        <Button
-          outlined
-          label="Add"
-          icon="pi pi-plus"
-          @click="handleNewSensor"
-        />
-      </div>
+      <TextBlock
+        heading="Global Sensor Table"
+        subheading="
+          The general sensor table.
+          Here you can define what is accessible globally."
+        @button-click="handleNewSensor"
+      />
       <SensorTable />
-      <div
-        class="
-        flex flex-col
-        border-t border-b border-gray-200
-        py-3 my-3"
-      >
-        <h2 class="text-lg font-medium">
-          Sensor Templates
-        </h2>
-        <h6 class="mb-2">
+      <TextBlock
+        heading="Sensor Templates"
+        subheading="
           All sensor types (physical dimensions) and their associated ranges
           can be managed here. Deletion is only possible if the respective
-          range or type is not in use.
-        </h6>
-        <div class="flex flex-row">
-          <div class="flex flex-col">
-            <div class="flex flex-row items-start">
-              <h3 class="mb-3 font-medium">
-                Sensor Types
-              </h3>
-              <Button
-                icon="pi pi-plus"
-                aria-label="Add sensor type"
-                size="small"
-                link
-                class="!p-0"
-                @click="handleNewType"
-              />
-              <NewSensorTypeModal />
-            </div>
-            <Chip
-              v-for="dim in store.sensorDimensionList"
-              :key="dim"
-              :label="dim.repr"
-              :removable="dimensionRemovable(dim)"
-              class="mb-1 border-primary border"
-              @remove="() => {
-                store.removeDimension(dim)
-                store.removeRangesByType(dim)
-              }"
+          range or type is not in use."
+        :border="false"
+        :button="false"
+        class="mt-3"
+      />
+      <div class="flex flex-row">
+        <div class="flex flex-col">
+          <div class="flex flex-row items-start">
+            <h3 class="mb-3 font-medium">
+              Sensor Types
+            </h3>
+            <Button
+              icon="pi pi-plus"
+              aria-label="Add sensor type"
+              size="small"
+              link
+              class="!p-0"
+              @click="handleNewType"
             />
+            <NewSensorTypeModal />
           </div>
-          <div class="border-gray-200 border-x mx-5" />
-          <div class="flex flex-col">
-            <div class="flex flex-row items-start">
-              <h3 class="mb-3 font-medium">
-                Available Ranges
-              </h3>
-              <Button
-                icon="pi pi-plus"
-                aria-label="Add sensor range"
-                size="small"
-                link
-                class="!p-0"
-                @click="handleNewRange"
-              />
-              <NewSensorRangeModal />
-            </div>
-            <div
-              v-for="dim in store.sensorDimensionList"
-              :key="dim.repr"
-              class="flex flex-row"
-            >
-              <Chip
-                v-for="range in store.sensorRangeList
-                  .filter(r => r.physicalUnit === dim.physicalUnit)"
-                :key="range"
-                :label="range.getRangeRepr()"
-                :removable="rangeRemovable(range)"
-                class="mb-1 mr-1 border-primary border"
-              />
-            </div>
+          <Chip
+            v-for="dim in store.sensorDimensionList"
+            :key="dim"
+            :label="dim.repr"
+            :removable="dimensionRemovable(dim)"
+            class="mb-1 border-primary border"
+            @remove="() => {
+              store.removeDimension(dim)
+              store.removeRangesByType(dim)
+            }"
+          />
+        </div>
+        <div class="border-gray-200 border-x mx-5" />
+        <div class="flex flex-col">
+          <div class="flex flex-row items-start">
+            <h3 class="mb-3 font-medium">
+              Available Ranges
+            </h3>
+            <Button
+              icon="pi pi-plus"
+              aria-label="Add sensor range"
+              size="small"
+              link
+              class="!p-0"
+              @click="handleNewRange"
+            />
+            <NewSensorRangeModal />
+          </div>
+          <div
+            v-for="dim in store.sensorDimensionList"
+            :key="dim.repr"
+            class="flex flex-row"
+          >
+            <Chip
+              v-for="range in store.sensorRangeList
+                .filter(r => r.physicalUnit === dim.physicalUnit)"
+              :key="range"
+              :label="range.getRangeRepr()"
+              :removable="rangeRemovable(range)"
+              class="mb-1 mr-1 border-primary border"
+            />
           </div>
         </div>
       </div>
