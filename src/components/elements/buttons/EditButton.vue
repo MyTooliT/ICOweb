@@ -19,7 +19,7 @@ const emits = defineEmits<{
 
 <template>
   <button
-    class="p-1 grid grid-cols-1 place-content-center grid-rows-1"
+    class="relative aspect-square"
     @click="(e) => {
       // Note:  the @click event should not be usable for the parent
       //        since this button should only ever be edit-save
@@ -33,32 +33,20 @@ const emits = defineEmits<{
     }"
   >
     <slot>
-      <div
-        :data-state="state"
-        class="
-        z-0 opacity-0 col-start-1 row-start-1
-        data-[state=readyToEdit]:z-10 data-[state=readyToEdit]:opacity-100">
-        <PencilIcon
-          class="size-6" />
+      <div v-if="state === 'readyToEdit'">
+        <PencilIcon class="size-6" />
+      </div>
+      <div v-if="state === 'loading'">
+        <ArrowPathIcon class="size-6 animate-spin" />
       </div>
       <div
-        :data-state="state"
-        class="
-        z-0 opacity-0 col-start-1 row-start-1
-        data-[state=loading]:z-10 data-[state=loading]:opacity-100">
-        <ArrowPathIcon
-          class="size-6 animate-spin" />
-      </div>
-      <div
-        :data-state="state"
-        class="
-        z-0 opacity-0  col-start-1 row-start-1
-        data-[state=editing]:z-10 data-[state=editing]:opacity-100
-        data-[state=editing]:text-gray-400
-        data-[state=readyToSave]:z-10 data-[state=readyToSave]:opacity-100
-        data-[state=readyToSave]:text-black">
+        v-if="state === 'editing'"
+        class="text-gray-400">
         <CheckCircleIcon
           class="size-6" />
+      </div>
+      <div v-if="state === 'readyToSave'">
+        <CheckCircleIcon class="size-6" />
       </div>
     </slot>
   </button>

@@ -81,14 +81,14 @@ function save(): void {
 <template>
   <div
     ref="editContainer"
-    class="flex"
+    class="flex justify-between"
   >
     <input
       :id="id"
       ref="inputRef"
       v-model="content"
       :data-state="currentState"
-      class="data-[state=readyToEdit]:bg-inherit"
+      class="data-[state=readyToEdit]:bg-inherit w-full"
       :class="props.classes"
       type="text"
       :placeholder="placeholder"

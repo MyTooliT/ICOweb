@@ -23,42 +23,17 @@ const gs = useGeneralStore()
 <template>
   <DataTable
     :value="store.sensorList"
-    sort-field="channel"
     :sort-order="1"
     size="small"
-    :resizable-columns="true"
     state-storage="session"
     state-key="dt-state-demo-session"
   >
     <Column
       header="Expose">
       <template #body="{ data }: { data: Sensor }">
-        <ToggleSwitch v-model="data.expose" />
-      </template>
-    </Column>
-    <Column
-      header="Ch."
-
-    >
-      <template #body="{ data }: { data: Sensor }">
-        <EditableInput
-          :id="`channel-${data.getChannel()}`"
-          :regex="new RegExp('^\d*')"
-          :initial-value="data.getChannel().toString()"
-          :disabled="false"
-          placeholder="Ch."
-          classes="w-8 flex-grow"
-          :save-fn="(
-            state: Ref<EditState>,
-            content: string,
-            focused: Ref<boolean>
-          ) => {
-            state.value = 'loading'
-            data.setChannel(Number(content))
-            focused.value = false
-            state.value = 'readyToEdit'
-          }"
-        />
+        <div class="w-full h-full flex  items-center">
+          <ToggleSwitch v-model="data.expose" />
+        </div>
       </template>
     </Column>
     <Column
