@@ -3,7 +3,6 @@ import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ToggleSwitch from 'primevue/toggleswitch';
-import Button from 'primevue/button';
 import Select from 'primevue/select';
 import {
   Sensor,
@@ -13,6 +12,7 @@ import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { Ref } from 'vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import DeleteButton from '@/components/elements/buttons/DeleteButton.vue';
 
 const store = useHardwareStore()
 const gs = useGeneralStore()
@@ -94,13 +94,7 @@ const gs = useGeneralStore()
       header="Action"
     >
       <template #body="{ data }: { data: Sensor }">
-        <Button
-          rounded
-          size="small"
-          label="Delete"
-          icon="pi pi-times"
-          icon-pos="right"
-          severity="danger"
+        <DeleteButton
           @click="store.removeSensor(data)"
         />
       </template>
