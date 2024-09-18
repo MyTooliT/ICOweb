@@ -43,13 +43,6 @@ const emits = defineEmits<{
           v-if="editable && deletable"
           class="flex flex-row gap-3">
           <Button
-            v-if="editable"
-            icon="pi pi-pencil"
-            rounded
-            outlined
-            size="small"
-          />
-          <Button
             v-if="deletable"
             icon="pi pi-times"
             severity="danger"
