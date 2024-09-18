@@ -1,3 +1,4 @@
+import { floatingAverage } from '@/stores/hardwareStore/helper.ts';
 import { ChartData } from 'chart.js';
 import { defineStore } from 'pinia';
 import {
@@ -5,7 +6,6 @@ import {
   Ref,
   ref
 } from 'vue';
-import { floatingAverage } from '@/stores/hardwareStore/helper.ts';
 
 export type TParsedData = {
   value: number,
@@ -16,10 +16,21 @@ export type TParsedData = {
 
 export type TWSState = 'open' | 'closed' | 'connecting'
 
+export const measurementChannels = ['first', 'second', 'third'] as const
+
+export type TChannelMap = {
+  [K in typeof measurementChannels[number]]: number
+}
+
 export const useMeasurementStore = defineStore('measurement', () => {
   const parsedData: Array<TParsedData> = []
   const continuous = ref<Boolean>(false);
   const acquisitionTime = ref<number>(10)
+  const selectedChannels = ref<TChannelMap>({
+    first: 0,
+    second: 0,
+    third: 0
+  })
 
   const parsedDataWrapper = computed(() => {
     return parsedData
@@ -43,7 +54,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     continuous,
     acquisitionTime,
     chartData,
-    chartDataWrapper
+    chartDataWrapper,
+    selectedChannels
   }
 }, {
   persist: true

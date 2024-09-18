@@ -24,6 +24,8 @@ const gs = useGeneralStore()
         v-for="holder in hw.holderList"
         :key="holder.id"
         :holder="holder"
+        :editable="true"
+        :deletable="true"
         @remove-holder="hw.removeHolderById(holder.id)"
         @remove-sensor="e => hw.removeSensorFromHolder(holder.id, e)"
         @add-sensor="hw.addSensorToHolder(holder.id)"

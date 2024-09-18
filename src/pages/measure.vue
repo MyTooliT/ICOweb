@@ -1,22 +1,26 @@
 <script setup lang="ts">
-
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import Heading3 from '@/components/typography/heading/Heading3.vue';
+/* eslint-disable max-len */
 import Chart from '@/components/elements/Chart.vue';
-import Button from 'primevue/button';
-import ToggleSwitch from 'primevue/toggleswitch';
-import InputNumber from 'primevue/inputnumber';
-import InputGroup from 'primevue/inputgroup';
-import { useRouter } from 'vue-router';
-import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import Heading3 from '@/components/typography/heading/Heading3.vue';
 import Heading5 from '@/components/typography/heading/Heading5.vue';
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
+  measurementChannels,
   updateChartData,
   useMeasurementStore,
   useMeasurementWebsocket
 } from '@/stores/measurementStore/measurementStore.ts';
-import { ref } from 'vue';
 import { ChartData } from 'chart.js';
+import Button from 'primevue/button';
+import InputGroup from 'primevue/inputgroup';
+import InputNumber from 'primevue/inputnumber';
+import Select from 'primevue/select';
+import ToggleSwitch from 'primevue/toggleswitch';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+/* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
@@ -46,9 +50,7 @@ function startStopClickHandler() {
       open()
       ws.value?.addEventListener('opened', () => {
         ws.value?.send(JSON.stringify({
-          first: 1,
-          second: 0,
-          third: 0,
+          ...mStore.selectedChannels,
           mac: hwStore.activeSTH?.getMacAddress(),
           time: mStore.acquisitionTime
         }));
@@ -57,6 +59,10 @@ function startStopClickHandler() {
   } else {
     close()
   }
+}
+
+function channelSensorRepr(assignedSensor: TAssignedSensor): string {
+  return `[${assignedSensor.channel}] ${assignedSensor.sensor.name}`
 }
 
 const chart = ref(undefined)
@@ -77,11 +83,13 @@ const chart = ref(undefined)
         @click="router.push('/')" />
     </div>
     <div class="flex flex-row">
-      <Chart
-        ref="chart"
-        class="flex flex-col flex-grow"
-        :data="chartData"
-      />
+      <div class="flex flex-col flex-grow">
+        <Chart
+          ref="chart"
+          class="flex flex-col flex-grow"
+          :data="chartData"
+        />
+      </div>
       <div class="flex flex-col flex-grow">
         <Heading5>Measure</Heading5>
         <div class="flex flex-row">
@@ -107,6 +115,45 @@ const chart = ref(undefined)
               @click="startStopClickHandler"
             />
           </InputGroup>
+        </div>
+        <div class="flex flex-col mt-3">
+          <h4 class="text-lg mt-3 mb-2">
+            Selected Channels
+          </h4>
+          <table>
+            <tr
+              v-for="slot in measurementChannels"
+              :key="slot"
+            >
+              <td>
+                <div class="w-full h-full flex justify-start items-center">
+                  <ToggleSwitch
+                    :model-value="mStore.selectedChannels[slot] !== 0"
+                    @click="() => {
+                      mStore.selectedChannels[slot] === 0
+                        ? mStore.selectedChannels[slot] = 1
+                        : mStore.selectedChannels[slot] = 0
+                    }"
+                  />
+                </div>
+              </td>
+              <td>
+                <span class="capitalize">{{ slot }}</span>
+              </td>
+              <td>
+                <Select
+                  v-if="!!hwStore.activeSTH"
+                  v-model="mStore.selectedChannels[slot]"
+                  :options="hwStore.activeHolder?.sensors"
+                  :option-value="(sens: TAssignedSensor) => sens.channel"
+                  :option-label="channelSensorRepr"
+                  :disabled="mStore.selectedChannels[slot] === 0 "
+                  placeholder="Disabled"
+                  fluid
+                />
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>

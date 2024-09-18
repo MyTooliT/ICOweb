@@ -213,6 +213,12 @@ export const useHardwareStore = defineStore('hardware', () => {
     return !holderList.value.map(holder => holder.id).includes(id)
   }
 
+  const activeHolder = computed<HolderConfig | undefined>(() => {
+    const id = activeSTH.value?.holderConfigId
+    if(!id) return undefined
+    return getHolder(id)
+  })
+
   return {
     sensorList,
     addSensor,
@@ -244,7 +250,9 @@ export const useHardwareStore = defineStore('hardware', () => {
     holderIDIsViable,
     exposedSensors,
     getExposedSensorsAsHolderConfig,
-    canUnexposeSensor
+    canUnexposeSensor,
+    getHolder,
+    activeHolder
   }
 }, {
   persist: {
@@ -271,24 +279,14 @@ const sensorListPreset = Array<Sensor>(
 )
 
 const holderListPreset = Array<HolderConfig>(
-  new HolderConfig('Demo STH', 'sth-demo', [
+  new HolderConfig('Test STH', 'test-sth', [
     {channel: 1, sensor: sensorListPreset[0]},
     {channel: 2, sensor: sensorListPreset[1]},
     {channel: 3, sensor: sensorListPreset[2]},
   ]),
-  new HolderConfig('Demo STH 22', 'sth-demo-2', [
-    {channel: 1, sensor: sensorListPreset[3]},
-    {channel: 2, sensor: sensorListPreset[4]},
-    {channel: 3, sensor: sensorListPreset[5]},
-  ]),
-  new HolderConfig('Demo STH', 'sth-demo-3', [
+  new HolderConfig('Stamperl', 'stamperl', [
     {channel: 1, sensor: sensorListPreset[0]},
     {channel: 2, sensor: sensorListPreset[1]},
     {channel: 3, sensor: sensorListPreset[2]},
-  ]),
-  new HolderConfig('Demo STH 22', 'sth-demo-4', [
-    {channel: 1, sensor: sensorListPreset[3]},
-    {channel: 2, sensor: sensorListPreset[4]},
-    {channel: 3, sensor: sensorListPreset[5]},
   ])
 )
