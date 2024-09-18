@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import ToggleSwitch from 'primevue/toggleswitch';
-import Select from 'primevue/select';
+import DeleteButton from '@/components/elements/buttons/DeleteButton.vue';
+import { EditState } from '@/components/elements/buttons/types.ts';
+import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import {
   Sensor,
   SensorRange
 } from '@/stores/hardwareStore/classes/Sensor.ts';
-import EditableInput from '@/components/elements/inputs/EditableInput.vue';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
+import Select from 'primevue/select';
+import ToggleSwitch from 'primevue/toggleswitch';
 import { Ref } from 'vue';
-import { EditState } from '@/components/elements/buttons/types.ts';
-import DeleteButton from '@/components/elements/buttons/DeleteButton.vue';
 
 const store = useHardwareStore()
 </script>
@@ -76,6 +76,9 @@ const store = useHardwareStore()
           :regex="new RegExp('^\d*')"
           :initial-value="data.getName()"
           :disabled="false"
+          :valid-fn="
+            (content: string) =>
+              !store.sensorList.map(sensor => sensor.name).includes(content)"
           placeholder="Ch."
           :save-fn="
             (state: Ref<EditState>, content: string, focused: Ref<boolean>) =>

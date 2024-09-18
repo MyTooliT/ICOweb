@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import EditButton from '@/components/elements/buttons/EditButton.vue';
+import { EditState } from '@/components/elements/buttons/types.ts';
+import {
+  MaybeElementRef,
+  onClickOutside,
+  useFocus
+} from '@vueuse/core';
 import {
   computed,
   ComputedRef,
@@ -8,12 +14,6 @@ import {
   Ref,
   watch
 } from 'vue';
-import { EditState } from '@/components/elements/buttons/types.ts';
-import {
-  MaybeElementRef,
-  onClickOutside,
-  useFocus
-} from '@vueuse/core';
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -23,12 +23,14 @@ const props = withDefaults(defineProps<{
   initialValue: string,
   saveFn: (state: Ref<EditState>, content: string, focused: Ref<boolean>)
     => Promise<void>,
-  classes?: string
+  classes?: string,
+  validFn: (content: string) => boolean
 }>(), {
   placeholder: 'Enter value...',
   disabled: false,
   initialValue: '',
-  classes: ''
+  classes: '',
+  validFn: () => true
 })
 
 watch(props, () => {
@@ -54,7 +56,7 @@ const { focused } = useFocus(inputRef as MaybeElementRef, {
 })
 
 const contentValid: ComputedRef<boolean> = computed(() => {
-  return props.regex.test(content.value)
+  return props.regex.test(content.value) && props.validFn(content.value)
 })
 
 const emits = defineEmits<{
