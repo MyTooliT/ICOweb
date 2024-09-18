@@ -3,6 +3,7 @@ import {
   disconnectSTHDevice,
   renameSTHDevice
 } from '@/api/requests.ts';
+import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import {
   Device,
   TDeviceConnectionStatus,
@@ -17,14 +18,14 @@ export class STHDevice extends Device {
   private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
   private isSelected: Boolean = false;
-  public holderConfigId: string | undefined = undefined;
+  public holderConfig: HolderConfig | undefined
 
   constructor(
     device_number: TDeviceNumber,
     name: TName,
     mac_address: TMac,
     rssi: number,
-    holderConfigId: string,
+    holderConfigId: HolderConfig | undefined = undefined,
     status: TDeviceConnectionStatus = 'disconnected',
     regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
     isSelected: Boolean = false
@@ -33,7 +34,7 @@ export class STHDevice extends Device {
     this.regex = regex
     this.rssi = rssi
     this.isSelected = isSelected
-    this.holderConfigId = holderConfigId
+    this.holderConfig = holderConfigId
   }
 
   public getRssiRepr(): string {
@@ -115,7 +116,7 @@ export class STHDevice extends Device {
       name: this.name,
       mac_address: this.mac_address,
       rssi: this.rssi,
-      holderConfigId: this.holderConfigId,
+      holderConfig: this.holderConfig,
       status: this.connection_status,
       regex: this.regex,
       isSelected: this.isSelected,

@@ -2,13 +2,11 @@
 // eslint-disable-next-line max-len
 import { EditState } from '@/components/elements/buttons/types.ts';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
-import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import Select from 'primevue/select';
 import { Ref } from 'vue';
 
 const store = useHardwareStore()
@@ -70,17 +68,6 @@ function rowClass(data: STHDevice) {
       header="RSSI">
       <template #body="{ data }: { data: STHDevice }">
         {{ data.getRssiRepr() }}
-      </template>
-    </Column>
-    <Column
-      header="Holder Template">
-      <template #body="{ data }: { data: STHDevice }">
-        <Select
-          v-model="data.holderConfigId"
-          :options="store.holderList"
-          :option-value="(holder: HolderConfig) => holder.id"
-          :option-label="(holder: HolderConfig) => holder.name"
-        />
       </template>
     </Column>
     <Column header="Actions">

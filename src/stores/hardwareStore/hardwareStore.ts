@@ -1,3 +1,15 @@
+import {
+  getSTHDevicesMeta,
+  getSTUDevices
+} from '@/api/requests.ts';
+import {
+  HolderConfig,
+  TAssignedSensor
+} from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
+// eslint-disable-next-line max-len
+import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
+import { findNextFree } from '@/utils/helper.ts';
 import { defineStore } from 'pinia';
 import {
   computed,
@@ -11,19 +23,7 @@ import {
   SensorType
 } from './classes/Sensor.ts';
 import { STHDevice } from './classes/STHDevice.ts';
-import {
-  getSTHDevicesMeta,
-  getSTUDevices
-} from '@/api/requests.ts';
 import { consumeNewMetadata } from './helper.ts';
-import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
-// eslint-disable-next-line max-len
-import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
-import {
-  HolderConfig,
-  TAssignedSensor
-} from '@/stores/hardwareStore/classes/HolderConfig.ts';
-import { findNextFree } from '@/utils/helper.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
   const sensorList = ref<Array<Sensor>>(sensorListPreset);
@@ -158,10 +158,7 @@ export const useHardwareStore = defineStore('hardware', () => {
     }))
   })
 
-  const holderList = computed<Array<HolderConfig>>(() => [
-    ...holderListPreset,
-    getExposedSensorsAsHolderConfig.value
-  ])
+  const holderList = ref<Array<HolderConfig>>(holderListPreset)
 
   function getHolder(id: string): HolderConfig | undefined {
     const holder = holderList.value.find(holder => holder.id === id)
