@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Ref } from 'vue';
-import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import EditableInput from '@/components/elements/inputs/EditableInput.vue';
-import { EditState } from '@/components/elements/buttons/types.ts';
-import Button from 'primevue/button';
 // eslint-disable-next-line max-len
-import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
+import { EditState } from '@/components/elements/buttons/types.ts';
+import EditableInput from '@/components/elements/inputs/EditableInput.vue';
+import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import Button from 'primevue/button';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
+import { Ref } from 'vue';
 
 const store = useHardwareStore()
 
@@ -50,6 +49,7 @@ function rowClass(data: STHDevice) {
           :regex="data.getRegex()"
           :initial-value="data.getName()"
           :disabled="false"
+          :valid-fn="() => true"
           placeholder="Device Name"
           :save-fn="(
             state: Ref<EditState>,
@@ -72,29 +72,35 @@ function rowClass(data: STHDevice) {
     </Column>
     <Column header="Actions">
       <template #body="{ data }: { data: STHDevice }">
+        <!--
         <ConnectionButton
           class="mr-3"
           :device="data"
           @connect="() => data.connect()"
           @disconnect="() => data.disconnect()"
         />
-        <Button
-          rounded
-          class="mr-3"
-          size="small"
-          label="Measure"
-          icon="pi pi-chart-bar"
-          :disabled="data.getConnectionStatus() !== 'connected'"
-          @click="$router.push('/measure')"
-        />
+        -->
         <Button
           rounded
           size="small"
           :label="data.getSelected() ? 'Deselect' : 'Select'"
           @click="() => {
-            store.deselectSTHDevices()
-            data.setSelected(!data.getSelected())
+            if(data.getSelected()) {
+              store.deselectSTHDevices()
+            } else {
+              store.deselectSTHDevices()
+              data.setSelected(true)
+            }
           }"
+        />
+        <Button
+          rounded
+          class="ml-3"
+          size="small"
+          label="Measure"
+          icon="pi pi-chart-bar"
+          :disabled="!data.getSelected()"
+          @click="$router.push('/measure')"
         />
       </template>
     </Column>

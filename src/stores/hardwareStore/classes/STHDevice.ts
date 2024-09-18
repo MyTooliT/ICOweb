@@ -1,16 +1,16 @@
 import {
+  connectSTHDevice,
+  disconnectSTHDevice,
+  renameSTHDevice
+} from '@/api/requests.ts';
+import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import {
   Device,
   TDeviceConnectionStatus,
   TDeviceNumber,
   TMac,
   TName
 } from './Device.ts';
-import {
-  connectSTHDevice,
-  disconnectSTHDevice,
-  renameSTHDevice
-} from '@/api/requests.ts';
-import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 
 export type TRssi = number;
 
@@ -116,7 +116,7 @@ export class STHDevice extends Device {
       name: this.name,
       mac_address: this.mac_address,
       rssi: this.rssi,
-      holderConfigId: this.holderConfig,
+      holderConfig: this.holderConfig,
       status: this.connection_status,
       regex: this.regex,
       isSelected: this.isSelected,

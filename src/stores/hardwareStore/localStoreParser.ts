@@ -1,12 +1,12 @@
-import { StateTree } from 'pinia';
-import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
-import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import {
   Sensor,
   SensorRange,
   SensorType
 } from '@/stores/hardwareStore/classes/Sensor.ts';
-import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
+import { StateTree } from 'pinia';
 
 export function deserializeWithClassParsing(value: string): StateTree {
   const deserialized = JSON.parse(value)
@@ -41,6 +41,7 @@ function parseItem(item: any): any {
           item.name,
           item.mac_address,
           item.rssi,
+          item.holderConfig,
           item.connection_status,
           item.regex,
           item.isSelected
