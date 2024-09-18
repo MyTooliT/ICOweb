@@ -83,7 +83,7 @@ const gs = useGeneralStore()
               <Select
                 v-model="data.sensor"
                 class="w-full"
-                :options="hw.sensorList"
+                :options="hw.exposedSensors"
                 :option-label="(item: Sensor) => item.getFullRepr()"
               />
             </template>

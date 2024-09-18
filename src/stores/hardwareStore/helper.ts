@@ -32,7 +32,8 @@ export function consumeNewMetadata(
         item.device_number,
         item.name,
         item.mac_address,
-        item.rssi
+        item.rssi,
+        undefined
       ))
     })
   }

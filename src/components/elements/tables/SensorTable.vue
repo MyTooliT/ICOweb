@@ -28,7 +28,9 @@ const store = useHardwareStore()
       header="Expose">
       <template #body="{ data }: { data: Sensor }">
         <div class="w-full h-full flex  items-center">
-          <ToggleSwitch v-model="data.expose" />
+          <ToggleSwitch
+            v-model="data.expose"
+            :disabled="store.canUnexposeSensor(data)" />
         </div>
       </template>
     </Column>

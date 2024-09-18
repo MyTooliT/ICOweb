@@ -37,6 +37,20 @@ export const useHardwareStore = defineStore('hardware', () => {
     }
   }
 
+  const exposedSensors = computed<Array<Sensor>>(() => {
+    return sensorList.value.filter(sensor => sensor.expose)
+  })
+
+  function canUnexposeSensor(sensor: Sensor): boolean {
+    const assignedSensors = new Set(holderList.value
+      .filter(holder => holder.id !== 'all-sensors')
+      .map(holder => holder.sensors)
+      .flat()
+      .map(sensor => sensor.sensor.name))
+
+    return assignedSensors.has(sensor.name)
+  }
+
   const sensorDimensionList = ref<Array<SensorType>>([
     new SensorType('Acceleration', 'g'),
     new SensorType('Temperature', 'K'),
@@ -128,7 +142,23 @@ export const useHardwareStore = defineStore('hardware', () => {
   ******************************************************
   */
 
-  const holderList = ref<Array<HolderConfig>>(holderListPreset)
+  const getExposedSensorsAsHolderConfig = computed<HolderConfig>(() => {
+    // const sensors = sensorList.value.filter(sensor => sensor.expose)
+    return new HolderConfig(
+      'All Sensors',
+      'all-sensors',
+      exposedSensors.value.map((sensor, index) => {
+      return {
+        channel: index + 1,
+        sensor: sensor,
+      }
+    }))
+  })
+
+  const holderList = computed<Array<HolderConfig>>(() => [
+    ...holderListPreset,
+    getExposedSensorsAsHolderConfig.value
+  ])
 
   function getHolder(id: string): HolderConfig | undefined {
     const holder = holderList.value.find(holder => holder.id === id)
@@ -211,7 +241,10 @@ export const useHardwareStore = defineStore('hardware', () => {
     removeSensorFromHolder,
     addSensorToHolder,
     addHolder,
-    holderIDIsViable
+    holderIDIsViable,
+    exposedSensors,
+    getExposedSensorsAsHolderConfig,
+    canUnexposeSensor
   }
 }, {
   persist: {

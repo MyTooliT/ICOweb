@@ -10,20 +10,22 @@ import {
   disconnectSTHDevice,
   renameSTHDevice
 } from '@/api/requests.ts';
+import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 
 export type TRssi = number;
 
 export class STHDevice extends Device {
-  // TODO: Add default sensor config
   private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
   private isSelected: Boolean = false;
+  public holderConfig: HolderConfig | undefined
 
   constructor(
     device_number: TDeviceNumber,
     name: TName,
     mac_address: TMac,
     rssi: number,
+    holderConfigId: HolderConfig | undefined = undefined,
     status: TDeviceConnectionStatus = 'disconnected',
     regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
     isSelected: Boolean = false
@@ -32,6 +34,7 @@ export class STHDevice extends Device {
     this.regex = regex
     this.rssi = rssi
     this.isSelected = isSelected
+    this.holderConfig = holderConfigId
   }
 
   public getRssiRepr(): string {
@@ -113,6 +116,7 @@ export class STHDevice extends Device {
       name: this.name,
       mac_address: this.mac_address,
       rssi: this.rssi,
+      holderConfigId: this.holderConfig,
       status: this.connection_status,
       regex: this.regex,
       isSelected: this.isSelected,
