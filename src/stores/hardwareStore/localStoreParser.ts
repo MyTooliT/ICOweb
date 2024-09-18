@@ -41,7 +41,7 @@ function parseItem(item: any): any {
           item.name,
           item.mac_address,
           item.rssi,
-          item.holderConfig,
+          item.holderConfigId,
           item.connection_status,
           item.regex,
           item.isSelected

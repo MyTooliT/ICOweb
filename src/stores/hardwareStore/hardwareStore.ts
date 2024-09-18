@@ -158,7 +158,10 @@ export const useHardwareStore = defineStore('hardware', () => {
     }))
   })
 
-  const holderList = ref<Array<HolderConfig>>(holderListPreset)
+  const holderList = computed<Array<HolderConfig>>(() => [
+    ...holderListPreset,
+    getExposedSensorsAsHolderConfig.value
+  ])
 
   function getHolder(id: string): HolderConfig | undefined {
     const holder = holderList.value.find(holder => holder.id === id)
