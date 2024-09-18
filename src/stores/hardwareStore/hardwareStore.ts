@@ -19,7 +19,10 @@ import { consumeNewMetadata } from './helper.ts';
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 // eslint-disable-next-line max-len
 import { deserializeWithClassParsing } from '@/stores/hardwareStore/localStoreParser.ts';
-import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import {
+  HolderConfig,
+  TAssignedSensor
+} from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { findNextFree } from '@/utils/helper.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
@@ -174,7 +177,7 @@ export const useHardwareStore = defineStore('hardware', () => {
 
   function removeSensorFromHolder(
     holderId: string,
-    sensorConfig: { channel: number, sensor: Sensor }
+    sensorConfig: TAssignedSensor
   ) {
     const holder = getHolder(holderId)
     if(holder) {

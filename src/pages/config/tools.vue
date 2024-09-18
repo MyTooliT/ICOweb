@@ -1,17 +1,20 @@
 <script setup lang="ts">
+/* eslint-disable max-len */
+import DeleteButton from '@/components/elements/buttons/DeleteButton.vue';
+import TextBlock from '@/components/elements/misc/TextBlock.vue';
+import AddHolderModal from '@/components/elements/modals/AddHolderModal.vue';
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
+import { Sensor } from '@/stores/hardwareStore/classes/Sensor.ts';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import Button from 'primevue/button';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
+import InputNumber from 'primevue/inputnumber';
 import Panel from 'primevue/panel';
 import Select from 'primevue/select';
-import InputNumber from 'primevue/inputnumber';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import TextBlock from '@/components/elements/misc/TextBlock.vue';
-import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
-import { Sensor } from '@/stores/hardwareStore/classes/Sensor.ts';
-import DeleteButton from '@/components/elements/buttons/DeleteButton.vue';
-import AddHolderModal from '@/components/elements/modals/AddHolderModal.vue';
-import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+/* eslint-enable max-len */
 
 const hw = useHardwareStore()
 const gs = useGeneralStore()
@@ -66,7 +69,7 @@ const gs = useGeneralStore()
             class="w-16"
           >
             <template
-              #body="{ data }: { data: { channel: number, sensor: Sensor } }">
+              #body="{ data }: { data: TAssignedSensor }">
               <InputNumber
                 v-model="data.channel"
                 :min="1"
@@ -79,7 +82,7 @@ const gs = useGeneralStore()
             header="Connected Sensor"
           >
             <template
-              #body="{ data }: { data: { channel: number, sensor: Sensor } }">
+              #body="{ data }: { data: TAssignedSensor }">
               <Select
                 v-model="data.sensor"
                 class="w-full"
@@ -92,7 +95,7 @@ const gs = useGeneralStore()
             header="Action"
           >
             <template
-              #body="{ data }: { data: { channel: number, sensor: Sensor } }">
+              #body="{ data }: { data: TAssignedSensor }">
               <DeleteButton
                 @click="hw.removeSensorFromHolder(holder.id, data)"
               />
