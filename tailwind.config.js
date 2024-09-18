@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+import { textOrientation, widthStretch } from './src/utils/tailwindPlugins.ts';
+
 export default {
   content: ['./src/**/*.{html,js,vue}'],
-  plugins: [require('tailwindcss-primeui')],
+  plugins: [require('tailwindcss-primeui'), textOrientation, widthStretch],
   theme: {
     data: {
       primary: 'color~="primary"',
