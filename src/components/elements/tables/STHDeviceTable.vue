@@ -37,7 +37,6 @@ function rowClass(data: STHDevice) {
 <template>
   <DataTable
     :value="store.getSTHDeviceList"
-    :loading="store.STHDevicesLoading"
     :row-class="rowClass"
   >
     <Column

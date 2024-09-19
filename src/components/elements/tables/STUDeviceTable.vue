@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import { useToast } from 'primevue/usetoast';
-import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import Button from 'primevue/button';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
+import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 
 const store = useHardwareStore()
@@ -14,9 +14,7 @@ const loading = ref<boolean>(false)
 </script>
 
 <template>
-  <DataTable
-    :value="store.getSTUDeviceList"
-    :loading="store.STUDeviceLoading">
+  <DataTable :value="store.getSTUDeviceList">
     <Column
       header="ID">
       <template #body="{ data }: { data: STUDevice }">
