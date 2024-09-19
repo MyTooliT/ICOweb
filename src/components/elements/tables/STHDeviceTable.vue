@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
 
 // eslint-disable-next-line max-len
+import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
 import { EditState } from '@/components/elements/buttons/types.ts';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
 import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
