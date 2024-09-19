@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
+
 // eslint-disable-next-line max-len
 import { EditState } from '@/components/elements/buttons/types.ts';
 import EditableInput from '@/components/elements/inputs/EditableInput.vue';
@@ -28,7 +30,7 @@ async function save(
 
 function rowClass(data: STHDevice) {
   // eslint-disable-next-line max-len
-  return [{'!bg-primary-container !text-on-primary-container': data.getSelected()}]
+  return [{'!bg-primary-container !text-on-primary-container': data.isConnected()}]
 }
 </script>
 
@@ -85,34 +87,18 @@ function rowClass(data: STHDevice) {
     </Column>
     <Column header="Actions">
       <template #body="{ data }: { data: STHDevice }">
-        <!--
         <ConnectionButton
           class="mr-3"
           :device="data"
           @connect="() => data.connect()"
           @disconnect="() => data.disconnect()"
         />
-        -->
         <Button
           rounded
-          size="small"
-          :label="data.getSelected() ? 'Deselect' : 'Select'"
-          @click="() => {
-            if(data.getSelected()) {
-              store.deselectSTHDevices()
-            } else {
-              store.deselectSTHDevices()
-              data.setSelected(true)
-            }
-          }"
-        />
-        <Button
-          rounded
-          class="ml-3"
           size="small"
           label="Measure"
           icon="pi pi-chart-bar"
-          :disabled="!data.getSelected()"
+          :disabled="!data.isConnected()"
           @click="$router.push('/measure')"
         />
       </template>

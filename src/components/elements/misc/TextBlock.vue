@@ -7,6 +7,7 @@ withDefaults(defineProps<{
   button?: boolean,
   buttonText?: string,
   buttonIconClass?: string
+  buttonLoading?: boolean
   border?: boolean
 }>(), {
   heading: '',
@@ -14,11 +15,12 @@ withDefaults(defineProps<{
   button: true,
   buttonText: 'Add',
   buttonIconClass: 'pi pi-plus',
+  buttonLoading: false,
   border: true
 })
 
 const emits = defineEmits<{
-  buttonClick: [void]
+  ( event: 'buttonClick' ): void
 }>()
 </script>
 
@@ -45,6 +47,7 @@ const emits = defineEmits<{
         outlined
         :label="buttonText"
         :icon="buttonIconClass"
+        :loading="buttonLoading"
         class="h-fit"
         @click="emits('buttonClick')"
       />

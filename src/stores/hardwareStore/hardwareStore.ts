@@ -96,6 +96,12 @@ export const useHardwareStore = defineStore('hardware', () => {
     sensorRangeList.value = sensorRangeList.value.filter(range => range.physicalUnit !== type.physicalUnit)
   }
 
+  /*
+  ******************************************************
+  *                     STH State                      *
+  ******************************************************
+  */
+
   const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
   const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
     return _STHDeviceList.value
@@ -108,11 +114,23 @@ export const useHardwareStore = defineStore('hardware', () => {
     STHDevicesLoading.value = false
   }
   const activeSTH = computed<STHDevice | undefined>(() => {
-    return _STHDeviceList.value.filter(entry => entry.getSelected())[0]
+    return _STHDeviceList.value.filter(entry => entry.isConnected())[0]
   })
   function deselectSTHDevices() {
-    _STHDeviceList.value.forEach(device => device.setSelected(false));
+    _STHDeviceList.value.forEach(
+      device => device.setConnectionStatus('disconnected'));
   }
+
+  const hasSTH = computed<boolean>(() => {
+    return _STHDeviceList.value.length > 0
+  })
+
+  /*
+  ******************************************************
+  *                     STU State                      *
+  ******************************************************
+  */
+
   const _STUDeviceList: Ref<Array<STUDevice>> = ref([])
   const getSTUDeviceList: ComputedRef<Array<STUDevice>> = computed(() => {
     return _STUDeviceList.value
@@ -137,6 +155,9 @@ export const useHardwareStore = defineStore('hardware', () => {
   const activeSTU = computed<STUDevice>(() => {
     // TODO: Implement more STU support
     return _STUDeviceList.value[0]
+  })
+  const hasSTU = computed<boolean>(() => {
+    return _STHDeviceList.value.length > 0
   })
 
   /*
@@ -252,7 +273,9 @@ export const useHardwareStore = defineStore('hardware', () => {
     getExposedSensorsAsHolderConfig,
     canUnexposeSensor,
     getHolder,
-    activeHolder
+    activeHolder,
+    hasSTU,
+    hasSTH
   }
 }, {
   persist: {

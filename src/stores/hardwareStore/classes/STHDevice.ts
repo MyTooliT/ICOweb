@@ -16,7 +16,6 @@ export type TRssi = number;
 export class STHDevice extends Device {
   private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
-  private isSelected: Boolean = false;
   public holderConfigId: string | undefined = undefined;
 
   constructor(
@@ -27,12 +26,10 @@ export class STHDevice extends Device {
     holderConfigId: string,
     status: TDeviceConnectionStatus = 'disconnected',
     regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
-    isSelected: Boolean = false
   ) {
     super(device_number, name, mac_address, status)
     this.regex = regex
     this.rssi = rssi
-    this.isSelected = isSelected
     this.holderConfigId = holderConfigId
   }
 
@@ -70,18 +67,6 @@ export class STHDevice extends Device {
     this.rssi = body.rssi
   }
 
-  public getSelected(): Boolean {
-    return this.isSelected;
-  }
-
-  public setSelected(value: Boolean = true): void {
-    this.isSelected = value;
-  }
-
-  public dump() {
-
-  }
-
   public async connect(): Promise<void> {
     this.connection_status = 'connecting'
     try {
@@ -102,6 +87,9 @@ export class STHDevice extends Device {
       throw e
     }
   }
+  public isConnected(): boolean {
+    return this.connection_status === 'connected'
+  }
   public measure(): Promise<void> {
     return Promise.reject('Not Implemented')
   }
@@ -118,7 +106,6 @@ export class STHDevice extends Device {
       holderConfigId: this.holderConfigId,
       status: this.connection_status,
       regex: this.regex,
-      isSelected: this.isSelected,
       classtype: 'STH'
     }
   }

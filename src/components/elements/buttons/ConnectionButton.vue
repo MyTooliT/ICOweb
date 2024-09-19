@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import Button from 'primevue/button';
 import { computed } from 'vue';
-import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 
 const props = defineProps<{
   device: STHDevice
@@ -34,7 +34,7 @@ const label = computed<string>(() => {
 const icon = computed<string>(() => {
   switch(props.device.getConnectionStatus()) {
     case 'connected':
-      return 'check'
+      return 'times'
 
     case 'connecting':
       return 'spinner'
@@ -63,6 +63,9 @@ function clickHandler(): void {
     rounded
     :label="label"
     :icon="`pi pi-${icon}`"
+    :severity="props.device.getConnectionStatus() === 'connected'
+      ? 'danger'
+      : 'primary'"
     :loading="['connecting', 'disconnecting']
       .includes(props.device.getConnectionStatus())"
     @click="clickHandler" />
