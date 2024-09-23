@@ -25,7 +25,7 @@ export type TChannelMap = {
 export const useMeasurementStore = defineStore('measurement', () => {
   const parsedData: Array<TParsedData> = []
   const continuous = ref<Boolean>(false);
-  const acquisitionTime = ref<number>(10)
+  const acquisitionTime = ref<number>(5)
   const selectedChannels = ref<TChannelMap>({
     first: 0,
     second: 0,
@@ -164,27 +164,37 @@ function parseData(raw: string): TParsedData | undefined
 }
 
 // eslint-disable-next-line max-len
-export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>): void {
+export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, drawIncrement: number = 10, window: number = 50): void {
   let start = 0
-  const x = rawData.map((entry, index) => {
-    if(index === 0) {
-      start = entry.timestamp
-      return 0
+  const x: number[] = []
+  const y: number[] = []
+  const show_x: number[] = []
+  const show_y: number[] = []
+
+  for(let i = 0; i < rawData.length; i++) {
+    if(i === 0) {
+      start = rawData[i].timestamp
+      x.push(0)
     } else {
-      return entry.timestamp - start
+      x.push(rawData[i].timestamp - start)
     }
-  })
-  const y = rawData.map(entry => entry.value)
+    y.push(rawData[i].value)
+
+    if(i % drawIncrement === 0) {
+      show_x.push(x[i])
+      show_y.push(y[i])
+    }
+  }
   chartData.value = {
-    labels: x,
+    labels: show_x,
     datasets: [
       {
         label: 'Raw Data',
-        data: y,
+        data: show_y,
         pointRadius: 0
       }, {
         label: 'Floating Average',
-        data: floatingAverage(y),
+        data: floatingAverage(y, window),
         backgroundColor: 'rgb(255, 0, 0)',
         pointRadius: 1
       }

@@ -36,7 +36,7 @@ const emits = defineEmits<{
         </h2>
       </slot>
       <slot name="subheading">
-        <h6>
+        <h6 v-if="subheading?.length > 0">
           {{ subheading }}
         </h6>
       </slot>

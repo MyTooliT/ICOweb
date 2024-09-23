@@ -1,11 +1,12 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
 import Chart from '@/components/elements/Chart.vue';
+import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
-import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
+//import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
+//import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
@@ -37,7 +38,9 @@ const chartData = ref<ChartData<'line'>>({
 const router = useRouter()
 const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
+/*
 const adcStore = useADCStore()
+*/
 const {
   open,
   close,
@@ -46,8 +49,22 @@ const {
   ws
 } = useMeasurementWebsocket(
   true,
-  () => updateChartData(storage.value, chartData)
+  () => updateChartData(
+    storage.value,
+    chartData,
+    drawIncrement.value,
+    windowWidth.value
+  )
 )
+
+function wrapUpdate() {
+  updateChartData(
+    storage.value,
+    chartData,
+    drawIncrement.value,
+    windowWidth.value
+  )
+}
 
 function startStopClickHandler() {
   if(state.value === 'closed') {
@@ -71,6 +88,12 @@ function channelSensorRepr(assignedSensor: TAssignedSensor): string {
 }
 
 const chart = ref(undefined)
+
+// Chart will draw every <displayDelta> value from data
+const drawIncrement = ref<number>(10)
+
+// Floating calculations like floatingAverage or IFTValue use this window
+const windowWidth = ref<number>(50)
 </script>
 
 <template>
@@ -82,12 +105,50 @@ const chart = ref(undefined)
         :button="false"
       />
       <div class="flex flex-row">
-        <div class="flex flex-col flex-grow">
+        <div class="flex flex-col flex-grow gap-3">
           <Chart
             ref="chart"
             class="flex flex-col flex-grow"
             :data="chartData"
           />
+          <TextBlock
+            heading="Calculation Settings"
+            :button="false"
+            :border="false"
+            class="!mb-0 !pb-0"
+          />
+          <table class="w-fit border-separate border-spacing-y-2">
+            <tr>
+              <td>
+                <h4 class="mr-3">
+                  Chart Draw Increment
+                </h4>
+              </td>
+              <td>
+                <CustomSlider
+                  v-model="drawIncrement"
+                  :min="1"
+                  :max="100"
+                  @slider-change="wrapUpdate"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h4 class="mr-3">
+                  IFT Window Width
+                </h4>
+              </td>
+              <td>
+                <CustomSlider
+                  v-model="windowWidth"
+                  :min="50"
+                  :max="250"
+                  @slider-change="wrapUpdate"
+                />
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="flex flex-col flex-grow gap-3">
           <NamedInput title="Devices">
@@ -178,16 +239,18 @@ const chart = ref(undefined)
           </div>
         </div>
       </div>
+      <!--
       <ADCDrawer />
+      -->
     </DefaultLayout>
-    <button
+    <!--    <button
       class="
         vertical-writing-lr orientation-mixed rotate-180
         bg-gray-200 h-full"
       @click="adcStore.ADCDrawerVisible = true"
     >
       Show ADC Config
-    </button>
+    </button>-->
   </div>
 </template>
 

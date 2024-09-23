@@ -1,4 +1,6 @@
 <script setup lang="ts">
+/* eslint-disable-next-line max-len */
+import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
 import {
   CategoryScale,
   Chart,
@@ -12,13 +14,9 @@ import {
   Title,
   Tooltip
 } from 'chart.js';
+import zoomPugin from 'chartjs-plugin-zoom';
+import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
-import {
-  useMeasurementStore
-} from '@/stores/measurementStore/measurementStore.ts';
-import {
-  computed,
-} from 'vue';
 
 Chart.register(
   LineController,
@@ -28,7 +26,8 @@ Chart.register(
   Title,
   CategoryScale,
   Tooltip,
-  Legend
+  Legend,
+  zoomPugin
 );
 
 const mStore = useMeasurementStore()
@@ -49,6 +48,27 @@ const options = computed<ChartOptions<'line'>>(() => {
           text: 'Seconds passed',
           align: 'center',
           display: true
+        }
+      }
+    },
+    plugins: {
+      decimation: {
+        enabled: true,
+        algorithm: 'min-max',
+      },
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'xy',
+        },
+        pan: {
+          enabled: true,
+          mode: 'xy',
         }
       }
     }
