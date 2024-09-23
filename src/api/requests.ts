@@ -3,7 +3,8 @@ import {
   STHDeviceResponseModel,
   STHRenameRequestModel,
   STHRenameResponseModel,
-  STUDeviceResponseModel
+  STUDeviceResponseModel,
+  ADCValues
 } from '@/client';
 import {
   get,
@@ -60,6 +61,24 @@ export async function renameSTHDevice(model: STHRenameRequestModel): Promise<STH
 export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
     get<STUDeviceResponseModel[]>('stu')
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function getADCValues(mac: string): Promise<ADCValues> {
+  return new Promise((resolve, reject) => {
+    get<ADCValues>(`sth/read-adc/${mac}`)
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+// eslint-disable-next-line max-len
+export async function writeADCValues(mac: string, values: ADCValues): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<{ mac: string, config: ADCValues}, void>
+      ('sth/write-adc', { mac: mac, config: values })
       .then(data => resolve(data))
       .catch(reject)
   })

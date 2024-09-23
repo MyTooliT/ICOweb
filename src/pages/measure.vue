@@ -3,10 +3,10 @@
 import Chart from '@/components/elements/Chart.vue';
 import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
-//import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
+import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-//import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
+import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
@@ -41,9 +41,7 @@ const chartData = ref<ChartData<'line'>>({
 const router = useRouter()
 const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
-/*
 const adcStore = useADCStore()
-*/
 const {
   open,
   close,
@@ -257,18 +255,16 @@ const canMeasure = computed<boolean>(() => {
           </div>
         </div>
       </div>
-      <!--
       <ADCDrawer />
-      -->
     </DefaultLayout>
-    <!--    <button
+    <button
       class="
         vertical-writing-lr orientation-mixed rotate-180
         bg-gray-200 h-full"
       @click="adcStore.ADCDrawerVisible = true"
     >
       Show ADC Config
-    </button>-->
+    </button>
   </div>
 </template>
 

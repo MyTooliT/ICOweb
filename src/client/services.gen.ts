@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, PingApiV1PingGetResponse, DelayApiV1DelayGetResponse, OptionsApiV1OptionsResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, PingApiV1PingGetResponse, DelayApiV1DelayGetResponse, OptionsApiV1OptionsResponse } from './types.gen';
 
 /**
  * Stu
@@ -77,7 +77,6 @@ export const stuDisableOtaApiV1StuOtaDisablePut = (data: StuDisableOtaApiV1StuOt
 /**
  * Sth
  * @returns unknown Return the STH Devices reachable
- * @returns void Indicates no STH Devices in reach
  * @throws ApiError
  */
 export const sthApiV1SthGet = (): CancelablePromise<SthApiV1SthGetResponse> => { return __request(OpenAPI, {
@@ -135,6 +134,26 @@ export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData)
         404: 'Not found',
         422: 'Validation Error',
         502: 'Indicates error in rename'
+    }
+}); };
+
+/**
+ * Read Adc
+ * @param data The data for the request.
+ * @param data.mac
+ * @returns unknown ADC reading was successful
+ * @throws ApiError
+ */
+export const readAdcApiV1SthReadAdcMacGet = (data: ReadAdcApiV1SthReadAdcMacGetData): CancelablePromise<ReadAdcApiV1SthReadAdcMacGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/sth/read-adc/{mac}',
+    path: {
+        mac: data.mac
+    },
+    errors: {
+        404: 'Not found',
+        422: 'Validation Error',
+        504: 'ADC reading timed out'
     }
 }); };
 
