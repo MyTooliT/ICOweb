@@ -1,7 +1,3 @@
-import {
-  get,
-  put
-} from './api.ts';
 // eslint-disable-next-line max-len
 import {
   STHDeviceResponseModel,
@@ -9,6 +5,10 @@ import {
   STHRenameResponseModel,
   STUDeviceResponseModel
 } from '@/client';
+import {
+  get,
+  put
+} from './api.ts';
 
 export async function delay(): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -84,6 +84,14 @@ export async function enableSTUOTA(deviceName: string): Promise<void> {
 export async function disableSTUOTA(deviceName: string): Promise<void> {
   return new Promise((resolve, reject) => {
     put<{ name: string }, void>('stu/ota/disable', { name: deviceName })
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function resetCAN(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<void, void>('reset-can', undefined)
       .then(data => resolve(data))
       .catch(reject)
   })

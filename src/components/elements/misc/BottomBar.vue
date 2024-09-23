@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import {
+  ping,
+  resetCAN
+} from '@/api/requests.ts';
+import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
-import { ping } from '@/api/requests.ts';
 import {
   onBeforeUnmount,
   onMounted,
@@ -33,6 +37,8 @@ async function checkAvailability(): Promise<void> {
 function clearCache() {
   window?.localStorage?.clear()
 }
+
+const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 </script>
 
 <template>
@@ -48,8 +54,15 @@ function clearCache() {
       label="Clear Cache"
       size="small"
       link
-      class="mr-auto"
       @click="clearCache()" />
+    <Button
+      label="Reset CAN Network"
+      size="small"
+      link
+      class="mr-auto"
+      :loading="loading"
+      :disabled="loading"
+      @click="resetHandle" />
     <div class="text-sm h-min flex self-center">
       {{ apiReachable ? 'connected' : 'disconnected' }}
     </div>
