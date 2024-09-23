@@ -27,7 +27,7 @@ export const useMeasurementStore = defineStore('measurement', () => {
   const continuous = ref<Boolean>(false);
   const acquisitionTime = ref<number>(5)
   const selectedChannels = ref<TChannelMap>({
-    first: 0,
+    first: 1,
     second: 0,
     third: 0
   })

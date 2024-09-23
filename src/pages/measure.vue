@@ -23,7 +23,10 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import ToggleSwitch from 'primevue/toggleswitch';
-import { ref } from 'vue';
+import {
+  computed,
+  ref
+} from 'vue';
 import { useRouter } from 'vue-router';
 /* eslint-enable max-len */
 
@@ -94,6 +97,17 @@ const drawIncrement = ref<number>(10)
 
 // Floating calculations like floatingAverage or IFTValue use this window
 const windowWidth = ref<number>(50)
+
+// Disables measuring if not all requirements are met
+const canMeasure = computed<boolean>(() => {
+  return (
+    hwStore.hasSTU &&
+    hwStore.activeSTH &&
+    hwStore.activeHolder &&
+    (mStore.acquisitionTime > 0 || mStore.continuous) &&
+    mStore.selectedChannels.first > 0
+  )
+})
 </script>
 
 <template>
@@ -199,6 +213,7 @@ const windowWidth = ref<number>(50)
                 :label="state === 'open' ? 'Stop Recording' : 'Start Recording'"
                 :severity="state === 'open' ? 'danger' : 'primary'"
                 class="!px-5"
+                :disabled="!canMeasure"
                 @click="startStopClickHandler"
               />
             </InputGroup>
@@ -213,6 +228,9 @@ const windowWidth = ref<number>(50)
                   <Checkbox
                     binary
                     :model-value="mStore.selectedChannels[slot] !== 0"
+                    :disabled="slot === 'first'
+                      ? true
+                      : mStore.selectedChannels.first === 0"
                     @input="() => {
                       mStore.selectedChannels[slot] === 0
                         ? mStore.selectedChannels[slot] = 1
