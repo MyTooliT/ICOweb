@@ -3,17 +3,22 @@ import {
   ref
 } from 'vue';
 
-export function useLoadingHandler<T = any>(fn: () => Promise<T>): {
+export function useLoadingHandler<T = any>(fn: (...args: any[]) => Promise<T>): {
   loading: Ref<boolean>,
-  call: () => Promise<T>
+  call: (...args: any[]) => Promise<T>
 } {
   const loading = ref<boolean>(false)
 
-  async function call(): Promise<T> {
+  async function call(...args: any[]): Promise<T> {
     loading.value = true
-    const result = await fn()
-    loading.value = false
-    return result
+    try {
+      const result = await fn(...args)
+      loading.value = false
+      return result
+    } catch(e) {
+      loading.value = false
+      throw e
+    }
   }
 
   return {

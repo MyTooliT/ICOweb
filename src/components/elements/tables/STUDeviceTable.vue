@@ -1,16 +1,29 @@
 <script setup lang="ts">
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { useToast } from 'primevue/usetoast';
-import { ref } from 'vue';
 
 const store = useHardwareStore()
 const toast = useToast()
 
-const loading = ref<boolean>(false)
+const {
+  loading: resetLoading,
+  call: resetReload
+} = useLoadingHandler(async (data: STUDevice) => { await data.reset() })
+
+const {
+  loading: enableLoading,
+  call: enableReload
+} = useLoadingHandler(async (data: STUDevice) => { await data.enableOTA() })
+
+const {
+  loading: disableLoading,
+  call: disableReload
+} = useLoadingHandler(async (data: STUDevice) => { await data.disableOTA() })
 </script>
 
 <template>
@@ -39,17 +52,13 @@ const loading = ref<boolean>(false)
           size="small"
           label="Reset"
           icon="pi pi-sync"
-          :loading="loading"
-          @click="async () => {
-            loading = true;
-            await data.reset().catch((e: Error) => toast.add({
+          :loading="resetLoading"
+          @click="resetReload(data).catch((e: Error) => toast.add({
               severity: 'error',
               summary: e.name,
               detail: e.message,
               life: 3000
-            }))
-            loading = false
-          }"
+            }))"
         />
         <Button
           rounded
@@ -57,9 +66,9 @@ const loading = ref<boolean>(false)
           label="Enable OTA"
           class="mx-3"
           icon="pi pi-sync"
-          :loading="data.getOTAState() === 'enabling'"
+          :loading="enableLoading"
           :disabled="['enabled', 'disabling'].includes(data.getOTAState())"
-          @click="data.enableOTA().catch((e: Error) => toast.add({
+          @click="enableReload(data).catch((e: Error) => toast.add({
             severity: 'error',
             summary: e.name,
             detail: e.message,
@@ -71,9 +80,9 @@ const loading = ref<boolean>(false)
           size="small"
           label="Disable OTA"
           icon="pi pi-sync"
-          :loading="data.getOTAState() === 'disabling'"
+          :loading="disableLoading"
           :disabled="['disabled', 'enabling'].includes(data.getOTAState())"
-          @click="data.disableOTA().catch((e: Error) => toast.add({
+          @click="disableReload(data).catch((e: Error) => toast.add({
             severity: 'error',
             summary: e.name,
             detail: e.message,
