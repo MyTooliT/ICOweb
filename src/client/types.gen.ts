@@ -23,12 +23,12 @@ export type Body_stu_reset_api_v1_stu_reset_put = {
     name: string;
 };
 
-export type ConnectionTimeoutError = {
-    name: string;
-    message: string;
+export type Body_write_adc_api_v1_sth_write_adc_put = {
+    mac: string;
+    config: ADCValues;
 };
 
-export type Error = {
+export type ConnectionTimeoutError = {
     name: string;
     message: string;
 };
@@ -120,9 +120,17 @@ export type ReadAdcApiV1SthReadAdcMacGetData = {
 
 export type ReadAdcApiV1SthReadAdcMacGetResponse = unknown;
 
+export type WriteAdcApiV1SthWriteAdcPutData = {
+    requestBody: Body_write_adc_api_v1_sth_write_adc_put;
+};
+
+export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
+
 export type PingApiV1PingGetResponse = unknown;
 
 export type DelayApiV1DelayGetResponse = unknown;
+
+export type ResetCanApiV1ResetCanPutResponse = unknown;
 
 export type OptionsApiV1OptionsResponse = unknown;
 
@@ -299,6 +307,29 @@ export type $OpenApiTs = {
             };
         };
     };
+    '/api/v1/sth/write-adc': {
+        put: {
+            req: WriteAdcApiV1SthWriteAdcPutData;
+            res: {
+                /**
+                 * ADC writing was successful
+                 */
+                200: unknown;
+                /**
+                 * Not found
+                 */
+                404: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+                /**
+                 * ADC writing timed out
+                 */
+                504: unknown;
+            };
+        };
+    };
     '/api/v1/ping': {
         get: {
             res: {
@@ -311,6 +342,16 @@ export type $OpenApiTs = {
     };
     '/api/v1/delay': {
         get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+            };
+        };
+    };
+    '/api/v1/reset-can': {
+        put: {
             res: {
                 /**
                  * Successful Response

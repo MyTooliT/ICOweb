@@ -1,5 +1,7 @@
-import { floatingAverage } from '@/stores/hardwareStore/helper.ts';
-import { ChartData } from 'chart.js';
+import {
+  ChartData,
+  ChartDataSets
+} from 'chart.js';
 import { defineStore } from 'pinia';
 import {
   computed,
@@ -8,8 +10,9 @@ import {
 } from 'vue';
 
 export type TParsedData = {
-  value: number,
-  unit: string,
+  first: number | null,
+  second: number | null,
+  third: number | null,
   timestamp: number,
   counter: number
 }
@@ -30,6 +33,11 @@ export const useMeasurementStore = defineStore('measurement', () => {
     first: 1,
     second: 0,
     third: 0
+  })
+  const activeChannels = ref<TChannelsActive>({
+    first: true,
+    second: false,
+    third: false
   })
 
   const parsedDataWrapper = computed(() => {
@@ -55,14 +63,21 @@ export const useMeasurementStore = defineStore('measurement', () => {
     acquisitionTime,
     chartData,
     chartDataWrapper,
-    selectedChannels
+    selectedChannels,
+    activeChannels
   }
 }, {
   persist: true
 })
 
+type TChannelsActive = {
+  first: boolean,
+  second: boolean,
+  third: boolean
+}
+
 export function useMeasurementWebsocket(
-  shouldUpdate: Boolean = false,
+  shouldUpdate: boolean = false,
   update: () => void = () => {}
 ): {
   open: () => void,
@@ -102,10 +117,7 @@ export function useMeasurementWebsocket(
     }
 
     ws.value.onmessage = (event: any) => {
-      const parsed = parseData(event.data)
-      if(parsed) {
-        storage.value.push(parsed)
-      }
+      storage.value.push(JSON.parse(event.data) as TParsedData)
     }
 
     if(shouldUpdate) {
@@ -133,71 +145,72 @@ export function useMeasurementWebsocket(
 
 }
 
-function parseData(raw: string): TParsedData | undefined
-{
-  const valueRegex = /[-+]?[0-9]*\.?[0-9]+/;
-  const unitRegex = /[-+]?[0-9]*\.?[0-9]+\s([a-zA-Z_0-9]+)/;
-  const timestampRegex = /@([0-9]*\.?[0-9]+)/;
-  const counterRegex = /\((\d+)\)/;
-
-  const valueMatch = raw.match(valueRegex);
-  const value = valueMatch ? parseFloat(valueMatch[0]) : undefined;
-
-  const unitMatch = raw.match(unitRegex);
-  const unit = unitMatch ? unitMatch[1] : undefined;
-
-  const timestampMatch = raw.match(timestampRegex);
-  const timestamp = timestampMatch ? parseFloat(timestampMatch[1]) : undefined;
-
-  const counterMatch = raw.match(counterRegex);
-  const counter = counterMatch ? parseInt(counterMatch[1]) : undefined;
-
-  if(value && unit && timestamp && counter) {
-    return {
-      value: value,
-      unit: unit,
-      timestamp: timestamp,
-      counter: counter,
-    }
-  }
-  return undefined
-}
-
 // eslint-disable-next-line max-len
-export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, drawIncrement: number = 10, window: number = 50): void {
+export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIncrement: number = 10, window: number = 50): void {
+  console.log(activeChannels);
   let start = 0
-  const x: number[] = []
-  const y: number[] = []
-  const show_x: number[] = []
-  const show_y: number[] = []
+  const x_values: number[] = []
+  type TYValues = {
+    first: number[],
+    second: number[],
+    third: number[]
+  }
+  const y_values: TYValues = {
+    first: [],
+    second: [],
+    third: []
+  }
+  const x_values_visible: number[] = []
+  const y_values_visible: TYValues = {
+    first: [],
+    second: [],
+    third: []
+  }
 
   for(let i = 0; i < rawData.length; i++) {
     if(i === 0) {
       start = rawData[i].timestamp
-      x.push(0)
+      x_values.push(0)
     } else {
-      x.push(rawData[i].timestamp - start)
+      x_values.push(rawData[i].timestamp - start)
     }
-    y.push(rawData[i].value)
+    y_values.first.push(rawData[i].first)
+    y_values.second.push(rawData[i].second)
+    y_values.third.push(rawData[i].third)
 
     if(i % drawIncrement === 0) {
-      show_x.push(x[i])
-      show_y.push(y[i])
+      x_values_visible.push(x_values[i])
+      y_values_visible.first.push(rawData[i].first)
+      y_values_visible.second.push(rawData[i].second)
+      y_values_visible.third.push(rawData[i].third)
     }
   }
+
+  const datasets: Array<ChartDataSets> = []
+  datasets.push({
+    label: 'First Channel',
+    data: y_values_visible.first,
+    pointRadius: 1,
+    borderColor: 'blue'
+  })
+  if(activeChannels.second) {
+    datasets.push({
+      label: 'Second Channel',
+      data: y_values_visible.second,
+      pointRadius: 1,
+      borderColor: 'red'
+    })
+  }
+  if(activeChannels.third) {
+    datasets.push({
+      label: 'Third Channel',
+      data: y_values_visible.third,
+      pointRadius: 1,
+      borderColor: 'green'
+    })
+  }
   chartData.value = {
-    labels: show_x,
-    datasets: [
-      {
-        label: 'Raw Data',
-        data: show_y,
-        pointRadius: 0
-      }, {
-        label: 'Floating Average',
-        data: floatingAverage(y, window),
-        backgroundColor: 'rgb(255, 0, 0)',
-        pointRadius: 1
-      }
-    ]
+    labels: x_values_visible,
+    datasets: [...datasets]
   }
 }

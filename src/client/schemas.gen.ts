@@ -100,6 +100,21 @@ export const $Body_stu_reset_api_v1_stu_reset_put = {
     title: 'Body_stu_reset_api_v1_stu_reset_put'
 } as const;
 
+export const $Body_write_adc_api_v1_sth_write_adc_put = {
+    properties: {
+        mac: {
+            type: 'string',
+            title: 'Mac'
+        },
+        config: {
+            '$ref': '#/components/schemas/ADCValues'
+        }
+    },
+    type: 'object',
+    required: ['mac', 'config'],
+    title: 'Body_write_adc_api_v1_sth_write_adc_put'
+} as const;
+
 export const $ConnectionTimeoutError = {
     properties: {
         name: {
@@ -114,22 +129,6 @@ export const $ConnectionTimeoutError = {
     type: 'object',
     required: ['name', 'message'],
     title: 'ConnectionTimeoutError'
-} as const;
-
-export const $Error = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        message: {
-            type: 'string',
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['name', 'message'],
-    title: 'Error'
 } as const;
 
 export const $HTTPValidationError = {

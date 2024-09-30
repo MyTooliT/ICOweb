@@ -32,10 +32,7 @@ import { useRouter } from 'vue-router';
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
-  datasets: [{
-    label: 'Raw Data',
-    data: []
-  }]
+  datasets: []
 })
 
 const router = useRouter()
@@ -50,18 +47,14 @@ const {
   ws
 } = useMeasurementWebsocket(
   true,
-  () => updateChartData(
-    storage.value,
-    chartData,
-    drawIncrement.value,
-    windowWidth.value
-  )
+  () => wrapUpdate()
 )
 
 function wrapUpdate() {
   updateChartData(
     storage.value,
     chartData,
+    mStore.activeChannels,
     drawIncrement.value,
     windowWidth.value
   )
@@ -224,16 +217,9 @@ const canMeasure = computed<boolean>(() => {
               >
                 <InputGroupAddon>
                   <Checkbox
+                    v-model="mStore.activeChannels[slot]"
                     binary
-                    :model-value="mStore.selectedChannels[slot] !== 0"
-                    :disabled="slot === 'first'
-                      ? true
-                      : mStore.selectedChannels.first === 0"
-                    @input="() => {
-                      mStore.selectedChannels[slot] === 0
-                        ? mStore.selectedChannels[slot] = 1
-                        : mStore.selectedChannels[slot] = 0
-                    }"
+                    :disabled="slot === 'first'"
                   />
                 </InputGroupAddon>
                 <InputGroupAddon>
@@ -246,7 +232,7 @@ const canMeasure = computed<boolean>(() => {
                   :options="hwStore.activeHolder?.sensors ?? []"
                   :option-value="(sens: TAssignedSensor) => sens.channel"
                   :option-label="channelSensorRepr"
-                  :disabled="mStore.selectedChannels[slot] === 0 "
+                  :disabled="!mStore.activeChannels[slot]"
                   placeholder="Disabled"
                   fluid
                 />

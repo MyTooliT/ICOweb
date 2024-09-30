@@ -3,7 +3,29 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, PingApiV1PingGetResponse, DelayApiV1DelayGetResponse, OptionsApiV1OptionsResponse } from './types.gen';
+import type {
+  DelayApiV1DelayGetResponse,
+  OptionsApiV1OptionsResponse,
+  PingApiV1PingGetResponse,
+  ReadAdcApiV1SthReadAdcMacGetData,
+  ReadAdcApiV1SthReadAdcMacGetResponse,
+  ResetCanApiV1ResetCanPutResponse,
+  SthApiV1SthGetResponse,
+  SthConnectApiV1SthConnectPutData,
+  SthConnectApiV1SthConnectPutResponse,
+  SthDisconnectApiV1SthDisconnectPutResponse,
+  SthRenameApiV1SthRenamePutData,
+  SthRenameApiV1SthRenamePutResponse,
+  StuApiV1StuGetResponse,
+  StuDisableOtaApiV1StuOtaDisablePutData,
+  StuDisableOtaApiV1StuOtaDisablePutResponse,
+  StuEnableOtaApiV1StuOtaEnablePutData,
+  StuEnableOtaApiV1StuOtaEnablePutResponse,
+  StuResetApiV1StuResetPutData,
+  StuResetApiV1StuResetPutResponse,
+  WriteAdcApiV1SthWriteAdcPutData,
+  WriteAdcApiV1SthWriteAdcPutResponse
+} from './types.gen';
 
 /**
  * Stu
@@ -158,6 +180,25 @@ export const readAdcApiV1SthReadAdcMacGet = (data: ReadAdcApiV1SthReadAdcMacGetD
 }); };
 
 /**
+ * Write Adc
+ * @param data The data for the request.
+ * @param data.requestBody
+ * @returns unknown ADC writing was successful
+ * @throws ApiError
+ */
+export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutData): CancelablePromise<WriteAdcApiV1SthWriteAdcPutResponse> => { return __request(OpenAPI, {
+    method: 'PUT',
+    url: '/api/v1/sth/write-adc',
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        404: 'Not found',
+        422: 'Validation Error',
+        504: 'ADC writing timed out'
+    }
+}); };
+
+/**
  * Ping
  * @returns unknown Successful Response
  * @throws ApiError
@@ -175,6 +216,16 @@ export const pingApiV1PingGet = (): CancelablePromise<PingApiV1PingGetResponse> 
 export const delayApiV1DelayGet = (): CancelablePromise<DelayApiV1DelayGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/api/v1/delay'
+}); };
+
+/**
+ * Reset Can
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const resetCanApiV1ResetCanPut = (): CancelablePromise<ResetCanApiV1ResetCanPutResponse> => { return __request(OpenAPI, {
+    method: 'PUT',
+    url: '/api/v1/reset-can'
 }); };
 
 /**
