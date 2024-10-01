@@ -157,7 +157,7 @@ export const useHardwareStore = defineStore('hardware', () => {
     return _STUDeviceList.value[0]
   })
   const hasSTU = computed<boolean>(() => {
-    return _STHDeviceList.value.length > 0
+    return _STUDeviceList.value.length > 0
   })
 
   /*
