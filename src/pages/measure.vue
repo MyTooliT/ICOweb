@@ -22,7 +22,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
-import ToggleSwitch from 'primevue/toggleswitch';
+//import ToggleSwitch from 'primevue/toggleswitch';
 import {
   computed,
   ref
@@ -179,14 +179,14 @@ const canMeasure = computed<boolean>(() => {
             />
           </NamedInput>
           <NamedInput title="Measure">
-            <div class="flex flex-row">
+<!--            <div class="flex flex-row">
               <ToggleSwitch
                 v-model="mStore.continuous"
                 input-id="continuous" />
               <label
                 for="continuous"
                 class="ml-3">Run&nbsp;continuously</label>
-            </div>
+            </div>-->
             <InputGroup>
               <InputNumber
                 v-model="mStore.acquisitionTime"
