@@ -158,7 +158,7 @@ export function useMeasurementWebsocket(
 }
 
 // eslint-disable-next-line max-len
-export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIncrement: number = 10): void {
+export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIFT: boolean = false, drawIncrement: number = 10): void {
   let start = 0
   const x_values: number[] = []
   type TYValues = {
@@ -236,14 +236,16 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
       borderColor: 'green'
     })
   }
-  datasets.push({
-    label: 'IFT',
-    data: ift_data,
-    backgroundColor: '#006599',
-    borderColor: '#006599',
-    pointRadius: 1,
-    showLines: true
-  })
+  if(drawIFT) {
+    datasets.push({
+      label: 'IFT',
+      data: ift_data,
+      backgroundColor: '#006599',
+      borderColor: '#006599',
+      pointRadius: 1,
+      showLines: true
+    })
+  }
   chartData.value = {
     labels: x_values_visible,
     datasets: [...datasets]

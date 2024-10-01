@@ -55,6 +55,7 @@ function wrapUpdate() {
     storage.value,
     chartData,
     mStore.activeChannels,
+    mStore.IFTRequested,
     drawIncrement.value,
   )
 }
