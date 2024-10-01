@@ -57,6 +57,12 @@ function wrapUpdate() {
     mStore.activeChannels,
     mStore.IFTRequested,
     drawIncrement.value,
+    {
+      first: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)) ?? 'First Channel',
+      second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)) ?? 'Second Channel',
+      third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)) ?? 'Third Channel',
+      ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
+    }
   )
 }
 
@@ -80,7 +86,8 @@ function startStopClickHandler() {
   }
 }
 
-function channelSensorRepr(assignedSensor: TAssignedSensor): string {
+function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
+  if (!assignedSensor) return ''
   return `[${assignedSensor.channel}] ${assignedSensor.sensor.name}`
 }
 

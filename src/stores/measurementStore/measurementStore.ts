@@ -159,7 +159,12 @@ export function useMeasurementWebsocket(
 }
 
 // eslint-disable-next-line max-len
-export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIFT: boolean = false, drawIncrement: number = 10): void {
+export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIFT: boolean = false, drawIncrement: number = 10, channelNames: {
+  first?: string,
+  second?: string,
+  third?: string,
+  ift?: string
+}): void {
   let start = 0
   const x_values: number[] = []
   type TYValues = {
@@ -216,14 +221,14 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
 
   const datasets: Array<ChartDataSets> = []
   datasets.push({
-    label: 'First Channel',
+    label: channelNames.first ?? 'First Channel',
     data: y_values_visible.first,
     pointRadius: 1,
     borderColor: 'black',
   })
   if(activeChannels.second) {
     datasets.push({
-      label: 'Second Channel',
+      label: channelNames.second ?? 'Second Channel',
       data: y_values_visible.second,
       pointRadius: 1,
       borderColor: 'red'
@@ -231,7 +236,7 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
   }
   if(activeChannels.third) {
     datasets.push({
-      label: 'Third Channel',
+      label: channelNames.third ?? 'Third Channel',
       data: y_values_visible.third,
       pointRadius: 1,
       borderColor: 'green'
@@ -239,7 +244,7 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
   }
   if(drawIFT) {
     datasets.push({
-      label: 'IFT',
+      label: channelNames.ift ?? 'IFT',
       data: ift_data,
       backgroundColor: '#006599',
       borderColor: '#006599',
