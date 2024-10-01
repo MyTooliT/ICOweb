@@ -198,7 +198,6 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
       for(let j = 0; j <= ift_data.length; j += drawIncrement) {
         ift_data_visible.push(ift_data[j])
       }
-      console.log(ift_data);
     }
 
     if(i % drawIncrement === 0) {
