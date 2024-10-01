@@ -27,6 +27,7 @@ const emits = defineEmits<{
       class="
         flex items-center bg-white box-content
         border-surface-300 border border-l-0
+        width-[calc(100% - 9rem)]
       "
       :class="title?.length ? 'rounded-r-md' : 'rounded-md'"
     >
@@ -38,14 +39,16 @@ const emits = defineEmits<{
       >
         {{ model }}
       </span>
-      <Slider
-        v-model="model"
-        fluid
-        :min="min"
-        :max="max"
-        class="min-w-48 px-3 mx-3 rounded-l-md border-gray-200"
-        @change="emits('slider-change')"
-      />
+      <div class="w-full">
+        <Slider
+          v-model="model"
+          fluid
+          :min="min"
+          :max="max"
+          class="min-w-48 px-3 mx-3 rounded-l-md border-gray-200"
+          @change="emits('slider-change')"
+        />
+      </div>
     </div>
   </div>
 </template>
