@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
+import logo from '@/assets/img/ift_logo.jpg';
 // eslint-disable-next-line max-len
 import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue';
-import logo from '@/assets/img/ift_logo.jpg';
+// eslint-disable-next-line max-len
+import BottomBar from '@/components/elements/misc/BottomBar.vue';
+import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import {
   ChartBarIcon,
   Cog6ToothIcon,
-  ComputerDesktopIcon,
   WrenchIcon
 } from '@heroicons/vue/16/solid';
-import Toast from 'primevue/toast';
-// eslint-disable-next-line max-len
-import BottomBar from '@/components/elements/misc/BottomBar.vue';
 import ProgressSpinner from 'primevue/progressspinner';
-import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import Toast from 'primevue/toast';
 
 const store = useGeneralStore()
 </script>
@@ -40,12 +39,12 @@ const store = useGeneralStore()
           <Cog6ToothIcon class="size-8 pb-1" />
           Config
         </RouterLinkButton>
-        <RouterLinkButton
+<!--        <RouterLinkButton
           name="Analyze"
           to="/analyze">
           <ComputerDesktopIcon class="size-8 pb-1" />
           Analyze
-        </RouterLinkButton>
+        </RouterLinkButton>-->
         <RouterLinkButton
           name="Help"
           to="/help"
