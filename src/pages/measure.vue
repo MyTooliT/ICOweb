@@ -56,7 +56,6 @@ function wrapUpdate() {
     chartData,
     mStore.activeChannels,
     drawIncrement.value,
-    windowWidth.value
   )
 }
 
@@ -68,7 +67,10 @@ function startStopClickHandler() {
         ws.value?.send(JSON.stringify({
           ...mStore.selectedChannels,
           mac: hwStore.activeSTH?.getMacAddress(),
-          time: mStore.acquisitionTime
+          time: mStore.acquisitionTime,
+          ift_requested: mStore.IFTRequested,
+          ift_channel: mStore.IFTChannel,
+          ift_window_width: mStore.windowWidth
         }));
       })
     }
@@ -87,7 +89,6 @@ const chart = ref(undefined)
 const drawIncrement = ref<number>(10)
 
 // Floating calculations like floatingAverage or IFTValue use this window
-const windowWidth = ref<number>(50)
 
 // Disables measuring if not all requirements are met
 const canMeasure = computed<boolean>(() => {
@@ -122,38 +123,13 @@ const canMeasure = computed<boolean>(() => {
             :border="false"
             class="!mb-0 !pb-0"
           />
-          <table class="w-fit border-separate border-spacing-y-2">
-            <tr>
-              <td>
-                <h4 class="mr-3">
-                  Chart Draw Increment
-                </h4>
-              </td>
-              <td>
-                <CustomSlider
-                  v-model="drawIncrement"
-                  :min="1"
-                  :max="100"
-                  @slider-change="wrapUpdate"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <h4 class="mr-3">
-                  IFT Window Width
-                </h4>
-              </td>
-              <td>
-                <CustomSlider
-                  v-model="windowWidth"
-                  :min="50"
-                  :max="250"
-                  @slider-change="wrapUpdate"
-                />
-              </td>
-            </tr>
-          </table>
+          <CustomSlider
+            v-model="drawIncrement"
+            title="Chart Draw Tick"
+            :min="1"
+            :max="100"
+            @slider-change="wrapUpdate"
+          />
         </div>
         <div class="flex flex-col flex-grow gap-3">
           <NamedInput title="Devices">
@@ -215,7 +191,7 @@ const canMeasure = computed<boolean>(() => {
                 v-for="slot in measurementChannels"
                 :key="slot"
               >
-                <InputGroupAddon>
+                <InputGroupAddon class="w-12">
                   <Checkbox
                     v-model="mStore.activeChannels[slot]"
                     binary
@@ -239,6 +215,37 @@ const canMeasure = computed<boolean>(() => {
               </InputGroup>
             </NamedInput>
           </div>
+          <NamedInput title="IFT Value">
+            <InputGroup>
+              <InputGroupAddon class="w-12">
+                <Checkbox
+                  v-model="mStore.IFTRequested"
+                  binary
+                />
+              </InputGroupAddon>
+              <InputGroupAddon>
+                  <span class="capitalize !text-black inline-block w-24">
+                    IFT Channel
+                  </span>
+              </InputGroupAddon>
+              <Select
+                v-model="mStore.IFTChannel"
+                :options="['first', 'second', 'third']"
+                :disabled="!hwStore.activeHolder"
+                placeholder="Disabled"
+                fluid
+              />
+            </InputGroup>
+            <InputGroup>
+              <CustomSlider
+                v-model="mStore.windowWidth"
+                class="w-full"
+                title="Window Width"
+                :min="50"
+                :max="250"
+              />
+            </InputGroup>
+          </NamedInput>
         </div>
       </div>
       <ADCDrawer />

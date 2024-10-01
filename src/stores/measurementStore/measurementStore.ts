@@ -13,6 +13,7 @@ export type TParsedData = {
   first: number | null,
   second: number | null,
   third: number | null,
+  ift: Array<{x: number, y: number}> | null
   timestamp: number,
   counter: number
 }
@@ -56,6 +57,13 @@ export const useMeasurementStore = defineStore('measurement', () => {
     return chartData
   })
 
+  const lastIFTTimestamp = ref<number>
+
+  const IFTChannel = ref<typeof measurementChannels[number]>('first')
+  const windowWidth = ref<number>(150)
+  const IFTRequested = ref<boolean>(false)
+
+
   return {
     parsedData,
     parsedDataWrapper,
@@ -64,7 +72,11 @@ export const useMeasurementStore = defineStore('measurement', () => {
     chartData,
     chartDataWrapper,
     selectedChannels,
-    activeChannels
+    activeChannels,
+    lastIFTTimestamp,
+    IFTChannel,
+    windowWidth,
+    IFTRequested
   }
 }, {
   persist: true
@@ -146,8 +158,7 @@ export function useMeasurementWebsocket(
 }
 
 // eslint-disable-next-line max-len
-export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIncrement: number = 10, window: number = 50): void {
-  console.log(activeChannels);
+export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<ChartData<'line'>>, activeChannels: TChannelsActive, drawIncrement: number = 10): void {
   let start = 0
   const x_values: number[] = []
   type TYValues = {
@@ -167,6 +178,9 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
     third: []
   }
 
+  const ift_data: Array<{x: number, y: number}> = []
+  const ift_data_visible: Array<{x: number, y: number}> = []
+
   for(let i = 0; i < rawData.length; i++) {
     if(i === 0) {
       start = rawData[i].timestamp
@@ -174,15 +188,28 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
     } else {
       x_values.push(rawData[i].timestamp - start)
     }
-    y_values.first.push(rawData[i].first)
-    y_values.second.push(rawData[i].second)
-    y_values.third.push(rawData[i].third)
+    if(rawData[i].first) { y_values.first.push(<number>rawData[i].first) }
+    if(rawData[i].second) { y_values.second.push(<number>rawData[i].second) }
+    if(rawData[i].third) { y_values.third.push(<number>rawData[i].third) }
+
+    if(rawData[i].ift) {
+      ift_data.push(...(rawData[i].ift as Array<{x: number, y: number}>))
+      for(let j = 0; j <= ift_data.length; j += drawIncrement) {
+        ift_data_visible.push(ift_data[j])
+      }
+    }
 
     if(i % drawIncrement === 0) {
       x_values_visible.push(x_values[i])
-      y_values_visible.first.push(rawData[i].first)
-      y_values_visible.second.push(rawData[i].second)
-      y_values_visible.third.push(rawData[i].third)
+      if(rawData[i].first) {
+        y_values_visible.first.push(<number>rawData[i].first)
+      }
+      if(rawData[i].second) {
+        y_values_visible.second.push(<number>rawData[i].second)
+      }
+      if(rawData[i].third) {
+        y_values_visible.third.push(<number>rawData[i].third)
+      }
     }
   }
 
@@ -191,7 +218,7 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
     label: 'First Channel',
     data: y_values_visible.first,
     pointRadius: 1,
-    borderColor: 'blue'
+    borderColor: 'black',
   })
   if(activeChannels.second) {
     datasets.push({
@@ -209,6 +236,14 @@ export function updateChartData(rawData: Array<TParsedData>, chartData: Ref<Char
       borderColor: 'green'
     })
   }
+  datasets.push({
+    label: 'IFT',
+    data: ift_data,
+    backgroundColor: '#006599',
+    borderColor: '#006599',
+    pointRadius: 1,
+    showLines: true
+  })
   chartData.value = {
     labels: x_values_visible,
     datasets: [...datasets]
