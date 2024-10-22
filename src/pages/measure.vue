@@ -72,7 +72,12 @@ function startStopClickHandler() {
       open()
       ws.value?.addEventListener('opened', () => {
         ws.value?.send(JSON.stringify({
-          ...mStore.selectedChannels,
+          first: mStore.activeChannels.first
+            ?  mStore.selectedChannels.first : 0,
+          second: mStore.activeChannels.second
+            ?  mStore.selectedChannels.second : 0,
+          third: mStore.activeChannels.third
+            ?  mStore.selectedChannels.third : 0,
           mac: hwStore.activeSTH?.getMacAddress(),
           time: mStore.acquisitionTime,
           ift_requested: mStore.IFTRequested,
