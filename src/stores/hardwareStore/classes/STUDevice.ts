@@ -1,50 +1,71 @@
 import {
   Device,
-  IConnection,
-  MockConnection,
-  TId,
+  TDeviceConnectionStatus,
+  TDeviceNumber,
   TMac,
   TName
 } from './Device.ts';
+import {
+  disableSTUOTA,
+  enableSTUOTA,
+  resetSTUDevice
+} from '@/api/requests.ts';
 
-export type TOTAState = 'enabled' | 'disabled'
+export type TOTAState = 'enabled' | 'enabling' | 'disabled' | 'disabling'
 
-export class STUDevice extends Device<ISTUActions> {
+export class STUDevice extends Device {
+  private OTAState: TOTAState;
   constructor(
-    id: TId,
+    device_number: TDeviceNumber,
     name: TName,
-    mac: TMac,
-    connection: ISTUActions = new MockSTUActions()) {
-    super(id, name, mac, connection);
+    mac_address: TMac,
+    status: TDeviceConnectionStatus = 'disconnected',
+    ota: TOTAState = 'disabled'
+  ) {
+    super(device_number, name, mac_address, status);
+    this.OTAState = ota
   }
-}
-
-interface ISTUActions extends IConnection {
-  reset(): Promise<void>;
-  enableOTA(): Promise<void>;
-  disableOTA(): Promise<void>;
-  getOTAState(): TOTAState;
-}
-
-export class MockSTUActions extends MockConnection implements ISTUActions {
-  private otaState: TOTAState = 'disabled';
-  public reset(): Promise<void> {
-    this.otaState = 'disabled'
-    return Promise.resolve()
+  public async reset(): Promise<void> {
+    try {
+      await resetSTUDevice(this.name)
+    } catch(e) {
+      throw e
+    }
   }
 
-  public enableOTA(): Promise<void> {
-    this.otaState = 'enabled'
-    return Promise.resolve()
+  public async enableOTA(): Promise<void> {
+    try {
+      this.OTAState = 'enabling'
+      await enableSTUOTA(this.name)
+      this.OTAState = 'enabled'
+    } catch(e) {
+      throw e;
+    }
   }
 
-  public disableOTA(): Promise<void> {
-    this.otaState = 'disabled'
-    return Promise.resolve()
+  public async disableOTA(): Promise<void> {
+    try {
+      this.OTAState = 'disabling'
+      await disableSTUOTA(this.name)
+      this.OTAState = 'disabled'
+    } catch(e) {
+      throw e;
+    }
   }
 
   public getOTAState(): TOTAState {
-    return this.otaState
+    return this.OTAState
+  }
+
+  public toJSON() {
+    return {
+      device_number: this.device_number,
+      name: this.name,
+      mac_address: this.mac_address,
+      status: this.connection_status,
+      ota: this.OTAState,
+      classtype: 'STU'
+    }
   }
 }
 

@@ -1,71 +1,58 @@
-export type TId = number;
+export type TDeviceNumber = number;
 export type TName = string;
 export type TMac = string;
 
-// TODO: Somehow test the intermediate 'connecting' state
 export type TDeviceConnectionStatus
-  = 'connected' | 'connecting' | 'disconnected';
+  = 'connected' | 'connecting' | 'disconnected' | 'disconnecting';
 
-
-/**
- * Represents a Device.
- * @template ActionType - The type of the device's connection.
- * THIS SHOULD NEVER BE INSTANTIATED EXCEPT FOR TESTING
- */
-export class Device<ActionType> {
-  private id: TId;
-  private name: TName;
-  private mac: TMac;
-  private readonly connection: ActionType;
+export class Device {
+  protected device_number: TDeviceNumber
+  protected name: TName
+  protected mac_address: TMac
+  protected connection_status: TDeviceConnectionStatus
 
   constructor(
-    id: TId,
+    device_number: TDeviceNumber,
     name: TName,
-    mac: TMac,
-    connection: ActionType) {
-    this.id = id;
-    this.name = name;
-    this.mac = mac;
-    this.connection = connection;
-  }
-
-  public getId(): typeof this.id { return this.id }
-  public setId(id: number) {this.id = id}
-
-  public getName(): typeof this.name { return this.name }
-  public setName(name: string) {
-    // TODO: Add checks for maxlength & characters
+    mac_address: TMac,
+    status: TDeviceConnectionStatus = 'disconnected',
+  ) {
+    this.device_number = device_number
     this.name = name
+    this.mac_address = mac_address
+    this.connection_status = status
   }
 
-  public getMac(): typeof this.mac { return this.mac }
-  public setMac(mac: TMac) {
-    // TODO: Add regex check for MAC address
-    this.mac = mac;
+
+  public getDeviceNumber(): TDeviceNumber {
+    return this.device_number;
   }
 
-  public getConnection(): ActionType {
-    return this.connection;
+  public setDeviceNumber(device_number: TDeviceNumber): void {
+    this.device_number = device_number;
   }
-}
 
-export interface IConnection {
-  connect(): Promise<TDeviceConnectionStatus>;
-  disconnect(): Promise<TDeviceConnectionStatus>;
-  getConnectionStatus(): TDeviceConnectionStatus;
-}
+  public getName(): TName {
+    return this.name;
+  }
 
-export class MockConnection {
-  private status: TDeviceConnectionStatus = 'disconnected';
-  public connect(): Promise<TDeviceConnectionStatus> {
-    this.status = 'connected'
-    return Promise.resolve('connected')
+  public setName(name: TName): void {
+    this.name = name;
   }
-  public disconnect(): Promise<TDeviceConnectionStatus> {
-    this.status = 'disconnected';
-    return Promise.resolve('disconnected');
+
+  public getMacAddress(): TMac {
+    return this.mac_address;
   }
+
+  public setMacAddress(mac_address: TMac): void {
+    this.mac_address = mac_address;
+  }
+
   public getConnectionStatus(): TDeviceConnectionStatus {
-    return this.status;
+    return this.connection_status;
+  }
+
+  public setConnectionStatus(status: TDeviceConnectionStatus): void {
+    this.connection_status = status;
   }
 }

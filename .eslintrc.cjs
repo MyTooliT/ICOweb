@@ -16,5 +16,5 @@ module.exports = {
   },
   settings: {
     "import/core-modules": ["vue-router/auto-routes"]
-  }
+  },
 };

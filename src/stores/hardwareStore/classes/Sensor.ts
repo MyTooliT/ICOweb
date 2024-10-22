@@ -3,35 +3,58 @@ export type TPhysicalUnit = string;
 export type TBound = number;
 
 export class Sensor {
-  private physicalDimension: TPhysicalDimension;
-  private readonly sensorRange: SensorRange;
+  public sensorType: SensorType
+  public sensorRange: SensorRange;
+  public expose: boolean
+  public name: string
 
   constructor(
     physicalDimension: TPhysicalDimension,
     physicalUnit: TPhysicalUnit,
     lowerBound: TBound,
     upperBound: TBound,
+    expose: boolean = true,
+    name: string
   ) {
-    this.physicalDimension = physicalDimension;
+    this.sensorType = new SensorType(physicalDimension, physicalUnit);
     this.sensorRange = new SensorRange(physicalUnit, lowerBound, upperBound);
+    this.expose = expose;
+    this.name = name;
   }
 
   public getSensorRange(): SensorRange { return this.sensorRange; }
 
-  public getPhysicalDimension(): TPhysicalDimension {
-    return this.physicalDimension;
+  public getName(): string {
+    return this.name;
   }
 
-  public setPhysicalDimension(physicalDimension: TPhysicalDimension): void {
-    this.physicalDimension = physicalDimension;
+  public setName(name: string): void {
+    this.name = name;
+  }
+
+  public getFullRepr(): string {
+    // eslint-disable-next-line max-len
+    return `${this.name} (${this.sensorType.physicalDimension} | ${this.sensorRange.getRangeRepr()})`
+  }
+
+  public toJSON() {
+    return {
+      physicalDimension: this.sensorType.physicalDimension,
+      physicalUnit: this.sensorType.physicalUnit,
+      lowerBound: this.sensorRange.getLowerBound(),
+      upperBound: this.sensorRange.getUpperBound(),
+      expose: this.expose,
+      name: this.name,
+      classtype: 'Sensor'
+    }
   }
 }
 
 export class SensorRange {
-  private physicalUnit: TPhysicalUnit;
-  private lowerBound: TBound;
-  private upperBound: TBound;
-  private readonly isSymmetricThreshold: number;
+  public physicalUnit: TPhysicalUnit;
+  public lowerBound: TBound;
+  public upperBound: TBound;
+  public isSymmetricThreshold: number;
 
   constructor(
     physicalUnit: TPhysicalUnit,
@@ -86,9 +109,43 @@ export class SensorRange {
     return ((this.upperBound / this.lowerBound) + 1) < this.isSymmetricThreshold
   }
 
-  public text(): string {
+  public getRangeRepr(): string {
+    if(this.physicalUnit === '-') return '-'
     return this.isSymmetric() ?
-      `+-${this.upperBound}${this.physicalUnit}` :
-      `${this.lowerBound}/${this.upperBound}${this.physicalUnit}`
+      `±${this.upperBound}${this.physicalUnit}` :
+      `${this.lowerBound}-${this.upperBound}${this.physicalUnit}`
+  }
+
+  public toJSON() {
+    return {
+      physicalUnit: this.physicalUnit,
+      lowerBound: this.lowerBound,
+      upperBound: this.upperBound,
+      isSymmetricThreshold: this.isSymmetricThreshold,
+      classtype: 'SensorRange'
+    }
+  }
+}
+
+export class SensorType {
+  public physicalDimension: TPhysicalDimension;
+  public physicalUnit: TPhysicalUnit;
+  public repr: string
+
+  constructor(
+    physicalDimension: TPhysicalDimension,
+    physicalUnit: TPhysicalUnit
+  ) {
+    this.physicalDimension = physicalDimension;
+    this.physicalUnit = physicalUnit;
+    this.repr = `${physicalDimension} [${physicalUnit}]`
+  }
+
+  public toJSON() {
+    return {
+      physicalDimension: this.physicalDimension,
+      physicalUnit: this.physicalUnit,
+      classtype: 'SensorType'
+    }
   }
 }

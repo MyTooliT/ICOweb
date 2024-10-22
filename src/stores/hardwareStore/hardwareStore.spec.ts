@@ -1,9 +1,20 @@
-import { createPinia, setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  createPinia,
+  setActivePinia
+} from 'pinia';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it
+} from 'vitest';
 import { useHardwareStore } from './hardwareStore';
 import { Sensor } from './classes/Sensor.ts';
+import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+import { consumeNewMetadata } from '@/stores/hardwareStore/helper.ts';
+import { STHDeviceResponseModel } from '@/client';
 
-describe('hardwareStore', () => {
+describe('hardwareStore Sensor', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
   });
@@ -49,3 +60,54 @@ describe('hardwareStore', () => {
     expect(store.getSensorList.indexOf(sensor2)).toBe(-1)
   });
 });
+
+describe('hardwareStore STHDeviceList', async () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+  it('initializes with an empty STH device list', async () => {
+    const store = useHardwareStore();
+    expect(store.getSTHDeviceList.length).toBe(0)
+  })
+  // Note:  Since the store function 'updateSTHDeviceList' requests new data
+  //        from the REST API, we have side effects. This is why we do not test
+  //        the function itself, but the helper.
+  //        Bad form, I know. I am trying my best. :^)
+  it('helper properly consumes new metadata', () => {
+    const currentList: Array<STHDevice> = [
+      new STHDevice(
+        1,
+        'STH 1',
+        'AA:BB:CC:DD:EE:FF',
+        0
+      ),
+      new STHDevice(
+        2,
+        'Messerkopf',
+        'AA:BB:CC:DD:EE:EE',
+        -44
+      ),
+    ]
+    const newList: Array<STHDeviceResponseModel> = [
+      {
+        device_number: 1,
+        name: 'STH 1',
+        mac_address: 'AA:BB:CC:DD:EE:FF',
+        rssi: 0
+      },
+      {
+        device_number: 3,
+        name: 'Mini Mill',
+        mac_address: 'AA:BB:CC:DD:EE:DD',
+        rssi: -24
+      }
+    ]
+    expect(consumeNewMetadata(currentList, newList).map(entry => {
+      return entry.getDeviceNumber()
+    })).toStrictEqual([1, 3])
+
+  })
+
+
+
+})

@@ -1,26 +1,50 @@
 <script setup lang="ts">
-import ThemeProvider from './stores/ThemeProvider/ThemeProvider.vue';
+import logo from '@/assets/img/ift_logo.jpg';
 // eslint-disable-next-line max-len
 import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue';
-import logo from '@/assets/img/ift_logo.jpg';
+// eslint-disable-next-line max-len
+import BottomBar from '@/components/elements/misc/BottomBar.vue';
+import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import {
+  ChartBarIcon,
+  Cog6ToothIcon,
+  WrenchIcon
+} from '@heroicons/vue/16/solid';
+import ProgressSpinner from 'primevue/progressspinner';
+import Toast from 'primevue/toast';
+
+const store = useGeneralStore()
 </script>
 
 <template>
   <ThemeProvider>
-    <div class="flex flex-row h-dvh w-dvw bg-surface">
-      <nav class="bg-surface-container flex flex-col">
+    <div class="flex flex-row h-dvh w-dvw bg-surface overflow-hidden">
+      <nav class="bg-surface-container flex flex-col z-50">
         <RouterLinkButton
           name="Devices"
-          to="/" />
+          to="/">
+          <WrenchIcon class="size-8 pb-1" />
+          Devices
+        </RouterLinkButton>
         <RouterLinkButton
           name="Measure"
-          to="/measure" />
+          to="/measure">
+          <ChartBarIcon class="size-8 pb-1" />
+          Measure
+        </RouterLinkButton>
         <RouterLinkButton
           name="Config"
-          to="/config/storage" />
-        <RouterLinkButton
+          to="/config/sensors">
+          <Cog6ToothIcon class="size-8 pb-1" />
+          Config
+        </RouterLinkButton>
+<!--        <RouterLinkButton
           name="Analyze"
-          to="/analyze" />
+          to="/analyze">
+          <ComputerDesktopIcon class="size-8 pb-1" />
+          Analyze
+        </RouterLinkButton>-->
         <RouterLinkButton
           name="Help"
           to="/help"
@@ -32,9 +56,29 @@ import logo from '@/assets/img/ift_logo.jpg';
           >
         </RouterLinkButton>
       </nav>
-      <div>
-        <router-view />
+      <div class="flex flex-col w-full relative">
+        <div
+          v-if="store.globalLoader"
+          class="
+            absolute w-full h-full flex
+            justify-center items-center z-40 backdrop-blur">
+          <ProgressSpinner />
+        </div>
+        <div class="w-full overflow-auto ">
+          <router-view />
+        </div>
+        <BottomBar class="mt-auto z-50" />
       </div>
     </div>
+    <Toast />
   </ThemeProvider>
 </template>
+
+<style>
+circle {
+  --p-progressspinner-color-1: var(--md-sys-color-primary) !important;
+  --p-progressspinner-color-2: var(--md-sys-color-primary) !important;
+  --p-progressspinner-color-3: var(--md-sys-color-primary) !important;
+  --p-progressspinner-color-4: var(--md-sys-color-primary) !important;
+}
+</style>

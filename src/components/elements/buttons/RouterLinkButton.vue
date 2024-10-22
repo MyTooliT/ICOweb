@@ -13,9 +13,10 @@ const route = useRoute()
   <button
     :data-active="route.fullPath === props.to"
     class="
-      p-3 aspect-square transition-all duration-100
+      p-3 flex flex-col justify-center items-center
+      aspect-square transition-all duration-100
       hover:bg-surface-variant
-      data-[active=true]:bg-surface"
+      data-[active=true]:bg-surface data-[active=true]:text-primary"
     @click="router.push(props.to)">
     <slot>
       {{ props.name }}

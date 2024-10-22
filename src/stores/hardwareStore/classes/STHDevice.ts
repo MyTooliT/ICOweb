@@ -1,57 +1,112 @@
 import {
+  connectSTHDevice,
+  disconnectSTHDevice,
+  renameSTHDevice
+} from '@/api/requests.ts';
+import {
   Device,
-  IConnection,
-  MockConnection,
   TDeviceConnectionStatus,
-  TId,
+  TDeviceNumber,
   TMac,
   TName
 } from './Device.ts';
 
 export type TRssi = number;
 
-export class STHDevice extends Device<ISTHActions> {
-  private rssi: TRssi;
-  // TODO: Add default sensor config
+export class STHDevice extends Device {
+  private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
+  private rssi: number = 0;
+  public holderConfigId: string | undefined = undefined;
 
   constructor(
-    id: TId,
+    device_number: TDeviceNumber,
     name: TName,
-    mac: TMac,
-    rssi: TRssi,
-    connection: ISTHActions = new BackendSTHActions()) {
-    super(id, name, mac, connection)
-    this.rssi = rssi;
+    mac_address: TMac,
+    rssi: number,
+    holderConfigId: string,
+    status: TDeviceConnectionStatus = 'disconnected',
+    regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
+  ) {
+    super(device_number, name, mac_address, status)
+    this.regex = regex
+    this.rssi = rssi
+    this.holderConfigId = holderConfigId
   }
 
-  public getRssi(): typeof this.rssi { return this.rssi }
-  public setRssi(rssi: TRssi) {
-    this.rssi = rssi;
+  public getRssiRepr(): string {
+    return `${this.rssi}dB`;
   }
-}
 
-export interface ISTHActions extends IConnection{
-  measure(): Promise<void>;
-}
-
-export class MockSTHActions extends MockConnection implements ISTHActions {
-  public measure(): Promise<void> {
-    return Promise.resolve()
+  public getRegex(): RegExp {
+    return this.regex
   }
-}
 
-class BackendSTHActions implements ISTHActions {
-  private status: TDeviceConnectionStatus = 'disconnected';
-  public connect(): Promise<TDeviceConnectionStatus> {
-    return Promise.reject('Not Implemented');
+  public async setName(name: string): Promise<void> {
+    if(this.regex.test(name)) {
+      try {
+        const response = await renameSTHDevice({
+          new_name: name,
+          mac_address: this.mac_address
+        })
+        this.name = response.name
+      } catch(e) {
+        throw e
+      }
+    }
   }
-  public disconnect(): Promise<TDeviceConnectionStatus> {
-    return Promise.reject('Not Implemented');
+
+  public setMetadata(body: {
+    device_number: TDeviceNumber,
+    name: TName,
+    mac_address: TMac,
+    rssi: TRssi
+  }): void {
+    this.device_number = body.device_number;
+    this.name = body.name;
+    this.mac_address = body.mac_address;
+    this.rssi = body.rssi
+  }
+
+  public async connect(): Promise<void> {
+    this.connection_status = 'connecting'
+    try {
+      await connectSTHDevice(this.mac_address)
+      this.connection_status = 'connected';
+    } catch(e) {
+      this.connection_status = 'disconnected';
+      throw e
+    }
+  }
+  public async disconnect(): Promise<void> {
+    this.connection_status = 'disconnecting'
+    try {
+      await disconnectSTHDevice()
+      this.connection_status = 'disconnected';
+    } catch(e) {
+      this.connection_status = 'connected';
+      throw e
+    }
+  }
+  public isConnected(): boolean {
+    return this.connection_status === 'connected'
   }
   public measure(): Promise<void> {
     return Promise.reject('Not Implemented')
   }
   public getConnectionStatus(): TDeviceConnectionStatus {
-    return this.status;
+    return this.connection_status;
+  }
+
+  public toJSON() {
+    return {
+      device_number: this.device_number,
+      name: this.name,
+      mac_address: this.mac_address,
+      rssi: this.rssi,
+      holderConfigId: this.holderConfigId,
+      status: this.connection_status,
+      regex: this.regex,
+      classtype: 'STH'
+    }
   }
 }

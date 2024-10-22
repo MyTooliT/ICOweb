@@ -1,28 +1,29 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { MockSTUActions, STUDevice } from './STUDevice.ts';
-import { TId, TMac, TName } from './Device.ts';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it
+} from 'vitest';
+import { STUDevice } from './STUDevice.ts';
+import {
+  TDeviceNumber,
+  TMac,
+  TName
+} from './Device.ts';
 
-describe('device', () => {
+describe('STU Device', () => {
   let device: STUDevice;
-  const id: TId = 1;
+  const device_number: TDeviceNumber = 1;
   const name: TName = 'Test Device';
-  const mac: TMac = '00:00:00:00:00:00';
-  const mockSTUActions = new MockSTUActions();
+  const mac_address: TMac = '00:00:00:00:00:00';
 
   beforeEach(() => {
-    device = new STUDevice(id, name, mac, mockSTUActions);
+    device = new STUDevice(device_number, name, mac_address);
   });
 
-  it('should perform OTA operations correctly', async () => {
-    expect(device.getConnection().getOTAState()).toBe('disabled');
-
-    await device.getConnection().enableOTA();
-    expect(device.getConnection().getOTAState()).toBe('enabled');
-
-    await device.getConnection().disableOTA();
-    expect(device.getConnection().getOTAState()).toBe('disabled');
-
-    await device.getConnection().reset();
-    expect(device.getConnection().getOTAState()).toBe('disabled');
+  it('successfully created',  () => {
+    expect(device.getName()).toBe(name)
+    expect(device.getDeviceNumber()).toBe(device_number)
+    expect(device.getMacAddress()).toBe(mac_address)
   });
 });

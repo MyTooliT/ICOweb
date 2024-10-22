@@ -1,48 +1,66 @@
 <script setup lang="ts">
+import TextBlock from '@/components/elements/misc/TextBlock.vue';
+import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
+import STUDeviceTable from '@/components/elements/tables/STUDeviceTable.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import Heading5 from '@/components/typography/heading/Heading5.vue';
-import OutlineButton from '@/components/elements/buttons/OutlineButton.vue';
-import { ref, Ref, UnwrapRef } from 'vue';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
+import { useToast } from 'primevue/usetoast';
 
-/* eslint-disable max-len */
-import { MockSTHActions, STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
+const toast = useToast()
+const store = useHardwareStore()
 
-const devices: Ref<UnwrapRef<STHDevice[]>> = ref([
-  new STHDevice(1, 'Messerkopf', 'AA:BB:CC:DD:EE:FF', 0, new MockSTHActions()),
-  new STHDevice(2, 'Messerkopf', 'AA:BB:CC:DD:EE:00', 0, new MockSTHActions())
-])
-/* eslint-enable max-len*/
-
+const { loading: STULoading, call: STUReload } = useLoadingHandler(
+  store.updateSTUDeviceList
+)
+const { loading: STHLoading, call: STHReload } = useLoadingHandler(
+  store.updateSTHDeviceList
+)
 </script>
 
 <template>
-  <DefaultLayout>
-    <div class="flex flex-row justify-between">
-      <Heading5>Sensory Tool Holders</Heading5>
-      <OutlineButton>Reload</OutlineButton>
+  <DefaultLayout class="flex flex-col gap-8">
+    <div>
+      <TextBlock
+        heading="Stationary Transceiver Units"
+        subheading="Manage the STU all the connections are made from."
+        :button-text="store.hasSTU ? 'Reload' : 'Load'"
+        :button-icon-class="store.hasSTU ? 'pi pi-sync' : 'pi pi-download'"
+        :button-loading="STULoading"
+        @button-click="STUReload().then(() => {
+          if(store.getSTUDeviceList.length === 0) {
+            toast.add({
+              summary: 'No STU connected',
+              detail: 'Check your CAN adapter',
+              severity: 'error',
+              life: 3000
+            })
+          }})"
+      />
+      <STUDeviceTable />
     </div>
-    <table>
-      <thead>
-        <tr>
-          <td>#</td>
-          <td>Name</td>
-          <td>MAC</td>
-          <td>RSSI</td>
-          <td>Default Sensor Config</td>
-          <td>Action</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="STHDevice in devices" :key="STHDevice.getMac()">
-          <td>{{ STHDevice.getId() }}</td>
-          <td>{{ STHDevice.getName() }}</td>
-          <td>{{ STHDevice.getMac() }}</td>
-          <td>{{ STHDevice.getRssi() }}</td>
-          <td>-</td>
-          <td>-</td>
-        </tr>
-        </tbody>
-    </table>
+    <div>
+      <TextBlock
+        heading="Sensory Tool Holders"
+        subheading="
+          Manage STH devices visible to the STU
+          and set holder configuration templates."
+        :button-text="store.hasSTH ? 'Reload' : 'Load'"
+        :button-icon-class="store.hasSTH ? 'pi pi-sync' : 'pi pi-download'"
+        :button-loading="STHLoading"
+        @button-click="STHReload().then(() => {
+          if(store.getSTHDeviceList.length === 0) {
+            toast.add({
+              summary: 'No STH found',
+              detail: 'Check battery',
+              severity: 'error',
+              life: 3000
+            })
+          }
+        })"
+      />
+      <STHDeviceTable />
+    </div>
   </DefaultLayout>
 </template>
 
