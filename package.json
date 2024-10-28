@@ -14,7 +14,6 @@
     "generate-client": "openapi-ts --input http://localhost:8000/openapi.json --output ./src/client --client fetch"
   },
   "dependencies": {
-    "@heroicons/vue": "^2.1.4",
     "@primevue/themes": "^4.0.0",
     "@vueuse/core": "^10.11.0",
     "chart.js": "^4.4.3",

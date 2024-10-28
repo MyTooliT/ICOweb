@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  PencilIcon
-} from '@heroicons/vue/16/solid';
 import { EditState } from './types';
 
 const props = withDefaults(defineProps<{
@@ -34,19 +29,18 @@ const emits = defineEmits<{
   >
     <slot>
       <div v-if="state === 'readyToEdit'">
-        <PencilIcon class="size-6" />
+        <span class="pi pi-pencil" />
       </div>
       <div v-if="state === 'loading'">
-        <ArrowPathIcon class="size-6 animate-spin" />
+        <span class="pi pi-spinner animate-spin" />
       </div>
       <div
         v-if="state === 'editing'"
         class="text-gray-400">
-        <CheckCircleIcon
-          class="size-6" />
+        <span class="pi pi-check-circle" />
       </div>
       <div v-if="state === 'readyToSave'">
-        <CheckCircleIcon class="size-6" />
+        <span class="pi pi-check-circle" />
       </div>
     </slot>
   </button>

@@ -6,11 +6,6 @@ import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue
 import BottomBar from '@/components/elements/misc/BottomBar.vue';
 import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import {
-  ChartBarIcon,
-  Cog6ToothIcon,
-  WrenchIcon
-} from '@heroicons/vue/16/solid';
 import ProgressSpinner from 'primevue/progressspinner';
 import Toast from 'primevue/toast';
 
@@ -24,19 +19,25 @@ const store = useGeneralStore()
         <RouterLinkButton
           name="Devices"
           to="/">
-          <WrenchIcon class="size-8 pb-1" />
+          <span
+            class="pi pi-wrench"
+            style="font-size: 1.5em;" />
           Devices
         </RouterLinkButton>
         <RouterLinkButton
           name="Measure"
           to="/measure">
-          <ChartBarIcon class="size-8 pb-1" />
+          <span
+            class="pi pi-chart-bar"
+            style="font-size: 1.5em;" />
           Measure
         </RouterLinkButton>
         <RouterLinkButton
           name="Config"
           to="/config/sensors">
-          <Cog6ToothIcon class="size-8 pb-1" />
+          <span
+            class="pi pi-cog"
+            style="font-size: 1.5em;" />
           Config
         </RouterLinkButton>
 <!--        <RouterLinkButton
