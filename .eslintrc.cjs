@@ -2,7 +2,7 @@ module.exports = {
   extends: ['plugin:vue/vue3-recommended', '@vue/eslint-config-typescript'],
   plugins: ['vue', '@typescript-eslint'],
   rules: {
-    'max-len': ['error', 80],
+    'max-len': ['warn', 80],
     'quotes': ['error', 'single'],
     'vue/multi-word-component-names': 'off',
     'vue/object-curly-spacing': [2, 'always'],
@@ -13,8 +13,5 @@ module.exports = {
       },
     ],
     'vue/html-closing-bracket-newline': 'off'
-  },
-  settings: {
-    "import/core-modules": ["vue-router/auto-routes"]
-  },
+  }
 };
