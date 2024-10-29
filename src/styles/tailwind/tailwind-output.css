@@ -711,11 +711,6 @@ video {
   aspect-ratio: 1 / 1;
 }
 
-.size-6 {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
 .size-8 {
   width: 2rem;
   height: 2rem;

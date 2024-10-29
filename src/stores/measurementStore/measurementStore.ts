@@ -130,7 +130,9 @@ export function useMeasurementWebsocket(
     }
 
     ws.value.onmessage = (event: any) => {
-      storage.value.push(JSON.parse(event.data) as TParsedData)
+      (JSON.parse(event.data) as Array<TParsedData>).forEach((entry: TParsedData) => {
+        storage.value.push(entry)
+      })
     }
 
     if(shouldUpdate) {
