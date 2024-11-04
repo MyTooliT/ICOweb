@@ -44,7 +44,8 @@ const {
   close,
   state,
   storage,
-  ws
+  ws,
+  ift_storage
 } = useMeasurementWebsocket(
   true,
   () => wrapUpdate()
@@ -56,7 +57,8 @@ function wrapUpdate() {
     chartData,
     mStore.activeChannels,
     mStore.IFTRequested,
-    drawIncrement.value,
+    maxNumberOfPoints.value,
+    ift_storage,
     {
       first: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)) ?? 'First Channel',
       second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)) ?? 'Second Channel',
@@ -98,8 +100,8 @@ function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
 
 const chart = ref(undefined)
 
-// Chart will draw every <displayDelta> value from data
-const drawIncrement = ref<number>(10)
+// Maximum drawable points per channel for graph
+const maxNumberOfPoints = ref<number>(2000)
 
 // Floating calculations like floatingAverage or IFTValue use this window
 
@@ -137,10 +139,10 @@ const canMeasure = computed<boolean>(() => {
             class="!mb-0 !pb-0"
           />
           <CustomSlider
-            v-model="drawIncrement"
+            v-model="maxNumberOfPoints"
             title="Chart Draw Tick"
-            :min="1"
-            :max="100"
+            :min="500"
+            :max="10000"
             @slider-change="wrapUpdate"
           />
         </div>
