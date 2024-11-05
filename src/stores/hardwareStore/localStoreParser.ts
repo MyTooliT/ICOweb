@@ -31,7 +31,7 @@ function parseItem(item: any): any {
           item.device_number,
           item.name,
           item.mac_address,
-          item.connection_status,
+          item.status,
           item.OTAState,
         )
 
@@ -42,9 +42,8 @@ function parseItem(item: any): any {
           item.mac_address,
           item.rssi,
           item.holderConfigId,
-          item.connection_status,
+          item.status,
           item.regex,
-          item.isSelected
         )
 
       case 'Sensor':

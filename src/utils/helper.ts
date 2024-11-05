@@ -12,7 +12,7 @@ export function findNextFree(arr: Array<number>) {
 }
 
 export function formatFileSize(bytes: number): string {
-  const units = ["bytes", "kB", "MB", "GB", "TB"];
+  const units = ['bytes', 'kB', 'MB', 'GB', 'TB'];
   let size = bytes;
   let unitIndex = 0;
 
