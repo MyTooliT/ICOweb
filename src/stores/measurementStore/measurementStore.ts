@@ -72,6 +72,10 @@ export const useMeasurementStore = defineStore('measurement', () => {
     const files = await getMeasurementFiles()
     measurementFiles.value = [...files]
   }
+  const getLatestFileName = computed<string>(() => {
+    if(measurementFiles.value.length === 0) return ''
+    return measurementFiles.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())[0].name
+  })
 
   return {
     parsedData,
@@ -87,7 +91,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     windowWidth,
     IFTRequested,
     measurementFiles,
-    getFiles
+    getFiles,
+    getLatestFileName
   }
 }, {
   persist: true

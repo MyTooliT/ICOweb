@@ -57,7 +57,8 @@ const {
               severity: 'error',
               summary: e.name,
               detail: e.message,
-              life: 3000
+              life: 3000,
+              group: 'default'
             }))"
         />
         <Button
@@ -72,7 +73,8 @@ const {
             severity: 'error',
             summary: e.name,
             detail: e.message,
-            life: 3000
+            life: 3000,
+            group: 'default'
           }))"
         />
         <Button
@@ -86,7 +88,8 @@ const {
             severity: 'error',
             summary: e.name,
             detail: e.message,
-            life: 3000
+            life: 3000,
+            group: 'default'
           }))"
         />
       </template>

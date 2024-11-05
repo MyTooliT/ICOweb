@@ -683,20 +683,8 @@ video {
   margin-top: 0.75rem;
 }
 
-.mt-8 {
-  margin-top: 2rem;
-}
-
 .mt-auto {
   margin-top: auto;
-}
-
-.ml-1 {
-  margin-left: 0.25rem;
-}
-
-.ml-2 {
-  margin-left: 0.5rem;
 }
 
 .box-content {
@@ -1095,6 +1083,10 @@ video {
 .text-surface-500 {
   --tw-text-opacity: 1;
   color: color-mix(in srgb, var(--p-surface-500) calc(100% * var(--tw-text-opacity)), transparent);
+}
+
+.underline {
+  text-decoration-line: underline;
 }
 
 .opacity-0 {

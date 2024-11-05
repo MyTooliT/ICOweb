@@ -33,7 +33,8 @@ const { loading: STHLoading, call: STHReload } = useLoadingHandler(
               summary: 'No STU connected',
               detail: 'Check your CAN adapter',
               severity: 'error',
-              life: 3000
+              life: 3000,
+              group: 'default'
             })
           }})"
       />
@@ -54,7 +55,8 @@ const { loading: STHLoading, call: STHReload } = useLoadingHandler(
               summary: 'No STH found',
               detail: 'Check battery',
               severity: 'error',
-              life: 3000
+              life: 3000,
+              group: 'default'
             })
           }
         })"

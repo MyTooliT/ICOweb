@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getAPILink } from '@/api/api.ts';
+
 /* eslint-disable max-len */
 import Chart from '@/components/elements/charts/Chart.vue';
 import { updateChartData } from '@/components/elements/charts/chartHelper.ts';
@@ -22,6 +24,8 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 import {
   computed,
   ref
@@ -33,7 +37,7 @@ const chartData = ref<ChartData<'line'>>({
   labels: [],
   datasets: []
 })
-
+const toast = useToast()
 const router = useRouter()
 const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
@@ -48,8 +52,13 @@ const {
 } = useMeasurementWebsocket(
   true,
   () => wrapUpdate(),
-  () => {
-    mStore.getFiles()
+  async () => {
+    await mStore.getFiles()
+    toast.add({
+      summary: 'Measurement saved successfully',
+      detail: 'Your measurement can be downloaded in the files tab.',
+      group: 'newfile'
+    })
   }
 )
 
@@ -174,7 +183,7 @@ const canMeasure = computed<boolean>(() => {
             />
           </NamedInput>
           <NamedInput title="Measure">
-<!--            <div class="flex flex-row">
+            <!--            <div class="flex flex-row">
               <ToggleSwitch
                 v-model="mStore.continuous"
                 input-id="continuous" />
@@ -243,9 +252,9 @@ const canMeasure = computed<boolean>(() => {
                 />
               </InputGroupAddon>
               <InputGroupAddon>
-                  <span class="capitalize !text-black inline-block w-24">
-                    IFT Channel
-                  </span>
+                <span class="capitalize !text-black inline-block w-24">
+                  IFT Channel
+                </span>
               </InputGroupAddon>
               <Select
                 v-model="mStore.IFTChannel"
@@ -277,6 +286,26 @@ const canMeasure = computed<boolean>(() => {
     >
       Show ADC Config
     </button>
+    <Toast group="newfile">
+      <template #message>
+        <div>
+          <h4 class="text-lg">
+            File saved
+          </h4>
+          <h5 class="mb-3">
+            Your file has been saved successfully. Visit the <router-link class="underline" to="/files">Files page</router-link> or download it here:
+          </h5>
+          <Button
+            as="a"
+            style="padding-left: 0;"
+            link
+            :href="`${getAPILink()}/files/${mStore.getLatestFileName}`">
+            {{ mStore.getLatestFileName }}
+            <i class="pi pi-download" />
+          </Button>
+        </div>
+      </template>
+    </Toast>
   </div>
 </template>
 

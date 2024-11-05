@@ -79,7 +79,7 @@ const store = useGeneralStore()
         <BottomBar class="mt-auto z-50" />
       </div>
     </div>
-    <Toast />
+    <Toast group="default" />
   </ThemeProvider>
 </template>
 
