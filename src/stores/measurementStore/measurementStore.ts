@@ -74,7 +74,7 @@ export const useMeasurementStore = defineStore('measurement', () => {
   }
   const getLatestFileName = computed<string>(() => {
     if(measurementFiles.value.length === 0) return ''
-    return measurementFiles.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())[0].name
+    return [...measurementFiles.value].sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())[0].name
   })
 
   return {

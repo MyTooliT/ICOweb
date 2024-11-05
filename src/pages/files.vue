@@ -49,6 +49,8 @@ const {
         :value="mStore.measurementFiles"
         size="small"
         removable-sort
+        sort-field="created"
+        :sort-order="-1"
       >
         <Column
           field="name"
