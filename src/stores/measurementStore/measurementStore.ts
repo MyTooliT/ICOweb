@@ -12,7 +12,7 @@ import {
 } from 'vue';
 
 
-export type TParsedData = {
+export type TMeasurementDataFrame = {
   first: number | null,
   second: number | null,
   third: number | null,
@@ -21,7 +21,7 @@ export type TParsedData = {
   counter: number
 }
 
-export type TWSState = 'open' | 'closed' | 'connecting'
+export type TWebSocketState = 'open' | 'closed' | 'connecting'
 
 export const measurementChannels = ['first', 'second', 'third'] as const
 
@@ -30,7 +30,7 @@ export type TChannelMap = {
 }
 
 export const useMeasurementStore = defineStore('measurement', () => {
-  const parsedData: Array<TParsedData> = []
+  const parsedData: Array<TMeasurementDataFrame> = []
   const continuous = ref<Boolean>(false);
   const acquisitionTime = ref<number>(5)
   const selectedChannels = ref<TChannelMap>({
@@ -111,13 +111,13 @@ export function useMeasurementWebsocket(
   open: () => void,
   close: () => void,
   ws: Ref<WebSocket | undefined>,
-  state: Ref<TWSState>,
-  storage: Ref<Array<TParsedData>>,
+  state: Ref<TWebSocketState>,
+  storage: Ref<Array<TMeasurementDataFrame>>,
   ift_storage: Ref<Array<TPoint>>
 } {
   const ws = ref<WebSocket | undefined>(undefined)
-  const state = ref<TWSState>('closed')
-  const storage = ref<Array<TParsedData>>([])
+  const state = ref<TWebSocketState>('closed')
+  const storage = ref<Array<TMeasurementDataFrame>>([])
   const ift_storage : Ref<Array<TPoint>> = ref([])
   let intervalId: number | undefined = undefined
 
@@ -149,8 +149,8 @@ export function useMeasurementWebsocket(
     }
 
     ws.value.onmessage = (event: any) => {
-      const parsed = JSON.parse(event.data) as Array<TParsedData>
-      parsed.forEach((entry: TParsedData) => {
+      const parsed = JSON.parse(event.data) as Array<TMeasurementDataFrame>
+      parsed.forEach((entry: TMeasurementDataFrame) => {
         storage.value.push(entry)
         if(entry.ift) {
           ift_storage.value = [...entry.ift]
@@ -186,7 +186,7 @@ export function useMeasurementWebsocket(
 
 // eslint-disable-next-line max-len
 export function updateChartData(
-  rawData: Array<TParsedData>,
+  rawData: Array<TMeasurementDataFrame>,
   chartData: Ref<ChartData<'line'>>,
   activeChannels: TChannelsActive,
   drawIFT: boolean = false,
