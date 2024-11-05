@@ -1,10 +1,10 @@
 // eslint-disable-next-line max-len
 import {
+  ADCValues,
   STHDeviceResponseModel,
   STHRenameRequestModel,
   STHRenameResponseModel,
-  STUDeviceResponseModel,
-  ADCValues
+  STUDeviceResponseModel
 } from '@/client';
 import {
   get,
@@ -111,6 +111,22 @@ export async function disableSTUOTA(deviceName: string): Promise<void> {
 export async function resetCAN(): Promise<void> {
   return new Promise((resolve, reject) => {
     put<void, void>('reset-can', undefined)
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function getMeasurementFiles(): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    get<string[]>('files')
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function getMeasurementFile(name: string): Promise<File> {
+  return new Promise((resolve, reject) => {
+    get<File>(`files/${name}`)
       .then(data => resolve(data))
       .catch(reject)
   })

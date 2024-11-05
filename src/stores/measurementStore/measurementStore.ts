@@ -1,3 +1,4 @@
+import { getMeasurementFiles } from '@/api/requests.ts';
 import {
   ChartData,
   ChartDataSets
@@ -8,6 +9,7 @@ import {
   Ref,
   ref
 } from 'vue';
+
 
 export type TParsedData = {
   first: number | null,
@@ -63,6 +65,11 @@ export const useMeasurementStore = defineStore('measurement', () => {
   const windowWidth = ref<number>(150)
   const IFTRequested = ref<boolean>(false)
 
+  const measurementFiles = ref<string[]>([])
+  async function getFiles(): Promise<void> {
+    const files = await getMeasurementFiles()
+    measurementFiles.value = [...files]
+  }
 
   return {
     parsedData,
@@ -76,7 +83,9 @@ export const useMeasurementStore = defineStore('measurement', () => {
     lastIFTTimestamp,
     IFTChannel,
     windowWidth,
-    IFTRequested
+    IFTRequested,
+    measurementFiles,
+    getFiles
   }
 }, {
   persist: true
@@ -96,6 +105,7 @@ type TPoint = {
 export function useMeasurementWebsocket(
   shouldUpdate: boolean = false,
   update: () => void = () => {},
+  onClose: () => void = () => {}
 ): {
   open: () => void,
   close: () => void,
@@ -134,6 +144,7 @@ export function useMeasurementWebsocket(
     ws.value.onclose = () => {
       update()
       close()
+      onClose()
     }
 
     ws.value.onmessage = (event: any) => {

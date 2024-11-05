@@ -1,12 +1,16 @@
+export function getAPILink(): string {
+  const protocol = import.meta.env.VITE_API_PROTOCOL;
+  const hostname = import.meta.env.VITE_API_HOSTNAME;
+  const port = import.meta.env.VITE_API_PORT;
+  const version = import.meta.env.VITE_API_VERSION;
+
+  return `${protocol}://${hostname}:${port}/api/${version}`
+}
+
 async function sendRequest<ResponseType>(
   endpoint: string, method: string, body: any
 ): Promise<ResponseType> {
   return new Promise((resolve, reject) => {
-    const protocol = import.meta.env.VITE_API_PROTOCOL;
-    const hostname = import.meta.env.VITE_API_HOSTNAME;
-    const port = import.meta.env.VITE_API_PORT;
-    const version = import.meta.env.VITE_API_VERSION;
-
     const requestOptions= {
       method: method,
       body: body !== undefined ? JSON.stringify(body) : body,
@@ -15,7 +19,7 @@ async function sendRequest<ResponseType>(
       }
     };
     fetch(
-      `${protocol}://${hostname}:${port}/api/${version}/${endpoint}`,
+      `${getAPILink()}/${endpoint}`,
       requestOptions,
     )
       .then(async (response) => {

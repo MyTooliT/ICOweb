@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+import { getAPILink } from '@/api/api.ts';
+
 /* eslint-disable max-len */
 import Chart from '@/components/elements/Chart.vue';
 import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
@@ -15,6 +18,7 @@ import {
   useMeasurementStore,
   useMeasurementWebsocket
 } from '@/stores/measurementStore/measurementStore.ts';
+import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { ChartData } from 'chart.js';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
@@ -25,6 +29,7 @@ import Select from 'primevue/select';
 //import ToggleSwitch from 'primevue/toggleswitch';
 import {
   computed,
+  onMounted,
   ref
 } from 'vue';
 import { useRouter } from 'vue-router';
@@ -48,7 +53,10 @@ const {
   ift_storage
 } = useMeasurementWebsocket(
   true,
-  () => wrapUpdate()
+  () => wrapUpdate(),
+  () => {
+    loadFiles()
+  }
 )
 
 function wrapUpdate() {
@@ -115,6 +123,15 @@ const canMeasure = computed<boolean>(() => {
     mStore.selectedChannels.first > 0
   )
 })
+
+// wrapper for .env variable
+let measurementsDir = ref<string>('')
+
+onMounted(() => {
+  measurementsDir.value = import.meta.env.VITE_BACKEND_MEASUREMENT_DIR
+})
+
+const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
 </script>
 
 <template>
@@ -264,6 +281,27 @@ const canMeasure = computed<boolean>(() => {
         </div>
       </div>
       <ADCDrawer />
+      <TextBlock
+        heading="Measurement Files"
+        :subheading="`All files found under ${measurementsDir}`"
+        button-text="Load Files"
+        button-icon-class="pi pi-sync"
+        :button-loading="filesLoading"
+        class="mt-8"
+        @button-click="loadFiles"
+      />
+      <div class="flex flex-col gap-3">
+        <a
+          v-for="file in [...mStore.measurementFiles].reverse()"
+          :key="file"
+          download
+          :href="`${getAPILink()}/files/${file}`"
+          class="w-fit border-b-2 border-gray-200 hover:border-primary-200 transition-all"
+        >
+          {{file}}
+          <i class="pi pi-download inline-block ml-1" />
+        </a>
+      </div>
     </DefaultLayout>
     <button
       class="
