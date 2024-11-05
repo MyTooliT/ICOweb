@@ -5,6 +5,9 @@ import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
 import type {
   DelayApiV1DelayGetResponse,
+  DownloadFileApiV1FilesNameGetData,
+  DownloadFileApiV1FilesNameGetResponse,
+  ListFilesApiV1FilesGetResponse,
   OptionsApiV1OptionsResponse,
   PingApiV1PingGetResponse,
   ReadAdcApiV1SthReadAdcMacGetData,
@@ -236,4 +239,32 @@ export const resetCanApiV1ResetCanPut = (): CancelablePromise<ResetCanApiV1Reset
 export const optionsApiV1Options = (): CancelablePromise<OptionsApiV1OptionsResponse> => { return __request(OpenAPI, {
     method: 'OPTIONS',
     url: '/api/v1*'
+}); };
+
+/**
+ * List Files
+ * @returns MeasurementFileDetails Successful Response
+ * @throws ApiError
+ */
+export const listFilesApiV1FilesGet = (): CancelablePromise<ListFilesApiV1FilesGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/files'
+}); };
+
+/**
+ * Download File
+ * @param data The data for the request.
+ * @param data.name
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const downloadFileApiV1FilesNameGet = (data: DownloadFileApiV1FilesNameGetData): CancelablePromise<DownloadFileApiV1FilesNameGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/files/{name}',
+    path: {
+        name: data.name
+    },
+    errors: {
+        422: 'Validation Error'
+    }
 }); };

@@ -145,6 +145,26 @@ export const $HTTPValidationError = {
     title: 'HTTPValidationError'
 } as const;
 
+export const $MeasurementFileDetails = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        created: {
+            type: 'string',
+            title: 'Created'
+        },
+        size: {
+            type: 'integer',
+            title: 'Size'
+        }
+    },
+    type: 'object',
+    required: ['name', 'created', 'size'],
+    title: 'MeasurementFileDetails'
+} as const;
+
 export const $NoResponseError = {
     properties: {
         name: {

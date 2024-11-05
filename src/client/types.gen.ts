@@ -37,6 +37,12 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type MeasurementFileDetails = {
+    name: string;
+    created: string;
+    size: number;
+};
+
 export type NoResponseError = {
     name: string;
     message: string;
@@ -133,6 +139,14 @@ export type DelayApiV1DelayGetResponse = unknown;
 export type ResetCanApiV1ResetCanPutResponse = unknown;
 
 export type OptionsApiV1OptionsResponse = unknown;
+
+export type ListFilesApiV1FilesGetResponse = Array<MeasurementFileDetails>;
+
+export type DownloadFileApiV1FilesNameGetData = {
+    name: string;
+};
+
+export type DownloadFileApiV1FilesNameGetResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -367,6 +381,31 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: unknown;
+            };
+        };
+    };
+    '/api/v1/files': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: Array<MeasurementFileDetails>;
+            };
+        };
+    };
+    '/api/v1/files/{name}': {
+        get: {
+            req: DownloadFileApiV1FilesNameGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
             };
         };
     };

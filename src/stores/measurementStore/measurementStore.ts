@@ -1,4 +1,5 @@
 import { getMeasurementFiles } from '@/api/requests.ts';
+import { MeasurementFileDetails } from '@/client';
 import {
   ChartData,
   ChartDataSets
@@ -65,7 +66,7 @@ export const useMeasurementStore = defineStore('measurement', () => {
   const windowWidth = ref<number>(150)
   const IFTRequested = ref<boolean>(false)
 
-  const measurementFiles = ref<string[]>([])
+  const measurementFiles = ref<MeasurementFileDetails[]>([])
   async function getFiles(): Promise<void> {
     const files = await getMeasurementFiles()
     measurementFiles.value = [...files]
