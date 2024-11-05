@@ -3,7 +3,8 @@
 import { getAPILink } from '@/api/api.ts';
 import { deleteMeasurementFile } from '@/api/requests.ts';
 import { MeasurementFileDetails } from '@/client';
-import Chart from '@/components/elements/Chart.vue';
+import Chart from '@/components/elements/charts/Chart.vue';
+import { updateChartData } from '@/components/elements/charts/chartHelper.ts';
 import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
@@ -14,11 +15,10 @@ import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts'
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
   measurementChannels,
-  updateChartData,
-  useMeasurementStore,
-  useMeasurementWebsocket
+  useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
+import { useMeasurementWebsocket } from '@/utils/useMeasurementWebSocket.ts';
 import { ChartData } from 'chart.js';
 import { format } from 'date-fns';
 import { formatFileSize } from 'ico-front/src/utils/helper.ts';
