@@ -1,12 +1,11 @@
 // Import top-level views
 import Analyze from '@/pages/analyze.vue';
 import Config from '@/pages/config.vue';
-
-// Import config child views
 import Sensors from '@/pages/config/sensors.vue';
 import Storage from '@/pages/config/storage.vue';
 import Tools from '@/pages/config/tools.vue';
 import Debug from '@/pages/debug.vue';
+import Files from '@/pages/files.vue';
 import Help from '@/pages/help.vue';
 import Home from '@/pages/index.vue';
 import Measure from '@/pages/measure.vue';
@@ -54,6 +53,11 @@ const routes = [
     path: '/debug',
     name: 'Debug',
     component: Debug,
+  },
+  {
+    path: '/files',
+    name: 'Files',
+    component: Files,
   },
   {
     path: '/help',

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
-import { getAPILink } from '@/api/api.ts';
-import { deleteMeasurementFile } from '@/api/requests.ts';
-import { MeasurementFileDetails } from '@/client';
 import Chart from '@/components/elements/charts/Chart.vue';
 import { updateChartData } from '@/components/elements/charts/chartHelper.ts';
 import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
@@ -17,22 +14,16 @@ import {
   measurementChannels,
   useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
-import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { useMeasurementWebsocket } from '@/utils/useMeasurementWebSocket.ts';
 import { ChartData } from 'chart.js';
-import { format } from 'date-fns';
-import { formatFileSize } from 'ico-front/src/utils/helper.ts';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
-import Column from 'primevue/column';
-import DataTable from 'primevue/datatable';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import {
   computed,
-  onMounted,
   ref
 } from 'vue';
 import { useRouter } from 'vue-router';
@@ -58,7 +49,7 @@ const {
   true,
   () => wrapUpdate(),
   () => {
-    loadFiles()
+    mStore.getFiles()
   }
 )
 
@@ -127,15 +118,7 @@ const canMeasure = computed<boolean>(() => {
   )
 })
 
-// wrapper for .env variable
-let measurementsDir = ref<string>('')
 
-onMounted(() => {
-  measurementsDir.value = import.meta.env.VITE_BACKEND_MEASUREMENT_DIR
-})
-
-const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
-const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteMeasurementFile)
 </script>
 
 <template>
@@ -285,66 +268,6 @@ const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteM
         </div>
       </div>
       <ADCDrawer />
-      <TextBlock
-        heading="Measurement Files"
-        :subheading="`All files found under ${measurementsDir}`"
-        button-text="Load Files"
-        button-icon-class="pi pi-sync"
-        :button-loading="filesLoading"
-        class="mt-8"
-        @button-click="loadFiles"
-      />
-      <div class="flex flex-col gap-3">
-        <DataTable
-          v-if="mStore.measurementFiles.length > 0"
-          :value="mStore.measurementFiles"
-          size="small"
-          removableSort
-        >
-          <Column field="name" header="Name" sortable />
-          <Column field="created" header="Creation" sortable>
-            <template #body="{ data }: { data: MeasurementFileDetails }">
-              {{ format(new Date(data.created), 'dd.MM.yyyy, HH:mm:ss') }}
-            </template>
-          </Column>
-          <Column field="size" header="File Size" sortable>
-            <template #body="{ data }: { data: MeasurementFileDetails }">
-              {{ formatFileSize(data.size) }}
-            </template>
-          </Column>
-          <Column
-            header="Actions"
-          >
-            <template #body="{ data }: { data: MeasurementFileDetails }">
-              <div class="flex flex-row gap-2">
-                <Button
-                  icon="pi pi-download"
-                  as="a"
-                  download
-                  :href="`${getAPILink()}/files/${data.name}`"
-                  size="small"
-                  rounded
-                  aria-label="Download"
-                  outlined
-                />
-                <Button
-                  icon="pi pi-times"
-                  severity="danger"
-                  size="small"
-                  rounded
-                  aria-label="Download"
-                  outlined
-                  :loading="deletionLoading"
-                  @click="async () => {
-                    await deleteFile(data.name)
-                    await loadFiles()
-                  }"
-                />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </div>
     </DefaultLayout>
     <button
       class="

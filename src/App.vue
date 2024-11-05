@@ -33,6 +33,14 @@ const store = useGeneralStore()
           Measure
         </RouterLinkButton>
         <RouterLinkButton
+          name="Files"
+          to="/files">
+          <span
+            class="pi pi-folder"
+            style="font-size: 1.5em;" />
+          Files
+        </RouterLinkButton>
+        <RouterLinkButton
           name="Config"
           to="/config/sensors">
           <span
