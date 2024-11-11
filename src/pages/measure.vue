@@ -75,9 +75,31 @@ function wrapUpdate() {
       second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)) ?? 'Second Channel',
       third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)) ?? 'Third Channel',
       ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
-    }
+    },
+    9524,
+    mStore.acquisitionTime,
+    currentMin,
+    currentMax
   )
+  if(storage.value.length === 0) {return}
+  const startStamp = storage.value[0].timestamp
+  const endStamp = storage.value[storage.value.length - 1].timestamp
+  const length = endStamp - startStamp
+  console.log(length);
+  if(currentMin.value) {
+    mStore.updateChartYMin(currentMin.value)
+  }
+  if(currentMax.value) {
+    mStore.updateChartYMax(currentMax.value)
+  }
+  if(length > mStore.chartMaximumDisplayedTime) {
+    mStore.updateChartStartTime(length - 10)
+    mStore.updateChartEndTime(length)
+  }
 }
+
+const currentMin = ref<number | undefined>(undefined)
+const currentMax = ref<number | undefined>(undefined)
 
 function startStopClickHandler() {
   if(state.value === 'closed') {

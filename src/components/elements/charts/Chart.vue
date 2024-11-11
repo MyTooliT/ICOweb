@@ -5,7 +5,6 @@ import {
   CategoryScale,
   Chart,
   ChartData,
-  ChartOptions,
   Legend,
   LinearScale,
   LineController,
@@ -14,8 +13,7 @@ import {
   Title,
   Tooltip
 } from 'chart.js';
-import zoomPugin from 'chartjs-plugin-zoom';
-import { computed } from 'vue';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import { Line } from 'vue-chartjs';
 
 Chart.register(
@@ -27,53 +25,10 @@ Chart.register(
   CategoryScale,
   Tooltip,
   Legend,
-  zoomPugin
+  zoomPlugin
 );
 
 const mStore = useMeasurementStore()
-
-const options = computed<ChartOptions<'line'>>(() => {
-  return {
-    animation: false,
-    responsive: true,
-    scales: {
-      x: {
-        type: 'linear',
-        max: mStore.acquisitionTime,
-        min: 0,
-        ticks: {
-          stepSize: 1
-        },
-        title: {
-          text: 'Seconds passed',
-          align: 'center',
-          display: true
-        }
-      }
-    },
-    plugins: {
-      decimation: {
-        enabled: true,
-        algorithm: 'min-max',
-      },
-      zoom: {
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true
-          },
-          mode: 'xy',
-        },
-        pan: {
-          enabled: true,
-          mode: 'xy',
-        }
-      }
-    }
-  }
-})
 
 defineProps<{ data: ChartData<'line'> }>()
 </script>
@@ -83,10 +38,6 @@ defineProps<{ data: ChartData<'line'> }>()
     <Line
       ref="chartInstance"
       :data="data"
-      :options="options" />
+      :options="mStore.chartOptions" />
   </div>
 </template>
-
-<style scoped>
-
-</style>

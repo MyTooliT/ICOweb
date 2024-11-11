@@ -22,8 +22,12 @@ export function updateChartData(
     second?: string,
     third?: string,
     ift?: string
-  }, sampleRate: number = 3175,
-  acquisitionTime: number = 10): void {
+  },
+  sampleRate: number = 3175,
+  acquisitionTime: number = 10,
+  minRef: Ref<number | undefined>,
+  maxRef: Ref<number | undefined>
+): void {
 
   type TYValues = {
     first: number[],
@@ -44,10 +48,31 @@ export function updateChartData(
 
   for(let i = 0; i < rawData.length; i += interval) {
     x_values_visible.push(rawData[i].timestamp - startTime)
+    const values: number[] = []
 
-    if(rawData[i].first) { y_values_visible.first.push(<number>rawData[i].first) }
-    if(rawData[i].second) { y_values_visible.second.push(<number>rawData[i].second) }
-    if(rawData[i].third) { y_values_visible.third.push(<number>rawData[i].third) }
+    if(rawData[i].first) {
+      y_values_visible.first.push(<number>rawData[i].first)
+      values.push(<number>rawData[i].first)
+    }
+    if(rawData[i].second) {
+      y_values_visible.second.push(<number>rawData[i].second)
+      values.push(<number>rawData[i].second)
+    }
+    if(rawData[i].third) {
+      y_values_visible.third.push(<number>rawData[i].third)
+      values.push(<number>rawData[i].third)
+    }
+
+    if(minRef.value) {
+      minRef.value = Math.min(...values, minRef.value)
+    } else {
+      minRef.value = Math.min(...values)
+    }
+    if(maxRef.value) {
+      maxRef.value = Math.max(...values, maxRef.value)
+    } else {
+      maxRef.value = Math.max(...values)
+    }
   }
 
   const datasets: Array<ChartDataSets> = []

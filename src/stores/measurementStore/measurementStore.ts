@@ -1,6 +1,9 @@
 import { getMeasurementFiles } from '@/api/requests.ts';
 import { MeasurementFileDetails } from '@/client';
-import { ChartData } from 'chart.js';
+import {
+  ChartData,
+  ChartOptions
+} from 'chart.js';
 import { defineStore } from 'pinia';
 import {
   computed,
@@ -31,9 +34,39 @@ export type TChannelsActive = {
 }
 
 export const useMeasurementStore = defineStore('measurement', () => {
-  const parsedData: Array<TMeasurementDataFrame> = []
-  const continuous = ref<Boolean>(false);
-  const acquisitionTime = ref<number>(5)
+  const continuous = ref<boolean>(false)
+
+  const acquisitionTime = ref<number>(10)
+  const chartMaximumDisplayedTime = ref<number>(10)
+  const chartStartTime = ref<number>(0)
+  const chartEndTime = ref<number>(10)
+  const chartYMin = ref<number>(0)
+  const chartYMax = ref<number>(0)
+
+  function updateChartStartTime(startTime: number) {
+    if(chartOptions.value.scales?.x) {
+      chartStartTime.value = startTime
+    }
+  }
+
+  function updateChartEndTime(endTime: number) {
+    if(chartOptions.value.scales?.x) {
+      chartEndTime.value = endTime
+    }
+  }
+
+  function updateChartYMin(value: number) {
+    if(chartOptions.value.scales?.y) {
+      chartYMin.value = value
+    }
+  }
+
+  function updateChartYMax(value: number) {
+    if(chartOptions.value.scales?.y) {
+      chartYMax.value = value
+    }
+  }
+
   const selectedChannels = ref<TChannelMap>({
     first: 1,
     second: 0,
@@ -43,10 +76,6 @@ export const useMeasurementStore = defineStore('measurement', () => {
     first: true,
     second: false,
     third: false
-  })
-
-  const parsedDataWrapper = computed(() => {
-    return parsedData
   })
 
   const chartData = ref<ChartData<'line'>>({
@@ -59,6 +88,57 @@ export const useMeasurementStore = defineStore('measurement', () => {
 
   const chartDataWrapper = computed(() => {
     return chartData
+  })
+
+  const chartOptions = computed<ChartOptions<'line'>>(() => {
+    return {
+      animation: false,
+      responsive: true,
+      scales: {
+        x: {
+          type: 'linear',
+          max: chartEndTime.value,
+          min: chartStartTime.value,
+          ticks: {
+            stepSize: 1
+          },
+          title: {
+            text: 'Seconds passed',
+            align: 'center',
+            display: true
+          }
+        },
+        y: {
+          type: 'linear',
+          max: chartYMax.value,
+          min: chartYMin.value,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      },
+      plugins: {
+        decimation: {
+          enabled: true,
+          algorithm: 'min-max',
+        },
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true
+            },
+            mode: 'xy',
+          },
+          pan: {
+            enabled: true,
+            mode: 'xy',
+          }
+        }
+      }
+    }
   })
 
   const lastIFTTimestamp = ref<number>
@@ -78,12 +158,16 @@ export const useMeasurementStore = defineStore('measurement', () => {
   })
 
   return {
-    parsedData,
-    parsedDataWrapper,
     continuous,
     acquisitionTime,
     chartData,
     chartDataWrapper,
+    chartOptions,
+    updateChartStartTime,
+    updateChartEndTime,
+    updateChartYMin,
+    updateChartYMax,
+    chartMaximumDisplayedTime,
     selectedChannels,
     activeChannels,
     lastIFTTimestamp,
