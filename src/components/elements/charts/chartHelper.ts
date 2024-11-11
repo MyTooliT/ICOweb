@@ -24,7 +24,7 @@ export function updateChartData(
     ift?: string
   },
   sampleRate: number = 3175,
-  acquisitionTime: number = 10,
+  drawTime: number = 10,
   minRef: Ref<number | undefined>,
   maxRef: Ref<number | undefined>
 ): void {
@@ -41,7 +41,7 @@ export function updateChartData(
     third: []
   }
 
-  const totalExpectedValues = sampleRate * acquisitionTime
+  const totalExpectedValues = sampleRate * drawTime
   const interval = Math.ceil(totalExpectedValues / maxNumberOfPoints)
 
   const startTime = rawData[0] ? rawData[0].timestamp : 0

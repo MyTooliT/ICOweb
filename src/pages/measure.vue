@@ -77,7 +77,7 @@ function wrapUpdate() {
       ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
     },
     9524,
-    mStore.acquisitionTime,
+    mStore.chartMaximumDisplayedTime,
     currentMin,
     currentMax
   )
