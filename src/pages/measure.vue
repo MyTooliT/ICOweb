@@ -26,6 +26,7 @@ import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import ToggleSwitch from 'primevue/toggleswitch';
 import {
   computed,
   ref
@@ -114,7 +115,7 @@ function startStopClickHandler() {
           third: mStore.activeChannels.third
             ?  mStore.selectedChannels.third : 0,
           mac: hwStore.activeSTH?.getMacAddress(),
-          time: mStore.acquisitionTime,
+          time: mStore.continuous ? null : mStore.acquisitionTime,
           ift_requested: mStore.IFTRequested,
           ift_channel: mStore.IFTChannel,
           ift_window_width: mStore.windowWidth
@@ -205,14 +206,14 @@ const canMeasure = computed<boolean>(() => {
             />
           </NamedInput>
           <NamedInput title="Measure">
-            <!--            <div class="flex flex-row">
+            <div class="flex flex-row">
               <ToggleSwitch
                 v-model="mStore.continuous"
                 input-id="continuous" />
               <label
                 for="continuous"
                 class="ml-3">Run&nbsp;continuously</label>
-            </div>-->
+            </div>
             <InputGroup>
               <InputNumber
                 v-model="mStore.acquisitionTime"
@@ -227,10 +228,17 @@ const canMeasure = computed<boolean>(() => {
                 s
               </InputGroupAddon>
               <Button
-                :label="state === 'open' ? 'Stop Recording' : 'Start Recording'"
-                :severity="state === 'open' ? 'danger' : 'primary'"
+                label="Stop Recording"
+                severity="danger"
                 class="!px-5"
-                :disabled="!canMeasure"
+                :disabled="state === 'closed'"
+                @click="startStopClickHandler"
+              />
+              <Button
+                label="Start Recording"
+                severity="primary"
+                class="!px-5"
+                :disabled="!canMeasure || state === 'open'"
                 @click="startStopClickHandler"
               />
             </InputGroup>
