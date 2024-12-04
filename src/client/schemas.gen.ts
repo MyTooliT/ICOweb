@@ -52,6 +52,18 @@ export const $ADCValues = {
     title: 'ADCValues'
 } as const;
 
+export const $APIStateModel = {
+    properties: {
+        can_ready: {
+            type: 'boolean',
+            title: 'Can Ready'
+        }
+    },
+    type: 'object',
+    required: ['can_ready'],
+    title: 'APIStateModel'
+} as const;
+
 export const $Body_sth_connect_api_v1_sth_connect_put = {
     properties: {
         mac: {

@@ -7,6 +7,10 @@ export type ADCValues = {
     reference_voltage: number | null;
 };
 
+export type APIStateModel = {
+    can_ready: boolean;
+};
+
 export type Body_sth_connect_api_v1_sth_connect_put = {
     mac: string;
 };
@@ -132,7 +136,7 @@ export type WriteAdcApiV1SthWriteAdcPutData = {
 
 export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
 
-export type PingApiV1PingGetResponse = unknown;
+export type PingApiV1PingGetResponse = APIStateModel;
 
 export type DelayApiV1DelayGetResponse = unknown;
 
@@ -147,6 +151,12 @@ export type DownloadFileApiV1FilesNameGetData = {
 };
 
 export type DownloadFileApiV1FilesNameGetResponse = unknown;
+
+export type DeleteFileApiV1FilesNameDeleteData = {
+    name: string;
+};
+
+export type DeleteFileApiV1FilesNameDeleteResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -350,7 +360,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: unknown;
+                200: APIStateModel;
             };
         };
     };
@@ -397,6 +407,19 @@ export type $OpenApiTs = {
     '/api/v1/files/{name}': {
         get: {
             req: DownloadFileApiV1FilesNameGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        delete: {
+            req: DeleteFileApiV1FilesNameDeleteData;
             res: {
                 /**
                  * Successful Response

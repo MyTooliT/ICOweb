@@ -5,6 +5,8 @@ import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
 import type {
   DelayApiV1DelayGetResponse,
+  DeleteFileApiV1FilesNameDeleteData,
+  DeleteFileApiV1FilesNameDeleteResponse,
   DownloadFileApiV1FilesNameGetData,
   DownloadFileApiV1FilesNameGetResponse,
   ListFilesApiV1FilesGetResponse,
@@ -203,7 +205,7 @@ export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutDat
 
 /**
  * Ping
- * @returns unknown Successful Response
+ * @returns APIStateModel Successful Response
  * @throws ApiError
  */
 export const pingApiV1PingGet = (): CancelablePromise<PingApiV1PingGetResponse> => { return __request(OpenAPI, {
@@ -260,6 +262,24 @@ export const listFilesApiV1FilesGet = (): CancelablePromise<ListFilesApiV1FilesG
  */
 export const downloadFileApiV1FilesNameGet = (data: DownloadFileApiV1FilesNameGetData): CancelablePromise<DownloadFileApiV1FilesNameGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
+    url: '/api/v1/files/{name}',
+    path: {
+        name: data.name
+    },
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Delete File
+ * @param data The data for the request.
+ * @param data.name
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const deleteFileApiV1FilesNameDelete = (data: DeleteFileApiV1FilesNameDeleteData): CancelablePromise<DeleteFileApiV1FilesNameDeleteResponse> => { return __request(OpenAPI, {
+    method: 'DELETE',
     url: '/api/v1/files/{name}',
     path: {
         name: data.name

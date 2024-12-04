@@ -1,38 +1,22 @@
 <script setup lang="ts">
-import {
-  ping,
-  resetCAN
-} from '@/api/requests.ts';
+import { resetCAN } from '@/api/requests.ts';
+import { useAPIState } from '@/utils/useAPIState.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import {
   onBeforeUnmount,
-  onMounted,
-  ref
+  onMounted
 } from 'vue';
 
-const apiReachable = ref<boolean>(false);
-let intervalID = 0;
+const apiState = useAPIState();
 
 onMounted(async () => {
-  await checkAvailability();
-  intervalID = window.setInterval(async () => {
-    await checkAvailability();
-  }, 5000)
+  apiState.registerInterval(5000)
 })
 
 onBeforeUnmount(() => {
-  clearInterval(intervalID)
+  apiState.deregisterInterval()
 })
-
-async function checkAvailability(): Promise<void> {
-  try {
-    await ping();
-    apiReachable.value = true;
-  } catch (error) {
-    apiReachable.value = false;
-  }
-}
 
 function clearCache() {
   window?.localStorage?.clear()
@@ -43,12 +27,17 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 
 <template>
   <div
-    :data-state="apiReachable"
+    :data-state="apiState.reachable.value"
+    :data-api="apiState.reachable.value"
+    :data-can="apiState.canReady.value"
     class="
       w-full pr-6 pb-1 text-right
       flex flex-row justify-end items-center
-      data-[state~=true]:bg-primary-container bg-error-container
-      data-[state~=true]:text-on-primary-container text-on-error-container"
+      data-[api~=true]:bg-primary-container bg-error-container
+      data-[api~=true]:text-on-primary-container text-on-error-container
+      data-[can~=false]:bg-yellow-300
+      data-[can~=false]:text-on-error-container"
+
   >
     <Button
       label="Clear Cache"
@@ -64,7 +53,8 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
       :disabled="loading"
       @click="resetHandle" />
     <div class="text-sm h-min flex self-center">
-      {{ apiReachable ? 'connected' : 'disconnected' }}
+      API {{ apiState.reachable.value ? 'connected' : 'disconnected' }} |
+      CAN {{ apiState.canReady.value ? 'connected' : 'disconnected' }}
     </div>
   </div>
 </template>
