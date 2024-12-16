@@ -16,7 +16,8 @@ export type TMeasurementDataFrame = {
   third: number | null,
   ift: Array<{x: number, y: number}> | null
   timestamp: number,
-  counter: number
+  counter: number,
+  dataloss: number | null
 }
 
 export type TWebSocketState = 'open' | 'closed' | 'connecting'

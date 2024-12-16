@@ -1372,21 +1372,8 @@ video {
   background-color: var(--md-sys-color-surface);
 }
 
-.data-\[state\=readyToEdit\]\:bg-inherit[data-state=readyToEdit] {
-  background-color: inherit;
-}
-
-.data-\[state\~\=true\]\:bg-primary-container[data-state~=true] {
-  background-color: var(--md-sys-color-primary-container);
-}
-
 .data-\[api\~\=true\]\:bg-primary-container[data-api~=true] {
   background-color: var(--md-sys-color-primary-container);
-}
-
-.data-\[can\~\=true\]\:bg-yellow-300[data-can~=true] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 224 71 / var(--tw-bg-opacity));
 }
 
 .data-\[can\~\=false\]\:bg-yellow-300[data-can~=false] {
@@ -1394,21 +1381,16 @@ video {
   background-color: rgb(253 224 71 / var(--tw-bg-opacity));
 }
 
+.data-\[state\=readyToEdit\]\:bg-inherit[data-state=readyToEdit] {
+  background-color: inherit;
+}
+
 .data-\[active\=true\]\:text-primary[data-active=true] {
   color: var(--md-sys-color-primary);
 }
 
-.data-\[state\~\=true\]\:text-on-primary-container[data-state~=true] {
-  color: var(--md-sys-color-on-primary-container);
-}
-
 .data-\[api\~\=true\]\:text-on-primary-container[data-api~=true] {
   color: var(--md-sys-color-on-primary-container);
-}
-
-.data-\[can\~\=false\]\:text-white[data-can~=false] {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .data-\[can\~\=false\]\:text-on-error-container[data-can~=false] {

@@ -22,12 +22,14 @@ export function useMeasurementWebsocket(
   ws: Ref<WebSocket | undefined>,
   state: Ref<TWebSocketState>,
   storage: Ref<Array<TMeasurementDataFrame>>,
-  ift_storage: Ref<Array<TPoint>>
+  ift_storage: Ref<Array<TPoint>>,
+  dataloss: Ref<number | undefined>
 } {
   const ws = ref<WebSocket | undefined>(undefined)
   const state = ref<TWebSocketState>('closed')
   const storage = ref<Array<TMeasurementDataFrame>>([])
   const ift_storage : Ref<Array<TPoint>> = ref([])
+  const dataloss: Ref<number | undefined> = ref(undefined)
   let intervalId: number | undefined = undefined
 
   function open(): void {
@@ -60,9 +62,14 @@ export function useMeasurementWebsocket(
     ws.value.onmessage = (event: any) => {
       const parsed = JSON.parse(event.data) as Array<TMeasurementDataFrame>
       parsed.forEach((entry: TMeasurementDataFrame) => {
-        storage.value.push(entry)
-        if(entry.ift) {
+        if(entry.dataloss) {
+          dataloss.value = entry.dataloss
+        }
+        else if(entry.ift) {
           ift_storage.value = [...entry.ift]
+        }
+        else {
+          storage.value.push(entry)
         }
       })
     }
@@ -88,6 +95,7 @@ export function useMeasurementWebsocket(
     ws,
     state,
     storage,
-    ift_storage
+    ift_storage,
+    dataloss
   }
 }

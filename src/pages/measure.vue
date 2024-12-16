@@ -23,10 +23,11 @@ import Checkbox from 'primevue/checkbox';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
+import MeterGroup from 'primevue/metergroup';
 import Select from 'primevue/select';
 import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
 import ToggleSwitch from 'primevue/toggleswitch';
+import { useToast } from 'primevue/usetoast';
 import {
   computed,
   ref
@@ -49,7 +50,8 @@ const {
   state,
   storage,
   ws,
-  ift_storage
+  ift_storage,
+  dataloss
 } = useMeasurementWebsocket(
   true,
   () => wrapUpdate(),
@@ -86,7 +88,6 @@ function wrapUpdate() {
   const startStamp = storage.value[0].timestamp
   const endStamp = storage.value[storage.value.length - 1].timestamp
   const length = endStamp - startStamp
-  console.log(length);
   if(currentMin.value) {
     mStore.updateChartYMin(currentMin.value)
   }
@@ -149,6 +150,28 @@ const canMeasure = computed<boolean>(() => {
     mStore.selectedChannels.first > 0
   )
 })
+
+type MeterItem = {
+  label: string,
+  value: number,
+  color: string,
+  icon: string
+}
+
+const datalossMeter = computed<MeterItem[]>(() => [
+  {
+    label: 'OK',
+    value: (dataloss.value ?? 1) * 100,
+    color: 'green',
+    icon: ''
+  },
+  {
+    label: 'Lost',
+    value: 100 - ((dataloss.value ?? 1) * 100),
+    color: 'red',
+    icon: ''
+  }
+])
 
 
 </script>
@@ -302,6 +325,11 @@ const canMeasure = computed<boolean>(() => {
                 :min="50"
                 :max="250"
               />
+            </InputGroup>
+          </NamedInput>
+          <NamedInput title="Measurement Integrity (Packet Loss)">
+            <InputGroup>
+              <MeterGroup :value="datalossMeter" class="w-full" />
             </InputGroup>
           </NamedInput>
         </div>
