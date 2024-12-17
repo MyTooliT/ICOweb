@@ -6,8 +6,8 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { ChartData } from 'chart.js';
 import Button from 'primevue/button';
 import {
-  onMounted,
-  ref
+  ref,
+  watch
 } from 'vue';
 import {
   useRoute,
@@ -67,9 +67,7 @@ const loadFile = async () => {
   }
 }
 
-onMounted(async () => {
-  await loadFile();
-})
+watch(() => route.query['file'], loadFile, { immediate: true });
 </script>
 
 <template>
