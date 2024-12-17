@@ -1,6 +1,5 @@
 <script setup lang="ts">
 /* eslint-disable-next-line max-len */
-import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
 import {
   CategoryScale,
   Chart,
@@ -15,6 +14,7 @@ import {
   Tooltip
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
+import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 
 Chart.register(
@@ -29,12 +29,67 @@ Chart.register(
   zoomPlugin
 );
 
-const mStore = useMeasurementStore()
-
-defineProps<{
+const props = defineProps<{
   data: ChartData<'line'> ,
-  options: ChartOptions<'line'>
+  options?: ChartOptions<'line'>
+  boundaries?: {
+    xmin: number,
+    xmax: number,
+    ymin: number,
+    ymax: number
+  }
 }>()
+
+const chartOptions = computed<ChartOptions<'line'>>(() => {
+  return {
+    animation: false,
+    responsive: true,
+    scales: {
+      x: {
+        type: 'linear',
+        max: props.boundaries?.xmax ?? 10,
+        min: props.boundaries?.xmin ?? 0,
+        ticks: {
+          stepSize: 1
+        },
+        title: {
+          text: 'Seconds passed',
+          align: 'center',
+          display: true
+        }
+      },
+      y: {
+        type: 'linear',
+        max: props.boundaries?.ymax ?? 10,
+        min: props.boundaries?.ymin ?? -10,
+        ticks: {
+          stepSize: 1
+        }
+      }
+    },
+    plugins: {
+      decimation: {
+        enabled: true,
+        algorithm: 'min-max',
+      },
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'xy',
+        },
+        pan: {
+          enabled: true,
+          mode: 'xy',
+        }
+      }
+    }
+  }
+})
 </script>
 
 <template>
@@ -42,6 +97,6 @@ defineProps<{
     <Line
       ref="chartInstance"
       :data="data"
-      :options="options" />
+      :options="options ?? chartOptions" />
   </div>
 </template>

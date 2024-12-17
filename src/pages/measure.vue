@@ -133,8 +133,6 @@ function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
   return `[${assignedSensor.channel}] ${assignedSensor.sensor.name}`
 }
 
-const chart = ref(undefined)
-
 // Maximum drawable points per channel for graph
 const maxNumberOfPoints = ref<number>(2000)
 
@@ -187,10 +185,14 @@ const datalossMeter = computed<MeterItem[]>(() => [
       <div class="flex flex-row">
         <div class="flex flex-col flex-grow gap-3">
           <Chart
-            ref="chart"
             class="flex flex-col flex-grow"
             :data="chartData"
-            :options="mStore.chartOptions"
+            :boundaries="{
+              xmin: mStore.chartStartTime,
+              xmax: mStore.chartEndTime,
+              ymin: mStore.chartYMin,
+              ymax: mStore.chartYMax
+            }"
           />
           <TextBlock
             heading="Calculation Settings"

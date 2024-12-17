@@ -3,13 +3,9 @@ import { getParsedMeasurement } from '@/api/requests.ts';
 import Chart from '@/components/elements/charts/Chart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import {
-  ChartData,
-  ChartOptions
-} from 'chart.js';
+import { ChartData } from 'chart.js';
 import Button from 'primevue/button';
 import {
-  computed,
   onMounted,
   ref
 } from 'vue';
@@ -71,57 +67,6 @@ const loadFile = async () => {
   }
 }
 
-const chartOptions = computed<ChartOptions<'line'>>(() => {
-  return {
-    animation: false,
-      responsive: true,
-      scales: {
-      x: {
-        type: 'linear',
-          max: chartBoundaries.value.xmax,
-          min: chartBoundaries.value.xmin,
-          ticks: {
-          stepSize: 1
-        },
-        title: {
-          text: 'Seconds passed',
-            align: 'center',
-            display: true
-        }
-      },
-      y: {
-        type: 'linear',
-          max: chartBoundaries.value.ymax,
-          min: chartBoundaries.value.ymin,
-          ticks: {
-          stepSize: 1
-        }
-      }
-    },
-    plugins: {
-      decimation: {
-        enabled: true,
-          algorithm: 'min-max',
-      },
-      zoom: {
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true
-          },
-          mode: 'xy',
-        },
-        pan: {
-          enabled: true,
-            mode: 'xy',
-        }
-      }
-    }
-  }
-})
-
 onMounted(async () => {
   await loadFile();
 })
@@ -140,7 +85,7 @@ onMounted(async () => {
     <Chart
       v-if="chartData.labels && chartData.labels.length > 0"
       :data="chartData"
-      :options="chartOptions"
+      :boundaries="chartBoundaries"
     />
     <div
       v-else
