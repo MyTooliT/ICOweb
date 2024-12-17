@@ -143,6 +143,25 @@ export const $ConnectionTimeoutError = {
     title: 'ConnectionTimeoutError'
 } as const;
 
+export const $Dataset = {
+    properties: {
+        data: {
+            items: {
+                type: 'number'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['data', 'name'],
+    title: 'Dataset'
+} as const;
+
 export const $HTTPValidationError = {
     properties: {
         detail: {
@@ -191,6 +210,35 @@ export const $NoResponseError = {
     type: 'object',
     required: ['name', 'message'],
     title: 'NoResponseError'
+} as const;
+
+export const $ParsedMeasurement = {
+    properties: {
+        counter: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Counter'
+        },
+        timestamp: {
+            items: {
+                type: 'number'
+            },
+            type: 'array',
+            title: 'Timestamp'
+        },
+        datasets: {
+            items: {
+                '$ref': '#/components/schemas/Dataset'
+            },
+            type: 'array',
+            title: 'Datasets'
+        }
+    },
+    type: 'object',
+    required: ['counter', 'timestamp', 'datasets'],
+    title: 'ParsedMeasurement'
 } as const;
 
 export const $STHDeviceResponseModel = {

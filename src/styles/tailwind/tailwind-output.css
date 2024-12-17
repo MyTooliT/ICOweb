@@ -635,6 +635,11 @@ video {
   margin-right: auto;
 }
 
+.my-10 {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
 .\!mb-0 {
   margin-bottom: 0px !important;
 }
@@ -709,11 +714,6 @@ video {
 
 .aspect-square {
   aspect-ratio: 1 / 1;
-}
-
-.size-8 {
-  width: 2rem;
-  height: 2rem;
 }
 
 .h-dvh {
@@ -1372,13 +1372,13 @@ video {
   background-color: var(--md-sys-color-surface);
 }
 
-.data-\[api\~\=true\]\:bg-primary-container[data-api~=true] {
-  background-color: var(--md-sys-color-primary-container);
-}
-
-.data-\[can\~\=false\]\:bg-yellow-300[data-can~=false] {
+.data-\[api\~\=false\]\:bg-yellow-300[data-api~=false] {
   --tw-bg-opacity: 1;
   background-color: rgb(253 224 71 / var(--tw-bg-opacity));
+}
+
+.data-\[can\~\=true\]\:bg-primary-container[data-can~=true] {
+  background-color: var(--md-sys-color-primary-container);
 }
 
 .data-\[state\=readyToEdit\]\:bg-inherit[data-state=readyToEdit] {
@@ -1389,12 +1389,12 @@ video {
   color: var(--md-sys-color-primary);
 }
 
-.data-\[api\~\=true\]\:text-on-primary-container[data-api~=true] {
-  color: var(--md-sys-color-on-primary-container);
+.data-\[api\~\=false\]\:text-on-error-container[data-api~=false] {
+  color: var(--md-sys-color-on-error-container);
 }
 
-.data-\[can\~\=false\]\:text-on-error-container[data-can~=false] {
-  color: var(--md-sys-color-on-error-container);
+.data-\[can\~\=true\]\:text-on-primary-container[data-can~=true] {
+  color: var(--md-sys-color-on-primary-container);
 }
 
 @media (prefers-color-scheme: dark) {

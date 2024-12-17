@@ -5,6 +5,7 @@ import {
   CategoryScale,
   Chart,
   ChartData,
+  ChartOptions,
   Legend,
   LinearScale,
   LineController,
@@ -30,7 +31,10 @@ Chart.register(
 
 const mStore = useMeasurementStore()
 
-defineProps<{ data: ChartData<'line'> }>()
+defineProps<{
+  data: ChartData<'line'> ,
+  options: ChartOptions<'line'>
+}>()
 </script>
 
 <template>
@@ -38,6 +42,6 @@ defineProps<{ data: ChartData<'line'> }>()
     <Line
       ref="chartInstance"
       :data="data"
-      :options="mStore.chartOptions" />
+      :options="options" />
   </div>
 </template>

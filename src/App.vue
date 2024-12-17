@@ -41,6 +41,14 @@ const store = useGeneralStore()
           Files
         </RouterLinkButton>
         <RouterLinkButton
+          name="Analyze"
+          to="/analyze">
+          <span
+            class="pi pi-search-plus"
+            style="font-size: 1.5em;" />
+          Analyze
+        </RouterLinkButton>
+        <RouterLinkButton
           name="Config"
           to="/config/sensors">
           <span
@@ -48,12 +56,6 @@ const store = useGeneralStore()
             style="font-size: 1.5em;" />
           Config
         </RouterLinkButton>
-<!--        <RouterLinkButton
-          name="Analyze"
-          to="/analyze">
-          <ComputerDesktopIcon class="size-8 pb-1" />
-          Analyze
-        </RouterLinkButton>-->
         <RouterLinkButton
           name="Help"
           to="/help"

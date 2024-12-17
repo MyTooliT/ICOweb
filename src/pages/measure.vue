@@ -190,6 +190,7 @@ const datalossMeter = computed<MeterItem[]>(() => [
             ref="chart"
             class="flex flex-col flex-grow"
             :data="chartData"
+            :options="mStore.chartOptions"
           />
           <TextBlock
             heading="Calculation Settings"

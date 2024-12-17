@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { RouteLocationRaw, useRoute, useRouter } from 'vue-router';
+import {
+  RouteLocationRaw,
+  useRoute,
+  useRouter
+} from 'vue-router';
 
 const props = defineProps<{
   to: RouteLocationRaw;
@@ -11,7 +15,7 @@ const route = useRoute()
 
 <template>
   <button
-    :data-active="route.fullPath === props.to"
+    :data-active="route.path === props.to"
     class="
       p-3 flex flex-col justify-center items-center
       aspect-square transition-all duration-100

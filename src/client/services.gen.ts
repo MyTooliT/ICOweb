@@ -9,6 +9,8 @@ import type {
   DeleteFileApiV1FilesNameDeleteResponse,
   DownloadFileApiV1FilesNameGetData,
   DownloadFileApiV1FilesNameGetResponse,
+  GetAnalyzedFileApiV1FilesAnalyzeNameGetData,
+  GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse,
   ListFilesApiV1FilesGetResponse,
   OptionsApiV1OptionsResponse,
   PingApiV1PingGetResponse,
@@ -281,6 +283,24 @@ export const downloadFileApiV1FilesNameGet = (data: DownloadFileApiV1FilesNameGe
 export const deleteFileApiV1FilesNameDelete = (data: DeleteFileApiV1FilesNameDeleteData): CancelablePromise<DeleteFileApiV1FilesNameDeleteResponse> => { return __request(OpenAPI, {
     method: 'DELETE',
     url: '/api/v1/files/{name}',
+    path: {
+        name: data.name
+    },
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Get Analyzed File
+ * @param data The data for the request.
+ * @param data.name
+ * @returns ParsedMeasurement Successful Response
+ * @throws ApiError
+ */
+export const getAnalyzedFileApiV1FilesAnalyzeNameGet = (data: GetAnalyzedFileApiV1FilesAnalyzeNameGetData): CancelablePromise<GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/files/analyze/{name}',
     path: {
         name: data.name
     },

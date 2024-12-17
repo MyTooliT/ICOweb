@@ -37,6 +37,11 @@ export type ConnectionTimeoutError = {
     message: string;
 };
 
+export type Dataset = {
+    data: Array<(number)>;
+    name: string;
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -50,6 +55,12 @@ export type MeasurementFileDetails = {
 export type NoResponseError = {
     name: string;
     message: string;
+};
+
+export type ParsedMeasurement = {
+    counter: Array<(number)>;
+    timestamp: Array<(number)>;
+    datasets: Array<Dataset>;
 };
 
 /**
@@ -157,6 +168,12 @@ export type DeleteFileApiV1FilesNameDeleteData = {
 };
 
 export type DeleteFileApiV1FilesNameDeleteResponse = unknown;
+
+export type GetAnalyzedFileApiV1FilesAnalyzeNameGetData = {
+    name: string;
+};
+
+export type GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse = ParsedMeasurement;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -425,6 +442,21 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/files/analyze/{name}': {
+        get: {
+            req: GetAnalyzedFileApiV1FilesAnalyzeNameGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ParsedMeasurement;
                 /**
                  * Validation Error
                  */

@@ -2,6 +2,7 @@
 import {
   ADCValues,
   MeasurementFileDetails,
+  ParsedMeasurement,
   STHDeviceResponseModel,
   STHRenameRequestModel,
   STHRenameResponseModel,
@@ -129,6 +130,14 @@ export async function getMeasurementFiles(): Promise<MeasurementFileDetails[]> {
 export async function deleteMeasurementFile(name: string): Promise<string> {
   return new Promise((resolve, reject) => {
     del<void, string>(`files/${name}`, undefined)
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
+export async function getParsedMeasurement(name: string): Promise<ParsedMeasurement> {
+  return new Promise((resolve, reject) => {
+    get<ParsedMeasurement>(`files/analyze/${name}`)
       .then(data => resolve(data))
       .catch(reject)
   })

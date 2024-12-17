@@ -15,7 +15,9 @@ import {
   onMounted,
   ref
 } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const mStore = useMeasurementStore()
 
 // wrapper for .env variable
@@ -77,6 +79,15 @@ const {
         >
           <template #body="{ data }: { data: MeasurementFileDetails }">
             <div class="flex flex-row gap-2">
+              <Button
+                icon="pi pi-search-plus"
+                as="a"
+                size="small"
+                rounded
+                aria-label="Analyze File"
+                outlined
+                @click.prevent="router.push(`/analyze?file=${data.name}`)"
+              />
               <Button
                 icon="pi pi-download"
                 as="a"
