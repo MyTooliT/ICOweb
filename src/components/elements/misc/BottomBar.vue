@@ -33,10 +33,11 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
     class="
       w-full pr-6 pb-1 text-right
       flex flex-row justify-end items-center
-      data-[api~=true]:bg-primary-container bg-error-container
-      data-[api~=true]:text-on-primary-container text-on-error-container
-      data-[can~=false]:bg-yellow-300
-      data-[can~=false]:text-on-error-container"
+      bg-error-container text-on-error-container
+      data-[api~=false]:bg-yellow-300
+      data-[api~=false]:text-on-error-container
+      data-[can~=true]:bg-primary-container
+      data-[can~=true]:text-on-primary-container"
 
   >
     <Button
@@ -53,8 +54,8 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
       :disabled="loading"
       @click="resetHandle" />
     <div class="text-sm h-min flex self-center">
-      API {{ apiState.reachable.value ? 'connected' : 'disconnected' }} |
-      CAN {{ apiState.canReady.value ? 'connected' : 'disconnected' }}
+      API {{ apiState.reachable.value ? 'reachable' : 'disconnected' }} |
+      CAN {{ apiState.canReady.value ? 'established' : 'disconnected' }}
     </div>
   </div>
 </template>
