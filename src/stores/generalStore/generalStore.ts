@@ -64,6 +64,7 @@ export const useGeneralStore = defineStore('general', () => {
     const newRangeModalVisible = ref<boolean>(false)
     const newTypeModalVisible = ref<boolean>(false)
     const addHolderModalVisible = ref<boolean>(false)
+    const fileSelectionModalVisible = ref<boolean>(false)
 
 
     return {
@@ -73,6 +74,7 @@ export const useGeneralStore = defineStore('general', () => {
         newRangeModalVisible,
         newTypeModalVisible,
         addHolderModalVisible,
+        fileSelectionModalVisible,
         globalLoader,
         setGlobalLoader,
         navigationLoader

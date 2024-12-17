@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { getParsedMeasurement } from '@/api/requests.ts';
+import { ParsedMeasurement } from '@/client';
 import Chart from '@/components/elements/charts/Chart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
+import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { ChartData } from 'chart.js';
-import Button from 'primevue/button';
 import {
   ref,
   watch
@@ -16,6 +18,7 @@ import {
 
 const route = useRoute();
 const router = useRouter();
+const store = useGeneralStore();
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
@@ -37,37 +40,43 @@ const chartBoundaries = ref<{
   ymax: 10,
 })
 
-const loadFile = async () => {
-  if(route.query['file']) {
-    const data = await getParsedMeasurement(route.query['file'] as string)
-
-    const newDatasets: Array<{ data: Array<number>, label: string }> = data.datasets.map((dataset, index) => {
-        return {
-          data: dataset.data,
-          label: dataset.name,
-          pointRadius: 1,
-          borderColor: ['red', 'green', 'blue', 'yellow', 'purple'][index],
-        }
-      })
-    const newLabels: Array<number> = data.timestamp.map(ts => ts / 1000000)
-
-    chartData.value = {
-      labels: newLabels,
-      datasets: newDatasets
+const handleParsedData = (data: ParsedMeasurement): void => {
+  const newDatasets: Array<{ data: Array<number>, label: string }> = data.datasets.map((dataset, index) => {
+    return {
+      data: dataset.data,
+      label: dataset.name,
+      pointRadius: 1,
+      borderColor: ['red', 'green', 'blue', 'yellow', 'purple'][index],
     }
+  })
+  const newLabels: Array<number> = data.timestamp.map(ts => ts / 1000000)
 
-    const flattenedYValues = newDatasets.map(ds => ds.data).flat()
+  chartData.value = {
+    labels: newLabels,
+    datasets: newDatasets
+  }
 
-    chartBoundaries.value = {
-      xmin: newLabels[0],
-      xmax: newLabels[newLabels.length - 1],
-      ymin: Math.min(...flattenedYValues),
-      ymax: Math.max(...flattenedYValues)
-    }
+  const flattenedYValues = newDatasets.map(ds => ds.data).flat()
+
+  chartBoundaries.value = {
+    xmin: newLabels[0],
+    xmax: newLabels[newLabels.length - 1],
+    ymin: Math.min(...flattenedYValues),
+    ymax: Math.max(...flattenedYValues)
   }
 }
 
-watch(() => route.query['file'], loadFile, { immediate: true });
+const handleRouteWatch = async () => {
+  if(route.query['file']) {
+    store.fileSelectionModalVisible = false;
+    const data = await getParsedMeasurement(route.query['file'] as string)
+    handleParsedData(data)
+  } else {
+    store.fileSelectionModalVisible = true;
+  }
+}
+
+watch(() => route.query['file'], handleRouteWatch, { immediate: true });
 </script>
 
 <template>
@@ -78,24 +87,19 @@ watch(() => route.query['file'], loadFile, { immediate: true });
       :button="true"
       button-text="Select File"
       button-icon-class="pi pi-file-import"
-      @button-click="router.push('/files')"
+      @button-click="store.fileSelectionModalVisible = true"
     />
     <Chart
       v-if="chartData.labels && chartData.labels.length > 0"
       :data="chartData"
       :boundaries="chartBoundaries"
     />
-    <div
-      v-else
-      class="w-full flex justify-center items-center"
-    >
-      <Button
-        label="Select File"
-        icon="pi pi-file-import"
-        class="my-10"
-        @click="router.push('/files')"
-      />
-    </div>
+    <FileSelectionModal
+      @upload="(event) => {
+        handleParsedData(event as ParsedMeasurement);
+        store.fileSelectionModalVisible = false;
+      }"
+    />
   </DefaultLayout>
 </template>
 
