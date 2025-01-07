@@ -64,6 +64,19 @@ export const $APIStateModel = {
     title: 'APIStateModel'
 } as const;
 
+export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
+    properties: {
+        file: {
+            type: 'string',
+            format: 'binary',
+            title: 'File'
+        }
+    },
+    type: 'object',
+    required: ['file'],
+    title: 'Body_post_analyzed_file_api_v1_files_analyze_post'
+} as const;
+
 export const $Body_sth_connect_api_v1_sth_connect_put = {
     properties: {
         mac: {
@@ -160,6 +173,54 @@ export const $Dataset = {
     type: 'object',
     required: ['data', 'name'],
     title: 'Dataset'
+} as const;
+
+export const $DiskCapacity = {
+    properties: {
+        total: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Total'
+        },
+        available: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Available'
+        }
+    },
+    type: 'object',
+    required: ['total', 'available'],
+    title: 'DiskCapacity'
+} as const;
+
+export const $FileListResponseModel = {
+    properties: {
+        capacity: {
+            '$ref': '#/components/schemas/DiskCapacity'
+        },
+        files: {
+            items: {
+                '$ref': '#/components/schemas/MeasurementFileDetails'
+            },
+            type: 'array',
+            title: 'Files'
+        }
+    },
+    type: 'object',
+    required: ['capacity', 'files'],
+    title: 'FileListResponseModel'
 } as const;
 
 export const $HTTPValidationError = {

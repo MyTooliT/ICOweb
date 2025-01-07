@@ -1,5 +1,8 @@
 import { getMeasurementFiles } from '@/api/requests.ts';
-import { MeasurementFileDetails } from '@/client';
+import {
+  DiskCapacity,
+  MeasurementFileDetails
+} from '@/client';
 import { ChartData } from 'chart.js';
 import { defineStore } from 'pinia';
 import {
@@ -83,9 +86,11 @@ export const useMeasurementStore = defineStore('measurement', () => {
   const IFTRequested = ref<boolean>(false)
 
   const measurementFiles = ref<MeasurementFileDetails[]>([])
+  const driveCapacity = ref<DiskCapacity>({total: null, available: null})
   async function getFiles(): Promise<void> {
-    const files = await getMeasurementFiles()
-    measurementFiles.value = [...files]
+    const data = await getMeasurementFiles()
+    measurementFiles.value = [...data.files]
+    driveCapacity.value = {...data.capacity}
   }
   const getLatestFileName = computed<string>(() => {
     if(measurementFiles.value.length === 0) return ''
@@ -113,7 +118,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     IFTRequested,
     measurementFiles,
     getFiles,
-    getLatestFileName
+    getLatestFileName,
+    driveCapacity
   }
 }, {
   persist: true

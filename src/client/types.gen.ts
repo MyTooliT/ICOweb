@@ -11,6 +11,10 @@ export type APIStateModel = {
     can_ready: boolean;
 };
 
+export type Body_post_analyzed_file_api_v1_files_analyze_post = {
+    file: (Blob | File);
+};
+
 export type Body_sth_connect_api_v1_sth_connect_put = {
     mac: string;
 };
@@ -40,6 +44,16 @@ export type ConnectionTimeoutError = {
 export type Dataset = {
     data: Array<(number)>;
     name: string;
+};
+
+export type DiskCapacity = {
+    total: number | null;
+    available: number | null;
+};
+
+export type FileListResponseModel = {
+    capacity: DiskCapacity;
+    files: Array<MeasurementFileDetails>;
 };
 
 export type HTTPValidationError = {
@@ -155,7 +169,7 @@ export type ResetCanApiV1ResetCanPutResponse = unknown;
 
 export type OptionsApiV1OptionsResponse = unknown;
 
-export type ListFilesApiV1FilesGetResponse = Array<MeasurementFileDetails>;
+export type ListFilesAndCapacityApiV1FilesGetResponse = FileListResponseModel;
 
 export type DownloadFileApiV1FilesNameGetData = {
     name: string;
@@ -174,6 +188,12 @@ export type GetAnalyzedFileApiV1FilesAnalyzeNameGetData = {
 };
 
 export type GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse = ParsedMeasurement;
+
+export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
+    formData: Body_post_analyzed_file_api_v1_files_analyze_post;
+};
+
+export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = ParsedMeasurement;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -417,7 +437,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: Array<MeasurementFileDetails>;
+                200: FileListResponseModel;
             };
         };
     };
@@ -452,6 +472,21 @@ export type $OpenApiTs = {
     '/api/v1/files/analyze/{name}': {
         get: {
             req: GetAnalyzedFileApiV1FilesAnalyzeNameGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ParsedMeasurement;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/files/analyze': {
+        post: {
+            req: PostAnalyzedFileApiV1FilesAnalyzePostData;
             res: {
                 /**
                  * Successful Response

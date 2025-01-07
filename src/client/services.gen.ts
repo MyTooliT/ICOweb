@@ -11,9 +11,11 @@ import type {
   DownloadFileApiV1FilesNameGetResponse,
   GetAnalyzedFileApiV1FilesAnalyzeNameGetData,
   GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse,
-  ListFilesApiV1FilesGetResponse,
+  ListFilesAndCapacityApiV1FilesGetResponse,
   OptionsApiV1OptionsResponse,
   PingApiV1PingGetResponse,
+  PostAnalyzedFileApiV1FilesAnalyzePostData,
+  PostAnalyzedFileApiV1FilesAnalyzePostResponse,
   ReadAdcApiV1SthReadAdcMacGetData,
   ReadAdcApiV1SthReadAdcMacGetResponse,
   ResetCanApiV1ResetCanPutResponse,
@@ -246,11 +248,11 @@ export const optionsApiV1Options = (): CancelablePromise<OptionsApiV1OptionsResp
 }); };
 
 /**
- * List Files
- * @returns MeasurementFileDetails Successful Response
+ * List Files And Capacity
+ * @returns FileListResponseModel Successful Response
  * @throws ApiError
  */
-export const listFilesApiV1FilesGet = (): CancelablePromise<ListFilesApiV1FilesGetResponse> => { return __request(OpenAPI, {
+export const listFilesAndCapacityApiV1FilesGet = (): CancelablePromise<ListFilesAndCapacityApiV1FilesGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/api/v1/files'
 }); };
@@ -304,6 +306,23 @@ export const getAnalyzedFileApiV1FilesAnalyzeNameGet = (data: GetAnalyzedFileApi
     path: {
         name: data.name
     },
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Post Analyzed File
+ * @param data The data for the request.
+ * @param data.formData
+ * @returns ParsedMeasurement Successful Response
+ * @throws ApiError
+ */
+export const postAnalyzedFileApiV1FilesAnalyzePost = (data: PostAnalyzedFileApiV1FilesAnalyzePostData): CancelablePromise<PostAnalyzedFileApiV1FilesAnalyzePostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/files/analyze',
+    formData: data.formData,
+    mediaType: 'multipart/form-data',
     errors: {
         422: 'Validation Error'
     }

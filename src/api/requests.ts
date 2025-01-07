@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-len
 import {
   ADCValues,
-  MeasurementFileDetails,
+  FileListResponseModel,
   ParsedMeasurement,
   STHDeviceResponseModel,
   STHRenameRequestModel,
@@ -119,9 +119,9 @@ export async function resetCAN(): Promise<void> {
   })
 }
 
-export async function getMeasurementFiles(): Promise<MeasurementFileDetails[]> {
+export async function getMeasurementFiles(): Promise<FileListResponseModel> {
   return new Promise((resolve, reject) => {
-    get<MeasurementFileDetails[]>('files')
+    get<FileListResponseModel>('files')
       .then(data => resolve(data))
       .catch(reject)
   })

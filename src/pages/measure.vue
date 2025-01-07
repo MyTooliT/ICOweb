@@ -16,6 +16,7 @@ import {
   measurementChannels,
   useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
+import { MeterItem } from '@/utils/dataModels.ts';
 import { useMeasurementWebsocket } from '@/utils/useMeasurementWebSocket.ts';
 import { ChartData } from 'chart.js';
 import Button from 'primevue/button';
@@ -148,13 +149,6 @@ const canMeasure = computed<boolean>(() => {
     mStore.selectedChannels.first > 0
   )
 })
-
-type MeterItem = {
-  label: string,
-  value: number,
-  color: string,
-  icon: string
-}
 
 const datalossMeter = computed<MeterItem[]>(() => [
   {

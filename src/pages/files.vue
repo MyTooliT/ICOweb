@@ -1,21 +1,28 @@
 <script setup lang="ts">
+/* eslint-disable max-len */
 import { getAPILink } from '@/api/api.ts';
 import { deleteMeasurementFile } from '@/api/requests.ts';
 import { MeasurementFileDetails } from '@/client';
+import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
+import { MeterItem } from '@/utils/dataModels.ts';
 import { formatFileSize } from '@/utils/helper.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { format } from 'date-fns';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
+import InputGroup from 'primevue/inputgroup';
+import MeterGroup from 'primevue/metergroup';
 import {
+  computed,
   onMounted,
   ref
 } from 'vue';
 import { useRouter } from 'vue-router';
+
 
 const router = useRouter();
 const mStore = useMeasurementStore()
@@ -33,6 +40,24 @@ const {
 const { 
   loading: deletionLoading, call: deleteFile 
 } = useLoadingHandler(deleteMeasurementFile)
+
+const meterItems = computed<MeterItem[]>(() => {
+  if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
+  return [
+    {
+      label: `Available: ${mStore.driveCapacity.available.toFixed(2)} GB`,
+      value: (mStore.driveCapacity.available / mStore.driveCapacity.total) * 100,
+      color: 'green',
+      icon: ''
+    },
+    {
+      label: `Used: ${(mStore.driveCapacity.total - mStore.driveCapacity.available).toFixed(2)} GB`,
+      value: ((mStore.driveCapacity.total - mStore.driveCapacity.available) / mStore.driveCapacity.total * 100),
+      color: 'red',
+      icon: ''
+    }
+  ]
+})
 </script>
 
 <template>
@@ -46,6 +71,11 @@ const {
       @button-click="loadFiles"
     />
     <div class="flex flex-col gap-3">
+      <NamedInput title="Drive Capacity">
+        <InputGroup>
+          <MeterGroup :value="meterItems" />
+        </InputGroup>
+      </NamedInput>
       <DataTable
         v-if="mStore.measurementFiles.length > 0"
         :value="mStore.measurementFiles"
