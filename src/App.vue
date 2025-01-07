@@ -42,7 +42,7 @@ const store = useGeneralStore()
         </RouterLinkButton>
         <RouterLinkButton
           name="Analyze"
-          to="/analyze">
+          :to="`/analyze${store.fileQuery }`">
           <span
             class="pi pi-search-plus"
             style="font-size: 1.5em;" />

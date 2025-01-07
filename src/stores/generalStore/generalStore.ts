@@ -66,6 +66,17 @@ export const useGeneralStore = defineStore('general', () => {
     const addHolderModalVisible = ref<boolean>(false)
     const fileSelectionModalVisible = ref<boolean>(false)
 
+    /*
+    ******************************************************
+    *                  Query State                       *
+    ******************************************************
+    */
+
+    const lastFileQuery = ref<string | null>(null)
+    const fileQuery = computed<string>(() => {
+        if (!lastFileQuery.value) return ''
+        return `?file=${encodeURIComponent(lastFileQuery.value)}`
+    })
 
     return {
         getActiveTheme,
@@ -77,7 +88,9 @@ export const useGeneralStore = defineStore('general', () => {
         fileSelectionModalVisible,
         globalLoader,
         setGlobalLoader,
-        navigationLoader
+        navigationLoader,
+        lastFileQuery,
+        fileQuery,
     }
 }, {
     persist: true

@@ -68,6 +68,7 @@ const handleParsedData = (data: ParsedMeasurement): void => {
 
 const handleRouteWatch = async () => {
   if(route.query['file']) {
+    store.lastFileQuery = route.query['file'].toString();
     store.fileSelectionModalVisible = false;
     const data = await getParsedMeasurement(route.query['file'] as string)
     handleParsedData(data)
