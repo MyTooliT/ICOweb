@@ -41,15 +41,26 @@ const chartBoundaries = ref<{
 })
 
 const handleParsedData = (data: ParsedMeasurement): void => {
+  const maxPoints = 2000
+  const length = data.timestamp.length
+  const interval = length >= maxPoints ? Math.floor(length / maxPoints) : 1
   const newDatasets: Array<{ data: Array<number>, label: string }> = data.datasets.map((dataset, index) => {
+    const y: number[] = []
+    for (let i = 0; i <= length; i += interval) {
+      y.push(dataset.data[i])
+    }
     return {
-      data: dataset.data,
+      data: y,
       label: dataset.name,
       pointRadius: 1,
       borderColor: ['red', 'green', 'blue', 'yellow', 'purple'][index],
     }
   })
-  const newLabels: Array<number> = data.timestamp.map(ts => ts / 1000000)
+  
+  const newLabels: Array<number> = []
+  for (let i = 0; i <= length; i += interval) {
+    newLabels.push(data.timestamp[i] / 1000000)
+  }
 
   chartData.value = {
     labels: newLabels,
