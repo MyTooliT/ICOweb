@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
-import { ParsedMeasurement } from '@/client';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
@@ -12,7 +11,7 @@ const store = useGeneralStore();
 const router = useRouter();
 
 const emits = defineEmits<{
-  (event: 'upload', data: ParsedMeasurement): void,
+  (event: 'upload', data: string): void,
 }>()
 
 </script>
@@ -53,7 +52,7 @@ const emits = defineEmits<{
           :multiple="false"
           :max-file-size="1000000"
           auto
-          @upload="emits('upload', JSON.parse($event.xhr.response) as ParsedMeasurement)"
+          @upload="emits('upload', $event.xhr.response as string)"
           @error="console.error($event)">
         </FileUpload>
         <p class="text-center">Upload from your computer</p>

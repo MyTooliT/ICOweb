@@ -96,7 +96,9 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
     />
     <FileSelectionModal
       @upload="(event) => {
-        handleParsedData(event as ParsedMeasurement);
+        const query = { ...route.query }
+        query['file'] = (event as string)
+        router.replace( { query } )
         store.fileSelectionModalVisible = false;
       }"
     />

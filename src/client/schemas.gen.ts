@@ -275,6 +275,10 @@ export const $NoResponseError = {
 
 export const $ParsedMeasurement = {
     properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
         counter: {
             items: {
                 type: 'integer'
@@ -298,7 +302,7 @@ export const $ParsedMeasurement = {
         }
     },
     type: 'object',
-    required: ['counter', 'timestamp', 'datasets'],
+    required: ['name', 'counter', 'timestamp', 'datasets'],
     title: 'ParsedMeasurement'
 } as const;
 

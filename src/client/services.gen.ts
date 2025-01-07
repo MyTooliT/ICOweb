@@ -315,7 +315,7 @@ export const getAnalyzedFileApiV1FilesAnalyzeNameGet = (data: GetAnalyzedFileApi
  * Post Analyzed File
  * @param data The data for the request.
  * @param data.formData
- * @returns ParsedMeasurement Successful Response
+ * @returns unknown Successful Response
  * @throws ApiError
  */
 export const postAnalyzedFileApiV1FilesAnalyzePost = (data: PostAnalyzedFileApiV1FilesAnalyzePostData): CancelablePromise<PostAnalyzedFileApiV1FilesAnalyzePostResponse> => { return __request(OpenAPI, {

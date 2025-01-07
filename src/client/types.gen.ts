@@ -72,6 +72,7 @@ export type NoResponseError = {
 };
 
 export type ParsedMeasurement = {
+    name: string;
     counter: Array<(number)>;
     timestamp: Array<(number)>;
     datasets: Array<Dataset>;
@@ -193,7 +194,7 @@ export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
     formData: Body_post_analyzed_file_api_v1_files_analyze_post;
 };
 
-export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = ParsedMeasurement;
+export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -491,7 +492,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: ParsedMeasurement;
+                200: unknown;
                 /**
                  * Validation Error
                  */
