@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import {
-    computed,
-    type ComputedRef,
-    type Ref,
-    ref
+  computed,
+  type ComputedRef,
+  type Ref,
+  ref
 } from 'vue';
 
 export enum ThemeStyle {
@@ -65,6 +65,7 @@ export const useGeneralStore = defineStore('general', () => {
     const newTypeModalVisible = ref<boolean>(false)
     const addHolderModalVisible = ref<boolean>(false)
     const fileSelectionModalVisible = ref<boolean>(false)
+    const renameSTHModalVisible = ref<boolean>(false)
 
     /*
     ******************************************************
@@ -86,6 +87,7 @@ export const useGeneralStore = defineStore('general', () => {
         newTypeModalVisible,
         addHolderModalVisible,
         fileSelectionModalVisible,
+        renameSTHModalVisible,
         globalLoader,
         setGlobalLoader,
         navigationLoader,

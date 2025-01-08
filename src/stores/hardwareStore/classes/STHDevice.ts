@@ -14,7 +14,7 @@ import {
 export type TRssi = number;
 
 export class STHDevice extends Device {
-  private readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
+  public static readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
   public holderConfigId: string | undefined = undefined;
 
@@ -25,10 +25,8 @@ export class STHDevice extends Device {
     rssi: number,
     holderConfigId: string,
     status: TDeviceConnectionStatus = 'disconnected',
-    regex: RegExp = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$'),
   ) {
     super(device_number, name, mac_address, status)
-    this.regex = regex
     this.rssi = rssi
     this.holderConfigId = holderConfigId
   }
@@ -37,12 +35,8 @@ export class STHDevice extends Device {
     return `${this.rssi}dB`;
   }
 
-  public getRegex(): RegExp {
-    return this.regex
-  }
-
   public async setName(name: string): Promise<void> {
-    if(this.regex.test(name)) {
+    if(STHDevice.regex.test(name)) {
       try {
         const response = await renameSTHDevice({
           new_name: name,
@@ -105,7 +99,6 @@ export class STHDevice extends Device {
       rssi: this.rssi,
       holderConfigId: this.holderConfigId,
       status: this.connection_status,
-      regex: this.regex,
       classtype: 'STH'
     }
   }

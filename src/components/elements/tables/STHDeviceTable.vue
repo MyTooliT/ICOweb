@@ -1,42 +1,35 @@
 <script setup lang="ts">
-
 // eslint-disable-next-line max-len
 import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
-import { EditState } from '@/components/elements/buttons/types.ts';
-import EditableInput from '@/components/elements/inputs/EditableInput.vue';
+import RenameSTHModal from '@/components/elements/modals/RenameSTHModal.vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import Select from 'primevue/select';
-import { Ref } from 'vue';
 
-const store = useHardwareStore()
-
-async function save(
-  state: Ref<EditState>,
-  content: string,
-  focused: Ref<boolean>,
-  device: STHDevice
-) {
-  console.log(content);
-  state.value = 'loading'
-  await device.setName(content)
-  state.value = 'readyToEdit'
-  focused.value = false
-}
+const hwStore = useHardwareStore()
+const store = useGeneralStore()
 
 function rowClass(data: STHDevice) {
   // eslint-disable-next-line max-len
   return [{'!bg-primary-container !text-on-primary-container': data.isConnected()}]
 }
+
+async function handleSubmit(name: string, device: STHDevice) {
+  await device.setName(name)
+}
+
+const {call, loading} = useLoadingHandler<void>(handleSubmit)
 </script>
 
 <template>
   <DataTable
-    :value="store.STHDeviceList"
+    :value="hwStore.STHDeviceList"
     :row-class="rowClass"
   >
     <Column
@@ -47,18 +40,7 @@ function rowClass(data: STHDevice) {
     </Column>
     <Column header="Name">
       <template #body="{ data }: { data: STHDevice }">
-        <EditableInput
-          :id="`mac-${data.getMacAddress()}`"
-          :regex="data.getRegex()"
-          :initial-value="data.getName()"
-          :disabled="false"
-          :valid-fn="() => true"
-          placeholder="Device Name"
-          :save-fn="(
-            state: Ref<EditState>,
-            content: string,
-            focused: Ref<boolean>
-          ) => save(state, content, focused, data)" />
+        {{ data.getName() }}
       </template>
     </Column>
     <Column
@@ -78,7 +60,7 @@ function rowClass(data: STHDevice) {
       <template #body="{ data }: { data: STHDevice }">
         <Select
           v-model="data.holderConfigId"
-          :options="store.holderList"
+          :options="hwStore.holderList"
           :option-value="(holder: HolderConfig) => holder.id"
           :option-label="(holder: HolderConfig) => holder.name"
         />
@@ -86,8 +68,15 @@ function rowClass(data: STHDevice) {
     </Column>
     <Column header="Actions">
       <template #body="{ data }: { data: STHDevice }">
+        <Button
+          rounded
+          size="small"
+          label="Rename"
+          icon="pi pi-pencil"
+          @click="store.renameSTHModalVisible = true"
+        />
         <ConnectionButton
-          class="mr-3"
+          class="mx-3"
           :device="data"
           @connect="() => data.connect()"
           @disconnect="() => data.disconnect()"
@@ -99,6 +88,14 @@ function rowClass(data: STHDevice) {
           icon="pi pi-chart-bar"
           :disabled="!data.isConnected()"
           @click="$router.push('/measure')"
+        />
+        <RenameSTHModal
+          :regex="STHDevice.regex"
+          :initial-name="data.getName()"
+          :loading="loading"
+          @rename="call($event, data).then(() => {
+            store.renameSTHModalVisible = false
+          })"
         />
       </template>
     </Column>
