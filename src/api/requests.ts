@@ -69,6 +69,15 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   })
 }
 
+// eslint-disable-next-line max-len
+export async function getSTUConnectionStatus(): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    get<boolean>('stu/connected')
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
 export async function getADCValues(mac: string): Promise<ADCValues> {
   return new Promise((resolve, reject) => {
     get<ADCValues>(`sth/read-adc/${mac}`)
