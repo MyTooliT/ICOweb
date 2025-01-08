@@ -13,7 +13,6 @@ import { findNextFree } from '@/utils/helper.ts';
 import { defineStore } from 'pinia';
 import {
   computed,
-  ComputedRef,
   Ref,
   ref
 } from 'vue';
@@ -102,27 +101,25 @@ export const useHardwareStore = defineStore('hardware', () => {
   ******************************************************
   */
 
-  const _STHDeviceList: Ref<Array<STHDevice>> = ref([])
-  const getSTHDeviceList: ComputedRef<Array<STHDevice>> = computed(() => {
-    return _STHDeviceList.value
-  })
+  const STHDeviceList = ref<STHDevice[]>([])
   const STHDevicesLoading: Ref<boolean> = ref(false)
   async function updateSTHDeviceList(): Promise<void> {
     STHDevicesLoading.value = true
     const meta = await getSTHDevicesMeta()
-    _STHDeviceList.value = consumeNewMetadata(_STHDeviceList.value, meta)
+    // Note: Why do we have to typecast the STHDevice array here?
+    STHDeviceList.value = consumeNewMetadata(STHDeviceList.value as STHDevice[], meta)
     STHDevicesLoading.value = false
   }
-  const activeSTH = computed<STHDevice | undefined>(() => {
-    return _STHDeviceList.value.filter(entry => entry.isConnected())[0]
+  const activeSTH = computed(() => {
+    return STHDeviceList.value.filter(entry => entry.isConnected())[0]
   })
   function deselectSTHDevices() {
-    _STHDeviceList.value.forEach(
+    STHDeviceList.value.forEach(
       device => device.setConnectionStatus('disconnected'));
   }
 
   const hasSTH = computed<boolean>(() => {
-    return _STHDeviceList.value.length > 0
+    return STHDeviceList.value.length > 0
   })
 
   /*
@@ -131,16 +128,13 @@ export const useHardwareStore = defineStore('hardware', () => {
   ******************************************************
   */
 
-  const _STUDeviceList: Ref<Array<STUDevice>> = ref([])
-  const getSTUDeviceList: ComputedRef<Array<STUDevice>> = computed(() => {
-    return _STUDeviceList.value
-  })
+  const STUDeviceList: Ref<Array<STUDevice>> = ref([])
   const STUDeviceLoading: Ref<boolean> = ref(false)
   async function updateSTUDeviceList(): Promise<void> {
     STUDeviceLoading.value = true
     try {
       const meta = await getSTUDevices()
-      _STUDeviceList.value = meta.map(entry => {
+      STUDeviceList.value = meta.map(entry => {
         return new STUDevice(
           entry.device_number,
           entry.name,
@@ -154,10 +148,10 @@ export const useHardwareStore = defineStore('hardware', () => {
   }
   const activeSTU = computed<STUDevice>(() => {
     // TODO: Implement more STU support
-    return _STUDeviceList.value[0]
+    return STUDeviceList.value[0]
   })
   const hasSTU = computed<boolean>(() => {
-    return _STUDeviceList.value.length > 0
+    return STUDeviceList.value.length > 0
   })
 
   /*
@@ -245,14 +239,12 @@ export const useHardwareStore = defineStore('hardware', () => {
     addSensor,
     clearSensorList,
     removeSensor,
-    getSTHDeviceList,
+    STHDeviceList,
     updateSTHDeviceList,
     STHDevicesLoading,
     STUDeviceLoading,
-    getSTUDeviceList,
     updateSTUDeviceList,
-    _STUDeviceList,
-    _STHDeviceList,
+    STUDeviceList,
     activeSTU,
     activeSTH,
     deselectSTHDevices,

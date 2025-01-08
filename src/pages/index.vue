@@ -16,6 +16,34 @@ const { loading: STULoading, call: STUReload } = useLoadingHandler(
 const { loading: STHLoading, call: STHReload } = useLoadingHandler(
   store.updateSTHDeviceList
 )
+
+async function STUClickHandler() {
+  STUReload().then(() => {
+    if(store.STUDeviceList.length === 0) {
+      toast.add({
+        summary: 'No STU connected',
+        detail: 'Check your CAN adapter',
+        severity: 'error',
+        life: 3000,
+        group: 'default'
+      })
+    }
+  })
+}
+
+async function STHClickHandler() {
+  STHReload().then(() => {
+    if(store.STHDeviceList.length === 0) {
+      toast.add({
+        summary: 'No STH found',
+        detail: 'Check battery',
+        severity: 'error',
+        life: 3000,
+        group: 'default'
+      })
+    }
+  })
+}
 </script>
 
 <template>
@@ -27,16 +55,7 @@ const { loading: STHLoading, call: STHReload } = useLoadingHandler(
         :button-text="store.hasSTU ? 'Reload' : 'Load'"
         :button-icon-class="store.hasSTU ? 'pi pi-sync' : 'pi pi-download'"
         :button-loading="STULoading"
-        @button-click="STUReload().then(() => {
-          if(store.getSTUDeviceList.length === 0) {
-            toast.add({
-              summary: 'No STU connected',
-              detail: 'Check your CAN adapter',
-              severity: 'error',
-              life: 3000,
-              group: 'default'
-            })
-          }})"
+        @button-click="STUClickHandler"
       />
       <STUDeviceTable />
     </div>
@@ -49,17 +68,7 @@ const { loading: STHLoading, call: STHReload } = useLoadingHandler(
         :button-text="store.hasSTH ? 'Reload' : 'Load'"
         :button-icon-class="store.hasSTH ? 'pi pi-sync' : 'pi pi-download'"
         :button-loading="STHLoading"
-        @button-click="STHReload().then(() => {
-          if(store.getSTHDeviceList.length === 0) {
-            toast.add({
-              summary: 'No STH found',
-              detail: 'Check battery',
-              severity: 'error',
-              life: 3000,
-              group: 'default'
-            })
-          }
-        })"
+        @button-click="STHClickHandler"
       />
       <STHDeviceTable />
     </div>

@@ -1,5 +1,5 @@
-import { STHDevice } from './classes/STHDevice.ts';
 import { STHDeviceResponseModel } from '@/client';
+import { STHDevice } from './classes/STHDevice.ts';
 
 /*
  * This function consumes new metadata, creates a new list of STHDevices, and
@@ -33,7 +33,7 @@ export function consumeNewMetadata(
         item.name,
         item.mac_address,
         item.rssi,
-        undefined
+        'default-sth' //Todo: Give sensible default
       ))
     })
   }

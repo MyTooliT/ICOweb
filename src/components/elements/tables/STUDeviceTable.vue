@@ -27,7 +27,7 @@ const {
 </script>
 
 <template>
-  <DataTable :value="store.getSTUDeviceList">
+  <DataTable :value="store.STUDeviceList">
     <Column
       header="ID">
       <template #body="{ data }: { data: STUDevice }">
