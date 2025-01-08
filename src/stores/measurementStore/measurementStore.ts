@@ -34,15 +34,29 @@ export type TChannelsActive = {
   third: boolean
 }
 
+export const chartDefaults = {
+  xmin: 0,
+  xmax: 10,
+  ymin: 0,
+  ymax: 10
+}
+
 export const useMeasurementStore = defineStore('measurement', () => {
   const continuous = ref<boolean>(false)
 
   const acquisitionTime = ref<number>(10)
   const chartMaximumDisplayedTime = ref<number>(10)
-  const chartStartTime = ref<number>(0)
-  const chartEndTime = ref<number>(10)
-  const chartYMin = ref<number>(0)
-  const chartYMax = ref<number>(0)
+  const chartStartTime = ref<number>(chartDefaults.xmin)
+  const chartEndTime = ref<number>(chartDefaults.xmax)
+  const chartYMin = ref<number>(chartDefaults.ymin)
+  const chartYMax = ref<number>(chartDefaults.ymax)
+
+  function resetChartBounds() {
+    chartStartTime.value = chartDefaults.xmin
+    chartEndTime.value = chartDefaults.xmax
+    chartYMin.value = chartDefaults.ymin
+    chartYMax.value = chartDefaults.ymax
+  }
 
   function updateChartStartTime(startTime: number) {
     chartStartTime.value = startTime
@@ -119,7 +133,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     measurementFiles,
     getFiles,
     getLatestFileName,
-    driveCapacity
+    driveCapacity,
+    resetChartBounds
   }
 }, {
   persist: true

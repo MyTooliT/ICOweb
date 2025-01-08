@@ -107,6 +107,7 @@ const currentMax = ref<number | undefined>(undefined)
 function startStopClickHandler() {
   if(state.value === 'closed') {
     if(hwStore.activeSTH?.getMacAddress()) {
+      mStore.resetChartBounds()
       open()
       ws.value?.addEventListener('opened', () => {
         ws.value?.send(JSON.stringify({
