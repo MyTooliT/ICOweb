@@ -10,6 +10,9 @@ import Help from '@/pages/help.vue';
 import Home from '@/pages/index.vue';
 import Measure from '@/pages/measure.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
+import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
+import { useAPIState } from '@/utils/useAPIState.ts';
 import {
   createRouter,
   createWebHashHistory
@@ -78,17 +81,36 @@ const router = createRouter({
 })
 
 
-router.beforeEach((_to, _from, next) => {
+router.beforeEach(async (_to, _from, next) => {
   const store = useGeneralStore()
-  if(store.navigationLoader) {
-    store.setGlobalLoader(true)
-  }
+  store.setGlobalLoader(true)
+
   next()
 })
 
-router.afterEach(() => {
+router.afterEach(async (_to, _from, _failure) => {
+  if(_to.name === 'Home') {
+    const hwStore = useHardwareStore()
+    const connected = await hwStore.checkSTUConnection()
+    if(!connected) {
+      await hwStore.updateSTUDeviceList()
+      await hwStore.updateSTHDeviceList()
+    }
+  }
+
+  if(_to.name === 'Measure') {
+    const hwStore = useHardwareStore()
+    await hwStore.checkSTUConnection()
+  }
+
+  if(_to.name === 'Files') {
+    const mStore = useMeasurementStore()
+    await mStore.getFiles()
+  }
+
   const store = useGeneralStore()
   store.setGlobalLoader(false)
+  await useAPIState().checkState()
 })
 
 export default router

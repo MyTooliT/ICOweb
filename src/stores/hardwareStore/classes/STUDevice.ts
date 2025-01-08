@@ -1,15 +1,16 @@
 import {
+  disableSTUOTA,
+  enableSTUOTA,
+  requestSTUConnectionStatus,
+  resetSTUDevice
+} from '@/api/requests.ts';
+import {
   Device,
   TDeviceConnectionStatus,
   TDeviceNumber,
   TMac,
   TName
 } from './Device.ts';
-import {
-  disableSTUOTA,
-  enableSTUOTA,
-  resetSTUDevice
-} from '@/api/requests.ts';
 
 export type TOTAState = 'enabled' | 'enabling' | 'disabled' | 'disabling'
 
@@ -55,6 +56,20 @@ export class STUDevice extends Device {
 
   public getOTAState(): TOTAState {
     return this.OTAState
+  }
+
+  public async checkConnection() {
+    try {
+      this.connection_status = await requestSTUConnectionStatus(this.name)
+        ? 'connected'
+        : 'disconnected'
+    } catch(e) {
+      this.connection_status = 'disconnected'
+    }
+  }
+
+  public isConnected(): boolean {
+    return this.connection_status === 'connected'
   }
 
   public toJSON() {

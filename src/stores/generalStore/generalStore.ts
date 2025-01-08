@@ -33,8 +33,8 @@ export const useGeneralStore = defineStore('general', () => {
     ******************************************************
     */
 
-    const loaderDelay = ref<number>(1000)
-    const navigationLoader = ref<boolean>(false)
+    const loaderDelay = ref<number>(0)
+    const navigationLoader = ref<boolean>(true)
     const globalLoader = ref<boolean>(false)
     function setGlobalLoader(state: boolean): void {
         if(window) {

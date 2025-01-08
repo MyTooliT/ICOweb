@@ -153,6 +153,17 @@ export const useHardwareStore = defineStore('hardware', () => {
   const hasSTU = computed<boolean>(() => {
     return STUDeviceList.value.length > 0
   })
+  async function checkSTUConnection() {
+    await activeSTU.value.checkConnection()
+    if(!activeSTU.value.isConnected()) {
+      STHDeviceList.value.forEach((device) => {
+        device.setConnectionStatus('disconnected')
+      })
+      return false
+    } else {
+      return true
+    }
+  }
 
   /*
   ******************************************************
@@ -267,7 +278,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     getHolder,
     activeHolder,
     hasSTU,
-    hasSTH
+    hasSTH,
+    checkSTUConnection
   }
 }, {
   persist: {

@@ -11,6 +11,7 @@ import {
 import {
   del,
   get,
+  post,
   put
 } from './api.ts';
 
@@ -70,9 +71,9 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
 }
 
 // eslint-disable-next-line max-len
-export async function getSTUConnectionStatus(): Promise<boolean> {
+export async function requestSTUConnectionStatus(name: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    get<boolean>('stu/connected')
+    post<{name: string}, boolean>('stu/connected', { name: name})
       .then(data => resolve(data))
       .catch(reject)
   })
