@@ -1,0 +1,5 @@
+/*noinspection ALL*/
+.h-stretch {
+    height: stretch;
+    height: -webkit-fill-available;
+}
