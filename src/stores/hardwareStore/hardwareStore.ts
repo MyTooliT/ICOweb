@@ -110,6 +110,9 @@ export const useHardwareStore = defineStore('hardware', () => {
     STHDeviceList.value = consumeNewMetadata(STHDeviceList.value as STHDevice[], meta)
     STHDevicesLoading.value = false
   }
+  function clearSTHDeviceList(): void {
+    STHDeviceList.value = []
+  }
   const activeSTH = computed(() => {
     return STHDeviceList.value.filter(entry => entry.isConnected())[0]
   })
@@ -154,6 +157,7 @@ export const useHardwareStore = defineStore('hardware', () => {
     return STUDeviceList.value.length > 0
   })
   async function checkSTUConnection() {
+    if(!activeSTU.value) return false
     await activeSTU.value.checkConnection()
     if(!activeSTU.value.isConnected()) {
       STHDeviceList.value.forEach((device) => {
@@ -279,7 +283,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     activeHolder,
     hasSTU,
     hasSTH,
-    checkSTUConnection
+    checkSTUConnection,
+    clearSTHDeviceList
   }
 }, {
   persist: {

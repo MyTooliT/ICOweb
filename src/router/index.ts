@@ -91,10 +91,13 @@ router.beforeEach(async (_to, _from, next) => {
 router.afterEach(async (_to, _from, _failure) => {
   if(_to.name === 'Home') {
     const hwStore = useHardwareStore()
-    const connected = await hwStore.checkSTUConnection()
-    if(!connected) {
-      await hwStore.updateSTUDeviceList()
-      await hwStore.updateSTHDeviceList()
+    if(hwStore.activeSTU) {
+      if(!await hwStore.checkSTUConnection()) {
+        await hwStore.updateSTUDeviceList()
+        await hwStore.updateSTHDeviceList()
+      }
+    } else {
+        hwStore.clearSTHDeviceList()
     }
   }
 
