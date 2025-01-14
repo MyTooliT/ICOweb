@@ -75,7 +75,7 @@ const store = useGeneralStore()
             justify-center items-center z-40 backdrop-blur">
           <ProgressSpinner />
         </div>
-        <div class="w-full overflow-auto ">
+        <div class="w-full overflow-auto h-stretch">
           <router-view />
         </div>
         <BottomBar class="mt-auto z-50" />
