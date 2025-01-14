@@ -12,7 +12,6 @@ import Measure from '@/pages/measure.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
-import { useAPIState } from '@/utils/useAPIState.ts';
 import {
   createRouter,
   createWebHashHistory
@@ -89,6 +88,14 @@ router.beforeEach(async (_to, _from, next) => {
 })
 
 router.afterEach(async (_to, _from, _failure) => {
+  const store = useGeneralStore()
+  await store.apiState.checkState()
+
+  if(!store.apiState.reachable) {
+    store.setGlobalLoader(false)
+    return
+  }
+
   if(_to.name === 'Home') {
     const hwStore = useHardwareStore()
     if(hwStore.activeSTU) {
@@ -111,9 +118,7 @@ router.afterEach(async (_to, _from, _failure) => {
     await mStore.getFiles()
   }
 
-  const store = useGeneralStore()
   store.setGlobalLoader(false)
-  await useAPIState().checkState()
 })
 
 export default router

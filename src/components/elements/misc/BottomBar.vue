@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { resetCAN } from '@/api/requests.ts';
-import { useAPIState } from '@/utils/useAPIState.ts';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import {
@@ -8,14 +8,15 @@ import {
   onMounted
 } from 'vue';
 
-const apiState = useAPIState();
+const store = useGeneralStore();
 
 onMounted(async () => {
-  apiState.registerInterval(5000)
+  await store.apiState.checkState()
+  store.apiState.registerInterval(5000)
 })
 
 onBeforeUnmount(() => {
-  apiState.deregisterInterval()
+  store.apiState.deregisterInterval()
 })
 
 function clearCache() {
@@ -27,15 +28,16 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 
 <template>
   <div
-    :data-state="apiState.reachable.value"
-    :data-api="apiState.reachable.value"
-    :data-can="apiState.canReady.value"
+    :data-api="store.apiState.reachable"
+    :data-can="store.apiState.canReady"
     class="
       w-full pr-6 pb-1 text-right
       flex flex-row justify-end items-center
       bg-error-container text-on-error-container
-      data-[api~=false]:bg-yellow-300
+      data-[api~=false]:bg-error-container
       data-[api~=false]:text-on-error-container
+      data-[api~=true]:data-[can~=false]:bg-yellow-300
+      data-[api~=true]:data-[can~=false]:text-on-error-container
       data-[can~=true]:bg-primary-container
       data-[can~=true]:text-on-primary-container"
 
@@ -54,8 +56,8 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
       :disabled="loading"
       @click="resetHandle" />
     <div class="text-sm h-min flex self-center">
-      API {{ apiState.reachable.value ? 'reachable' : 'disconnected' }} |
-      CAN {{ apiState.canReady.value ? 'established' : 'disconnected' }}
+      API {{ store.apiState.reachable ? 'reachable' : 'disconnected' }} |
+      CAN {{ store.apiState.canReady ? 'established' : 'disconnected' }}
     </div>
   </div>
 </template>

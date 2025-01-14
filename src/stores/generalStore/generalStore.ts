@@ -1,9 +1,10 @@
+import { useAPIState } from '@/utils/useAPIState.ts';
 import { defineStore } from 'pinia';
 import {
-  computed,
-  type ComputedRef,
-  type Ref,
-  ref
+    computed,
+    type ComputedRef,
+    type Ref,
+    ref
 } from 'vue';
 
 export enum ThemeStyle {
@@ -26,6 +27,8 @@ export const useGeneralStore = defineStore('general', () => {
         }
         return false
     }
+
+    const apiState = useAPIState()
 
     /*
     ******************************************************
@@ -93,6 +96,7 @@ export const useGeneralStore = defineStore('general', () => {
         navigationLoader,
         lastFileQuery,
         fileQuery,
+        apiState
     }
 }, {
     persist: true
