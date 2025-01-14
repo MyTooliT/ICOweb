@@ -10,6 +10,7 @@ import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
+import { ref } from 'vue';
 import Select from 'primevue/select';
 
 const hwStore = useHardwareStore()
@@ -23,6 +24,8 @@ function rowClass(data: STHDevice) {
 async function handleSubmit(name: string, device: STHDevice) {
   await device.setName(name)
 }
+
+const device = ref<STHDevice | null>(null)
 
 const {call, loading} = useLoadingHandler<void>(handleSubmit)
 </script>
@@ -73,7 +76,10 @@ const {call, loading} = useLoadingHandler<void>(handleSubmit)
           size="small"
           label="Rename"
           icon="pi pi-pencil"
-          @click="store.renameSTHModalVisible = true"
+          @click="() => {
+            device = data
+            store.renameSTHModalVisible = true
+          }"
         />
         <ConnectionButton
           class="mx-3"
@@ -89,16 +95,16 @@ const {call, loading} = useLoadingHandler<void>(handleSubmit)
           :disabled="!data.isConnected()"
           @click="$router.push('/measure')"
         />
-        <RenameSTHModal
-          :regex="STHDevice.regex"
-          :initial-name="data.getName()"
-          :loading="loading"
-          @rename="call($event, data).then(() => {
-            store.renameSTHModalVisible = false
-          })"
-        />
       </template>
     </Column>
+    <RenameSTHModal
+      :regex="STHDevice.regex"
+      :initial-name="device?.getName() || ''"
+      :loading="loading"
+      @rename="call($event, device).then(() => {
+        store.renameSTHModalVisible = false
+      })"
+    />
   </DataTable>
 </template>
 

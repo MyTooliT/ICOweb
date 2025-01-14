@@ -30,10 +30,15 @@ function onEnter(e: KeyboardEvent) {
   }
 }
 
-onMounted(() => {
+function resetName() {
+  console.log(props.initialName);
   if (props.initialName) {
     nameContent.value = props.initialName
   }
+}
+
+onMounted(() => {
+  resetName()
 
   window.addEventListener('keyup', onEnter);
 })
@@ -52,7 +57,10 @@ const emits = defineEmits<{
     v-model:visible="store.renameSTHModalVisible"
     modal
     header="Rename STH Device"
-    :style="{ width: '25rem' }">
+    :style="{ width: '25rem' }"
+    :dismissable-mask="true"
+    @show="resetName()"
+  >
     <span class="text-surface-500 dark:text-surface-400 block">
       To be compliant with the specification, the name must be at most 8 characters.
     </span>
