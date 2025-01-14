@@ -145,7 +145,7 @@ export const useHardwareStore = defineStore('hardware', () => {
         )
       })
     } catch(e) {
-      throw e
+      STUDeviceList.value = []
     }
     STUDeviceLoading.value = false
   }
