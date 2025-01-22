@@ -46,7 +46,13 @@ export function updateChartData(
 
   const startTime = rawData[0] ? rawData[0].timestamp : 0
 
-  for(let i = 0; i < rawData.length; i += interval) {
+  const overshootInIntervalUnits = (rawData.length - totalExpectedValues) / interval
+  const startIndex = rawData.length > totalExpectedValues
+    ? Math.floor(overshootInIntervalUnits) * interval
+    : 0
+
+
+  for(let i = startIndex; i < rawData.length; i += interval) {
     x_values_visible.push(rawData[i].timestamp - startTime)
     const values: number[] = []
 
