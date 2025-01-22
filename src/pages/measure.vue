@@ -63,6 +63,7 @@ const {
       detail: 'Your measurement can be downloaded in the files tab.',
       group: 'newfile'
     })
+    mStore.resetChartBounds()
   }
 )
 
@@ -80,7 +81,7 @@ function wrapUpdate() {
       third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)) ?? 'Third Channel',
       ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
     },
-    9524,
+    3175,
     mStore.chartMaximumDisplayedTime,
     currentMin,
     currentMax
@@ -144,8 +145,8 @@ const maxNumberOfPoints = ref<number>(2000)
 const canMeasure = computed<boolean>(() => {
   return (
     hwStore.hasSTU &&
-    hwStore.activeSTH &&
-    hwStore.activeHolder &&
+    hwStore.hasSTH &&
+    hwStore.hasHolder &&
     (mStore.acquisitionTime > 0 || mStore.continuous) &&
     mStore.selectedChannels.first > 0
   )

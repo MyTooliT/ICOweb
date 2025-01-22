@@ -249,6 +249,10 @@ export const useHardwareStore = defineStore('hardware', () => {
     return getHolder(id)
   })
 
+  const hasHolder = computed<boolean>(() => {
+    return activeHolder.value !== undefined
+  })
+
   return {
     sensorList,
     addSensor,
@@ -284,7 +288,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     hasSTU,
     hasSTH,
     checkSTUConnection,
-    clearSTHDeviceList
+    clearSTHDeviceList,
+    hasHolder
   }
 }, {
   persist: {
