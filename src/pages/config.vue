@@ -1,42 +1,36 @@
 <script setup lang="ts">
-import Tabs from 'primevue/tabs';
-import TabList from 'primevue/tablist';
 import Tab from 'primevue/tab';
+import TabList from 'primevue/tablist';
 import TabPanels from 'primevue/tabpanels';
-import { useRouter } from 'vue-router';
-import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import Tabs from 'primevue/tabs';
+import {
+  useRoute,
+  useRouter
+} from 'vue-router';
 
 const router = useRouter()
-const store = useGeneralStore()
+const route = useRoute()
 </script>
 
 <template>
   <div class="card">
-    <Tabs v-model:value="store.tabIndex">
+    <Tabs :value="route.name">
       <TabList>
         <Tab
-          value="0"
+          value="Sensors"
           class="flex items-center"
-          @click="router.push('/config/sensors')"
+          @click="router.push({ name: 'Sensors' })"
         >
           <span class="pi pi-gauge inline-block mr-3 !text-xl" />
           Sensor Configuration
         </Tab>
         <Tab
-          value="1"
+          value="Tools"
           class="flex items-center"
-          @click="router.push('/config/tools')"
+          @click="router.push({ name: 'Tools' })"
         >
           <span class="pi pi-hammer inline-block mr-3 !text-xl" />
           Tool Configuration
-        </Tab>
-        <Tab
-          value="2"
-          class="flex items-center"
-          @click="router.push('/config/storage')"
-        >
-          <span class="pi pi-folder inline-block mr-3 !text-xl" />
-          Files & Storage
         </Tab>
       </TabList>
       <TabPanels
@@ -48,7 +42,3 @@ const store = useGeneralStore()
     </Tabs>
   </div>
 </template>
-
-<style scoped>
-
-</style>

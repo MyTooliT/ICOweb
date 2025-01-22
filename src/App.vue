@@ -17,7 +17,7 @@ const store = useGeneralStore()
     <div class="flex flex-row h-dvh w-dvw bg-surface overflow-hidden">
       <nav class="bg-surface-container flex flex-col z-50">
         <RouterLinkButton
-          name="Devices"
+          name="Home"
           to="/">
           <span
             class="pi pi-wrench"

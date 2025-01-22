@@ -2,7 +2,6 @@
 import Analyze from '@/pages/analyze.vue';
 import Config from '@/pages/config.vue';
 import Sensors from '@/pages/config/sensors.vue';
-import Storage from '@/pages/config/storage.vue';
 import Tools from '@/pages/config/tools.vue';
 import Debug from '@/pages/debug.vue';
 import Files from '@/pages/files.vue';
@@ -38,11 +37,6 @@ const routes = [
         path: 'sensors',
         name: 'Sensors',
         component: Sensors,
-      },
-      {
-        path: 'storage',
-        name: 'Storage',
-        component: Storage,
       },
       {
         path: 'tools',

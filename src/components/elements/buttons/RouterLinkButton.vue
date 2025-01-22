@@ -15,7 +15,7 @@ const route = useRoute()
 
 <template>
   <button
-    :data-active="route.fullPath === props.to"
+    :data-active="route.matched.map(match => match.name).includes(props.name)"
     class="
       p-3 flex flex-col justify-center items-center
       aspect-square transition-all duration-100
