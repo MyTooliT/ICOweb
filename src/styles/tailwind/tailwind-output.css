@@ -1107,11 +1107,6 @@ video {
   color: var(--md-sys-color-primary);
 }
 
-.text-primary-200 {
-  --tw-text-opacity: 1;
-  color: color-mix(in srgb, var(--p-primary-200) calc(100% * var(--tw-text-opacity)), transparent);
-}
-
 .text-surface-500 {
   --tw-text-opacity: 1;
   color: color-mix(in srgb, var(--p-surface-500) calc(100% * var(--tw-text-opacity)), transparent);
