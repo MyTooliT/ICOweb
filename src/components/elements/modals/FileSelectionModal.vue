@@ -50,7 +50,6 @@ const emits = defineEmits<{
           choose-label="External File"
           :url="`${getAPILink()}/files/analyze`"
           :multiple="false"
-          :max-file-size="1000000"
           auto
           @upload="emits('upload', $event.xhr.response as string)"
           @error="console.error($event)">
