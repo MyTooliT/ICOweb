@@ -10,7 +10,7 @@
 
 ## Development
 
-For local development, one can either spawn the client (this repository) and the REST API (ico-back) separately or use 
+For local development, one can either spawn the client (this repository) and the REST API (icoapi) separately or use 
 the electron bundler. Within the ``.env`` file, the host and port for this communication can be set should there be any 
 interference on the host machine regarding used/blocked ports.
 
