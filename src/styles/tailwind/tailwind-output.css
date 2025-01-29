@@ -744,6 +744,10 @@ video {
   height: min-content;
 }
 
+.max-h-60 {
+  max-height: 15rem;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -774,6 +778,10 @@ video {
 
 .max-w-16 {
   max-width: 4rem;
+}
+
+.max-w-60 {
+  max-width: 15rem;
 }
 
 .flex-1 {

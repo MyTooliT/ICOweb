@@ -5,6 +5,7 @@ import Chart from '@/components/elements/charts/Chart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import {ProgressBar} from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { ChartData } from 'chart.js';
 import {
@@ -39,6 +40,8 @@ const chartBoundaries = ref<{
   ymin: 0,
   ymax: 10,
 })
+
+const progress = ref<number>(0)
 
 const handleParsedData = (data: ParsedMeasurement): void => {
   const maxPoints = 2000
@@ -120,7 +123,7 @@ async function fetchParsedMeasurement(fileName: string): Promise<ParsedMeasureme
         const parsedLine = JSON.parse(line);
 
         if (parsedLine.progress !== undefined) {
-          console.log(`Progress: ${(parsedLine.progress * 100).toFixed(2)}%`);
+          progress.value = Math.floor(parsedLine.progress * 100)
         } else {
           const chunk: ParsedMeasurement = parsedLine;
 
@@ -161,7 +164,7 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
 </script>
 
 <template>
-  <DefaultLayout>
+  <DefaultLayout class="h-stretch">
     <TextBlock
       :heading="route.query['file']?.toString() ?? 'Analyze Measurement'"
       subheading="Analyze data from existing measurements."
@@ -175,6 +178,15 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
       :data="chartData"
       :boundaries="chartBoundaries"
     />
+    <div
+      v-else
+      class="w-full h-stretch max-h-60 flex justify-center items-center"
+    >
+      <div class="max-w-60 flex flex-col gap-4">
+        <h4>Fetching Measurement</h4>
+        <ProgressBar :value="progress" />
+      </div>
+    </div>
     <FileSelectionModal
       @upload="(event) => {
         const query = { ...route.query }
