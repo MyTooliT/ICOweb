@@ -7,8 +7,9 @@ import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import {ProgressBar} from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import { ChartData } from 'chart.js';
+import {ChartData, ChartOptions} from 'chart.js';
 import {
+  computed,
   ref,
   watch
 } from 'vue';
@@ -21,8 +22,8 @@ const route = useRoute();
 const router = useRouter();
 const store = useGeneralStore();
 
+
 const chartData = ref<ChartData<'line'>>({
-  labels: [],
   datasets: [{
     data: [],
     label: '',
@@ -43,34 +44,34 @@ const chartBoundaries = ref<{
 
 const progress = ref<number>(0)
 
-const handleParsedData = (data: ParsedMeasurement): void => {
+const handleParsedData = (data: DisplayableMeasurement): void => {
   const maxPoints = 2000
   const length = data.timestamp.length
   const interval = length >= maxPoints ? Math.floor(length / maxPoints) : 1
-  const newDatasets: Array<{ data: Array<number>, label: string }> = data.datasets.map((dataset, index) => {
-    const y: number[] = []
+  const newDatasets = data.datasets.map((dataset, index) => {
+    const subset: Array<{x: number, y: number}> = []
     for (let i = 0; i <= length; i += interval) {
-      y.push(dataset.data[i])
+      subset.push(dataset.data[i])
     }
     return {
-      data: y,
+      data: subset,
       label: dataset.name,
       pointRadius: 1,
       borderColor: ['red', 'green', 'blue', 'yellow', 'purple'][index],
     }
   })
-  
+  console.log(newDatasets)
+
   const newLabels: Array<number> = []
   for (let i = 0; i <= length; i += interval) {
     newLabels.push(data.timestamp[i] / 1000000)
   }
 
   chartData.value = {
-    labels: newLabels,
     datasets: newDatasets
   }
 
-  const flattenedYValues = newDatasets.map(ds => ds.data).flat()
+  const flattenedYValues: number[] = newDatasets.map(ds => ds.data).flat().map(data => data.y)
 
   chartBoundaries.value = {
     xmin: newLabels[0],
@@ -85,14 +86,25 @@ const handleRouteWatch = async () => {
     store.lastFileQuery = route.query['file'].toString();
     store.fileSelectionModalVisible = false;
     const data = await fetchParsedMeasurement(route.query['file'].toString())
+    console.log(data)
     handleParsedData(data)
   } else {
     store.fileSelectionModalVisible = true;
   }
 }
 
+type DisplayableMeasurement = {
+  name: string,
+  counter: number[],
+  timestamp: number[],
+  datasets: Array<{
+        name: string,
+        data: Array<{ x: number, y: number }>
+      }>
+}
+
 // eslint-disable-next-line max-len
-async function fetchParsedMeasurement(fileName: string): Promise<ParsedMeasurement> {
+async function fetchParsedMeasurement(fileName: string): Promise<DisplayableMeasurement> {
   const response = await fetch(`${getAPILink()}/files/analyze/${fileName}`);
   const reader = response.body?.getReader();
   if (!reader) {
@@ -101,7 +113,7 @@ async function fetchParsedMeasurement(fileName: string): Promise<ParsedMeasureme
 
   const decoder = new TextDecoder('utf-8');
   let receivedText = '';
-  let combinedResult: ParsedMeasurement = {
+  let combinedResult: DisplayableMeasurement = {
     name: fileName,
     counter: [],
     timestamp: [],
@@ -131,14 +143,21 @@ async function fetchParsedMeasurement(fileName: string): Promise<ParsedMeasureme
           combinedResult.timestamp.push(...chunk.timestamp);
 
           chunk.datasets.forEach((dataset) => {
+            const combined = []
+            for(let i = 0; i < chunk.timestamp.length; i++) {
+              combined.push({
+                x: chunk.timestamp[i] / 1000000,
+                y: dataset.data[i],
+              })
+            }
             // eslint-disable-next-line max-len
             const existingDataset = combinedResult.datasets.find(d => d.name === dataset.name);
             if (existingDataset) {
-              existingDataset.data.push(...dataset.data);
+              existingDataset.data.push(...combined);
             } else {
               combinedResult.datasets.push({
                 name: dataset.name,
-                data: [...dataset.data]
+                data: [...combined]
               });
             }
           });
@@ -159,7 +178,68 @@ async function fetchParsedMeasurement(fileName: string): Promise<ParsedMeasureme
   return combinedResult;
 }
 
+const chartOptions = computed<ChartOptions<'line'>>(() => {
+  return {
+    animation: false,
+    responsive: true,
+    scales: {
+      x: {
+        type: 'linear',
+        max: chartBoundaries.value.xmax ?? 10,
+        min: chartBoundaries.value.xmin ?? 0,
 
+        title: {
+          text: 'Seconds passed',
+          align: 'center',
+          display: true
+        }
+      },
+      y: {
+        type: 'linear',
+        max: chartBoundaries.value.ymax ?? 10,
+        min: chartBoundaries.value.ymin ?? -10,
+
+      }
+    },
+    plugins: {
+      decimation: {
+        enabled: true,
+        algorithm: 'min-max',
+      },
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: false
+          },
+          mode: 'x',
+        },
+        pan: {
+          enabled: false
+        }
+      },
+      crosshair: {
+        callbacks: {
+          afterZoom: () => function(start, end) {
+            console.log(start, end)
+          }
+        },
+        snap: {
+          enabled: true,
+        }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+      },
+    },
+    hover: {
+      intersect: false,
+    }
+  }
+})
 watch(() => route.query['file'], handleRouteWatch, { immediate: true });
 </script>
 
@@ -174,9 +254,9 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
       @button-click="store.fileSelectionModalVisible = true"
     />
     <Chart
-      v-if="chartData.labels && chartData.labels.length > 0"
+      v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
       :data="chartData"
-      :boundaries="chartBoundaries"
+      :options="chartOptions"
     />
     <div
       v-else
