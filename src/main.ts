@@ -25,7 +25,10 @@ app.use(router)
 app.directive('ripple', Ripple);
 app.use(PrimeVue, {
   theme: {
-    preset: myPreset
+    preset: myPreset,
+    options: {
+      darkModeSelector: '.app-dark'
+    }
   },
   ripple: false
 })

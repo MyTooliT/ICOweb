@@ -3,6 +3,7 @@ import { textOrientation, widthStretch } from './src/utils/tailwindPlugins.ts';
 
 export default {
   content: ['./src/**/*.{html,js,vue}'],
+  darkMode: 'media',
   plugins: [require('tailwindcss-primeui'), textOrientation, widthStretch],
   theme: {
     data: {
