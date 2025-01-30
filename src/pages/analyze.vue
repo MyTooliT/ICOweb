@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
 import { ParsedMeasurement } from '@/client';
-import Chart from '@/components/elements/charts/Chart.vue';
+import AnalyzeChart from '@/components/elements/charts/Chart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import {ProgressBar} from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import {ChartData, ChartOptions} from 'chart.js';
+import {ChartData, ChartOptions, ChartDataset} from 'chart.js';
 import {
   computed,
   ref,
@@ -30,12 +30,14 @@ const chartData = ref<ChartData<'line'>>({
   }]
 })
 
-const chartBoundaries = ref<{
+type ChartBoundaries = {
   xmin: number,
   xmax: number,
   ymin: number,
   ymax: number
-}>({
+}
+
+const chartBoundaries = ref<ChartBoundaries>({
   xmin: 0,
   xmax: 10,
   ymin: 0,
@@ -45,11 +47,27 @@ const chartBoundaries = ref<{
 const progress = ref<number>(0)
 
 const handleParsedData = (data: DisplayableMeasurement): void => {
-  const maxPoints = 2000
+
+  const newDatasets = getSubsetOfMeasurement(data)
+  chartData.value = {
+    datasets: newDatasets as ChartDataset<'line', Chart.Point[]>[]
+  }
+
+  const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
+  chartBoundaries.value = { ...computeChartBoundaries(dataOnly) }
+}
+
+function getSubsetOfMeasurement(
+    data: DisplayableMeasurement,
+    maxPointsPerSet: number = 2000
+): Chart.ChartDataSets[] {
   const length = data.timestamp.length
-  const interval = length >= maxPoints ? Math.floor(length / maxPoints) : 1
-  const newDatasets = data.datasets.map((dataset, index) => {
-    const subset: Array<{x: number, y: number}> = []
+  const interval = length >= maxPointsPerSet
+      ? Math.floor(length / maxPointsPerSet)
+      : 1
+
+  return data.datasets.map((dataset, index) => {
+    const subset: Chart.ChartPoint[] = []
     for (let i = 0; i <= length; i += interval) {
       subset.push(dataset.data[i])
     }
@@ -60,22 +78,19 @@ const handleParsedData = (data: DisplayableMeasurement): void => {
       borderColor: ['red', 'green', 'blue', 'yellow', 'purple'][index],
     }
   })
-  console.log(newDatasets)
+}
 
-  const newLabels: Array<number> = []
-  for (let i = 0; i <= length; i += interval) {
-    newLabels.push(data.timestamp[i] / 1000000)
-  }
+function computeChartBoundaries(data: Chart.ChartPoint[][]): ChartBoundaries {
+  const start = data[0][0].x
+  const end = data[0][data[0].length - 1].x
 
-  chartData.value = {
-    datasets: newDatasets
-  }
+  const flattenedYValues: number[] = data
+      .flat()
+      .map(entry => entry.y as number)
 
-  const flattenedYValues: number[] = newDatasets.map(ds => ds.data).flat().map(data => data.y)
-
-  chartBoundaries.value = {
-    xmin: newLabels[0],
-    xmax: newLabels[newLabels.length - 1],
+  return {
+    xmin: start as number,
+    xmax: end as number,
     ymin: Math.min(...flattenedYValues),
     ymax: Math.max(...flattenedYValues)
   }
@@ -86,7 +101,6 @@ const handleRouteWatch = async () => {
     store.lastFileQuery = route.query['file'].toString();
     store.fileSelectionModalVisible = false;
     const data = await fetchParsedMeasurement(route.query['file'].toString())
-    console.log(data)
     handleParsedData(data)
   } else {
     store.fileSelectionModalVisible = true;
@@ -99,7 +113,7 @@ type DisplayableMeasurement = {
   timestamp: number[],
   datasets: Array<{
         name: string,
-        data: Array<{ x: number, y: number }>
+        data: Array<Chart.ChartPoint>
       }>
 }
 
@@ -172,9 +186,6 @@ async function fetchParsedMeasurement(fileName: string): Promise<DisplayableMeas
     throw error
   }
 
-
-  console.log('File parsing complete.');
-  console.log(combinedResult.timestamp.length);
   return combinedResult;
 }
 
@@ -204,7 +215,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     plugins: {
       decimation: {
         enabled: true,
-        algorithm: 'min-max',
+        algorithm: 'lldb',
       },
       zoom: {
         zoom: {
@@ -253,7 +264,7 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
       button-icon-class="pi pi-file-import"
       @button-click="store.fileSelectionModalVisible = true"
     />
-    <Chart
+    <AnalyzeChart
       v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
       :data="chartData"
       :options="chartOptions"
