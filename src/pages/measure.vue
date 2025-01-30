@@ -3,7 +3,7 @@ import { getAPILink } from '@/api/api.ts';
 
 /* eslint-disable max-len */
 import Chart from '@/components/elements/charts/Chart.vue';
-import { updateChartData } from '@/components/elements/charts/chartHelper.ts';
+import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
 import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';

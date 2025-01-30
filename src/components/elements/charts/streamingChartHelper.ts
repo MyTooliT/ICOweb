@@ -1,3 +1,5 @@
+/// <reference types="chart.js" />
+
 import {
   TChannelsActive,
   TMeasurementDataFrame

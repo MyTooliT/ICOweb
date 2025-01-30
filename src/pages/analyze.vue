@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
-import { ParsedMeasurement } from '@/client';
 import AnalyzeChart from '@/components/elements/charts/Chart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
@@ -8,6 +7,13 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import {ProgressBar} from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import {ChartData, ChartOptions, ChartDataset} from 'chart.js';
+import {
+  ChartBoundaries,
+  DisplayableMeasurement,
+  getSubsetOfMeasurement,
+  computeChartBoundaries,
+  processLine
+} from '@/components/elements/charts/staticChartHelper.ts';
 import {
   computed,
   ref,
@@ -30,13 +36,6 @@ const chartData = ref<ChartData<'line'>>({
   }]
 })
 
-type ChartBoundaries = {
-  xmin: number,
-  xmax: number,
-  ymin: number,
-  ymax: number
-}
-
 const chartBoundaries = ref<ChartBoundaries>({
   xmin: 0,
   xmax: 10,
@@ -47,53 +46,13 @@ const chartBoundaries = ref<ChartBoundaries>({
 const progress = ref<number>(0)
 
 const handleParsedData = (data: DisplayableMeasurement): void => {
-
   const newDatasets = getSubsetOfMeasurement(data)
+  const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
+
   chartData.value = {
     datasets: newDatasets as ChartDataset<'line', Chart.Point[]>[]
   }
-
-  const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
   chartBoundaries.value = { ...computeChartBoundaries(dataOnly) }
-}
-
-function getSubsetOfMeasurement(
-    data: DisplayableMeasurement,
-    maxPointsPerSet: number = 2000
-): Chart.ChartDataSets[] {
-  const length = data.timestamp.length
-  const interval = length >= maxPointsPerSet
-      ? Math.floor(length / maxPointsPerSet)
-      : 1
-
-  return data.datasets.map((dataset, index) => {
-    const subset: Chart.ChartPoint[] = []
-    for (let i = 0; i <= length; i += interval) {
-      subset.push(dataset.data[i])
-    }
-    return {
-      data: subset,
-      label: dataset.name,
-      pointRadius: 1,
-      borderColor: ['red', 'green', 'blue', 'yellow', 'purple'][index],
-    }
-  })
-}
-
-function computeChartBoundaries(data: Chart.ChartPoint[][]): ChartBoundaries {
-  const start = data[0][0].x
-  const end = data[0][data[0].length - 1].x
-
-  const flattenedYValues: number[] = data
-      .flat()
-      .map(entry => entry.y as number)
-
-  return {
-    xmin: start as number,
-    xmax: end as number,
-    ymin: Math.min(...flattenedYValues),
-    ymax: Math.max(...flattenedYValues)
-  }
 }
 
 const handleRouteWatch = async () => {
@@ -105,16 +64,6 @@ const handleRouteWatch = async () => {
   } else {
     store.fileSelectionModalVisible = true;
   }
-}
-
-type DisplayableMeasurement = {
-  name: string,
-  counter: number[],
-  timestamp: number[],
-  datasets: Array<{
-        name: string,
-        data: Array<Chart.ChartPoint>
-      }>
 }
 
 // eslint-disable-next-line max-len
@@ -144,38 +93,7 @@ async function fetchParsedMeasurement(fileName: string): Promise<DisplayableMeas
 
       // Process each line except the last (incomplete line)
       for (const line of lines.slice(0, -1)) {
-        if (!line.trim()) continue;
-
-        const parsedLine = JSON.parse(line);
-
-        if (parsedLine.progress !== undefined) {
-          progress.value = Math.floor(parsedLine.progress * 100)
-        } else {
-          const chunk: ParsedMeasurement = parsedLine;
-
-          combinedResult.counter.push(...chunk.counter);
-          combinedResult.timestamp.push(...chunk.timestamp);
-
-          chunk.datasets.forEach((dataset) => {
-            const combined = []
-            for(let i = 0; i < chunk.timestamp.length; i++) {
-              combined.push({
-                x: chunk.timestamp[i] / 1000000,
-                y: dataset.data[i],
-              })
-            }
-            // eslint-disable-next-line max-len
-            const existingDataset = combinedResult.datasets.find(d => d.name === dataset.name);
-            if (existingDataset) {
-              existingDataset.data.push(...combined);
-            } else {
-              combinedResult.datasets.push({
-                name: dataset.name,
-                data: [...combined]
-              });
-            }
-          });
-        }
+        processLine(line, combinedResult, progress)
       }
 
       // Keep the last incomplete line for the next iteration
