@@ -264,7 +264,13 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
     >
       <div class="max-w-60 flex flex-col gap-4">
         <h4>Fetching Measurement</h4>
-        <ProgressBar :value="progress" />
+        <ProgressBar 
+          :value="progress" 
+          :pt="{
+            value: {
+              style: ['transition-duration: .25s;']
+            }
+          }" />
       </div>
     </div>
     <FileSelectionModal
