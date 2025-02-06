@@ -30,11 +30,26 @@ Chart.register(
   Tooltip,
   Legend,
   zoomPlugin,
-  CrosshairPlugin,
   TimeScale
 );
 
 Interaction.modes.Interpolate = Interpolate;
+
+// eslint-disable-next-line max-len
+// https://github.com/AbelHeinsbroek/chartjs-plugin-crosshair/issues/119#issuecomment-1748680274
+// Dont use the plugin as it is. Error in afterDraw function
+// Chart.register(CrosshairPlugin);
+const CustomCrosshairPlugin = function (plugin: any) {
+  const originalAfterDraw = plugin.afterDraw;
+  plugin.afterDraw = function(chart: any, easing: any) {
+    if (chart && chart.crosshair) {
+      originalAfterDraw.call(this, chart, easing);
+    }
+  };
+  return plugin;
+};
+
+Chart.register(CustomCrosshairPlugin(CrosshairPlugin));
 
 const props = defineProps<{
   data: ChartData<'line'> ,
@@ -87,7 +102,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
 <template>
   <div>
     <Line
-      ref="chartInstance"
+      ref="chartInstanceStatic"
       :data="data"
       :options="options ?? chartOptions" />
   </div>

@@ -12,7 +12,8 @@ import {
   DisplayableMeasurement,
   getSubsetOfMeasurement,
   computeChartBoundaries,
-  processLine
+  processLine,
+  findNextClosestSmaller
 } from '@/components/elements/charts/staticChartHelper.ts';
 import {
   computed,
@@ -44,9 +45,13 @@ const chartBoundaries = ref<ChartBoundaries>({
 })
 
 const progress = ref<number>(0)
+const data = ref<DisplayableMeasurement|undefined>(undefined)
 
-const handleParsedData = (data: DisplayableMeasurement): void => {
-  const newDatasets = getSubsetOfMeasurement(data)
+const handleParsedData = (
+    data: DisplayableMeasurement,
+    startIndex: number = 0,
+    endIndex: number|undefined = undefined): void => {
+  const newDatasets = getSubsetOfMeasurement(data, startIndex, endIndex);
   const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
 
   chartData.value = {
@@ -59,8 +64,8 @@ const handleRouteWatch = async () => {
   if(route.query['file']) {
     store.lastFileQuery = route.query['file'].toString();
     store.fileSelectionModalVisible = false;
-    const data = await fetchParsedMeasurement(route.query['file'].toString())
-    handleParsedData(data)
+    data.value = await fetchParsedMeasurement(route.query['file'].toString())
+    handleParsedData(data.value)
   } else {
     store.fileSelectionModalVisible = true;
   }
@@ -107,6 +112,13 @@ async function fetchParsedMeasurement(fileName: string): Promise<DisplayableMeas
   return combinedResult;
 }
 
+function handleZoom(start: number, end: number): void {
+  if(!data.value) {return}
+  const startIndex = findNextClosestSmaller(data.value.timestamp, start)
+  const endIndex = findNextClosestSmaller(data.value.timestamp, end)
+  handleParsedData(data.value, startIndex, endIndex)
+}
+
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
     animation: false,
@@ -151,8 +163,8 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       },
       crosshair: {
         callbacks: {
-          afterZoom: () => function(start, end) {
-            console.log(start, end)
+          afterZoom: () => function(start: number, end: number) {
+            handleZoom(start, end);
           }
         },
         snap: {
@@ -161,7 +173,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       },
       tooltip: {
         mode: 'index',
-        intersect: false,
+        intersect: true,
       },
     },
     hover: {

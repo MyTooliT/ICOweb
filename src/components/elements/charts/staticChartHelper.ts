@@ -21,17 +21,19 @@ export type DisplayableMeasurement = {
 
 export function getSubsetOfMeasurement(
     data: DisplayableMeasurement,
+    startIndex: number = 0,
+    endIndex: number|undefined = undefined,
     maxPointsPerSet: number = 2000,
     chartColors: string[] = ['red', 'green', 'blue', 'yellow', 'purple']
 ): Chart.ChartDataSets[] {
-    const length = data.timestamp.length
+    const length = endIndex ? endIndex - startIndex : data.timestamp.length
     const interval = length >= maxPointsPerSet
         ? Math.floor(length / maxPointsPerSet)
         : 1
 
     return data.datasets.map((dataset, index) => {
         const subset: Chart.ChartPoint[] = []
-        for (let i = 0; i <= length; i += interval) {
+        for (let i = startIndex; i <= startIndex + length; i += interval) {
             subset.push(dataset.data[i])
         }
         // if the interval jump has exceeded the array, pop the last item
@@ -79,7 +81,7 @@ export function processLine(
         const chunk: ParsedMeasurement = parsedLine;
 
         result.counter.push(...chunk.counter);
-        result.timestamp.push(...chunk.timestamp);
+        result.timestamp.push(...(chunk.timestamp.map(ts => ts / 1000000)));
 
         chunk.datasets.forEach((dataset) => {
             const combined = []
@@ -101,4 +103,22 @@ export function processLine(
             }
         });
     }
+}
+
+export function findNextClosestSmaller(sortedArr: number[], num: number): number {
+    let left = 0, right = sortedArr.length - 1;
+    let closestIndex = -1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        if (sortedArr[mid] < num) {
+            closestIndex = mid;
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return closestIndex;
 }
