@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
-import AnalyzeChart from '@/components/elements/charts/Chart.vue';
+import StaticChart from '@/components/elements/charts/StaticChart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
@@ -182,7 +182,7 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
       button-icon-class="pi pi-file-import"
       @button-click="store.fileSelectionModalVisible = true"
     />
-    <AnalyzeChart
+    <StaticChart
       v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
       :data="chartData"
       :options="chartOptions"

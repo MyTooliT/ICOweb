@@ -2,7 +2,7 @@
 import { getAPILink } from '@/api/api.ts';
 
 /* eslint-disable max-len */
-import Chart from '@/components/elements/charts/Chart.vue';
+import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
 import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
@@ -180,7 +180,7 @@ const datalossMeter = computed<MeterItem[]>(() => [
       />
       <div class="flex flex-row">
         <div class="flex flex-col flex-grow gap-3">
-          <Chart
+          <StreamingChart
             class="flex flex-col flex-grow"
             :data="chartData"
             :boundaries="{

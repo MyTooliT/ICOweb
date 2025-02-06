@@ -12,11 +12,9 @@ import {
   PointElement,
   Title,
   Tooltip,
-  Interaction,
   TimeScale
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 
@@ -30,11 +28,8 @@ Chart.register(
   Tooltip,
   Legend,
   zoomPlugin,
-  CrosshairPlugin,
   TimeScale
 );
-
-Interaction.modes.Interpolate = Interpolate;
 
 const props = defineProps<{
   data: ChartData<'line'> ,
@@ -78,21 +73,6 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       decimation: {
         enabled: true,
         algorithm: 'min-max',
-      },
-      zoom: {
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: true
-          },
-          mode: 'x',
-        },
-        pan: {
-          enabled: true,
-          mode: 'x',
-        }
       }
     }
   }
