@@ -34,6 +34,10 @@ export function getSubsetOfMeasurement(
         for (let i = 0; i <= length; i += interval) {
             subset.push(dataset.data[i])
         }
+        // if the interval jump has exceeded the array, pop the last item
+        if(!subset.at(-1)) {
+            subset.pop()
+        }
         return {
             data: subset,
             label: dataset.name,
