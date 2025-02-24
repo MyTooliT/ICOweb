@@ -3,38 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type {
-  DelayApiV1DelayGetResponse,
-  DeleteFileApiV1FilesNameDeleteData,
-  DeleteFileApiV1FilesNameDeleteResponse,
-  DownloadFileApiV1FilesNameGetData,
-  DownloadFileApiV1FilesNameGetResponse,
-  GetAnalyzedFileApiV1FilesAnalyzeNameGetData,
-  GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse,
-  ListFilesAndCapacityApiV1FilesGetResponse,
-  OptionsApiV1OptionsResponse,
-  PingApiV1PingGetResponse,
-  PostAnalyzedFileApiV1FilesAnalyzePostData,
-  PostAnalyzedFileApiV1FilesAnalyzePostResponse,
-  ReadAdcApiV1SthReadAdcMacGetData,
-  ReadAdcApiV1SthReadAdcMacGetResponse,
-  ResetCanApiV1ResetCanPutResponse,
-  SthApiV1SthGetResponse,
-  SthConnectApiV1SthConnectPutData,
-  SthConnectApiV1SthConnectPutResponse,
-  SthDisconnectApiV1SthDisconnectPutResponse,
-  SthRenameApiV1SthRenamePutData,
-  SthRenameApiV1SthRenamePutResponse,
-  StuApiV1StuGetResponse,
-  StuDisableOtaApiV1StuOtaDisablePutData,
-  StuDisableOtaApiV1StuOtaDisablePutResponse,
-  StuEnableOtaApiV1StuOtaEnablePutData,
-  StuEnableOtaApiV1StuOtaEnablePutResponse,
-  StuResetApiV1StuResetPutData,
-  StuResetApiV1StuResetPutResponse,
-  WriteAdcApiV1SthWriteAdcPutData,
-  WriteAdcApiV1SthWriteAdcPutResponse
-} from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedPostData, StuConnectedApiV1StuConnectedPostResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, PingApiV1PingGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse } from './types.gen';
 
 /**
  * Stu
@@ -97,6 +66,24 @@ export const stuEnableOtaApiV1StuOtaEnablePut = (data: StuEnableOtaApiV1StuOtaEn
 export const stuDisableOtaApiV1StuOtaDisablePut = (data: StuDisableOtaApiV1StuOtaDisablePutData): CancelablePromise<StuDisableOtaApiV1StuOtaDisablePutResponse> => { return __request(OpenAPI, {
     method: 'PUT',
     url: '/api/v1/stu/ota/disable',
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        404: 'Not found',
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Stu Connected
+ * @param data The data for the request.
+ * @param data.requestBody
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const stuConnectedApiV1StuConnectedPost = (data: StuConnectedApiV1StuConnectedPostData): CancelablePromise<StuConnectedApiV1StuConnectedPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/stu/connected',
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
@@ -218,16 +205,6 @@ export const pingApiV1PingGet = (): CancelablePromise<PingApiV1PingGetResponse> 
 }); };
 
 /**
- * Delay
- * @returns unknown Successful Response
- * @throws ApiError
- */
-export const delayApiV1DelayGet = (): CancelablePromise<DelayApiV1DelayGetResponse> => { return __request(OpenAPI, {
-    method: 'GET',
-    url: '/api/v1/delay'
-}); };
-
-/**
  * Reset Can
  * @returns unknown Successful Response
  * @throws ApiError
@@ -235,16 +212,6 @@ export const delayApiV1DelayGet = (): CancelablePromise<DelayApiV1DelayGetRespon
 export const resetCanApiV1ResetCanPut = (): CancelablePromise<ResetCanApiV1ResetCanPutResponse> => { return __request(OpenAPI, {
     method: 'PUT',
     url: '/api/v1/reset-can'
-}); };
-
-/**
- * Options
- * @returns unknown Successful Response
- * @throws ApiError
- */
-export const optionsApiV1Options = (): CancelablePromise<OptionsApiV1OptionsResponse> => { return __request(OpenAPI, {
-    method: 'OPTIONS',
-    url: '/api/v1*'
 }); };
 
 /**
@@ -297,7 +264,7 @@ export const deleteFileApiV1FilesNameDelete = (data: DeleteFileApiV1FilesNameDel
  * Get Analyzed File
  * @param data The data for the request.
  * @param data.name
- * @returns ParsedMeasurement Successful Response
+ * @returns unknown Successful Response
  * @throws ApiError
  */
 export const getAnalyzedFileApiV1FilesAnalyzeNameGet = (data: GetAnalyzedFileApiV1FilesAnalyzeNameGetData): CancelablePromise<GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse> => { return __request(OpenAPI, {

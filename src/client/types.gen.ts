@@ -9,6 +9,7 @@ export type ADCValues = {
 
 export type APIStateModel = {
     can_ready: boolean;
+    disk_capacity: DiskCapacity;
 };
 
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
@@ -17,6 +18,10 @@ export type Body_post_analyzed_file_api_v1_files_analyze_post = {
 
 export type Body_sth_connect_api_v1_sth_connect_put = {
     mac: string;
+};
+
+export type Body_stu_connected_api_v1_stu_connected_post = {
+    name: string;
 };
 
 export type Body_stu_disable_ota_api_v1_stu_ota_disable_put = {
@@ -36,14 +41,14 @@ export type Body_write_adc_api_v1_sth_write_adc_put = {
     config: ADCValues;
 };
 
-export type ConnectionTimeoutError = {
+export type CANResponseError = {
     name: string;
     message: string;
 };
 
-export type Dataset = {
-    data: Array<(number)>;
+export type ConnectionTimeoutError = {
     name: string;
+    message: string;
 };
 
 export type DiskCapacity = {
@@ -54,6 +59,7 @@ export type DiskCapacity = {
 export type FileListResponseModel = {
     capacity: DiskCapacity;
     files: Array<MeasurementFileDetails>;
+    directory: string;
 };
 
 export type HTTPValidationError = {
@@ -64,18 +70,6 @@ export type MeasurementFileDetails = {
     name: string;
     created: string;
     size: number;
-};
-
-export type NoResponseError = {
-    name: string;
-    message: string;
-};
-
-export type ParsedMeasurement = {
-    name: string;
-    counter: Array<(number)>;
-    timestamp: Array<(number)>;
-    datasets: Array<Dataset>;
 };
 
 /**
@@ -126,13 +120,19 @@ export type StuEnableOtaApiV1StuOtaEnablePutData = {
     requestBody: Body_stu_enable_ota_api_v1_stu_ota_enable_put;
 };
 
-export type StuEnableOtaApiV1StuOtaEnablePutResponse = NoResponseError | null;
+export type StuEnableOtaApiV1StuOtaEnablePutResponse = CANResponseError | null;
 
 export type StuDisableOtaApiV1StuOtaDisablePutData = {
     requestBody: Body_stu_disable_ota_api_v1_stu_ota_disable_put;
 };
 
-export type StuDisableOtaApiV1StuOtaDisablePutResponse = NoResponseError | null;
+export type StuDisableOtaApiV1StuOtaDisablePutResponse = CANResponseError | null;
+
+export type StuConnectedApiV1StuConnectedPostData = {
+    requestBody: Body_stu_connected_api_v1_stu_connected_post;
+};
+
+export type StuConnectedApiV1StuConnectedPostResponse = unknown;
 
 export type SthApiV1SthGetResponse = unknown;
 
@@ -164,11 +164,7 @@ export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
 
 export type PingApiV1PingGetResponse = APIStateModel;
 
-export type DelayApiV1DelayGetResponse = unknown;
-
 export type ResetCanApiV1ResetCanPutResponse = unknown;
-
-export type OptionsApiV1OptionsResponse = unknown;
 
 export type ListFilesAndCapacityApiV1FilesGetResponse = FileListResponseModel;
 
@@ -188,7 +184,7 @@ export type GetAnalyzedFileApiV1FilesAnalyzeNameGetData = {
     name: string;
 };
 
-export type GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse = ParsedMeasurement;
+export type GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse = unknown;
 
 export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
     formData: Body_post_analyzed_file_api_v1_files_analyze_post;
@@ -245,7 +241,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: NoResponseError | null;
+                200: CANResponseError | null;
                 /**
                  * Not found
                  */
@@ -264,7 +260,26 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: NoResponseError | null;
+                200: CANResponseError | null;
+                /**
+                 * Not found
+                 */
+                404: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/stu/connected': {
+        post: {
+            req: StuConnectedApiV1StuConnectedPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
                 /**
                  * Not found
                  */
@@ -402,28 +417,8 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/api/v1/delay': {
-        get: {
-            res: {
-                /**
-                 * Successful Response
-                 */
-                200: unknown;
-            };
-        };
-    };
     '/api/v1/reset-can': {
         put: {
-            res: {
-                /**
-                 * Successful Response
-                 */
-                200: unknown;
-            };
-        };
-    };
-    '/api/v1*': {
-        options: {
             res: {
                 /**
                  * Successful Response
@@ -477,7 +472,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: ParsedMeasurement;
+                200: unknown;
                 /**
                  * Validation Error
                  */

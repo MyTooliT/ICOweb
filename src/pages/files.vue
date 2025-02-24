@@ -27,14 +27,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const mStore = useMeasurementStore()
 
-// wrapper for .env variable
-let measurementsDir = ref<string>('')
-
-onMounted(() => {
-  measurementsDir.value = import.meta.env.VITE_BACKEND_MEASUREMENT_DIR
-})
-
-const { 
+const {
   loading: filesLoading, call: loadFiles 
 } = useLoadingHandler(mStore.getFiles)
 const { 
@@ -64,7 +57,7 @@ const meterItems = computed<MeterItem[]>(() => {
   <DefaultLayout>
     <TextBlock
       heading="Measurement Files"
-      :subheading="`All files found under ${measurementsDir}`"
+      :subheading="`All files found under ${mStore.measurementDirectory}`"
       button-text="Load Files"
       button-icon-class="pi pi-sync"
       :button-loading="filesLoading"

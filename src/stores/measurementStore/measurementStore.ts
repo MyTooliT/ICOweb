@@ -101,10 +101,12 @@ export const useMeasurementStore = defineStore('measurement', () => {
 
   const measurementFiles = ref<MeasurementFileDetails[]>([])
   const driveCapacity = ref<DiskCapacity>({total: null, available: null})
+  const measurementDirectory = ref<string>('')
   async function getFiles(): Promise<void> {
     const data = await getMeasurementFiles()
     measurementFiles.value = [...data.files]
     driveCapacity.value = {...data.capacity}
+    measurementDirectory.value = data.directory
   }
   const getLatestFileName = computed<string>(() => {
     if(measurementFiles.value.length === 0) return ''
@@ -134,6 +136,7 @@ export const useMeasurementStore = defineStore('measurement', () => {
     getFiles,
     getLatestFileName,
     driveCapacity,
+    measurementDirectory,
     resetChartBounds
   }
 }, {

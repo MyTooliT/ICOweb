@@ -57,10 +57,13 @@ export const $APIStateModel = {
         can_ready: {
             type: 'boolean',
             title: 'Can Ready'
+        },
+        disk_capacity: {
+            '$ref': '#/components/schemas/DiskCapacity'
         }
     },
     type: 'object',
-    required: ['can_ready'],
+    required: ['can_ready', 'disk_capacity'],
     title: 'APIStateModel'
 } as const;
 
@@ -87,6 +90,18 @@ export const $Body_sth_connect_api_v1_sth_connect_put = {
     type: 'object',
     required: ['mac'],
     title: 'Body_sth_connect_api_v1_sth_connect_put'
+} as const;
+
+export const $Body_stu_connected_api_v1_stu_connected_post = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'Body_stu_connected_api_v1_stu_connected_post'
 } as const;
 
 export const $Body_stu_disable_ota_api_v1_stu_ota_disable_put = {
@@ -140,6 +155,22 @@ export const $Body_write_adc_api_v1_sth_write_adc_put = {
     title: 'Body_write_adc_api_v1_sth_write_adc_put'
 } as const;
 
+export const $CANResponseError = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        message: {
+            type: 'string',
+            title: 'Message'
+        }
+    },
+    type: 'object',
+    required: ['name', 'message'],
+    title: 'CANResponseError'
+} as const;
+
 export const $ConnectionTimeoutError = {
     properties: {
         name: {
@@ -154,25 +185,6 @@ export const $ConnectionTimeoutError = {
     type: 'object',
     required: ['name', 'message'],
     title: 'ConnectionTimeoutError'
-} as const;
-
-export const $Dataset = {
-    properties: {
-        data: {
-            items: {
-                type: 'number'
-            },
-            type: 'array',
-            title: 'Data'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['data', 'name'],
-    title: 'Dataset'
 } as const;
 
 export const $DiskCapacity = {
@@ -216,10 +228,14 @@ export const $FileListResponseModel = {
             },
             type: 'array',
             title: 'Files'
+        },
+        directory: {
+            type: 'string',
+            title: 'Directory'
         }
     },
     type: 'object',
-    required: ['capacity', 'files'],
+    required: ['capacity', 'files', 'directory'],
     title: 'FileListResponseModel'
 } as const;
 
@@ -255,55 +271,6 @@ export const $MeasurementFileDetails = {
     type: 'object',
     required: ['name', 'created', 'size'],
     title: 'MeasurementFileDetails'
-} as const;
-
-export const $NoResponseError = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        message: {
-            type: 'string',
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['name', 'message'],
-    title: 'NoResponseError'
-} as const;
-
-export const $ParsedMeasurement = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        counter: {
-            items: {
-                type: 'integer'
-            },
-            type: 'array',
-            title: 'Counter'
-        },
-        timestamp: {
-            items: {
-                type: 'number'
-            },
-            type: 'array',
-            title: 'Timestamp'
-        },
-        datasets: {
-            items: {
-                '$ref': '#/components/schemas/Dataset'
-            },
-            type: 'array',
-            title: 'Datasets'
-        }
-    },
-    type: 'object',
-    required: ['name', 'counter', 'timestamp', 'datasets'],
-    title: 'ParsedMeasurement'
 } as const;
 
 export const $STHDeviceResponseModel = {
