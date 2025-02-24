@@ -155,16 +155,16 @@ const canMeasure = computed<boolean>(() => {
 const datalossMeter = computed<MeterItem[]>(() => [
   {
     label: 'OK',
-    value: (dataloss.value ?? 1) * 100,
+    value: 100 - ((dataloss.value ?? 0) * 100),
     color: 'green',
     icon: ''
   },
   {
     label: 'Lost',
-    value: 100 - ((dataloss.value ?? 1) * 100),
+    value: (dataloss.value ?? 0) * 100,
     color: 'red',
     icon: ''
-  }
+  },
 ])
 
 
@@ -328,7 +328,23 @@ const datalossMeter = computed<MeterItem[]>(() => [
           </NamedInput>
           <NamedInput title="Measurement Integrity (Packet Loss)">
             <InputGroup>
-              <MeterGroup :value="datalossMeter" class="w-full" />
+              <MeterGroup :value="datalossMeter" class="w-full">
+                <template #label="{ value }">
+                  <div class="flex flex-wrap gap-3 items-center">
+                    <template
+                      v-for="val in value"
+                      :key="val.label"
+                    >
+                      <span
+                        :data-color="val.color"
+                        class="w-4 h-4 rounded-full"
+                        :style="`background-color: ${val.color}`"
+                      ></span>
+                      <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
+                    </template>
+                  </div>
+                </template>
+              </MeterGroup>
             </InputGroup>
           </NamedInput>
         </div>
