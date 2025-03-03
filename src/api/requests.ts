@@ -2,7 +2,6 @@
 import {
   ADCValues,
   FileListResponseModel,
-  ParsedMeasurement,
   STHDeviceResponseModel,
   STHRenameRequestModel,
   STHRenameResponseModel,
@@ -142,14 +141,6 @@ export async function deleteMeasurementFile(name: string): Promise<string> {
   })
 }
 
-export async function getParsedMeasurement(name: string): Promise<ParsedMeasurement> {
-  return new Promise((resolve, reject) => {
-    get<ParsedMeasurement>(`files/analyze/${name}`)
-      .then(data => resolve(data))
-      .catch(reject)
-  })
-}
-
 export async function getMeasurementStatus(): Promise<MeasurementStatus> {
   return new Promise((resolve, reject) => {
     get<MeasurementStatus>('measurement')
@@ -168,7 +159,7 @@ export async function startMeasurement(instructions: MeasurementInstructions): P
 
 export async function stopMeasurement(): Promise<ControlResponse> {
   return new Promise((resolve, reject) => {
-    post<void, ControlResponse>('measurement/stop', {})
+    post<undefined, ControlResponse>('measurement/stop', undefined)
         .then(data => resolve(data))
         .catch(reject)
   })
