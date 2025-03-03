@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
-
+import {startMeasurement, stopMeasurement} from '@/api/requests.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
@@ -34,6 +34,7 @@ import {
   ref
 } from 'vue';
 import { useRouter } from 'vue-router';
+import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
@@ -55,16 +56,7 @@ const {
   dataloss
 } = useMeasurementWebsocket(
   true,
-  () => wrapUpdate(),
-  async () => {
-    await mStore.getFiles()
-    toast.add({
-      summary: 'Measurement saved successfully',
-      detail: 'Your measurement can be downloaded in the files tab.',
-      group: 'newfile'
-    })
-    mStore.resetChartBounds()
-  }
+  () => wrapUpdate()
 )
 
 function wrapUpdate() {
@@ -130,6 +122,24 @@ function startStopClickHandler() {
     close()
   }
 }
+
+// eslint-disable-next-line max-len
+const { loading: startLoading, call: start } = useLoadingHandler(() => startMeasurement({
+  name: null,
+  first: mStore.activeChannels.first
+      ?  mStore.selectedChannels.first : 0,
+  second: mStore.activeChannels.second
+      ?  mStore.selectedChannels.second : 0,
+  third: mStore.activeChannels.third
+      ?  mStore.selectedChannels.third : 0,
+  mac: hwStore.activeSTH?.getMacAddress(),
+  time: mStore.continuous ? null : mStore.acquisitionTime,
+  ift_requested: mStore.IFTRequested,
+  ift_channel: mStore.IFTChannel,
+  ift_window_width: mStore.windowWidth
+}))
+
+const {loading: stopLoading, call: stop} = useLoadingHandler(() => stopMeasurement())
 
 function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
   if (!assignedSensor) return ''
@@ -250,18 +260,25 @@ const datalossMeter = computed<MeterItem[]>(() => [
                 s
               </InputGroupAddon>
               <Button
+                label="Connect Stream"
+                severity="success"
+                class="!px-5"
+                :disabled="!mStore.measurementStatus.running"
+                @click="open"
+              />
+              <Button
                 label="Stop Recording"
                 severity="danger"
                 class="!px-5"
-                :disabled="state === 'closed'"
-                @click="startStopClickHandler"
+                :disabled="!mStore.measurementStatus.running"
+                @click="stop"
               />
               <Button
                 label="Start Recording"
                 severity="primary"
                 class="!px-5"
-                :disabled="!canMeasure || state === 'open'"
-                @click="startStopClickHandler"
+                :disabled="!canMeasure || mStore.measurementStatus.running"
+                @click="start"
               />
             </InputGroup>
           </NamedInput>

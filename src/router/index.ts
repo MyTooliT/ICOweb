@@ -103,8 +103,12 @@ router.afterEach(async (_to, _from, _failure) => {
   }
 
   if(_to.name === 'Measure') {
-    const hwStore = useHardwareStore()
-    await hwStore.checkSTUConnection()
+    const mStore = useMeasurementStore()
+    await mStore.checkMeasurementStatus()
+    if(!mStore.measurementStatus.running) {
+      const hwStore = useHardwareStore()
+      await hwStore.checkSTUConnection()
+    }
   }
 
   if(_to.name === 'Files') {

@@ -51,6 +51,10 @@ export type ConnectionTimeoutError = {
     message: string;
 };
 
+export type ControlResponse = {
+    message: string;
+};
+
 export type DiskCapacity = {
     total: number | null;
     available: number | null;
@@ -70,6 +74,24 @@ export type MeasurementFileDetails = {
     name: string;
     created: string;
     size: number;
+};
+
+export type MeasurementInstructions = {
+    name: string | null;
+    mac: string;
+    time: number | null;
+    first: number;
+    second: number;
+    third: number;
+    ift_requested: boolean;
+    ift_channel: string;
+    ift_window_width: number;
+};
+
+export type MeasurementStatus = {
+    running: boolean;
+    name?: string | null;
+    start_time?: string | null;
 };
 
 /**
@@ -191,6 +213,16 @@ export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
 };
 
 export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = unknown;
+
+export type StartMeasurementApiV1MeasurementStartPostData = {
+    requestBody: MeasurementInstructions;
+};
+
+export type StartMeasurementApiV1MeasurementStartPostResponse = ControlResponse;
+
+export type StopMeasurementApiV1MeasurementStopPostResponse = ControlResponse;
+
+export type MeasurementStatusApiV1MeasurementGetResponse = MeasurementStatus;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -492,6 +524,41 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/measurement/start': {
+        post: {
+            req: StartMeasurementApiV1MeasurementStartPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ControlResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/measurement/stop': {
+        post: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ControlResponse;
+            };
+        };
+    };
+    '/api/v1/measurement': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: MeasurementStatus;
             };
         };
     };

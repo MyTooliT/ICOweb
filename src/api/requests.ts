@@ -1,4 +1,4 @@
-// eslint-disable-next-line max-len
+/* eslint-disable max-len */
 import {
   ADCValues,
   FileListResponseModel,
@@ -6,7 +6,9 @@ import {
   STHDeviceResponseModel,
   STHRenameRequestModel,
   STHRenameResponseModel,
-  STUDeviceResponseModel
+  STUDeviceResponseModel,
+  ControlResponse,
+  MeasurementInstructions, MeasurementStatus
 } from '@/client';
 import {
   del,
@@ -27,7 +29,6 @@ export async function ping(): Promise<any> {
   })
 }
 
-// eslint-disable-next-line max-len
 export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
     get<(STHDeviceResponseModel)[]>('sth')
@@ -52,7 +53,6 @@ export async function disconnectSTHDevice(): Promise<void> {
   })
 }
 
-// eslint-disable-next-line max-len
 export async function renameSTHDevice(model: STHRenameRequestModel): Promise<STHRenameResponseModel> {
   return new Promise((resolve, reject) => {
     put<STHRenameRequestModel, STHRenameResponseModel>('sth/rename', model)
@@ -61,7 +61,6 @@ export async function renameSTHDevice(model: STHRenameRequestModel): Promise<STH
   })
 }
 
-// eslint-disable-next-line max-len
 export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
     get<STUDeviceResponseModel[]>('stu')
@@ -70,7 +69,6 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   })
 }
 
-// eslint-disable-next-line max-len
 export async function requestSTUConnectionStatus(name: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     post<{name: string}, boolean>('stu/connected', { name: name})
@@ -87,7 +85,6 @@ export async function getADCValues(mac: string): Promise<ADCValues> {
   })
 }
 
-// eslint-disable-next-line max-len
 export async function writeADCValues(mac: string, values: ADCValues): Promise<void> {
   return new Promise((resolve, reject) => {
     put<{ mac: string, config: ADCValues}, void>
@@ -150,5 +147,29 @@ export async function getParsedMeasurement(name: string): Promise<ParsedMeasurem
     get<ParsedMeasurement>(`files/analyze/${name}`)
       .then(data => resolve(data))
       .catch(reject)
+  })
+}
+
+export async function getMeasurementStatus(): Promise<MeasurementStatus> {
+  return new Promise((resolve, reject) => {
+    get<MeasurementStatus>('measurement')
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function startMeasurement(instructions: MeasurementInstructions): Promise<ControlResponse> {
+  return new Promise((resolve, reject) => {
+    post<MeasurementInstructions, ControlResponse>('measurement/start', instructions)
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function stopMeasurement(): Promise<ControlResponse> {
+  return new Promise((resolve, reject) => {
+    post<void, ControlResponse>('measurement/stop', {})
+        .then(data => resolve(data))
+        .catch(reject)
   })
 }

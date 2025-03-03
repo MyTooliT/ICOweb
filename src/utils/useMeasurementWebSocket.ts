@@ -37,10 +37,10 @@ export function useMeasurementWebsocket(
     const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
     const hostname = import.meta.env.VITE_API_HOSTNAME;
     const port = import.meta.env.VITE_API_PORT;
-    const prefix = import.meta.env.VITE_API_WS_PREFIX;
+    const version = import.meta.env.VITE_API_VERSION;
 
     ws.value = new WebSocket(
-      `${protocol}://${hostname}:${port}/${prefix}/measure`
+      `${protocol}://${hostname}:${port}/api/${version}/measurement/stream`
     )
 
     ws.value.onopen = () => {
@@ -60,18 +60,22 @@ export function useMeasurementWebsocket(
     }
 
     ws.value.onmessage = (event: any) => {
-      const parsed = JSON.parse(event.data) as Array<TMeasurementDataFrame>
-      parsed.forEach((entry: TMeasurementDataFrame) => {
-        if(entry.dataloss) {
-          dataloss.value = entry.dataloss
-        }
-        else if(entry.ift) {
-          ift_storage.value = [...entry.ift]
-        }
-        else {
-          storage.value.push(entry)
-        }
-      })
+      try {
+        const parsed = JSON.parse(event.data) as Array<TMeasurementDataFrame>
+        parsed.forEach((entry: TMeasurementDataFrame) => {
+          if(entry.dataloss) {
+            dataloss.value = entry.dataloss
+          }
+          else if(entry.ift) {
+            ift_storage.value = [...entry.ift]
+          }
+          else {
+            storage.value.push(entry)
+          }
+        })
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     if(shouldUpdate) {

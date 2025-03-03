@@ -187,6 +187,18 @@ export const $ConnectionTimeoutError = {
     title: 'ConnectionTimeoutError'
 } as const;
 
+export const $ControlResponse = {
+    properties: {
+        message: {
+            type: 'string',
+            title: 'Message'
+        }
+    },
+    type: 'object',
+    required: ['message'],
+    title: 'ControlResponse'
+} as const;
+
 export const $DiskCapacity = {
     properties: {
         total: {
@@ -271,6 +283,98 @@ export const $MeasurementFileDetails = {
     type: 'object',
     required: ['name', 'created', 'size'],
     title: 'MeasurementFileDetails'
+} as const;
+
+export const $MeasurementInstructions = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        mac: {
+            type: 'string',
+            title: 'Mac'
+        },
+        time: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Time'
+        },
+        first: {
+            type: 'integer',
+            title: 'First'
+        },
+        second: {
+            type: 'integer',
+            title: 'Second'
+        },
+        third: {
+            type: 'integer',
+            title: 'Third'
+        },
+        ift_requested: {
+            type: 'boolean',
+            title: 'Ift Requested'
+        },
+        ift_channel: {
+            type: 'string',
+            title: 'Ift Channel'
+        },
+        ift_window_width: {
+            type: 'integer',
+            title: 'Ift Window Width'
+        }
+    },
+    type: 'object',
+    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width'],
+    title: 'MeasurementInstructions'
+} as const;
+
+export const $MeasurementStatus = {
+    properties: {
+        running: {
+            type: 'boolean',
+            title: 'Running'
+        },
+        name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        start_time: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Start Time'
+        }
+    },
+    type: 'object',
+    required: ['running'],
+    title: 'MeasurementStatus'
 } as const;
 
 export const $STHDeviceResponseModel = {
