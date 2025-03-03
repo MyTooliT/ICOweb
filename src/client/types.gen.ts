@@ -10,6 +10,7 @@ export type ADCValues = {
 export type APIStateModel = {
     can_ready: boolean;
     disk_capacity: DiskCapacity;
+    measurement_status: MeasurementStatus;
 };
 
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
@@ -53,6 +54,7 @@ export type ConnectionTimeoutError = {
 
 export type ControlResponse = {
     message: string;
+    data: MeasurementStatus;
 };
 
 export type DiskCapacity = {
@@ -92,6 +94,8 @@ export type MeasurementStatus = {
     running: boolean;
     name?: string | null;
     start_time?: string | null;
+    tool_name?: string | null;
+    tool_mac?: string | null;
 };
 
 /**

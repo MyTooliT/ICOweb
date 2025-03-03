@@ -5,6 +5,7 @@ import { ref } from 'vue';
 export function useAPIState() {
   const reachable = ref<boolean>(false);
   const canReady = ref<boolean>(false);
+  const measuring = ref<boolean>(false);
 
   let intervalID = 0;
 
@@ -13,9 +14,11 @@ export function useAPIState() {
       const response = await ping() as APIStateModel
       reachable.value = true
       canReady.value = response.can_ready
+      measuring.value = response.measurement_status.running
     } catch(e) {
       reachable.value = false
       canReady.value = false
+      measuring.value = false
     }
   }
 
@@ -40,6 +43,7 @@ export function useAPIState() {
   return {
     reachable,
     canReady,
+    measuring,
     checkState,
     registerInterval,
     deregisterInterval

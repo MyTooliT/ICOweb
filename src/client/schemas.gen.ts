@@ -60,10 +60,13 @@ export const $APIStateModel = {
         },
         disk_capacity: {
             '$ref': '#/components/schemas/DiskCapacity'
+        },
+        measurement_status: {
+            '$ref': '#/components/schemas/MeasurementStatus'
         }
     },
     type: 'object',
-    required: ['can_ready', 'disk_capacity'],
+    required: ['can_ready', 'disk_capacity', 'measurement_status'],
     title: 'APIStateModel'
 } as const;
 
@@ -192,10 +195,13 @@ export const $ControlResponse = {
         message: {
             type: 'string',
             title: 'Message'
+        },
+        data: {
+            '$ref': '#/components/schemas/MeasurementStatus'
         }
     },
     type: 'object',
-    required: ['message'],
+    required: ['message', 'data'],
     title: 'ControlResponse'
 } as const;
 
@@ -370,6 +376,28 @@ export const $MeasurementStatus = {
                 }
             ],
             title: 'Start Time'
+        },
+        tool_name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tool Name'
+        },
+        tool_mac: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tool Mac'
         }
     },
     type: 'object',

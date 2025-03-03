@@ -27,37 +27,49 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 </script>
 
 <template>
-  <div
-    :data-api="store.apiState.reachable"
-    :data-can="store.apiState.canReady"
-    class="
-      w-full pr-6 pb-1 text-right
-      flex flex-row justify-end items-center
-      bg-error-container text-on-error-container
-      data-[api~=false]:bg-error-container
-      data-[api~=false]:text-on-error-container
-      data-[api~=true]:data-[can~=false]:bg-yellow-300
-      data-[api~=true]:data-[can~=false]:text-on-error-container
-      data-[can~=true]:bg-primary-container
-      data-[can~=true]:text-on-primary-container"
+  <div class="w-full">
+    <div
+      v-if="store.apiState.measuring"
+      class="w-full text-center
+      text-[length:--p-button-sm-font-size]
+      py-[--p-button-padding-y]
+      bg-green-600 text-on-primary"
+    >
+      Ongoing Measurement
+    </div>
+    <div
+      v-else
+      :data-api="store.apiState.reachable"
+      :data-can="store.apiState.canReady"
+      class="
+        w-full pr-6 pb-1 text-right
+        flex flex-row justify-end items-center
+        bg-error-container text-on-error-container
+        data-[api~=false]:bg-error-container
+        data-[api~=false]:text-on-error-container
+        data-[api~=true]:data-[can~=false]:bg-yellow-300
+        data-[api~=true]:data-[can~=false]:text-on-error-container
+        data-[can~=true]:bg-primary-container
+        data-[can~=true]:text-on-primary-container"
+    >
+      <Button
+        label="Clear Cache"
+        size="small"
+        link
+        @click="clearCache()" />
+      <Button
+        label="Reset CAN Network"
+        size="small"
+        link
+        class="mr-auto"
+        :loading="loading"
+        :disabled="loading"
+        @click="resetHandle" />
+      <div class="text-sm h-min flex self-center">
+        API {{ store.apiState.reachable ? 'reachable' : 'disconnected' }} |
+        CAN {{ store.apiState.canReady ? 'established' : 'disconnected' }}
+      </div>
 
-  >
-    <Button
-      label="Clear Cache"
-      size="small"
-      link
-      @click="clearCache()" />
-    <Button
-      label="Reset CAN Network"
-      size="small"
-      link
-      class="mr-auto"
-      :loading="loading"
-      :disabled="loading"
-      @click="resetHandle" />
-    <div class="text-sm h-min flex self-center">
-      API {{ store.apiState.reachable ? 'reachable' : 'disconnected' }} |
-      CAN {{ store.apiState.canReady ? 'established' : 'disconnected' }}
     </div>
   </div>
 </template>
