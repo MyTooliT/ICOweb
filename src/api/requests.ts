@@ -7,7 +7,7 @@ import {
   STHRenameResponseModel,
   STUDeviceResponseModel,
   ControlResponse,
-  MeasurementInstructions, MeasurementStatus
+  MeasurementInstructions, MeasurementStatus, SystemStateModel
 } from '@/client';
 import {
   del,
@@ -22,9 +22,9 @@ export async function delay(): Promise<any> {
   })
 }
 
-export async function ping(): Promise<any> {
+export async function getSystemState(): Promise<SystemStateModel> {
   return new Promise((resolve, reject) => {
-    get<any>('ping').then(resolve).catch(reject)
+    get<SystemStateModel>('state').then(resolve).catch(reject)
   })
 }
 

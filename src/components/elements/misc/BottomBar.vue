@@ -11,12 +11,12 @@ import {
 const store = useGeneralStore();
 
 onMounted(async () => {
-  await store.apiState.checkState()
-  store.apiState.registerInterval(5000)
+  await store.systemState.checkState()
+  store.systemState.registerInterval(5000)
 })
 
 onBeforeUnmount(() => {
-  store.apiState.deregisterInterval()
+  store.systemState.deregisterInterval()
 })
 
 function clearCache() {
@@ -29,7 +29,7 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 <template>
   <div class="w-full absolute bottom-0 left-0 ">
     <div
-      v-if="store.apiState.measuring"
+      v-if="store.systemState.running"
       class="w-full text-center
       text-[length:--p-button-sm-font-size]
       py-[--p-button-padding-y]
@@ -39,8 +39,8 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
     </div>
     <div
       v-else
-      :data-api="store.apiState.reachable"
-      :data-can="store.apiState.canReady"
+      :data-api="store.systemState.reachable"
+      :data-can="store.systemState.canReady"
       class="
         w-full pr-6 pb-1 text-right
         flex flex-row justify-end items-center
@@ -66,8 +66,8 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
         :disabled="loading"
         @click="resetHandle" />
       <div class="text-sm h-min flex self-center">
-        API {{ store.apiState.reachable ? 'reachable' : 'disconnected' }} |
-        CAN {{ store.apiState.canReady ? 'established' : 'disconnected' }}
+        API {{ store.systemState.reachable ? 'reachable' : 'disconnected' }} |
+        CAN {{ store.systemState.canReady ? 'established' : 'disconnected' }}
       </div>
 
     </div>

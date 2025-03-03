@@ -52,24 +52,6 @@ export const $ADCValues = {
     title: 'ADCValues'
 } as const;
 
-export const $APIStateModel = {
-    properties: {
-        can_ready: {
-            type: 'boolean',
-            title: 'Can Ready'
-        },
-        disk_capacity: {
-            '$ref': '#/components/schemas/DiskCapacity'
-        },
-        measurement_status: {
-            '$ref': '#/components/schemas/MeasurementStatus'
-        }
-    },
-    type: 'object',
-    required: ['can_ready', 'disk_capacity', 'measurement_status'],
-    title: 'APIStateModel'
-} as const;
-
 export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
@@ -484,6 +466,24 @@ export const $STUDeviceResponseModel = {
     type: 'object',
     required: ['name', 'device_number', 'mac_address'],
     title: 'STUDeviceResponseModel'
+} as const;
+
+export const $SystemStateModel = {
+    properties: {
+        can_ready: {
+            type: 'boolean',
+            title: 'Can Ready'
+        },
+        disk_capacity: {
+            '$ref': '#/components/schemas/DiskCapacity'
+        },
+        measurement_status: {
+            '$ref': '#/components/schemas/MeasurementStatus'
+        }
+    },
+    type: 'object',
+    required: ['can_ready', 'disk_capacity', 'measurement_status'],
+    title: 'SystemStateModel'
 } as const;
 
 export const $ValidationError = {

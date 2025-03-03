@@ -1,8 +1,7 @@
-import {getMeasurementFiles, getMeasurementStatus} from '@/api/requests.ts';
+import {getMeasurementFiles} from '@/api/requests.ts';
 import {
   DiskCapacity,
   MeasurementFileDetails,
-  MeasurementStatus
 } from '@/client';
 import { ChartData } from 'chart.js';
 import { defineStore } from 'pinia';
@@ -43,11 +42,6 @@ export const chartDefaults = {
 }
 
 export const useMeasurementStore = defineStore('measurement', () => {
-  const measurementStatus = ref<MeasurementStatus>({
-    name: null,
-    start_time: null,
-    running: false
-  })
   const continuous = ref<boolean>(false)
   const acquisitionTime = ref<number>(10)
   const chartMaximumDisplayedTime = ref<number>(10)
@@ -118,10 +112,6 @@ export const useMeasurementStore = defineStore('measurement', () => {
     return [...measurementFiles.value].sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())[0].name
   })
 
-  async function checkMeasurementStatus() {
-    measurementStatus.value = await getMeasurementStatus()
-  }
-
   return {
     continuous,
     acquisitionTime,
@@ -147,8 +137,6 @@ export const useMeasurementStore = defineStore('measurement', () => {
     driveCapacity,
     measurementDirectory,
     resetChartBounds,
-    checkMeasurementStatus,
-    measurementStatus
   }
 }, {
   persist: true

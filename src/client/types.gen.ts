@@ -7,12 +7,6 @@ export type ADCValues = {
     reference_voltage: number | null;
 };
 
-export type APIStateModel = {
-    can_ready: boolean;
-    disk_capacity: DiskCapacity;
-    measurement_status: MeasurementStatus;
-};
-
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
     file: (Blob | File);
 };
@@ -128,6 +122,12 @@ export type STUDeviceResponseModel = {
     mac_address: string;
 };
 
+export type SystemStateModel = {
+    can_ready: boolean;
+    disk_capacity: DiskCapacity;
+    measurement_status: MeasurementStatus;
+};
+
 export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
@@ -188,7 +188,7 @@ export type WriteAdcApiV1SthWriteAdcPutData = {
 
 export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
 
-export type PingApiV1PingGetResponse = APIStateModel;
+export type PingApiV1StateGetResponse = SystemStateModel;
 
 export type ResetCanApiV1ResetCanPutResponse = unknown;
 
@@ -443,13 +443,13 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/api/v1/ping': {
+    '/api/v1/state': {
         get: {
             res: {
                 /**
                  * Successful Response
                  */
-                200: APIStateModel;
+                200: SystemStateModel;
             };
         };
     };

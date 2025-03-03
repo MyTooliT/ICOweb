@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
-import {getMeasurementStatus, startMeasurement, stopMeasurement} from '@/api/requests.ts';
+import {startMeasurement, stopMeasurement} from '@/api/requests.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
@@ -35,6 +35,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
+import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
@@ -45,6 +46,7 @@ const toast = useToast()
 const router = useRouter()
 const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
+const gStore = useGeneralStore()
 const adcStore = useADCStore()
 const {
   open,
@@ -113,12 +115,12 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_channel: mStore.IFTChannel,
     ift_window_width: mStore.windowWidth
   })
-  await mStore.checkMeasurementStatus()
+  await gStore.systemState.checkState()
 })
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await stopMeasurement()
-  await mStore.checkMeasurementStatus()
+  await gStore.systemState.checkState()
 })
 
 function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
@@ -209,7 +211,7 @@ onBeforeUnmount(() => {
             <div class="flex flex-row">
               <ToggleSwitch
                 v-model="mStore.continuous"
-                :disabled="mStore.measurementStatus.running"
+                :disabled="gStore.systemState.running"
                 input-id="continuous" />
               <label
                 for="continuous"
@@ -218,8 +220,8 @@ onBeforeUnmount(() => {
             <InputGroup>
               <InputNumber
                 v-if="
-                  (mStore.measurementStatus.running && !mStore.continuous)
-                    || !mStore.measurementStatus.running"
+                  (gStore.systemState.running && !mStore.continuous)
+                    || !gStore.systemState.running"
                 v-model="mStore.acquisitionTime"
                 input-id="acqTime"
                 :min="0"
@@ -227,41 +229,41 @@ onBeforeUnmount(() => {
               />
               <InputGroupAddon
                 v-if="
-                  (mStore.measurementStatus.running && !mStore.continuous)
-                    || !mStore.measurementStatus.running"
+                  (gStore.systemState.running && !mStore.continuous)
+                    || !gStore.systemState.running"
                 class="!text-black"
                 :disabled="mStore.continuous"
               >
                 s
               </InputGroupAddon>
               <Button
-                v-if="mStore.measurementStatus.running"
+                v-if="gStore.systemState.running"
                 label="Connect Stream"
                 severity="success"
                 class="!px-5"
-                :disabled="!mStore.measurementStatus.running"
+                :disabled="!gStore.systemState.running"
                 @click="() => {
                   mStore.resetChartBounds();
                   open();
                 }"
               />
               <Button
-                v-if="mStore.measurementStatus.running"
+                v-if="gStore.systemState.running"
                 label="Stop Recording"
                 :loading="stopLoading"
                 severity="danger"
                 class="!px-5"
-                :disabled="!mStore.measurementStatus.running"
+                :disabled="!gStore.systemState.running"
                 @click="stop"
               />
               <Button
-                v-if="!mStore.measurementStatus.running"
+                v-if="!gStore.systemState.running"
                 fluid
                 label="Start Recording"
                 :loading="startLoading"
                 severity="primary"
                 class="!px-5"
-                :disabled="!canMeasure || mStore.measurementStatus.running"
+                :disabled="!canMeasure || gStore.systemState.running"
                 @click="start"
               />
             </InputGroup>

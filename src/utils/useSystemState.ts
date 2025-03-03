@@ -1,30 +1,32 @@
-import { ping } from '@/api/requests';
-import { APIStateModel } from '@/client';
+import { getSystemState } from '@/api/requests';
+import { MeasurementStatus } from '@/client';
 import { ref } from 'vue';
 
-export function useAPIState() {
+export function useSystemState() {
   const reachable = ref<boolean>(false);
   const canReady = ref<boolean>(false);
-  const measuring = ref<boolean>(false);
+  const running = ref<boolean>(false);
+  const measurementStatus = ref<MeasurementStatus | null>(null);
 
   let intervalID = 0;
 
   async function checkState(): Promise<void> {
     try {
-      const response = await ping() as APIStateModel
+      const response = await getSystemState()
       reachable.value = true
       canReady.value = response.can_ready
-      measuring.value = response.measurement_status.running
+      running.value = response.measurement_status.running
+      measurementStatus.value = response.measurement_status
     } catch(e) {
       reachable.value = false
       canReady.value = false
-      measuring.value = false
+      running.value = false
     }
   }
 
   function registerInterval(timeout_ms: number) {
     if (!window) {
-      throw new Error('useAPIState needs the <window> object')
+      throw new Error('useSystemState needs the <window> object')
     }
 
     intervalID = window.setInterval(async () => checkState(), timeout_ms);
@@ -32,7 +34,7 @@ export function useAPIState() {
 
   function deregisterInterval() {
     if (!window) {
-      throw new Error('useAPIState needs the <window> object')
+      throw new Error('useSystemState needs the <window> object')
     }
 
     if(intervalID !== 0) {
@@ -43,7 +45,8 @@ export function useAPIState() {
   return {
     reachable,
     canReady,
-    measuring,
+    running,
+    measurementStatus,
     checkState,
     registerInterval,
     deregisterInterval

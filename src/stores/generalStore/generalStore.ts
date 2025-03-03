@@ -1,4 +1,4 @@
-import { useAPIState } from '@/utils/useAPIState.ts';
+import { useSystemState } from '@/utils/useSystemState.ts';
 import { defineStore } from 'pinia';
 import {
     computed,
@@ -28,7 +28,7 @@ export const useGeneralStore = defineStore('general', () => {
         return false
     }
 
-    const apiState = useAPIState()
+    const systemState = useSystemState()
 
     /*
     ******************************************************
@@ -96,7 +96,7 @@ export const useGeneralStore = defineStore('general', () => {
         navigationLoader,
         lastFileQuery,
         fileQuery,
-        apiState
+        systemState
     }
 }, {
     persist: true

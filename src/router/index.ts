@@ -83,9 +83,9 @@ router.beforeEach(async (_to, _from, next) => {
 
 router.afterEach(async (_to, _from, _failure) => {
   const store = useGeneralStore()
-  await store.apiState.checkState()
+  await store.systemState.checkState()
 
-  if(!store.apiState.reachable) {
+  if(!store.systemState.reachable) {
     store.setGlobalLoader(false)
     return
   }
@@ -103,9 +103,7 @@ router.afterEach(async (_to, _from, _failure) => {
   }
 
   if(_to.name === 'Measure') {
-    const mStore = useMeasurementStore()
-    await mStore.checkMeasurementStatus()
-    if(!mStore.measurementStatus.running) {
+    if(!store.systemState.running) {
       const hwStore = useHardwareStore()
       await hwStore.checkSTUConnection()
     }
