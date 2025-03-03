@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/api.ts';
-import {startMeasurement, stopMeasurement} from '@/api/requests.ts';
+import {getMeasurementStatus, startMeasurement, stopMeasurement} from '@/api/requests.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
@@ -98,22 +98,28 @@ const currentMin = ref<number | undefined>(undefined)
 const currentMax = ref<number | undefined>(undefined)
 
 // eslint-disable-next-line max-len
-const { loading: startLoading, call: start } = useLoadingHandler(() => startMeasurement({
-  name: null,
-  first: mStore.activeChannels.first
-      ?  mStore.selectedChannels.first : 0,
-  second: mStore.activeChannels.second
-      ?  mStore.selectedChannels.second : 0,
-  third: mStore.activeChannels.third
-      ?  mStore.selectedChannels.third : 0,
-  mac: hwStore.activeSTH?.getMacAddress(),
-  time: mStore.continuous ? null : mStore.acquisitionTime,
-  ift_requested: mStore.IFTRequested,
-  ift_channel: mStore.IFTChannel,
-  ift_window_width: mStore.windowWidth
-}))
+const { loading: startLoading, call: start } = useLoadingHandler(async () => {
+  await startMeasurement({
+    name: null,
+    first: mStore.activeChannels.first
+        ?  mStore.selectedChannels.first : 0,
+    second: mStore.activeChannels.second
+        ?  mStore.selectedChannels.second : 0,
+    third: mStore.activeChannels.third
+        ?  mStore.selectedChannels.third : 0,
+    mac: hwStore.activeSTH?.getMacAddress(),
+    time: mStore.continuous ? null : mStore.acquisitionTime,
+    ift_requested: mStore.IFTRequested,
+    ift_channel: mStore.IFTChannel,
+    ift_window_width: mStore.windowWidth
+  })
+  await mStore.checkMeasurementStatus()
+})
 
-const {loading: stopLoading, call: stop} = useLoadingHandler(() => stopMeasurement())
+const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
+  await stopMeasurement()
+  await mStore.checkMeasurementStatus()
+})
 
 function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
   if (!assignedSensor) return ''
@@ -233,6 +239,7 @@ const datalossMeter = computed<MeterItem[]>(() => [
               <Button
                 v-if="mStore.measurementStatus.running"
                 label="Stop Recording"
+                :loading="stopLoading"
                 severity="danger"
                 class="!px-5"
                 :disabled="!mStore.measurementStatus.running"
@@ -242,6 +249,7 @@ const datalossMeter = computed<MeterItem[]>(() => [
                 v-if="!mStore.measurementStatus.running"
                 fluid
                 label="Start Recording"
+                :loading="startLoading"
                 severity="primary"
                 class="!px-5"
                 :disabled="!canMeasure || mStore.measurementStatus.running"
