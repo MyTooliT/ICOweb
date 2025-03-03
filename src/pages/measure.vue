@@ -30,7 +30,7 @@ import Toast from 'primevue/toast';
 import ToggleSwitch from 'primevue/toggleswitch';
 import { useToast } from 'primevue/usetoast';
 import {
-  computed,
+  computed, onBeforeUnmount,
   ref
 } from 'vue';
 import { useRouter } from 'vue-router';
@@ -157,7 +157,13 @@ const datalossMeter = computed<MeterItem[]>(() => [
   },
 ])
 
-
+onBeforeUnmount(() => {
+  window.setTimeout(() => {
+    if(ws.value) {
+      ws.value.close()
+    }
+  }, 0)
+})
 </script>
 
 <template>
