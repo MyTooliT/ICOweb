@@ -27,7 +27,7 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full absolute bottom-0 left-0 ">
     <div
       v-if="store.apiState.measuring"
       class="w-full text-center

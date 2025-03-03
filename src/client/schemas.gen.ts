@@ -388,16 +388,15 @@ export const $MeasurementStatus = {
             ],
             title: 'Tool Name'
         },
-        tool_mac: {
+        instructions: {
             anyOf: [
                 {
-                    type: 'string'
+                    '$ref': '#/components/schemas/MeasurementInstructions'
                 },
                 {
                     type: 'null'
                 }
-            ],
-            title: 'Tool Mac'
+            ]
         }
     },
     type: 'object',

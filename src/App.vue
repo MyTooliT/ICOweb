@@ -71,14 +71,14 @@ const store = useGeneralStore()
         <div
           v-if="store.globalLoader"
           class="
-            absolute w-full h-full flex
+            absolute w-full [height:calc(100%-39px)] flex
             justify-center items-center z-40 backdrop-blur">
           <ProgressSpinner />
         </div>
-        <div class="w-full overflow-auto h-stretch">
+        <div class="w-full h-full overflow-auto ">
           <router-view />
         </div>
-        <BottomBar class="mt-auto z-50" />
+        <BottomBar />
       </div>
     </div>
     <Toast group="default" />

@@ -97,32 +97,6 @@ function wrapUpdate() {
 const currentMin = ref<number | undefined>(undefined)
 const currentMax = ref<number | undefined>(undefined)
 
-function startStopClickHandler() {
-  if(state.value === 'closed') {
-    if(hwStore.activeSTH?.getMacAddress()) {
-      mStore.resetChartBounds()
-      open()
-      ws.value?.addEventListener('opened', () => {
-        ws.value?.send(JSON.stringify({
-          first: mStore.activeChannels.first
-            ?  mStore.selectedChannels.first : 0,
-          second: mStore.activeChannels.second
-            ?  mStore.selectedChannels.second : 0,
-          third: mStore.activeChannels.third
-            ?  mStore.selectedChannels.third : 0,
-          mac: hwStore.activeSTH?.getMacAddress(),
-          time: mStore.continuous ? null : mStore.acquisitionTime,
-          ift_requested: mStore.IFTRequested,
-          ift_channel: mStore.IFTChannel,
-          ift_window_width: mStore.windowWidth
-        }));
-      })
-    }
-  } else {
-    close()
-  }
-}
-
 // eslint-disable-next-line max-len
 const { loading: startLoading, call: start } = useLoadingHandler(() => startMeasurement({
   name: null,
@@ -181,42 +155,30 @@ const datalossMeter = computed<MeterItem[]>(() => [
 </script>
 
 <template>
-  <div class="flex flex-row">
+  <div class="flex flex-row h-full">
     <DefaultLayout class="w-fill w-stretch">
       <TextBlock
-        heading="Capture Measurement"
-        subheading="Configure measurement settings and capture data."
-        :button="false"
-      />
-      <div class="flex flex-row">
-        <div class="flex flex-col flex-grow gap-3">
-          <StreamingChart
-            class="flex flex-col flex-grow"
-            :data="chartData"
-            :boundaries="{
-              xmin: mStore.chartStartTime,
-              xmax: mStore.chartEndTime,
-              ymin: mStore.chartYMin,
-              ymax: mStore.chartYMax
-            }"
-          />
-          <TextBlock
-            heading="Calculation Settings"
-            :button="false"
-            :border="false"
-            class="!mb-0 !pb-0"
-          />
-          <CustomSlider
-            v-model="maxNumberOfPoints"
-            title="Chart Draw Tick"
-            :min="500"
-            :max="10000"
-            @slider-change="wrapUpdate"
-          />
-        </div>
+        v-if="hwStore.hasSTU && hwStore.activeSTH"
+        heading="Measure "
+        subheading="Capture a measurement from the connected tool"
+        :button="false" />
+      <div
+        v-if="hwStore.hasSTU && hwStore.activeSTH"
+        class="flex flex-row"
+      >
+        <StreamingChart
+          class="flex flex-col flex-grow"
+          :data="chartData"
+          :boundaries="{
+            xmin: mStore.chartStartTime,
+            xmax: mStore.chartEndTime,
+            ymin: mStore.chartYMin,
+            ymax: mStore.chartYMax
+          }"
+        />
         <div class="flex flex-col flex-grow gap-3">
           <NamedInput title="Devices">
-            <InputGroup v-if="hwStore.hasSTU && hwStore.activeSTH">
+            <InputGroup>
               <InputGroupAddon class="flex-grow !text-black">
                 STU: {{ hwStore.activeSTU?.getName() }}
               </InputGroupAddon>
@@ -230,17 +192,12 @@ const datalossMeter = computed<MeterItem[]>(() => [
                 @click="router.push('/')"
               />
             </InputGroup>
-            <Button
-              v-else
-              label="Connect to STH"
-              severity="danger"
-              @click="router.push('/')"
-            />
           </NamedInput>
-          <NamedInput title="Measure">
+          <NamedInput title="Measurement Control">
             <div class="flex flex-row">
               <ToggleSwitch
                 v-model="mStore.continuous"
+                :disabled="mStore.measurementStatus.running"
                 input-id="continuous" />
               <label
                 for="continuous"
@@ -248,18 +205,25 @@ const datalossMeter = computed<MeterItem[]>(() => [
             </div>
             <InputGroup>
               <InputNumber
+                v-if="
+                  (mStore.measurementStatus.running && !mStore.continuous)
+                    || !mStore.measurementStatus.running"
                 v-model="mStore.acquisitionTime"
                 input-id="acqTime"
                 :min="0"
                 :disabled="mStore.continuous"
               />
               <InputGroupAddon
+                v-if="
+                  (mStore.measurementStatus.running && !mStore.continuous)
+                    || !mStore.measurementStatus.running"
                 class="!text-black"
                 :disabled="mStore.continuous"
               >
                 s
               </InputGroupAddon>
               <Button
+                v-if="mStore.measurementStatus.running"
                 label="Connect Stream"
                 severity="success"
                 class="!px-5"
@@ -267,6 +231,7 @@ const datalossMeter = computed<MeterItem[]>(() => [
                 @click="open"
               />
               <Button
+                v-if="mStore.measurementStatus.running"
                 label="Stop Recording"
                 severity="danger"
                 class="!px-5"
@@ -274,6 +239,8 @@ const datalossMeter = computed<MeterItem[]>(() => [
                 @click="stop"
               />
               <Button
+                v-if="!mStore.measurementStatus.running"
+                fluid
                 label="Start Recording"
                 severity="primary"
                 class="!px-5"
@@ -366,12 +333,32 @@ const datalossMeter = computed<MeterItem[]>(() => [
           </NamedInput>
         </div>
       </div>
+      <div
+        v-else
+        class="text-center h-stretch flex justify-center w-full"
+      >
+        <div class="flex flex-col gap-4 w-fit mt-[20%]">
+          <h2 class="text-lg">
+            Nothing to Measure
+          </h2>
+          <h4>
+            There is no running stream. Connect a device to start measuring.
+          </h4>
+          <Button
+            label="Connect a Device"
+            severity="primary"
+            outlined
+            @click="router.push('/')"
+          />
+        </div>
+      </div>
       <ADCDrawer />
     </DefaultLayout>
     <button
+      v-if="hwStore.activeSTH"
       class="
         vertical-writing-lr orientation-mixed rotate-180
-        bg-gray-200 h-full"
+        bg-gray-200 [height:calc(100%-39px)]"
       @click="adcStore.ADCDrawerVisible = true"
     >
       Show ADC Config

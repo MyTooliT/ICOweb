@@ -95,7 +95,7 @@ export type MeasurementStatus = {
     name?: string | null;
     start_time?: string | null;
     tool_name?: string | null;
-    tool_mac?: string | null;
+    instructions?: MeasurementInstructions | null;
 };
 
 /**
