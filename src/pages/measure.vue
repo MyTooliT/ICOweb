@@ -234,7 +234,10 @@ const datalossMeter = computed<MeterItem[]>(() => [
                 severity="success"
                 class="!px-5"
                 :disabled="!mStore.measurementStatus.running"
-                @click="open"
+                @click="() => {
+                  mStore.resetChartBounds();
+                  open();
+                }"
               />
               <Button
                 v-if="mStore.measurementStatus.running"
