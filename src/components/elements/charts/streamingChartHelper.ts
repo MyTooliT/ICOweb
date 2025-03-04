@@ -1,8 +1,8 @@
 /// <reference types="chart.js" />
 
 import {
-  TChannelsActive,
-  TMeasurementDataFrame
+  ActiveChannels,
+  MeasurementDataFrame
 } from '@/stores/measurementStore/measurementStore.ts';
 import { TPoint } from '@/utils/useMeasurementWebSocket.ts';
 import {
@@ -11,11 +11,27 @@ import {
 } from 'chart.js';
 import { Ref } from 'vue';
 
-
+/**
+* Updates the given chart.js chart data structure. This is called at the WS
+* helper's discretion
+* @param rawData Array of measurement frames as provided by the WS
+* @param chartData Vue Ref<> of the chart.js chart data structure to be updated
+* @param activeChannels Which channels of the data stream are active (first, second, third)
+* @param startTime Start time of measurement since Milliseconds since UNIX epoch
+* @param drawIFT Indicates if the IFT value should be drawn
+* @param maxNumberOfPoints Maximum points per channel that should be drawn
+* @param iftValues Optional Vue Ref<> to the array of calculated IFT values
+* @param channelNames Names for the to-be-drawn datasets
+* @param sampleRate Acquisition sample rate of the ADC
+* @param drawTime Timeframe for the chart to display
+* @param minRef Vue Ref<> to the chart's minimum for setting
+* @param maxRef Vue Ref<> to the chart's maximum for setting
+* */
 export function updateChartData(
-  rawData: Array<TMeasurementDataFrame>,
+  rawData: Array<MeasurementDataFrame>,
   chartData: Ref<ChartData<'line'>>,
-  activeChannels: TChannelsActive,
+  activeChannels: ActiveChannels,
+  startTime: number,
   drawIFT: boolean = false,
   maxNumberOfPoints: number = 2000,
   iftValues: Ref<Array<TPoint>> | undefined = undefined,
@@ -30,47 +46,44 @@ export function updateChartData(
   minRef: Ref<number | undefined>,
   maxRef: Ref<number | undefined>
 ): void {
-
-  type TYValues = {
-    first: number[],
-    second: number[],
-    third: number[]
-  }
+  // Arrays to hold the visible subset of each dataset and timeset
   const x_values_visible: number[] = []
-  const y_values_visible: TYValues = {
-    first: [],
-    second: [],
-    third: []
-  }
+  const firstChannelSubset: number[] = []
+  const secondChannelSubset: number[] = []
+  const thirdChannelSubset: number[] = []
 
+  // Total amount of values to be expected within the chart display range
+  // To calculate the interval in which the subset is to be drawn in
   const totalExpectedValues = sampleRate * drawTime
   const interval = Math.ceil(totalExpectedValues / maxNumberOfPoints)
 
-  const startTime = rawData[0] ? rawData[0].timestamp : 0
-
+  // Calculate if the values have overrun the chart draw range
+  // And move the starting index of the subset function like a sliding window
   const overshootInIntervalUnits = (rawData.length - totalExpectedValues) / interval
   const startIndex = rawData.length > totalExpectedValues
     ? Math.floor(overshootInIntervalUnits) * interval
     : 0
 
-
+  // Take a subset of the rawData every <interval> interval to display, starting
+  // at the calculated startIndex
   for(let i = startIndex; i < rawData.length; i += interval) {
     x_values_visible.push(rawData[i].timestamp - startTime)
     const values: number[] = []
 
     if(rawData[i].first) {
-      y_values_visible.first.push(<number>rawData[i].first)
+      firstChannelSubset.push(<number>rawData[i].first)
       values.push(<number>rawData[i].first)
     }
     if(rawData[i].second) {
-      y_values_visible.second.push(<number>rawData[i].second)
+      secondChannelSubset.push(<number>rawData[i].second)
       values.push(<number>rawData[i].second)
     }
     if(rawData[i].third) {
-      y_values_visible.third.push(<number>rawData[i].third)
+      thirdChannelSubset.push(<number>rawData[i].third)
       values.push(<number>rawData[i].third)
     }
 
+    // Set the chart's max and min value references if needed
     if(minRef.value) {
       minRef.value = Math.min(...values, minRef.value)
     } else {
@@ -86,14 +99,14 @@ export function updateChartData(
   const datasets: Array<ChartDataSets> = []
   datasets.push({
     label: channelNames.first ?? 'First Channel',
-    data: y_values_visible.first,
+    data: firstChannelSubset,
     pointRadius: 1,
     borderColor: 'black',
   })
   if(activeChannels.second) {
     datasets.push({
       label: channelNames.second ?? 'Second Channel',
-      data: y_values_visible.second,
+      data: secondChannelSubset,
       pointRadius: 1,
       borderColor: 'red'
     })
@@ -101,7 +114,7 @@ export function updateChartData(
   if(activeChannels.third) {
     datasets.push({
       label: channelNames.third ?? 'Third Channel',
-      data: y_values_visible.third,
+      data: thirdChannelSubset,
       pointRadius: 1,
       borderColor: 'green'
     })

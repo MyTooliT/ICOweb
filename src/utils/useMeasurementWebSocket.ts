@@ -1,5 +1,5 @@
 import {
-  TMeasurementDataFrame,
+  MeasurementDataFrame,
   TWebSocketState
 } from '@/stores/measurementStore/measurementStore.ts';
 import {
@@ -21,13 +21,13 @@ export function useMeasurementWebsocket(
   close: () => void,
   ws: Ref<WebSocket | undefined>,
   state: Ref<TWebSocketState>,
-  storage: Ref<Array<TMeasurementDataFrame>>,
+  storage: Ref<Array<MeasurementDataFrame>>,
   ift_storage: Ref<Array<TPoint>>,
   dataloss: Ref<number | undefined>
 } {
   const ws = ref<WebSocket | undefined>(undefined)
   const state = ref<TWebSocketState>('closed')
-  const storage = ref<Array<TMeasurementDataFrame>>([])
+  const storage = ref<Array<MeasurementDataFrame>>([])
   const ift_storage : Ref<Array<TPoint>> = ref([])
   const dataloss: Ref<number | undefined> = ref(undefined)
   let intervalId: number | undefined = undefined
@@ -61,8 +61,8 @@ export function useMeasurementWebsocket(
 
     ws.value.onmessage = (event: any) => {
       try {
-        const parsed = JSON.parse(event.data) as Array<TMeasurementDataFrame>
-        parsed.forEach((entry: TMeasurementDataFrame) => {
+        const parsed = JSON.parse(event.data) as Array<MeasurementDataFrame>
+        parsed.forEach((entry: MeasurementDataFrame) => {
           if(entry.dataloss) {
             dataloss.value = entry.dataloss
           }

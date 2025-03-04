@@ -10,7 +10,7 @@ import {
   ref
 } from 'vue';
 
-export type TMeasurementDataFrame = {
+export type MeasurementDataFrame = {
   first: number | null,
   second: number | null,
   third: number | null,
@@ -28,7 +28,7 @@ export type TChannelMap = {
   [K in typeof measurementChannels[number]]: number
 }
 
-export type TChannelsActive = {
+export type ActiveChannels = {
   first: boolean,
   second: boolean,
   third: boolean
@@ -78,7 +78,7 @@ export const useMeasurementStore = defineStore('measurement', () => {
     second: 0,
     third: 0
   })
-  const activeChannels = ref<TChannelsActive>({
+  const activeChannels = ref<ActiveChannels>({
     first: true,
     second: false,
     third: false
