@@ -80,19 +80,27 @@ function wrapUpdate() {
     currentMin,
     currentMax
   )
-  if(storage.value.length === 0) {return}
-  const startStamp = storage.value[0].timestamp
-  const endStamp = storage.value[storage.value.length - 1].timestamp
-  const length = endStamp - startStamp
+
+  if(storage.value.length === 0) { return }
+
+  const streamStartStamp = storage.value[0].timestamp
+  const streamEndStamp = storage.value[storage.value.length - 1].timestamp
+  const length = streamEndStamp - streamStartStamp
+
+  if(length > mStore.chartMaximumDisplayedTime) {
+    mStore.updateChartStartTime(streamEndStamp - 10)
+    mStore.updateChartEndTime(streamEndStamp)
+  } else {
+    mStore.updateChartStartTime(streamStartStamp)
+    mStore.updateChartEndTime(streamStartStamp + 10)
+  }
+
+
   if(currentMin.value) {
     mStore.updateChartYMin(currentMin.value)
   }
   if(currentMax.value) {
     mStore.updateChartYMax(currentMax.value)
-  }
-  if(length > mStore.chartMaximumDisplayedTime) {
-    mStore.updateChartStartTime(length - 10)
-    mStore.updateChartEndTime(length)
   }
 }
 
@@ -120,6 +128,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await stopMeasurement()
+  close()
   await gStore.systemState.checkState()
 })
 
@@ -159,13 +168,7 @@ const datalossMeter = computed<MeterItem[]>(() => [
   },
 ])
 
-onBeforeUnmount(() => {
-  window.setTimeout(() => {
-    if(ws.value) {
-      ws.value.close()
-    }
-  }, 0)
-})
+onBeforeUnmount(() => window.setTimeout(close, 0))
 </script>
 
 <template>

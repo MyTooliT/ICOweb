@@ -31,7 +31,6 @@ export function updateChartData(
   rawData: Array<MeasurementDataFrame>,
   chartData: Ref<ChartData<'line'>>,
   activeChannels: ActiveChannels,
-  startTime: number,
   drawIFT: boolean = false,
   maxNumberOfPoints: number = 2000,
   iftValues: Ref<Array<TPoint>> | undefined = undefined,
@@ -55,7 +54,7 @@ export function updateChartData(
   // Total amount of values to be expected within the chart display range
   // To calculate the interval in which the subset is to be drawn in
   const totalExpectedValues = sampleRate * drawTime
-  const interval = Math.ceil(totalExpectedValues / maxNumberOfPoints)
+  const interval = Math.floor(totalExpectedValues / maxNumberOfPoints)
 
   // Calculate if the values have overrun the chart draw range
   // And move the starting index of the subset function like a sliding window
@@ -67,7 +66,7 @@ export function updateChartData(
   // Take a subset of the rawData every <interval> interval to display, starting
   // at the calculated startIndex
   for(let i = startIndex; i < rawData.length; i += interval) {
-    x_values_visible.push(rawData[i].timestamp - startTime)
+    x_values_visible.push(rawData[i].timestamp)
     const values: number[] = []
 
     if(rawData[i].first) {

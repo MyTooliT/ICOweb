@@ -55,7 +55,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
           stepSize: 1
         },
         title: {
-          text: 'Seconds passed',
+          text: 'Seconds since measurement start',
           align: 'center',
           display: true
         }
