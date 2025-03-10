@@ -240,15 +240,22 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 s
               </InputGroupAddon>
               <Button
-                v-if="gStore.systemState.running"
-                label="Connect Stream"
+                v-if="gStore.systemState.running && state !== 'open'"
+                label="Show Stream"
                 severity="success"
                 class="!px-5"
-                :disabled="!gStore.systemState.running"
                 @click="() => {
                   mStore.resetChartBounds();
                   open();
                 }"
+              />
+              <Button
+                v-if="gStore.systemState.running && state === 'open'"
+                label="Hide Stream"
+                severity="primary"
+                outlined
+                class="!px-5"
+                @click="close"
               />
               <Button
                 v-if="gStore.systemState.running"

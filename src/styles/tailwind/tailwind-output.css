@@ -1222,10 +1222,6 @@ video {
   height: calc(100% - 39px);
 }
 
-.\[max-width\:10ch\] {
-  max-width: 10ch;
-}
-
 .hover\:border-0:hover {
   border-width: 0px;
 }
