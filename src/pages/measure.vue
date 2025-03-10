@@ -23,12 +23,9 @@ import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputNumber from 'primevue/inputnumber';
 import MeterGroup from 'primevue/metergroup';
 import Select from 'primevue/select';
 import Toast from 'primevue/toast';
-import ToggleSwitch from 'primevue/toggleswitch';
-import { useToast } from 'primevue/usetoast';
 import {
   computed, onBeforeUnmount,
   ref
@@ -36,13 +33,13 @@ import {
 import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
+import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
   datasets: []
 })
-const toast = useToast()
 const router = useRouter()
 const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
@@ -53,7 +50,6 @@ const {
   close,
   state,
   storage,
-  ws,
   ift_storage,
   dataloss
 } = useMeasurementWebsocket(
@@ -140,19 +136,6 @@ function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
 // Maximum drawable points per channel for graph
 const maxNumberOfPoints = ref<number>(2000)
 
-// Floating calculations like floatingAverage or IFTValue use this window
-
-// Disables measuring if not all requirements are met
-const canMeasure = computed<boolean>(() => {
-  return (
-    hwStore.hasSTU &&
-    hwStore.hasSTH &&
-    hwStore.hasHolder &&
-    (mStore.acquisitionTime > 0 || mStore.continuous) &&
-    mStore.selectedChannels.first > 0
-  )
-})
-
 const datalossMeter = computed<MeterItem[]>(() => [
   {
     label: 'OK',
@@ -210,74 +193,18 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               />
             </InputGroup>
           </NamedInput>
-          <NamedInput title="Measurement Control">
-            <div class="flex flex-row">
-              <ToggleSwitch
-                v-model="mStore.continuous"
-                :disabled="gStore.systemState.running"
-                input-id="continuous" />
-              <label
-                for="continuous"
-                class="ml-3">Run&nbsp;continuously</label>
-            </div>
-            <InputGroup>
-              <InputNumber
-                v-if="
-                  (gStore.systemState.running && !mStore.continuous)
-                    || !gStore.systemState.running"
-                v-model="mStore.acquisitionTime"
-                input-id="acqTime"
-                :min="0"
-                :disabled="mStore.continuous"
-              />
-              <InputGroupAddon
-                v-if="
-                  (gStore.systemState.running && !mStore.continuous)
-                    || !gStore.systemState.running"
-                class="!text-black"
-                :disabled="mStore.continuous"
-              >
-                s
-              </InputGroupAddon>
-              <Button
-                v-if="gStore.systemState.running && state !== 'open'"
-                label="Show Stream"
-                severity="success"
-                class="!px-5"
-                @click="() => {
-                  mStore.resetChartBounds();
-                  open();
-                }"
-              />
-              <Button
-                v-if="gStore.systemState.running && state === 'open'"
-                label="Hide Stream"
-                severity="primary"
-                outlined
-                class="!px-5"
-                @click="close"
-              />
-              <Button
-                v-if="gStore.systemState.running"
-                label="Stop Recording"
-                :loading="stopLoading"
-                severity="danger"
-                class="!px-5"
-                :disabled="!gStore.systemState.running"
-                @click="stop"
-              />
-              <Button
-                v-if="!gStore.systemState.running"
-                fluid
-                label="Start Recording"
-                :loading="startLoading"
-                severity="primary"
-                class="!px-5"
-                :disabled="!canMeasure || gStore.systemState.running"
-                @click="start"
-              />
-            </InputGroup>
-          </NamedInput>
+          <ChartStreamControls
+            :state="state"
+            :start-loading="startLoading"
+            :stop-loading="stopLoading"
+            @start="start"
+            @stop="stop"
+            @show="() => {
+              mStore.resetChartBounds();
+              open()
+            }"
+            @hide="close"
+          />
           <div class="flex flex-col">
             <NamedInput title="Measurement Channels">
               <InputGroup

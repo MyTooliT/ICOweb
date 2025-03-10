@@ -1,0 +1,103 @@
+<script setup lang="ts">
+import {computed} from 'vue'
+import InputNumber from 'primevue/inputnumber';
+import NamedInput from '@/components/elements/forms/NamedInput.vue';
+import ToggleSwitch from 'primevue/toggleswitch';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import Button from 'primevue/button';
+import {TWebSocketState, useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
+import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
+import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
+
+const mStore = useMeasurementStore()
+const gStore = useGeneralStore()
+const hwStore = useHardwareStore()
+
+defineProps<{
+  state: TWebSocketState,
+  startLoading: boolean,
+  stopLoading: boolean
+}>()
+
+const emit = defineEmits(['start', 'stop', 'show', 'hide'])
+
+// Disables measuring if not all requirements are met
+const canMeasure = computed<boolean>(() => {
+  return (
+      hwStore.hasSTU &&
+      hwStore.hasSTH &&
+      hwStore.hasHolder &&
+      (mStore.acquisitionTime > 0 || mStore.continuous) &&
+      mStore.selectedChannels.first > 0
+  )
+})
+</script>
+
+<template>
+  <NamedInput title="Measurement Control">
+    <div class="flex flex-row">
+      <ToggleSwitch
+        v-model="mStore.continuous"
+        :disabled="gStore.systemState.running"
+        input-id="continuous" />
+      <label
+        for="continuous"
+        class="ml-3">Run&nbsp;continuously</label>
+    </div>
+    <InputGroup>
+      <InputNumber
+        v-if="
+          (gStore.systemState.running && !mStore.continuous)
+            || !gStore.systemState.running"
+        v-model="mStore.acquisitionTime"
+        input-id="acqTime"
+        :min="0"
+        :disabled="mStore.continuous"
+      />
+      <InputGroupAddon
+        v-if="
+          (gStore.systemState.running && !mStore.continuous)
+            || !gStore.systemState.running"
+        class="!text-black"
+        :disabled="mStore.continuous"
+      >
+        s
+      </InputGroupAddon>
+      <Button
+        v-if="gStore.systemState.running && state !== 'open'"
+        label="Show Stream"
+        severity="success"
+        class="!px-5"
+        @click="emit('show')"
+      />
+      <Button
+        v-if="gStore.systemState.running && state === 'open'"
+        label="Hide Stream"
+        severity="primary"
+        outlined
+        class="!px-5"
+        @click="emit('hide')"
+      />
+      <Button
+        v-if="gStore.systemState.running"
+        label="Stop Recording"
+        :loading="stopLoading"
+        severity="danger"
+        class="!px-5"
+        :disabled="!gStore.systemState.running"
+        @click="emit('stop')"
+      />
+      <Button
+        v-if="!gStore.systemState.running"
+        fluid
+        label="Start Recording"
+        :loading="startLoading"
+        severity="primary"
+        class="!px-5"
+        :disabled="!canMeasure || gStore.systemState.running"
+        @click="emit('start')"
+      />
+    </InputGroup>
+  </NamedInput>
+</template>
