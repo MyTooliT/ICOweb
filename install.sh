@@ -6,12 +6,23 @@ SERVICE_NAME="icoclient"
 INSTALL_DIR="/etc/icoclient"
 SERVICE_PATH="/etc/systemd/system"
 NODE_VERSION="18.19.0"
+FORCE_REINSTALL=false
 
-echo "Stopping and removing old files..."
+# Check for --force flag
+if [[ "$1" == "--force" ]]; then
+  FORCE_REINSTALL=true
+  echo "Forcing reinstallation: Deleting existing installation..."
+fi
+
+echo "Stopping service..."
 sudo systemctl stop $SERVICE_NAME.service || true
-sudo rm -rf $INSTALL_DIR
 
-echo "Creating installation directory..."
+# Handle force reinstallation
+if [ "$FORCE_REINSTALL" = true ]; then
+  sudo rm -rf $INSTALL_DIR
+fi
+
+echo "Creating installation directory if not exists..."
 sudo mkdir -p $INSTALL_DIR
 sudo chown $USER:$USER $INSTALL_DIR
 
@@ -23,25 +34,32 @@ for ITEM in "${FILES_AND_DIRS[@]}"; do
 done
 cd $INSTALL_DIR
 
-echo "Setting up Node.js virtual environment with nodeenv..."
-if ! command -v nodeenv &> /dev/null; then
-  echo "Installing python venv..."
-  python3 -m venv venv
-  source venv/bin/activate
-  echo "Installing nodeenv..."
-  pip install nodeenv
+echo "Checking for existing Node.js virtual environment..."
+if [ "$FORCE_REINSTALL" = true ] || [ ! -d "env" ]; then
+  echo "Setting up Node.js virtual environment with nodeenv..."
+  
+  if ! command -v nodeenv &> /dev/null; then
+    echo "Installing python venv..."
+    python3 -m venv venv
+    source venv/bin/activate
+    echo "Installing nodeenv..."
+    pip install nodeenv
+  fi
+
+  # Remove existing env if forcing reinstallation
+  if [ "$FORCE_REINSTALL" = true ]; then
+    rm -rf env
+  fi
+
+  nodeenv --node=$NODE_VERSION env
 fi
 
-nodeenv --node=$NODE_VERSION env
 source env/bin/activate
 
 echo "Installing Node.js dependencies..."
 npm install
 
-echo "Deactivating virtual environment..."
-deactivate
-
-echo "Creating systemd service..."
+echo "Ensuring systemd service exists..."
 sudo bash -c "cat << EOF > $SERVICE_PATH/$SERVICE_NAME.service
 [Unit]
 Description=ICOclient Node.js Service
@@ -59,11 +77,13 @@ Environment=NODE_ENV=production
 WantedBy=multi-user.target
 EOF"
 
-echo "Reloading systemd and starting service..."
+echo "Reloading systemd and restarting service..."
 sudo systemctl daemon-reload
 sudo systemctl enable $SERVICE_NAME.service
 sudo systemctl start $SERVICE_NAME.service
 
 echo "Checking service status..."
 sudo systemctl status $SERVICE_NAME.service
+
+
 
