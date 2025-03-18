@@ -84,6 +84,14 @@ const hwStore = useHardwareStore()
               fluid
             />
           </div>
+          <div
+            v-if="ADCStore.samplingRate"
+            class="mb-1"
+          >
+            <h4 class="font-semibold">
+              Resulting sample rate: {{ Math.round(ADCStore.samplingRate) }}Hz
+            </h4>
+          </div>
           <div>
             <h4 class="mb-1">
               Reference Voltage

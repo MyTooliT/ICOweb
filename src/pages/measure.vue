@@ -117,7 +117,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     time: mStore.continuous ? null : mStore.acquisitionTime,
     ift_requested: mStore.IFTRequested,
     ift_channel: mStore.IFTChannel,
-    ift_window_width: mStore.windowWidth
+    ift_window_width: mStore.windowWidth,
+    adc: adcStore.values
   })
   await gStore.systemState.checkState()
 })

@@ -15,6 +15,7 @@ import {
   createRouter,
   createWebHashHistory
 } from 'vue-router';
+import {useADCStore} from '@/stores/ADCStore/ADCStore.ts';
 
 // Define the routes
 const routes = [
@@ -85,11 +86,6 @@ router.afterEach(async (_to, _from, _failure) => {
   const store = useGeneralStore()
   await store.systemState.checkState()
 
-  if(!store.systemState.reachable) {
-    store.setGlobalLoader(false)
-    return
-  }
-
   if(_to.name === 'Home') {
     const hwStore = useHardwareStore()
     if(hwStore.activeSTU) {
@@ -106,6 +102,13 @@ router.afterEach(async (_to, _from, _failure) => {
     if(!store.systemState.running) {
       const hwStore = useHardwareStore()
       await hwStore.checkSTUConnection()
+
+      if(hwStore.activeSTH) {
+        const adcStore = useADCStore()
+        try {
+          await adcStore.fetchADCValues(hwStore.activeSTH?.getMacAddress())
+        } catch (e) { console.log(e) }
+      }
     }
   }
 

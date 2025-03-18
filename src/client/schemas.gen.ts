@@ -324,10 +324,20 @@ export const $MeasurementInstructions = {
         ift_window_width: {
             type: 'integer',
             title: 'Ift Window Width'
+        },
+        adc: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ADCValues'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
-    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width'],
+    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc'],
     title: 'MeasurementInstructions'
 } as const;
 

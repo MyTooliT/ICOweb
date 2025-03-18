@@ -51,7 +51,7 @@ export const prescaler = {
 export const useADCStore = defineStore('adc', () => {
 
   // Value for showing / hiding ADC drawer on measurement page
-  const ADCDrawerVisible = ref<boolean>(true)
+  const ADCDrawerVisible = ref<boolean>(false)
 
   // Values
   const values = ref<ADCValues>({
@@ -79,12 +79,27 @@ export const useADCStore = defineStore('adc', () => {
     loading.value = false
   }
 
+  const samplingRate = computed<number | undefind>(() => {
+    if (
+        !values.value.prescaler ||
+        !values.value.oversampling_rate ||
+        !values.value.acquisition_time
+    ) { return undefined }
+    // https://mytoolit.github.io/Documentation/#sampling-rate
+    return 38400000 / (
+        (values.value.prescaler + 1) *
+        (values.value.acquisition_time + 13) *
+        values.value.oversampling_rate
+    )
+  })
+
   return {
     ADCDrawerVisible,
     values,
     loading,
     fetchADCValues,
-    hasFetched
+    hasFetched,
+    samplingRate
   }
 }, {
   persist: true

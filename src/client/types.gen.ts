@@ -82,6 +82,7 @@ export type MeasurementInstructions = {
     ift_requested: boolean;
     ift_channel: string;
     ift_window_width: number;
+    adc: ADCValues | null;
 };
 
 export type MeasurementStatus = {
@@ -188,7 +189,7 @@ export type WriteAdcApiV1SthWriteAdcPutData = {
 
 export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
 
-export type PingApiV1StateGetResponse = SystemStateModel;
+export type StateApiV1StateGetResponse = SystemStateModel;
 
 export type ResetCanApiV1ResetCanPutResponse = unknown;
 
