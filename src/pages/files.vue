@@ -17,11 +17,10 @@ import DataTable from 'primevue/datatable';
 import InputGroup from 'primevue/inputgroup';
 import MeterGroup from 'primevue/metergroup';
 import {
-  computed,
-  onMounted,
-  ref
+  computed
 } from 'vue';
 import { useRouter } from 'vue-router';
+import {useDisable} from '@/utils/useDisable.ts';
 
 
 const router = useRouter();
@@ -103,6 +102,7 @@ const meterItems = computed<MeterItem[]>(() => {
           <template #body="{ data }: { data: MeasurementFileDetails }">
             <div class="flex flex-row gap-2">
               <Button
+                v-if="useDisable().pageEnabled('Analyze')"
                 icon="pi pi-search-plus"
                 as="a"
                 size="small"

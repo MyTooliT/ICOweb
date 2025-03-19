@@ -2,12 +2,13 @@
 import logo from '@/assets/img/ift_logo.jpg';
 // eslint-disable-next-line max-len
 import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue';
-// eslint-disable-next-line max-len
 import BottomBar from '@/components/elements/misc/BottomBar.vue';
 import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import ProgressSpinner from 'primevue/progressspinner';
 import Toast from 'primevue/toast';
+// eslint-disable-next-line max-len
+import NavigationButtons from '@/components/elements/controls/NavigationButtons.vue';
 
 const store = useGeneralStore()
 </script>
@@ -16,56 +17,19 @@ const store = useGeneralStore()
   <ThemeProvider>
     <div class="flex flex-row h-dvh w-dvw bg-surface overflow-hidden">
       <nav class="bg-surface-container flex flex-col z-50">
-        <RouterLinkButton
-          name="Home"
-          to="/">
-          <span
-            class="pi pi-wrench"
-            style="font-size: 1.5em;" />
-          Devices
-        </RouterLinkButton>
-        <RouterLinkButton
-          name="Measure"
-          to="/measure">
-          <span
-            class="pi pi-chart-bar"
-            style="font-size: 1.5em;" />
-          Measure
-        </RouterLinkButton>
-        <RouterLinkButton
-          name="Files"
-          to="/files">
-          <span
-            class="pi pi-folder"
-            style="font-size: 1.5em;" />
-          Files
-        </RouterLinkButton>
-        <RouterLinkButton
-          name="Analyze"
-          :to="`/analyze${store.fileQuery }`">
-          <span
-            class="pi pi-search-plus"
-            style="font-size: 1.5em;" />
-          Analyze
-        </RouterLinkButton>
-        <RouterLinkButton
-          name="Config"
-          to="/config/sensors">
-          <span
-            class="pi pi-cog"
-            style="font-size: 1.5em;" />
-          Config
-        </RouterLinkButton>
-        <RouterLinkButton
-          name="Help"
-          to="/help"
-          class="mt-auto">
-          <img
-            :src="logo"
-            alt="IFT Logo"
-            class="w-full max-w-16 mx-auto"
+        <NavigationButtons />
+        <div class="mt-auto">
+          <RouterLinkButton
+            name="Help"
+            to="/help"
           >
-        </RouterLinkButton>
+            <img
+              :src="logo"
+              alt="IFT Logo"
+              class="w-full max-w-16 mx-auto"
+            >
+          </RouterLinkButton>
+        </div>
       </nav>
       <div class="flex flex-col w-full relative">
         <div
