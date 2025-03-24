@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { resetCAN } from '@/api/requests.ts';
+import { resetCAN } from '@/api/icoapi.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';

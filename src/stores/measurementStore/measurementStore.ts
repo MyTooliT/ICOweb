@@ -1,4 +1,4 @@
-import {getMeasurementFiles} from '@/api/requests.ts';
+import {getMeasurementFiles} from '@/api/icoapi.ts';
 import {
   DiskCapacity,
   MeasurementFileDetails,

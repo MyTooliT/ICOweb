@@ -1,4 +1,4 @@
-import { getSystemState } from '@/api/requests';
+import { getSystemState } from '@/api/icoapi.ts';
 import { MeasurementStatus } from '@/client';
 import { ref } from 'vue';
 

@@ -1,4 +1,4 @@
-import { getADCValues } from '@/api/requests.ts';
+import { getADCValues } from '@/api/icoapi.ts';
 import { ADCValues } from '@/client';
 import { defineStore } from 'pinia';
 import {
@@ -79,7 +79,7 @@ export const useADCStore = defineStore('adc', () => {
     loading.value = false
   }
 
-  const samplingRate = computed<number | undefind>(() => {
+  const samplingRate = computed<number | undefined>(() => {
     if (
         !values.value.prescaler ||
         !values.value.oversampling_rate ||

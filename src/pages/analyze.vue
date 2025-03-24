@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getAPILink } from '@/api/api.ts';
+import { getAPILink } from '@/api/icoapi.ts';
 import StaticChart from '@/components/elements/charts/StaticChart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';

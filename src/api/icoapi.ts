@@ -9,12 +9,23 @@ import {
   ControlResponse,
   MeasurementInstructions, MeasurementStatus, SystemStateModel
 } from '@/client';
-import {
+import { useAPI } from './api.ts';
+
+export function getAPILink(): string {
+  const protocol = import.meta.env.VITE_API_PROTOCOL;
+  const hostname = import.meta.env.VITE_API_HOSTNAME;
+  const port = import.meta.env.VITE_API_PORT;
+  const version = import.meta.env.VITE_API_VERSION;
+
+  return `${protocol}://${hostname}:${port}/api/${version}`
+}
+
+const {
   del,
   get,
   post,
   put
-} from './api.ts';
+} = useAPI(getAPILink())
 
 export async function delay(): Promise<any> {
   return new Promise((resolve, reject) => {

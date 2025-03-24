@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getAPILink } from '@/api/api.ts';
+import { getAPILink } from '@/api/icoapi.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';

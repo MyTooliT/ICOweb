@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { writeADCValues } from '@/api/requests.ts';
+import { writeADCValues } from '@/api/icoapi.ts';
 import {
   useADCStore,
   referenceVoltageOptions,

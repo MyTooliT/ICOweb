@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
-import { getAPILink } from '@/api/api.ts';
-import { deleteMeasurementFile } from '@/api/requests.ts';
+import { getAPILink } from '@/api/icoapi.ts';
+import { deleteMeasurementFile } from '@/api/icoapi.ts';
 import { MeasurementFileDetails } from '@/client';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
@@ -101,6 +101,14 @@ const meterItems = computed<MeterItem[]>(() => {
         >
           <template #body="{ data }: { data: MeasurementFileDetails }">
             <div class="flex flex-row gap-2">
+              <Button
+                label="Cloud Upload"
+                icon="pi pi-cloud-upload"
+                size="small"
+                rounded
+                aria-label="Upload to Cloud"
+                @click="() => {}"
+              />
               <Button
                 v-if="useDisable().pageEnabled('Analyze')"
                 icon="pi pi-search-plus"

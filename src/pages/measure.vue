@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getAPILink } from '@/api/api.ts';
-import {startMeasurement, stopMeasurement} from '@/api/requests.ts';
+import { getAPILink } from '@/api/icoapi.ts';
+import {startMeasurement, stopMeasurement} from '@/api/icoapi.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';

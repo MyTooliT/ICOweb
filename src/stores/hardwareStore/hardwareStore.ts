@@ -1,7 +1,7 @@
 import {
   getSTHDevicesMeta,
   getSTUDevices
-} from '@/api/requests.ts';
+} from '@/api/icoapi.ts';
 import {
   HolderConfig,
   TAssignedSensor

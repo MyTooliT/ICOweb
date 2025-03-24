@@ -2,7 +2,7 @@ import {
   connectSTHDevice,
   disconnectSTHDevice,
   renameSTHDevice
-} from '@/api/requests.ts';
+} from '@/api/icoapi.ts';
 import {
   Device,
   TDeviceConnectionStatus,
