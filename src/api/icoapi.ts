@@ -7,7 +7,10 @@ import {
   STHRenameResponseModel,
   STUDeviceResponseModel,
   ControlResponse,
-  MeasurementInstructions, MeasurementStatus, SystemStateModel
+  MeasurementInstructions,
+  MeasurementStatus,
+  SystemStateModel,
+  TridentBucketObject
 } from '@/client';
 import { useAPI } from './api.ts';
 
@@ -171,6 +174,30 @@ export async function startMeasurement(instructions: MeasurementInstructions): P
 export async function stopMeasurement(): Promise<ControlResponse> {
   return new Promise((resolve, reject) => {
     post<undefined, ControlResponse>('measurement/stop', undefined)
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function uploadFile(filename: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<{name: string}, undefined>('cloud/upload', {name: filename})
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function refreshTridentAuth(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<undefined, undefined>('cloud/authenticate', undefined)
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function getCloudFiles(): Promise<Array<TridentBucketObject>> {
+  return new Promise((resolve, reject) => {
+    get<Array<TridentBucketObject>>('cloud')
         .then(data => resolve(data))
         .catch(reject)
   })

@@ -31,6 +31,10 @@ export type Body_stu_reset_api_v1_stu_reset_put = {
     name: string;
 };
 
+export type Body_upload_file_api_v1_cloud_upload_post = {
+    filename: string;
+};
+
 export type Body_write_adc_api_v1_sth_write_adc_put = {
     mac: string;
     config: ADCValues;
@@ -56,6 +60,11 @@ export type DiskCapacity = {
     available: number | null;
 };
 
+export type FileCloudDetails = {
+    is_uploaded: boolean;
+    upload_timestamp: string | null;
+};
+
 export type FileListResponseModel = {
     capacity: DiskCapacity;
     files: Array<MeasurementFileDetails>;
@@ -70,6 +79,7 @@ export type MeasurementFileDetails = {
     name: string;
     created: string;
     size: number;
+    cloud: FileCloudDetails;
 };
 
 export type MeasurementInstructions = {
@@ -127,6 +137,15 @@ export type SystemStateModel = {
     can_ready: boolean;
     disk_capacity: DiskCapacity;
     measurement_status: MeasurementStatus;
+    cloud_status: boolean;
+};
+
+export type TridentBucketObject = {
+    Key: string;
+    LastModified: string;
+    ETag: string;
+    Size: number;
+    StorageClass: string;
 };
 
 export type ValidationError = {
@@ -218,6 +237,16 @@ export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
 };
 
 export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = unknown;
+
+export type UploadFileApiV1CloudUploadPostData = {
+    requestBody: Body_upload_file_api_v1_cloud_upload_post;
+};
+
+export type UploadFileApiV1CloudUploadPostResponse = unknown;
+
+export type AuthenticateApiV1CloudAuthenticatePostResponse = unknown;
+
+export type GetCloudFilesApiV1CloudGetResponse = Array<TridentBucketObject>;
 
 export type StartMeasurementApiV1MeasurementStartPostData = {
     requestBody: MeasurementInstructions;
@@ -529,6 +558,41 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/cloud/upload': {
+        post: {
+            req: UploadFileApiV1CloudUploadPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/cloud/authenticate': {
+        post: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+            };
+        };
+    };
+    '/api/v1/cloud': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: Array<TridentBucketObject>;
             };
         };
     };

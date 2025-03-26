@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
-import { getAPILink } from '@/api/icoapi.ts';
+import {getAPILink, getCloudFiles, refreshTridentAuth, uploadFile} from '@/api/icoapi.ts';
 import { deleteMeasurementFile } from '@/api/icoapi.ts';
 import { MeasurementFileDetails } from '@/client';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
@@ -15,23 +15,23 @@ import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 import MeterGroup from 'primevue/metergroup';
 import {
-  computed
+  computed, ref
 } from 'vue';
 import { useRouter } from 'vue-router';
 import {useDisable} from '@/utils/useDisable.ts';
 
-
+const { pageEnabled, featureEnabled } = useDisable()
 const router = useRouter();
 const mStore = useMeasurementStore()
 
-const {
-  loading: filesLoading, call: loadFiles 
-} = useLoadingHandler(mStore.getFiles)
-const { 
-  loading: deletionLoading, call: deleteFile 
-} = useLoadingHandler(deleteMeasurementFile)
+const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
+const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteMeasurementFile)
+const { loading: authLoading, call: refreshAuth } = useLoadingHandler(refreshTridentAuth)
+const { loading: uploadLoading, call: upload } = useLoadingHandler(uploadFile)
+const uploadedFile = ref<string>('')
 
 const meterItems = computed<MeterItem[]>(() => {
   if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
@@ -63,11 +63,34 @@ const meterItems = computed<MeterItem[]>(() => {
       @button-click="loadFiles"
     />
     <div class="flex flex-col gap-3">
-      <NamedInput title="Drive Capacity">
-        <InputGroup>
-          <MeterGroup :value="meterItems" />
-        </InputGroup>
-      </NamedInput>
+      <div class="flex flex-row gap-3 flex-wrap">
+        <NamedInput title="Drive Capacity">
+          <InputGroup>
+            <MeterGroup :value="meterItems" />
+          </InputGroup>
+        </NamedInput>
+        <NamedInput
+          v-if="featureEnabled('Cloud')"
+          title="IFT Cloud Connection"
+          class="ml-auto"
+        >
+          <InputGroup>
+            <InputGroupAddon>
+              Connected
+            </InputGroupAddon>
+            <Button
+              label="Refresh"
+              icon="pi pi-sync"
+              outlined
+              :loading="authLoading"
+              @click="async () => {
+                await refreshAuth()
+                await getCloudFiles()
+              }"
+            />
+          </InputGroup>
+        </NamedInput>
+      </div>
       <DataTable
         v-if="mStore.measurementFiles.length > 0"
         :value="mStore.measurementFiles"
@@ -102,15 +125,27 @@ const meterItems = computed<MeterItem[]>(() => {
           <template #body="{ data }: { data: MeasurementFileDetails }">
             <div class="flex flex-row gap-2">
               <Button
-                label="Cloud Upload"
-                icon="pi pi-cloud-upload"
+                v-if="featureEnabled('Cloud')"
+                v-tooltip.top="{
+                  value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to IFT Cloud'
+                }"
+                class="min-w-[20ch]"
+                :disabled="data.cloud.is_uploaded"
+                :label="data.cloud.is_uploaded? 'Uploaded' : 'Cloud Upload'"
+                :icon="data.cloud.is_uploaded ? 'pi pi-check' : 'pi pi-cloud-upload'"
                 size="small"
                 rounded
                 aria-label="Upload to Cloud"
-                @click="() => {}"
+                :loading="uploadLoading && uploadedFile === data.name"
+                @click="async () => {
+                  uploadedFile = data.name
+                  await upload(data.name)
+                  uploadedFile = ''
+                }"
               />
               <Button
-                v-if="useDisable().pageEnabled('Analyze')"
+                v-if="pageEnabled('Analyze')"
+                v-tooltip.top="'Analyze'"
                 icon="pi pi-search-plus"
                 as="a"
                 size="small"
@@ -120,6 +155,7 @@ const meterItems = computed<MeterItem[]>(() => {
                 @click.prevent="router.push(`/analyze?file=${data.name}`)"
               />
               <Button
+                v-tooltip.top="'Download'"
                 icon="pi pi-download"
                 as="a"
                 download
@@ -130,6 +166,7 @@ const meterItems = computed<MeterItem[]>(() => {
                 outlined
               />
               <Button
+                v-tooltip.top="'Delete Locally'"
                 icon="pi pi-times"
                 severity="danger"
                 size="small"

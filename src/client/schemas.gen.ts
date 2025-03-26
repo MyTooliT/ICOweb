@@ -125,6 +125,18 @@ export const $Body_stu_reset_api_v1_stu_reset_put = {
     title: 'Body_stu_reset_api_v1_stu_reset_put'
 } as const;
 
+export const $Body_upload_file_api_v1_cloud_upload_post = {
+    properties: {
+        filename: {
+            type: 'string',
+            title: 'Filename'
+        }
+    },
+    type: 'object',
+    required: ['filename'],
+    title: 'Body_upload_file_api_v1_cloud_upload_post'
+} as const;
+
 export const $Body_write_adc_api_v1_sth_write_adc_put = {
     properties: {
         mac: {
@@ -217,6 +229,29 @@ export const $DiskCapacity = {
     title: 'DiskCapacity'
 } as const;
 
+export const $FileCloudDetails = {
+    properties: {
+        is_uploaded: {
+            type: 'boolean',
+            title: 'Is Uploaded'
+        },
+        upload_timestamp: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Upload Timestamp'
+        }
+    },
+    type: 'object',
+    required: ['is_uploaded', 'upload_timestamp'],
+    title: 'FileCloudDetails'
+} as const;
+
 export const $FileListResponseModel = {
     properties: {
         capacity: {
@@ -266,10 +301,13 @@ export const $MeasurementFileDetails = {
         size: {
             type: 'integer',
             title: 'Size'
+        },
+        cloud: {
+            '$ref': '#/components/schemas/FileCloudDetails'
         }
     },
     type: 'object',
-    required: ['name', 'created', 'size'],
+    required: ['name', 'created', 'size', 'cloud'],
     title: 'MeasurementFileDetails'
 } as const;
 
@@ -489,11 +527,43 @@ export const $SystemStateModel = {
         },
         measurement_status: {
             '$ref': '#/components/schemas/MeasurementStatus'
+        },
+        cloud_status: {
+            type: 'boolean',
+            title: 'Cloud Status'
         }
     },
     type: 'object',
-    required: ['can_ready', 'disk_capacity', 'measurement_status'],
+    required: ['can_ready', 'disk_capacity', 'measurement_status', 'cloud_status'],
     title: 'SystemStateModel'
+} as const;
+
+export const $TridentBucketObject = {
+    properties: {
+        Key: {
+            type: 'string',
+            title: 'Key'
+        },
+        LastModified: {
+            type: 'string',
+            title: 'Lastmodified'
+        },
+        ETag: {
+            type: 'string',
+            title: 'Etag'
+        },
+        Size: {
+            type: 'integer',
+            title: 'Size'
+        },
+        StorageClass: {
+            type: 'string',
+            title: 'Storageclass'
+        }
+    },
+    type: 'object',
+    required: ['Key', 'LastModified', 'ETag', 'Size', 'StorageClass'],
+    title: 'TridentBucketObject'
 } as const;
 
 export const $ValidationError = {

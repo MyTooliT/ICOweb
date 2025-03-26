@@ -16,6 +16,7 @@ import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import { myPreset } from '../primevue.ts';
 import Ripple from 'primevue/ripple';
+import Tooltip from 'primevue/tooltip';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
@@ -23,6 +24,7 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 app.directive('ripple', Ripple);
+app.directive('tooltip', Tooltip);
 app.use(PrimeVue, {
   theme: {
     preset: myPreset,
