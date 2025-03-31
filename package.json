@@ -12,7 +12,8 @@
     "test-watch": "vitest",
     "tailwind": "tailwindcss -i .\\src\\styles\\tailwind\\tailwind.css -o .\\src\\styles\\tailwind\\tailwind-output.css --watch",
     "generate-client": "openapi-ts --input http://localhost:33215/openapi.json --output ./src/client --client fetch",
-    "start": "concurrently \"npm run dev \" \"npm run tailwind \""
+    "start": "concurrently \"npm run dev \" \"npm run tailwind \"",
+    "generate-config": "node src/node-utils/generate-config.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "chartjs-plugin-crosshair": "^2.0.0",
     "chartjs-plugin-zoom": "^2.0.1",
     "date-fns": "^4.1.0",
+    "js-yaml": "^4.1.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "primeicons": "^7.0.0",
@@ -36,7 +38,9 @@
     "tailwindcss-primeui": "^0.3.4",
     "vue": "^3.4.31",
     "vue-chartjs": "^5.3.1",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.0",
+    "xlsx": "^0.18.5",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.51.0",
