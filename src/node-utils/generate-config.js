@@ -15,7 +15,7 @@ const argv = yargs(hideBin(process.argv))
     .option('output', {
         alias: 'o',
         describe: 'Path to output YAML file',
-        default: 'metadata.yaml',
+        default: 'public/config/metadata.yaml',
         type: 'string'
     })
     .help()
