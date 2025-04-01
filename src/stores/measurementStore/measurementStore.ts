@@ -1,7 +1,7 @@
 import {getMeasurementFiles} from '@/api/icoapi.ts';
 import {
   DiskCapacity,
-  MeasurementFileDetails,
+  MeasurementFileDetails, UnifiedMetadata
 } from '@/client';
 import { ChartData } from 'chart.js';
 import { defineStore } from 'pinia';
@@ -112,6 +112,58 @@ export const useMeasurementStore = defineStore('measurement', () => {
     return [...measurementFiles.value].sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())[0].name
   })
 
+  const metadataForm = ref<UnifiedMetadata>({
+    coolant: 'MMQ',
+    cutting_speed: {
+      value: 0,
+      unit: ''
+    },
+    doc: {
+      value: 0,
+      unit: ''
+    },
+    doc_axial: {
+      value: 0,
+      unit: ''
+    },
+    doc_radial: {
+      value: 0,
+      unit: ''
+    },
+    experiment: '',
+    feed_per_rev: {
+      value: 0,
+      unit: ''
+    },
+    feed_per_tooth: {
+      value: 0,
+      unit: ''
+    },
+    institution: 'TU Wien',
+    machine: '',
+    person: '',
+    process: 'milling',
+    sth_mac: '',
+    stu_mac: '',
+    tool_diameter: {
+      value: 0,
+      unit: ''
+    },
+    tool_material: 'Carbide',
+    tool_offset: {
+      value: 0,
+      unit: ''
+    },
+    tool_tooth_count: 0,
+    workpiece_diameter: {
+      value: 0,
+      unit: ''
+    },
+    workpiece_material: '4140'
+  })
+  const metadataValid = ref<boolean>(false)
+
+
   return {
     continuous,
     acquisitionTime,
@@ -137,6 +189,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     driveCapacity,
     measurementDirectory,
     resetChartBounds,
+    metadataForm,
+    metadataValid
   }
 }, {
   persist: true

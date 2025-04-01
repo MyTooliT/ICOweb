@@ -7,7 +7,7 @@ import {
   STHRenameResponseModel,
   STUDeviceResponseModel,
   ControlResponse,
-  MeasurementInstructions,
+  MeasurementInstructions_Input,
   MeasurementStatus,
   SystemStateModel,
   TridentBucketObject
@@ -163,9 +163,9 @@ export async function getMeasurementStatus(): Promise<MeasurementStatus> {
   })
 }
 
-export async function startMeasurement(instructions: MeasurementInstructions): Promise<ControlResponse> {
+export async function startMeasurement(instructions: MeasurementInstructions_Input): Promise<ControlResponse> {
   return new Promise((resolve, reject) => {
-    post<MeasurementInstructions, ControlResponse>('measurement/start', instructions)
+    post<MeasurementInstructions_Input, ControlResponse>('measurement/start', instructions)
         .then(data => resolve(data))
         .catch(reject)
   })
@@ -179,9 +179,9 @@ export async function stopMeasurement(): Promise<ControlResponse> {
   })
 }
 
-export async function uploadFile(filename: string): Promise<void> {
+export async function uploadFile(name: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    post<{name: string}, undefined>('cloud/upload', {name: filename})
+    post<{filename: string}, undefined>('cloud/upload', {filename: name})
         .then(resolve)
         .catch(reject)
   })

@@ -30,11 +30,26 @@ parameters:
     label: Process
     datatype: dropdown
     type: default
+    options:
+      - milling
+      - drilling
+      - grinding
+      - turning
+      - reaming
+      - shaping
+      - thread_cutting
+      - thread_milling
+      - thread_forming
   workpiece_material:
     id: workpiece_material
     label: Workpiece Material
     datatype: text_suggestions
     type: default
+    options:
+      - S235
+      - 4140
+      - TiAl
+      - Grade 5 Titanium
   cutting_speed:
     id: cutting_speed
     label: Cutting Speed
@@ -93,6 +108,11 @@ parameters:
     label: Tool Material
     datatype: text_suggestions
     type: default
+    options:
+      - PCD
+      - Carbide
+      - MCD
+      - Ceramic
   tool_offset:
     id: tool_offset
     label: Tool Offset

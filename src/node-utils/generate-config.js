@@ -81,7 +81,7 @@ function parseWorkbook(filePath) {
         if (unit) paramDef.unit = unit;
         if (type) paramDef.type = type;
 
-        if (datatype.includes('dropdown') || datatype.includes('vorschl')) {
+        if (datatype.includes('dropdown') || datatype.includes('suggestions')) {
             const listHeaderRow = listen[2];
             const colIndex = listHeaderRow.findIndex((v) => toSnakeCase(v) === id);
 

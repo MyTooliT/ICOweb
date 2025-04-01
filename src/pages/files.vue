@@ -140,6 +140,7 @@ const meterItems = computed<MeterItem[]>(() => {
                 @click="async () => {
                   uploadedFile = data.name
                   await upload(data.name)
+                  await loadFiles()
                   uploadedFile = ''
                 }"
               />

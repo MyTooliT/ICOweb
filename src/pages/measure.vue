@@ -26,6 +26,10 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import MeterGroup from 'primevue/metergroup';
 import Select from 'primevue/select';
 import Toast from 'primevue/toast';
+import {Accordion} from 'primevue';
+import {AccordionContent} from 'primevue';
+import {AccordionPanel} from 'primevue';
+import {AccordionHeader} from 'primevue';
 import {
   computed, onBeforeUnmount,
   ref
@@ -34,12 +38,16 @@ import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
+import MetadataWrapper from '@/components/elements/forms/MetadataWrapper.vue';
+import {useDisable} from '@/utils/useDisable.ts';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
   datasets: []
 })
+
+const { featureEnabled } = useDisable()
 const router = useRouter()
 const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
@@ -118,7 +126,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_requested: mStore.IFTRequested,
     ift_channel: mStore.IFTChannel,
     ift_window_width: mStore.windowWidth,
-    adc: adcStore.values
+    adc: adcStore.values,
+    meta: featureEnabled('Meta') ? mStore.metadataForm : null
   })
   await gStore.systemState.checkState()
 })
@@ -152,6 +161,18 @@ const datalossMeter = computed<MeterItem[]>(() => [
   },
 ])
 
+// Disables measuring if not all requirements are met
+const canMeasure = computed<boolean>(() => {
+  return (
+      hwStore.hasSTU &&
+      hwStore.hasSTH &&
+      hwStore.hasHolder &&
+      (mStore.acquisitionTime > 0 || mStore.continuous) &&
+      mStore.selectedChannels.first > 0 &&
+      (featureEnabled('Meta') ? mStore.metadataValid : true)
+  )
+})
+
 onBeforeUnmount(() => window.setTimeout(close, 0))
 </script>
 
@@ -165,130 +186,159 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
         :button="false" />
       <div
         v-if="hwStore.hasSTU && hwStore.activeSTH"
-        class="flex flex-row"
       >
-        <StreamingChart
-          class="flex flex-col flex-grow"
-          :data="chartData"
-          :boundaries="{
-            xmin: mStore.chartStartTime,
-            xmax: mStore.chartEndTime,
-            ymin: mStore.chartYMin,
-            ymax: mStore.chartYMax
-          }"
-        />
-        <div class="flex flex-col flex-grow gap-3">
-          <NamedInput title="Devices">
-            <InputGroup>
-              <InputGroupAddon class="flex-grow !text-black">
-                STU: {{ hwStore.activeSTU?.getName() }}
-              </InputGroupAddon>
-              <InputGroupAddon class="flex-grow !text-black">
-                STH: {{ hwStore.activeSTH?.getName() }}
-              </InputGroupAddon>
-              <Button
-                label="Change"
-                icon="pi pi-cog"
-                outlined
-                @click="router.push('/')"
-              />
-            </InputGroup>
-          </NamedInput>
-          <ChartStreamControls
-            :state="state"
-            :start-loading="startLoading"
-            :stop-loading="stopLoading"
-            @start="start"
-            @stop="stop"
-            @show="() => {
-              mStore.resetChartBounds();
-              open()
+        <div class="flex flex-row">
+          <StreamingChart
+            class="flex flex-col flex-grow"
+            :data="chartData"
+            :boundaries="{
+              xmin: mStore.chartStartTime,
+              xmax: mStore.chartEndTime,
+              ymin: mStore.chartYMin,
+              ymax: mStore.chartYMax
             }"
-            @hide="close"
           />
-          <div class="flex flex-col">
-            <NamedInput title="Measurement Channels">
-              <InputGroup
-                v-for="slot in measurementChannels"
-                :key="slot"
-              >
+          <div class="flex flex-col flex-grow gap-3">
+            <NamedInput title="Devices">
+              <InputGroup>
+                <InputGroupAddon class="flex-grow !text-black">
+                  STU: {{ hwStore.activeSTU?.getName() }}
+                </InputGroupAddon>
+                <InputGroupAddon class="flex-grow !text-black">
+                  STH: {{ hwStore.activeSTH?.getName() }}
+                </InputGroupAddon>
+                <Button
+                  label="Change"
+                  icon="pi pi-cog"
+                  outlined
+                  @click="router.push('/')"
+                />
+              </InputGroup>
+            </NamedInput>
+            <ChartStreamControls
+              :ready="canMeasure"
+              :state="state"
+              :start-loading="startLoading"
+              :stop-loading="stopLoading"
+              @start="start"
+              @stop="stop"
+              @show="() => {
+                mStore.resetChartBounds();
+                open()
+              }"
+              @hide="close"
+            />
+            <div class="flex flex-col">
+              <NamedInput title="Measurement Channels">
+                <InputGroup
+                  v-for="slot in measurementChannels"
+                  :key="slot"
+                >
+                  <InputGroupAddon class="w-12">
+                    <Checkbox
+                      v-model="mStore.activeChannels[slot]"
+                      binary
+                      :disabled="slot === 'first'"
+                    />
+                  </InputGroupAddon>
+                  <InputGroupAddon>
+                    <span class="capitalize !text-black inline-block w-24">
+                      {{ slot }}
+                    </span>
+                  </InputGroupAddon>
+                  <Select
+                    v-model="mStore.selectedChannels[slot]"
+                    :options="hwStore.activeHolder?.sensors ?? []"
+                    :option-value="(sens: TAssignedSensor) => sens.channel"
+                    :option-label="channelSensorRepr"
+                    :disabled="!mStore.activeChannels[slot]"
+                    placeholder="Disabled"
+                    fluid
+                  />
+                </InputGroup>
+              </NamedInput>
+            </div>
+            <NamedInput title="IFT Value">
+              <InputGroup>
                 <InputGroupAddon class="w-12">
                   <Checkbox
-                    v-model="mStore.activeChannels[slot]"
+                    v-model="mStore.IFTRequested"
                     binary
-                    :disabled="slot === 'first'"
                   />
                 </InputGroupAddon>
                 <InputGroupAddon>
                   <span class="capitalize !text-black inline-block w-24">
-                    {{ slot }}
+                    IFT Channel
                   </span>
                 </InputGroupAddon>
                 <Select
-                  v-model="mStore.selectedChannels[slot]"
-                  :options="hwStore.activeHolder?.sensors ?? []"
-                  :option-value="(sens: TAssignedSensor) => sens.channel"
-                  :option-label="channelSensorRepr"
-                  :disabled="!mStore.activeChannels[slot]"
+                  v-model="mStore.IFTChannel"
+                  :options="['first', 'second', 'third']"
+                  :disabled="!hwStore.activeHolder"
                   placeholder="Disabled"
                   fluid
                 />
               </InputGroup>
+              <InputGroup>
+                <CustomSlider
+                  v-model="mStore.windowWidth"
+                  class="w-full"
+                  title="Window Width"
+                  :min="50"
+                  :max="250"
+                />
+              </InputGroup>
+            </NamedInput>
+            <NamedInput title="Measurement Integrity (Packet Loss)">
+              <InputGroup>
+                <MeterGroup :value="datalossMeter" class="w-full">
+                  <template #label="{ value }">
+                    <div class="flex flex-wrap gap-3 items-center">
+                      <template
+                        v-for="val in value"
+                        :key="val.label"
+                      >
+                        <span
+                          :data-color="val.color"
+                          class="w-4 h-4 rounded-full"
+                          :style="`background-color: ${val.color}`"
+                        ></span>
+                        <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
+                      </template>
+                    </div>
+                  </template>
+                </MeterGroup>
+              </InputGroup>
             </NamedInput>
           </div>
-          <NamedInput title="IFT Value">
-            <InputGroup>
-              <InputGroupAddon class="w-12">
-                <Checkbox
-                  v-model="mStore.IFTRequested"
-                  binary
-                />
-              </InputGroupAddon>
-              <InputGroupAddon>
-                <span class="capitalize !text-black inline-block w-24">
-                  IFT Channel
-                </span>
-              </InputGroupAddon>
-              <Select
-                v-model="mStore.IFTChannel"
-                :options="['first', 'second', 'third']"
-                :disabled="!hwStore.activeHolder"
-                placeholder="Disabled"
-                fluid
-              />
-            </InputGroup>
-            <InputGroup>
-              <CustomSlider
-                v-model="mStore.windowWidth"
-                class="w-full"
-                title="Window Width"
-                :min="50"
-                :max="250"
-              />
-            </InputGroup>
-          </NamedInput>
-          <NamedInput title="Measurement Integrity (Packet Loss)">
-            <InputGroup>
-              <MeterGroup :value="datalossMeter" class="w-full">
-                <template #label="{ value }">
-                  <div class="flex flex-wrap gap-3 items-center">
-                    <template
-                      v-for="val in value"
-                      :key="val.label"
-                    >
-                      <span
-                        :data-color="val.color"
-                        class="w-4 h-4 rounded-full"
-                        :style="`background-color: ${val.color}`"
-                      ></span>
-                      <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
-                    </template>
-                  </div>
-                </template>
-              </MeterGroup>
-            </InputGroup>
-          </NamedInput>
         </div>
+        <Accordion
+          v-if="featureEnabled('Meta')"
+          value="0"
+          class="border rounded-md mt-3"
+        >
+          <AccordionPanel value="0">
+            <AccordionHeader class="!bg-transparent">
+              Metadata
+              <span
+                v-if="mStore.metadataValid"
+                class="pi pi-check text-primary ml-3 mr-auto"
+              />
+              <span
+                v-else
+                class="pi pi-exclamation-triangle text-red-500 ml-3 mr-auto"
+              />
+            </AccordionHeader>
+            <AccordionContent
+              class="!bg-transparent"
+              style="--p-accordion-content-background: transparent;"
+            >
+              <MetadataWrapper
+                :disabled="gStore.systemState.running"
+              />
+            </AccordionContent>
+          </AccordionPanel>
+        </Accordion>
       </div>
       <div
         v-else

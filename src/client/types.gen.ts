@@ -55,6 +55,8 @@ export type ControlResponse = {
     data: MeasurementStatus;
 };
 
+export type CoolantEnum = 'Flood' | 'MMQ' | '…';
+
 export type DiskCapacity = {
     total: number | null;
     available: number | null;
@@ -75,6 +77,8 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type InstitutionEnum = 'TU Wien' | 'TU München' | 'ETH Zürich';
+
 export type MeasurementFileDetails = {
     name: string;
     created: string;
@@ -82,7 +86,7 @@ export type MeasurementFileDetails = {
     cloud: FileCloudDetails;
 };
 
-export type MeasurementInstructions = {
+export type MeasurementInstructions_Input = {
     name: string | null;
     mac: string;
     time: number | null;
@@ -93,6 +97,21 @@ export type MeasurementInstructions = {
     ift_channel: string;
     ift_window_width: number;
     adc: ADCValues | null;
+    meta: UnifiedMetadata;
+};
+
+export type MeasurementInstructions_Output = {
+    name: string | null;
+    mac: string;
+    time: number | null;
+    first: number;
+    second: number;
+    third: number;
+    ift_requested: boolean;
+    ift_channel: string;
+    ift_window_width: number;
+    adc: ADCValues | null;
+    meta: UnifiedMetadata;
 };
 
 export type MeasurementStatus = {
@@ -100,7 +119,14 @@ export type MeasurementStatus = {
     name?: string | null;
     start_time?: string | null;
     tool_name?: string | null;
-    instructions?: MeasurementInstructions | null;
+    instructions?: MeasurementInstructions_Output | null;
+};
+
+export type ProcessEnum = 'milling' | 'drilling' | 'grinding' | 'turning' | 'reaming' | 'shaping' | 'thread_cutting' | 'thread_milling' | 'thread_forming';
+
+export type Quantity = {
+    value: number;
+    unit: string;
 };
 
 /**
@@ -140,6 +166,8 @@ export type SystemStateModel = {
     cloud_status: boolean;
 };
 
+export type ToolMaterialEnum = 'PCD' | 'Carbide' | 'MCD' | 'Ceramic';
+
 export type TridentBucketObject = {
     Key: string;
     LastModified: string;
@@ -148,11 +176,36 @@ export type TridentBucketObject = {
     StorageClass: string;
 };
 
+export type UnifiedMetadata = {
+    person: string;
+    institution: InstitutionEnum;
+    machine: string;
+    experiment: string;
+    process: ProcessEnum;
+    workpiece_material: WorkpieceMaterialEnum;
+    cutting_speed: Quantity;
+    tool_material: ToolMaterialEnum;
+    coolant: CoolantEnum;
+    sth_mac: string;
+    stu_mac: string;
+    feed_per_tooth?: Quantity | null;
+    feed_per_rev?: Quantity | null;
+    doc_axial?: Quantity | null;
+    doc_radial?: Quantity | null;
+    doc?: Quantity | null;
+    workpiece_diameter?: Quantity | null;
+    tool_diameter?: Quantity | null;
+    tool_tooth_count?: number | null;
+    tool_offset?: Quantity | null;
+};
+
 export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
 };
+
+export type WorkpieceMaterialEnum = 'S235' | '4140' | 'TiAl' | 'Grade 5 Titanium';
 
 export type StuApiV1StuGetResponse = unknown | void;
 
@@ -249,7 +302,7 @@ export type AuthenticateApiV1CloudAuthenticatePostResponse = unknown;
 export type GetCloudFilesApiV1CloudGetResponse = Array<TridentBucketObject>;
 
 export type StartMeasurementApiV1MeasurementStartPostData = {
-    requestBody: MeasurementInstructions;
+    requestBody: MeasurementInstructions_Input;
 };
 
 export type StartMeasurementApiV1MeasurementStartPostResponse = ControlResponse;
@@ -257,6 +310,12 @@ export type StartMeasurementApiV1MeasurementStartPostResponse = ControlResponse;
 export type StopMeasurementApiV1MeasurementStopPostResponse = ControlResponse;
 
 export type MeasurementStatusApiV1MeasurementGetResponse = MeasurementStatus;
+
+export type SubmitMetadataApiV1MeasurementMetadataPostData = {
+    requestBody: UnifiedMetadata;
+};
+
+export type SubmitMetadataApiV1MeasurementMetadataPostResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -628,6 +687,21 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: MeasurementStatus;
+            };
+        };
+    };
+    '/api/v1/measurement/metadata': {
+        post: {
+            req: SubmitMetadataApiV1MeasurementMetadataPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
             };
         };
     };

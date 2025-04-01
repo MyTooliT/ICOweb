@@ -199,6 +199,12 @@ export const $ControlResponse = {
     title: 'ControlResponse'
 } as const;
 
+export const $CoolantEnum = {
+    type: 'string',
+    enum: ['Flood', 'MMQ', '…'],
+    title: 'CoolantEnum'
+} as const;
+
 export const $DiskCapacity = {
     properties: {
         total: {
@@ -288,6 +294,12 @@ export const $HTTPValidationError = {
     title: 'HTTPValidationError'
 } as const;
 
+export const $InstitutionEnum = {
+    type: 'string',
+    enum: ['TU Wien', 'TU München', 'ETH Zürich'],
+    title: 'InstitutionEnum'
+} as const;
+
 export const $MeasurementFileDetails = {
     properties: {
         name: {
@@ -311,7 +323,7 @@ export const $MeasurementFileDetails = {
     title: 'MeasurementFileDetails'
 } as const;
 
-export const $MeasurementInstructions = {
+export const $MeasurementInstructions_Input = {
     properties: {
         name: {
             anyOf: [
@@ -372,10 +384,84 @@ export const $MeasurementInstructions = {
                     type: 'null'
                 }
             ]
+        },
+        meta: {
+            '$ref': '#/components/schemas/UnifiedMetadata'
         }
     },
     type: 'object',
-    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc'],
+    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
+    title: 'MeasurementInstructions'
+} as const;
+
+export const $MeasurementInstructions_Output = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        mac: {
+            type: 'string',
+            title: 'Mac'
+        },
+        time: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Time'
+        },
+        first: {
+            type: 'integer',
+            title: 'First'
+        },
+        second: {
+            type: 'integer',
+            title: 'Second'
+        },
+        third: {
+            type: 'integer',
+            title: 'Third'
+        },
+        ift_requested: {
+            type: 'boolean',
+            title: 'Ift Requested'
+        },
+        ift_channel: {
+            type: 'string',
+            title: 'Ift Channel'
+        },
+        ift_window_width: {
+            type: 'integer',
+            title: 'Ift Window Width'
+        },
+        adc: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ADCValues'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        meta: {
+            '$ref': '#/components/schemas/UnifiedMetadata'
+        }
+    },
+    type: 'object',
+    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
     title: 'MeasurementInstructions'
 } as const;
 
@@ -421,7 +507,7 @@ export const $MeasurementStatus = {
         instructions: {
             anyOf: [
                 {
-                    '$ref': '#/components/schemas/MeasurementInstructions'
+                    '$ref': '#/components/schemas/MeasurementInstructions-Output'
                 },
                 {
                     type: 'null'
@@ -432,6 +518,28 @@ export const $MeasurementStatus = {
     type: 'object',
     required: ['running'],
     title: 'MeasurementStatus'
+} as const;
+
+export const $ProcessEnum = {
+    type: 'string',
+    enum: ['milling', 'drilling', 'grinding', 'turning', 'reaming', 'shaping', 'thread_cutting', 'thread_milling', 'thread_forming'],
+    title: 'ProcessEnum'
+} as const;
+
+export const $Quantity = {
+    properties: {
+        value: {
+            type: 'number',
+            title: 'Value'
+        },
+        unit: {
+            type: 'string',
+            title: 'Unit'
+        }
+    },
+    type: 'object',
+    required: ['value', 'unit'],
+    title: 'Quantity'
 } as const;
 
 export const $STHDeviceResponseModel = {
@@ -538,6 +646,12 @@ export const $SystemStateModel = {
     title: 'SystemStateModel'
 } as const;
 
+export const $ToolMaterialEnum = {
+    type: 'string',
+    enum: ['PCD', 'Carbide', 'MCD', 'Ceramic'],
+    title: 'ToolMaterialEnum'
+} as const;
+
 export const $TridentBucketObject = {
     properties: {
         Key: {
@@ -564,6 +678,143 @@ export const $TridentBucketObject = {
     type: 'object',
     required: ['Key', 'LastModified', 'ETag', 'Size', 'StorageClass'],
     title: 'TridentBucketObject'
+} as const;
+
+export const $UnifiedMetadata = {
+    properties: {
+        person: {
+            type: 'string',
+            title: 'Person'
+        },
+        institution: {
+            '$ref': '#/components/schemas/InstitutionEnum'
+        },
+        machine: {
+            type: 'string',
+            title: 'Machine'
+        },
+        experiment: {
+            type: 'string',
+            title: 'Experiment'
+        },
+        process: {
+            '$ref': '#/components/schemas/ProcessEnum'
+        },
+        workpiece_material: {
+            '$ref': '#/components/schemas/WorkpieceMaterialEnum'
+        },
+        cutting_speed: {
+            '$ref': '#/components/schemas/Quantity'
+        },
+        tool_material: {
+            '$ref': '#/components/schemas/ToolMaterialEnum'
+        },
+        coolant: {
+            '$ref': '#/components/schemas/CoolantEnum'
+        },
+        sth_mac: {
+            type: 'string',
+            title: 'Sth Mac'
+        },
+        stu_mac: {
+            type: 'string',
+            title: 'Stu Mac'
+        },
+        feed_per_tooth: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        feed_per_rev: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        doc_axial: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        doc_radial: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        doc: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        workpiece_diameter: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        tool_diameter: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        tool_tooth_count: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tool Tooth Count'
+        },
+        tool_offset: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Quantity'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        }
+    },
+    type: 'object',
+    required: ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'tool_material', 'coolant', 'sth_mac', 'stu_mac'],
+    title: 'UnifiedMetadata'
 } as const;
 
 export const $ValidationError = {
@@ -594,4 +845,10 @@ export const $ValidationError = {
     type: 'object',
     required: ['loc', 'msg', 'type'],
     title: 'ValidationError'
+} as const;
+
+export const $WorkpieceMaterialEnum = {
+    type: 'string',
+    enum: ['S235', '4140', 'TiAl', 'Grade 5 Titanium'],
+    title: 'WorkpieceMaterialEnum'
 } as const;

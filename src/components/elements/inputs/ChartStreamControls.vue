@@ -17,21 +17,11 @@ const hwStore = useHardwareStore()
 defineProps<{
   state: TWebSocketState,
   startLoading: boolean,
-  stopLoading: boolean
+  stopLoading: boolean,
+  ready: boolean
 }>()
 
 const emit = defineEmits(['start', 'stop', 'show', 'hide'])
-
-// Disables measuring if not all requirements are met
-const canMeasure = computed<boolean>(() => {
-  return (
-      hwStore.hasSTU &&
-      hwStore.hasSTH &&
-      hwStore.hasHolder &&
-      (mStore.acquisitionTime > 0 || mStore.continuous) &&
-      mStore.selectedChannels.first > 0
-  )
-})
 </script>
 
 <template>
@@ -95,7 +85,7 @@ const canMeasure = computed<boolean>(() => {
         :loading="startLoading"
         severity="primary"
         class="!px-5"
-        :disabled="!canMeasure || gStore.systemState.running"
+        :disabled="!ready || gStore.systemState.running"
         @click="emit('start')"
       />
     </InputGroup>
