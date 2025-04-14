@@ -71,7 +71,7 @@ const meterItems = computed<MeterItem[]>(() => {
         </NamedInput>
         <NamedInput
           v-if="featureEnabled('Cloud')"
-          title="IFT Cloud Connection"
+          title="Data Space Connection"
           class="ml-auto"
         >
           <InputGroup>
@@ -127,11 +127,11 @@ const meterItems = computed<MeterItem[]>(() => {
               <Button
                 v-if="featureEnabled('Cloud')"
                 v-tooltip.top="{
-                  value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to IFT Cloud'
+                  value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to Data space'
                 }"
-                class="min-w-[20ch]"
+                class="min-w-[24ch]"
                 :disabled="data.cloud.is_uploaded"
-                :label="data.cloud.is_uploaded? 'Uploaded' : 'Cloud Upload'"
+                :label="data.cloud.is_uploaded? 'Uploaded' : 'Data space Upload'"
                 :icon="data.cloud.is_uploaded ? 'pi pi-check' : 'pi pi-cloud-upload'"
                 size="small"
                 rounded
