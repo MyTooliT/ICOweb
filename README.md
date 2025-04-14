@@ -1,55 +1,136 @@
-# ICOgui Frontend
+# ICOclient Application
+
+A frontend/client developed in conjunction with the corresponding [ICOapi](https://git.ift.tuwien.ac.at/lab/ift/icotronic/icoapi) backend.
+It is designed to be run in any form of modern browser.
 
 **Design / Wireframes**: [Miro Board](https://miro.com/app/board/uXjVK7Kb3lE=/?share_link_id=832192510379)
 
-**Languages**: [Vue](https://vuejs.org/), [TypeScript](https://www.typescriptlang.org/)
+**Languages**: [Vue](https://vuejs.org/), [TypeScript](https://www.typescriptlang.org/), (HTML/CSS)
 
-**Design Framework**: [PrimeVue](https://primevue.org/)
+**Design Framework**: [PrimeVue](https://primevue.org/), [TailwindCSS](https://tailwindcss.com/)
 
-**Summary**: Vue Typescript package without any SSR (Server-Side-Rendering) features and simple REST communication with backend.
+**Bundler**: [Vite](https://vite.dev/)
 
-## Development
+# Installation
 
-For local development, one can either spawn the client (this repository) and the REST API (icoapi) separately or use 
-the electron bundler. Within the ``.env`` file, the host and port for this communication can be set should there be any 
-interference on the host machine regarding used/blocked ports.
+This repository can be setup manually for Windows and Linux or using the installation script for Linux.
 
+> As this is a Node/NPM project it is required that you have an up-to-date [Node.js + NPM](https://nodejs.org/en/download/prebuilt-installer) installation.
 
-### Running the electron bundle
-To start the local development build using the bundled electron version, follow these steps:
+## Manual Installation (Development)
 
-1. Have [Python](https://www.python.org/downloads/) and [Node.js + NPM](https://nodejs.org/en/download/prebuilt-installer) installed
-2. Pull the repository
-3. Navigate a terminal into the root
-4. Run `install_windows.bat` in **CMD, not PowerShell**
-5. Run ``npm run start``
+As with any other NPM project, after cloning the repository and ensuring a valid Node installation, run:
 
-Note that the STDOUT from the python backend process will be output in this shell.
+``npm install``
 
-### Running Frontend and Backend separately
+## Service Installation (Linux)
 
-To spawn the processes separately, replace step 5 with:
+For Linux, there is an installation script which sets the directory for the actual installation, the directory for the 
+systemd service and the used systemd service name as well as the Node version. The (sensible) defaults are:
 
-5. ``npm run start-web`` 
-6. ``npm run start-api`` in a different shell for the backend including the output.
+```
+SERVICE_NAME="icoclient"
+INSTALL_DIR="/etc/icoclient"
+SERVICE_PATH="/etc/systemd/system"
+NODE_VERSION="18.19.0"
+FORCE_REINSTALL=false
+```
 
-## Structure
+After checking, run the script to install normally:
 
-- `public` contains **only** assets that need to be reachable from the `index.html` entrypoint. This includes mostly fonts, and favicons.
-- `src` is the main development source code folder
-    - `api` contains all files concerning **data fetching**
-    - `assets` contains static assets which are **not** needed in the entrypoint
-    - `components` is for reusable Vue components that do not create a layout themselves
-    - `layouts` contains Vue files that layout their children without any business logic
-    - `pages` is the folder which holds files corresponding to routes
-    - `router` contains the router
-    - `stores` holds all the pinia store files and their surrounding data
-    - `styles` is for CSS files
-        - `material` holds the material design theme files
-        - `tailwind` contains the in- and out-files of tailwind. Ignore.
+```sh
+./install
+```
 
-## Development Tools
+Or, if you want to delete existing installations and do a clean reinstall, add the `--force` flag:
 
-Any tools that will not neccessarily be installed / configured by installing the project are listed here.
+```sh
+./install --force
+```
 
-- [eslint](https://eslint.vuejs.org/) for linting - make sure your IDE is configured to use it.
+# Configuration / Environment Variables
+
+This application has two main forms of configuration: environment variables and auto-generated metadata types.
+
+## Environment Variables
+
+The application expects a `.env` file in the root directory. It handles the main configuration of the backend application.
+
+> All variables containing `API_` indicate that there is a counterpart in the API side environment variables. This is to
+> show that changes here most likely need to be propagated to the backend.
+
+### Client/API Connection Settings
+
+These settings determine all forms of client/API communication details.
+
+The main REST API is versioned and does _NOT_ use SSL at the moment.
+
+```
+VITE_API_PROTOCOL=http
+VITE_API_HOSTNAME="0.0.0.0"
+VITE_API_PORT=33215
+VITE_API_VERSION=v1
+```
+
+The WebSocket is for streaming data. It only requires a `VITE_API_WS_PROTOCOL` variable akin to `VITE_API_PROTOCOL`
+which decided between SSL or not.
+
+```
+VITE_API_WS_PROTOCOL=ws
+```
+
+### Enable/Disable Settings
+
+To make the application configurable, pages and features can be enabled and disabled separately. By default, all pages
+are shown and no features are enabled - the ``.env`` file can override that.
+
+```
+VITE_APPLICATION_DISABLE_PAGES="Config,Analyze"
+VITE_APPLICATION_ENABLE_FEATURES="Cloud,Meta"
+```
+
+``VITE_APPLICATION_DISABLE_PAGES`` takes the names of the pages to be disabled, which hides them from the menu.
+``VITE_APPLICATION_ENABLE_FEATURES`` takes predefined tags to enable.
+- ``Cloud`` enables the usage of the Trident API data storage
+- ``Meta`` enables the addition of metadata for measurements
+
+### Branding Settings
+
+To add branding to the client, a logo with corresponding ALT text can be set.
+
+```
+VITE_APPLICATION_EXTRA_LOGO="cirp.png"
+VITE_APPLICATION_EXTRA_LOGO_ALT="CIRP"
+```
+
+The logo file must be placed in the ``public/extra`` folder and will be displayed above the IFT logo in the menu.
+
+## Type Generation
+
+This repository is based on typescript and relies heavily on the ``openapi-ts`` package to generate type declarations
+in ``src/client`` from the backend directly. To update the type declarations, **ensure the API is running** and run:
+
+``
+npm run generate-client
+``
+
+### Metadata Parsing
+
+To support the usage of arbitrary metadata when creating measurements, a configuration system has been set up. This
+system starts as en Excel file in which all metadata fields are defined. This file is then parsed into a YAML file, from
+which it can be used further.
+
+This repository holds the ``.xlsx`` master file and the script to generate the ``.yaml`` file from it. Run the parser with:
+
+``
+npm run generate-config
+``
+
+This script expects the Excel file to be in the project root and places the parsed YAML file into ``public/config``.
+
+After you have parsed the Excel file, run the ``generate_metadata.py`` file in the ``icoapi`` repository to create the 
+backend types for the API. Finally, you can run the openAPI command from above to get the types from the backend.
+
+> This may seem convoluted, but this way the metadata settings are stored in the client project (xlsx, yaml) where they 
+> semantically belong, but the types still all come from the openAPI specification from the backend to provide consistency.
+
