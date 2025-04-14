@@ -10,7 +10,9 @@ import InputNumber from 'primevue/inputnumber';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {UnifiedMetadata} from '@/client';
+import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
 
+const hwStore = useHardwareStore()
 const mStore = useMeasurementStore()
 const processKey: ProcessKey = import.meta.env.VITE_PROCESS || 'milling'
 mStore.metadataForm['process'] = processKey
@@ -62,6 +64,8 @@ onMounted(async () => {
   await reload()
   if (currentProcess.value) {
     validate(currentProcess.value, mStore.metadataForm)
+    mStore.metadataForm.sth_mac = hwStore.activeSTH.getMacAddress()
+    mStore.metadataForm.stu_mac = hwStore.activeSTU.getMacAddress()
   }
 })
 
