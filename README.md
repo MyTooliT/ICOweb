@@ -136,6 +136,16 @@ backend types for the API. Finally, you can run the openAPI command from above t
 > This may seem convoluted, but this way the metadata settings are stored in the client project (xlsx, yaml) where they 
 > semantically belong, but the types still all come from the openAPI specification from the backend to provide consistency.
 
+# Run
+
+To run the client locally, use:
+
+``npm run start``
+
+**Note**: The browser must have CORS disabled. When using Chrome, run with the flags
+
+``--disable-web-security --user-data-dir="<Some Writable Folder>"`` to achieve this.
+
 # Planned Features
 
 This is the list of features to be implemented.
