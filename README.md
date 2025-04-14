@@ -15,7 +15,9 @@ It is designed to be run in any form of modern browser.
 
 This repository can be setup manually for Windows and Linux or using the installation script for Linux.
 
-> As this is a Node/NPM project it is required that you have an up-to-date [Node.js + NPM](https://nodejs.org/en/download/prebuilt-installer) installation.
+## Prerequisites
+
+- Node.js / NPM, from the official [NodeJS Website](https://nodejs.org/en/download)
 
 ## Manual Installation (Development)
 
