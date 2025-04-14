@@ -15,7 +15,7 @@ const alt = ref<string|undefined>(import.meta.env.VITE_APPLICATION_EXTRA_LOGO_AL
       to="/help"
     >
       <img
-        :src="`/extra/${extraLogo}`"
+        :src="`./extra/${extraLogo}`"
         :alt="alt"
         class="w-full max-w-16 mx-auto"
       >

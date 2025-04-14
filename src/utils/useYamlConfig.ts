@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { load } from 'js-yaml'
 import type { YamlConfig } from '@/types/metadata'
 
-const yamlUrl = '/config/metadata.yaml'
+const yamlUrl = './config/metadata.yaml'
 
 export function useYamlConfig() {
     const config = ref<YamlConfig | null>(null)

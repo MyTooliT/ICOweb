@@ -805,8 +805,8 @@ video {
   min-width: 12rem;
 }
 
-.min-w-\[20ch\] {
-  min-width: 20ch;
+.min-w-\[24ch\] {
+  min-width: 24ch;
 }
 
 .max-w-16 {
