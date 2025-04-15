@@ -35,6 +35,11 @@ const menuItems: Array<{
   to: '/config',
   icon: 'cog',
   text: 'Config'
+}, {
+  name: 'Logs',
+  to: '/logs',
+  icon: 'file-word',
+  text: 'Logs'
 }].filter(item => useDisable().pageEnabled(item.name))
 </script>
 
