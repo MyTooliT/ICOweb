@@ -79,6 +79,25 @@ export type HTTPValidationError = {
 
 export type InstitutionEnum = 'TU Wien' | 'TU München' | 'ETH Zürich';
 
+export type LogFileMeta = {
+    name: string;
+    size: number;
+    first_timestamp: string | null;
+    last_timestamp: string | null;
+};
+
+export type LogListResponse = {
+    files: Array<LogFileMeta>;
+    directory: string;
+    max_bytes: number;
+    backup_count: number;
+};
+
+export type LogResponse = {
+    filename: string;
+    content: string;
+};
+
 export type MeasurementFileDetails = {
     name: string;
     created: string;
@@ -97,7 +116,7 @@ export type MeasurementInstructions_Input = {
     ift_channel: string;
     ift_window_width: number;
     adc: ADCValues | null;
-    meta: UnifiedMetadata;
+    meta: UnifiedMetadata | null;
 };
 
 export type MeasurementInstructions_Output = {
@@ -111,7 +130,7 @@ export type MeasurementInstructions_Output = {
     ift_channel: string;
     ift_window_width: number;
     adc: ADCValues | null;
-    meta: UnifiedMetadata;
+    meta: UnifiedMetadata | null;
 };
 
 export type MeasurementStatus = {
@@ -317,6 +336,21 @@ export type SubmitMetadataApiV1MeasurementMetadataPostData = {
 
 export type SubmitMetadataApiV1MeasurementMetadataPostResponse = unknown;
 
+export type ListLogsApiV1LogsGetResponse = LogListResponse;
+
+export type ViewLogFileApiV1LogsViewGetData = {
+    file: string;
+    limit?: number;
+};
+
+export type ViewLogFileApiV1LogsViewGetResponse = LogResponse;
+
+export type DownloadLogFileApiV1LogsDownloadGetData = {
+    file: string;
+};
+
+export type DownloadLogFileApiV1LogsDownloadGetResponse = unknown;
+
 export type $OpenApiTs = {
     '/api/v1/stu': {
         get: {
@@ -329,10 +363,6 @@ export type $OpenApiTs = {
                  * Indicates no STU Devices connected to the system
                  */
                 204: void;
-                /**
-                 * Not found
-                 */
-                404: unknown;
             };
         };
     };
@@ -344,10 +374,6 @@ export type $OpenApiTs = {
                  * Device was successfully reset.
                  */
                 204: void;
-                /**
-                 * Not found
-                 */
-                404: unknown;
                 /**
                  * Validation Error
                  */
@@ -368,10 +394,6 @@ export type $OpenApiTs = {
                  */
                 200: CANResponseError | null;
                 /**
-                 * Not found
-                 */
-                404: unknown;
-                /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
@@ -386,10 +408,6 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: CANResponseError | null;
-                /**
-                 * Not found
-                 */
-                404: unknown;
                 /**
                  * Validation Error
                  */
@@ -406,10 +424,6 @@ export type $OpenApiTs = {
                  */
                 200: unknown;
                 /**
-                 * Not found
-                 */
-                404: unknown;
-                /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
@@ -423,10 +437,6 @@ export type $OpenApiTs = {
                  * Return the STH Devices reachable
                  */
                 200: unknown;
-                /**
-                 * Not found
-                 */
-                404: unknown;
             };
         };
     };
@@ -472,10 +482,6 @@ export type $OpenApiTs = {
                  */
                 200: unknown;
                 /**
-                 * Not found
-                 */
-                404: unknown;
-                /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
@@ -495,10 +501,6 @@ export type $OpenApiTs = {
                  */
                 200: unknown;
                 /**
-                 * Not found
-                 */
-                404: unknown;
-                /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
@@ -517,10 +519,6 @@ export type $OpenApiTs = {
                  * ADC writing was successful
                  */
                 200: unknown;
-                /**
-                 * Not found
-                 */
-                404: unknown;
                 /**
                  * Validation Error
                  */
@@ -693,6 +691,46 @@ export type $OpenApiTs = {
     '/api/v1/measurement/metadata': {
         post: {
             req: SubmitMetadataApiV1MeasurementMetadataPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/logs': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: LogListResponse;
+            };
+        };
+    };
+    '/api/v1/logs/view': {
+        get: {
+            req: ViewLogFileApiV1LogsViewGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: LogResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/logs/download': {
+        get: {
+            req: DownloadLogFileApiV1LogsDownloadGetData;
             res: {
                 /**
                  * Successful Response

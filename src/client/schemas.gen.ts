@@ -300,6 +300,87 @@ export const $InstitutionEnum = {
     title: 'InstitutionEnum'
 } as const;
 
+export const $LogFileMeta = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        size: {
+            type: 'integer',
+            title: 'Size'
+        },
+        first_timestamp: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'First Timestamp'
+        },
+        last_timestamp: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Timestamp'
+        }
+    },
+    type: 'object',
+    required: ['name', 'size', 'first_timestamp', 'last_timestamp'],
+    title: 'LogFileMeta'
+} as const;
+
+export const $LogListResponse = {
+    properties: {
+        files: {
+            items: {
+                '$ref': '#/components/schemas/LogFileMeta'
+            },
+            type: 'array',
+            title: 'Files'
+        },
+        directory: {
+            type: 'string',
+            title: 'Directory'
+        },
+        max_bytes: {
+            type: 'integer',
+            title: 'Max Bytes'
+        },
+        backup_count: {
+            type: 'integer',
+            title: 'Backup Count'
+        }
+    },
+    type: 'object',
+    required: ['files', 'directory', 'max_bytes', 'backup_count'],
+    title: 'LogListResponse'
+} as const;
+
+export const $LogResponse = {
+    properties: {
+        filename: {
+            type: 'string',
+            title: 'Filename'
+        },
+        content: {
+            type: 'string',
+            title: 'Content'
+        }
+    },
+    type: 'object',
+    required: ['filename', 'content'],
+    title: 'LogResponse'
+} as const;
+
 export const $MeasurementFileDetails = {
     properties: {
         name: {
@@ -386,7 +467,14 @@ export const $MeasurementInstructions_Input = {
             ]
         },
         meta: {
-            '$ref': '#/components/schemas/UnifiedMetadata'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/UnifiedMetadata'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
@@ -457,7 +545,14 @@ export const $MeasurementInstructions_Output = {
             ]
         },
         meta: {
-            '$ref': '#/components/schemas/UnifiedMetadata'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/UnifiedMetadata'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',

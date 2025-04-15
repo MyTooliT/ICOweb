@@ -10,7 +10,7 @@ import {
   MeasurementInstructions_Input,
   MeasurementStatus,
   SystemStateModel,
-  TridentBucketObject
+  TridentBucketObject, LogListResponse, LogResponse
 } from '@/client';
 import { useAPI } from './api.ts';
 
@@ -198,6 +198,22 @@ export async function refreshTridentAuth(): Promise<void> {
 export async function getCloudFiles(): Promise<Array<TridentBucketObject>> {
   return new Promise((resolve, reject) => {
     get<Array<TridentBucketObject>>('cloud')
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function getLogs(): Promise<LogListResponse> {
+  return new Promise((resolve, reject) => {
+    get<LogListResponse>('logs')
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function getLog(name: str, limit: number = 0): Promise<LogResponse> {
+  return new Promise((resolve, reject) => {
+    get<LogResponse>(`logs/view?file=${name}&limit=${0}`)
         .then(data => resolve(data))
         .catch(reject)
   })

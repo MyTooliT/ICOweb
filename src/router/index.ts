@@ -8,6 +8,7 @@ import Files from '@/pages/files.vue';
 import Help from '@/pages/help.vue';
 import Home from '@/pages/index.vue';
 import Measure from '@/pages/measure.vue';
+import Logs from '@/pages/logs.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
@@ -65,6 +66,11 @@ const routes = [
     path: '/measure',
     name: 'Measure',
     component: Measure,
+  },
+  {
+    path: '/logs',
+    name: 'Logs',
+    component: Logs,
   },
 ];
 

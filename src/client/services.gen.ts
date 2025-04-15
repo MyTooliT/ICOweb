@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedPostData, StuConnectedApiV1StuConnectedPostResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, MeasurementStatusApiV1MeasurementGetResponse, SubmitMetadataApiV1MeasurementMetadataPostData, SubmitMetadataApiV1MeasurementMetadataPostResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedPostData, StuConnectedApiV1StuConnectedPostResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, MeasurementStatusApiV1MeasurementGetResponse, SubmitMetadataApiV1MeasurementMetadataPostData, SubmitMetadataApiV1MeasurementMetadataPostResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadGetData, DownloadLogFileApiV1LogsDownloadGetResponse } from './types.gen';
 
 /**
  * Stu
@@ -13,10 +13,7 @@ import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV
  */
 export const stuApiV1StuGet = (): CancelablePromise<StuApiV1StuGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/stu',
-    errors: {
-        404: 'Not found'
-    }
+    url: '/api/v1/stu'
 }); };
 
 /**
@@ -32,7 +29,6 @@ export const stuResetApiV1StuResetPut = (data: StuResetApiV1StuResetPutData): Ca
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Not found',
         422: 'Validation Error',
         502: 'The CAN Network did not respond. This can either be because the Node is not connected, or the Network is unresponsive.'
     }
@@ -51,7 +47,6 @@ export const stuEnableOtaApiV1StuOtaEnablePut = (data: StuEnableOtaApiV1StuOtaEn
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Not found',
         422: 'Validation Error'
     }
 }); };
@@ -69,7 +64,6 @@ export const stuDisableOtaApiV1StuOtaDisablePut = (data: StuDisableOtaApiV1StuOt
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Not found',
         422: 'Validation Error'
     }
 }); };
@@ -87,7 +81,6 @@ export const stuConnectedApiV1StuConnectedPost = (data: StuConnectedApiV1StuConn
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Not found',
         422: 'Validation Error'
     }
 }); };
@@ -99,10 +92,7 @@ export const stuConnectedApiV1StuConnectedPost = (data: StuConnectedApiV1StuConn
  */
 export const sthApiV1SthGet = (): CancelablePromise<SthApiV1SthGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/sth',
-    errors: {
-        404: 'Not found'
-    }
+    url: '/api/v1/sth'
 }); };
 
 /**
@@ -149,7 +139,6 @@ export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData)
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Not found',
         422: 'Validation Error',
         502: 'Indicates error in rename'
     }
@@ -169,7 +158,6 @@ export const readAdcApiV1SthReadAdcMacGet = (data: ReadAdcApiV1SthReadAdcMacGetD
         mac: data.mac
     },
     errors: {
-        404: 'Not found',
         422: 'Validation Error',
         504: 'ADC reading timed out'
     }
@@ -188,7 +176,6 @@ export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutDat
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Not found',
         422: 'Validation Error',
         504: 'ADC writing timed out'
     }
@@ -383,6 +370,54 @@ export const submitMetadataApiV1MeasurementMetadataPost = (data: SubmitMetadataA
     url: '/api/v1/measurement/metadata',
     body: data.requestBody,
     mediaType: 'application/json',
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * List Logs
+ * @returns LogListResponse Successful Response
+ * @throws ApiError
+ */
+export const listLogsApiV1LogsGet = (): CancelablePromise<ListLogsApiV1LogsGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/logs'
+}); };
+
+/**
+ * View Log File
+ * @param data The data for the request.
+ * @param data.file
+ * @param data.limit
+ * @returns LogResponse Successful Response
+ * @throws ApiError
+ */
+export const viewLogFileApiV1LogsViewGet = (data: ViewLogFileApiV1LogsViewGetData): CancelablePromise<ViewLogFileApiV1LogsViewGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/logs/view',
+    query: {
+        file: data.file,
+        limit: data.limit
+    },
+    errors: {
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Download Log File
+ * @param data The data for the request.
+ * @param data.file
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const downloadLogFileApiV1LogsDownloadGet = (data: DownloadLogFileApiV1LogsDownloadGetData): CancelablePromise<DownloadLogFileApiV1LogsDownloadGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/logs/download',
+    query: {
+        file: data.file
+    },
     errors: {
         422: 'Validation Error'
     }
