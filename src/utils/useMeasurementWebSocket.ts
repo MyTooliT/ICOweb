@@ -15,7 +15,7 @@ export type TPoint = {
 export function useMeasurementWebsocket(
   shouldUpdate: boolean = false,
   update: () => void = () => {},
-  onClose: () => void = () => {}
+  onClose: () => Promise<void> = () => new Promise((resolve) => resolve())
 ): {
   open: () => void,
   close: () => void,
@@ -46,6 +46,7 @@ export function useMeasurementWebsocket(
     ws.value.onopen = () => {
       state.value = 'open'
       storage.value = []
+      ift_storage.value = []
       ws.value?.dispatchEvent(new Event('opened'))
     }
 
@@ -53,10 +54,10 @@ export function useMeasurementWebsocket(
       state.value = 'closed'
     }
 
-    ws.value.onclose = () => {
+    ws.value.onclose = async () => {
       update()
       close()
-      onClose()
+      await onClose()
     }
 
     ws.value.onmessage = (event: any) => {

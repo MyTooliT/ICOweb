@@ -50,6 +50,26 @@ export function updateChartData(
   const firstChannelSubset: number[] = []
   const secondChannelSubset: number[] = []
   const thirdChannelSubset: number[] = []
+  const iftChannelSubset: TPoint[] = []
+
+  // Calculate the IFT channel subset if present
+  if(iftValues?.value) {
+    const interval = Math.floor(iftValues.value.length / maxNumberOfPoints)
+    for(let i = 0; i < iftValues.value.length; i+=interval) {
+      iftChannelSubset.push(iftValues.value[i])
+    }
+    const iftYValues: number[] = iftChannelSubset.map(ift => ift.y)
+    if(minRef.value) {
+      minRef.value = Math.min(...iftYValues, minRef.value)
+    } else {
+      minRef.value = Math.min(...iftYValues)
+    }
+    if(maxRef.value) {
+      maxRef.value = Math.max(...iftYValues, maxRef.value)
+    } else {
+      maxRef.value = Math.max(...iftYValues)
+    }
+  }
 
   // Total amount of values to be expected within the chart display range
   // To calculate the interval in which the subset is to be drawn in
@@ -83,16 +103,15 @@ export function updateChartData(
     }
 
     // Set the chart's max and min value references if needed
-    const iftYValues: number[] = iftValues && iftValues.value ? iftValues.value.map(ift => ift.y) : []
     if(minRef.value) {
-      minRef.value = Math.min(...values, ...iftYValues, minRef.value)
+      minRef.value = Math.min(...values, minRef.value)
     } else {
-      minRef.value = Math.min(...values, ...iftYValues)
+      minRef.value = Math.min(...values)
     }
     if(maxRef.value) {
-      maxRef.value = Math.max(...values, ...iftYValues, maxRef.value)
+      maxRef.value = Math.max(...values, maxRef.value)
     } else {
-      maxRef.value = Math.max(...values, ...iftYValues)
+      maxRef.value = Math.max(...values)
     }
   }
 
@@ -122,7 +141,7 @@ export function updateChartData(
   if(drawIFT && iftValues && iftValues.value.length > 0) {
     datasets.push({
       label: channelNames.ift ?? 'IFT',
-      data: iftValues.value,
+      data: iftChannelSubset,
       backgroundColor: '#006599',
       borderColor: '#006599',
       pointRadius: 1,

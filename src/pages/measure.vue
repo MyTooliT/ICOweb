@@ -63,7 +63,8 @@ const {
   ws
 } = useMeasurementWebsocket(
   true,
-  () => wrapUpdate()
+  () => wrapUpdate(),
+() => gStore.systemState.checkState()
 )
 
 function wrapUpdate() {
@@ -115,6 +116,8 @@ const currentMax = ref<number | undefined>(undefined)
 // eslint-disable-next-line max-len
 const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   mStore.resetChartBounds()
+  storage.value = []
+  ift_storage.value = []
   if(ws) {
     ws.value?.close()
   }
@@ -139,7 +142,6 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await stopMeasurement()
-  close()
   await gStore.systemState.checkState()
 })
 
