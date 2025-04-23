@@ -211,9 +211,9 @@ export async function getLogs(): Promise<LogListResponse> {
   })
 }
 
-export async function getLog(name: str, limit: number = 0): Promise<LogResponse> {
+export async function getLog(name: string, limit: number = 0): Promise<LogResponse> {
   return new Promise((resolve, reject) => {
-    get<LogResponse>(`logs/view?file=${name}&limit=${0}`)
+    get<LogResponse>(`logs/view?file=${name}&limit=${limit}`)
         .then(data => resolve(data))
         .catch(reject)
   })
