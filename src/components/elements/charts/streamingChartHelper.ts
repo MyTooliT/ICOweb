@@ -83,15 +83,16 @@ export function updateChartData(
     }
 
     // Set the chart's max and min value references if needed
+    const iftYValues: number[] = iftValues && iftValues.value ? iftValues.value.map(ift => ift.y) : []
     if(minRef.value) {
-      minRef.value = Math.min(...values, minRef.value)
+      minRef.value = Math.min(...values, ...iftYValues, minRef.value)
     } else {
-      minRef.value = Math.min(...values)
+      minRef.value = Math.min(...values, ...iftYValues)
     }
     if(maxRef.value) {
-      maxRef.value = Math.max(...values, maxRef.value)
+      maxRef.value = Math.max(...values, ...iftYValues, maxRef.value)
     } else {
-      maxRef.value = Math.max(...values)
+      maxRef.value = Math.max(...values, ...iftYValues)
     }
   }
 

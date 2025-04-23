@@ -155,7 +155,7 @@ Per screen recording, on Firefox, using RevPi.
 - [x] STU & STH MAC do not autofill
 - [ ] ADC drawer styling issues (Firefox?): Closing button overlaps inputs
 - [x] Streaming gets choppy after ~10s (might be recording issue)
-- [ ] IFT Value is not shown after "stop" button was called
+- [x] IFT Value is not shown after "stop" button was called
 - [x] Starting a new measurement does not clear the graph screen
 - [ ] Starting a new measurement and connecting the stream shows two confused graphs
 - [x] Setting metadata values to 0 should be allowed
