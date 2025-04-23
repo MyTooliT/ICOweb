@@ -110,7 +110,7 @@ const hwStore = useHardwareStore()
           </div>
         </div>
       </div>
-      <div class="absolute h-full right-full top-0 bg-error-container">
+      <div class="absolute h-full right-full top-0 bg-error-container firefox:w-6">
         <button
           class="
         vertical-writing-lr orientation-mixed rotate-180

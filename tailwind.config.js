@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
-import { textOrientation, widthStretch } from './src/utils/tailwindPlugins.ts';
+import { textOrientation, widthStretch, firefox } from './src/utils/tailwindPlugins.ts';
 
 export default {
   content: ['./src/**/*.{html,js,vue}'],
   darkMode: 'media',
-  plugins: [require('tailwindcss-primeui'), textOrientation, widthStretch],
+  plugins: [require('tailwindcss-primeui'), textOrientation, widthStretch, firefox],
   theme: {
     data: {
       primary: 'color~="primary"',

@@ -153,7 +153,7 @@ A Running list of issues and who reported them. This will not track every single
 Per screen recording, on Firefox, using RevPi.
 
 - [x] STU & STH MAC do not autofill
-- [ ] ADC drawer styling issues (Firefox?): Closing button overlaps inputs
+- [x] ADC drawer styling issues (Firefox?): Closing button overlaps inputs
 - [x] Streaming gets choppy after ~10s (might be recording issue)
 - [x] IFT Value is not shown after "stop" button was called
 - [x] Starting a new measurement does not clear the graph screen

@@ -23,3 +23,7 @@ export const widthStretch =
       '.w-fill': { 'width': '--webkit-fill-available' },
     });
   })
+
+export const firefox = plugin(function ({ addVariant }) {
+    addVariant('firefox', '@-moz-document url-prefix()')
+})

@@ -1552,6 +1552,17 @@ video {
   color: var(--md-sys-color-on-primary-container);
 }
 
+@-moz-document url-prefix() {
+  .firefox\:w-fit {
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  .firefox\:w-6 {
+    width: 1.5rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .dark\:text-surface-400 {
     --tw-text-opacity: 1;
