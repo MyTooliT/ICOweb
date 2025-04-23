@@ -59,7 +59,8 @@ const {
   state,
   storage,
   ift_storage,
-  dataloss
+  dataloss,
+  ws
 } = useMeasurementWebsocket(
   true,
   () => wrapUpdate()
@@ -113,6 +114,10 @@ const currentMax = ref<number | undefined>(undefined)
 
 // eslint-disable-next-line max-len
 const { loading: startLoading, call: start } = useLoadingHandler(async () => {
+  mStore.resetChartBounds()
+  if(ws) {
+    ws.value?.close()
+  }
   await startMeasurement({
     name: null,
     first: mStore.activeChannels.first

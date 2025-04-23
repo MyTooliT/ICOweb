@@ -146,6 +146,20 @@ To run the client locally, use:
 
 ``--disable-web-security --user-data-dir="<Some Writable Folder>"`` to achieve this.
 
+# Known Issues
+A Running list of issues and who reported them. This will not track every single issue, but rather complete requests/complaints.
+
+### 2025-04-14 by TT 
+Per screen recording, on Firefox, using RevPi.
+
+- [x] STU & STH MAC do not autofill
+- [ ] ADC drawer styling issues (Firefox?): Closing button overlaps inputs
+- [x] Streaming gets choppy after ~10s (might be recording issue)
+- [ ] IFT Value is not shown after "stop" button was called
+- [x] Starting a new measurement does not clear the graph screen
+- [ ] Starting a new measurement and connecting the stream shows two confused graphs
+- [ ] Setting metadata values to 0 should be allowed
+
 # Planned Features
 
 This is the list of features to be implemented.
