@@ -158,7 +158,7 @@ Per screen recording, on Firefox, using RevPi.
 - [ ] IFT Value is not shown after "stop" button was called
 - [x] Starting a new measurement does not clear the graph screen
 - [ ] Starting a new measurement and connecting the stream shows two confused graphs
-- [ ] Setting metadata values to 0 should be allowed
+- [x] Setting metadata values to 0 should be allowed
 
 # Planned Features
 

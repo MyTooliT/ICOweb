@@ -47,7 +47,7 @@ function validate(process: ProcessDefinition, form: UnifiedMetadata) {
       if(typeof value ==='object') {
         value = value?.value
       }
-      valid = valid && (value !== null && value !== undefined && (typeof value === 'string' ? (value.length > 0) : (value > 0)))
+      valid = valid && (value !== null && value !== undefined && (typeof value === 'string' ? (value.length > 0) : (value >= 0)))
     }
   })
   mStore.metadataValid = valid
@@ -96,6 +96,17 @@ function getValue(key: ParameterKey, form: UnifiedMetadata = mStore.metadataForm
     return form[key]
   }
 }
+
+function saveToFormData(id: ParameterKey, value: any) {
+  if(mStore.metadataForm[id] !== null && parameters.value !== undefined) {
+    const value_to_safe = parameters.value[id].datatype.includes('text') ? value.toString() : value
+    if(typeof mStore.metadataForm[id] === 'object') {
+      mStore.metadataForm[id].value = value_to_safe
+    } else {
+      (mStore.metadataForm[id] as any) = value_to_safe
+    }
+  }
+}
 </script>
 
 <template>
@@ -128,22 +139,14 @@ function getValue(key: ParameterKey, form: UnifiedMetadata = mStore.metadataForm
             :max-fraction-digits="parameters[id].datatype === 'int' ? 0 : 4"
             :disabled="disabled"
             :required="state === 'required'"
-            :invalid="state === 'required' && (getValue(id) === 0 || getValue(id) === '')"
+            :invalid="state === 'required' && (getValue(id) === null || getValue(id) === '')"
             class="w-full"
             input-class="w-full"
             @complete="(event: any) => {
               filteredOptions[id] = [...(parameters && parameters[id] && parameters[id].options ? parameters[id].options : [])].filter(opt => String(opt).toLowerCase().includes(event.query.toLowerCase()))
             }"
-            @update:model-value="(event: any) => {
-              if(mStore.metadataForm[id] !== null) {
-                const value_to_safe = parameters[id].datatype.includes('text') ? event.toString() : event
-                if(typeof mStore.metadataForm[id] === 'object') {
-                  mStore.metadataForm[id].value = value_to_safe
-                } else {
-                  (mStore.metadataForm[id] as any) = value_to_safe
-                }
-              }
-            }"
+            @input="(event: any) => saveToFormData(id, event.value)"
+            @update:model-value="(event: any) => saveToFormData(id, event)"
           />
         </NamedInput>
       </div>
