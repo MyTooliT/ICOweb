@@ -13,7 +13,7 @@ import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
-  measurementChannels,
+  measurementChannels, TChannelMap,
   useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
 import { MeterItem } from '@/utils/dataModels.ts';
@@ -32,7 +32,7 @@ import {AccordionPanel} from 'primevue';
 import {AccordionHeader} from 'primevue';
 import {
   computed, onBeforeUnmount,
-  ref
+  ref, watch
 } from 'vue';
 import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
@@ -186,6 +186,19 @@ const canMeasure = computed<boolean>(() => {
   )
 })
 
+const possibleIFTChannels = computed<Array<string>>(() => {
+  return Object.entries(mStore.activeChannels).filter(channel => channel[1]).map(channel => channel[0])
+})
+
+
+watch(mStore.activeChannels, () => {
+  if(!(possibleIFTChannels.value && mStore.IFTChannel)) return
+  if(!possibleIFTChannels.value.includes(mStore.IFTChannel)) {
+    mStore.IFTChannel = measurementChannels[0]
+  }
+}, {
+  deep: true,
+})
 onBeforeUnmount(() => window.setTimeout(close, 0))
 </script>
 
@@ -288,7 +301,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 </InputGroupAddon>
                 <Select
                   v-model="mStore.IFTChannel"
-                  :options="['first', 'second', 'third']"
+                  :options="possibleIFTChannels"
                   :disabled="!hwStore.activeHolder || gStore.systemState.running"
                   placeholder="Disabled"
                 />
