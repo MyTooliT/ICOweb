@@ -221,6 +221,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                   {{ hwStore.activeSTH?.getName() }}
                 </InputGroupAddon>
                 <Button
+                  :disabled="gStore.systemState.running"
                   label="Change"
                   icon="pi pi-cog"
                   outlined
@@ -261,18 +262,21 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                     :options="hwStore.activeHolder?.sensors ?? []"
                     :option-value="(sens: TAssignedSensor) => sens.channel"
                     :option-label="channelSensorRepr"
-                    :disabled="!mStore.activeChannels[slot]"
+                    :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
                     placeholder="No Selection"
                   />
                 </InputGroup>
               </NamedInput>
             </div>
-            <NamedInput title="IFT Value" class="w-fit">
+            <NamedInput
+              title="IFT Value"
+              class="w-fit">
               <InputGroup class="w-fit">
                 <InputGroupAddon class="w-12">
                   <Checkbox
                     v-model="mStore.IFTRequested"
                     binary
+                    :disabled="gStore.systemState.running"
                   />
                 </InputGroupAddon>
                 <InputGroupAddon>
@@ -283,7 +287,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 <Select
                   v-model="mStore.IFTChannel"
                   :options="['first', 'second', 'third']"
-                  :disabled="!hwStore.activeHolder"
+                  :disabled="!hwStore.activeHolder || gStore.systemState.running"
                   placeholder="Disabled"
                 />
               </InputGroup>
@@ -294,6 +298,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                   title="Window Size"
                   :min="50"
                   :max="250"
+                  :disabled="gStore.systemState.running"
                 />
               </InputGroup>
             </NamedInput>
@@ -322,7 +327,6 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
         </div>
         <Accordion
           v-if="featureEnabled('Meta')"
-          value="0"
           class="border rounded-md mt-3"
         >
           <AccordionPanel value="0">

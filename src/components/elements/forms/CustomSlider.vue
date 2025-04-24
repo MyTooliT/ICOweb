@@ -4,7 +4,8 @@ import Slider from 'primevue/slider';
 defineProps<{
   min: number,
   max: number,
-  title?: string
+  title?: string,
+  disabled: boolean,
 }>()
 
 const model = defineModel<number>()
@@ -45,6 +46,7 @@ const emits = defineEmits<{
           fluid
           :min="min"
           :max="max"
+          :disabled="disabled"
           class="min-w-36 px-3 mx-3 rounded-l-md border-gray-200"
           @change="emits('slider-change')"
         />
