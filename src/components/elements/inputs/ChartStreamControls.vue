@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {computed} from 'vue'
 import InputNumber from 'primevue/inputnumber';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import ToggleSwitch from 'primevue/toggleswitch';
@@ -8,11 +7,9 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import Button from 'primevue/button';
 import {TWebSocketState, useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
-import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
 
 const mStore = useMeasurementStore()
 const gStore = useGeneralStore()
-const hwStore = useHardwareStore()
 
 defineProps<{
   state: TWebSocketState,
@@ -26,14 +23,25 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
 
 <template>
   <NamedInput title="Measurement Control">
-    <div class="flex flex-row">
-      <ToggleSwitch
-        v-model="mStore.continuous"
-        :disabled="gStore.systemState.running"
-        input-id="continuous" />
-      <label
-        for="continuous"
-        class="ml-3">Run&nbsp;continuously</label>
+    <div class="flex flex-row justify-between">
+      <div class="flex flex-row">
+        <ToggleSwitch
+          v-model="mStore.continuous"
+          :disabled="gStore.systemState.running"
+          input-id="continuous" />
+        <label
+          for="continuous"
+          class="ml-3">Run&nbsp;continuously</label>
+      </div>
+      <div class="flex flex-row">
+        <ToggleSwitch
+          v-model="mStore.autostream"
+          :disabled="gStore.systemState.running"
+          input-id="continuous" />
+        <label
+          for="continuous"
+          class="ml-3">Auto-connect stream</label>
+      </div>
     </div>
     <InputGroup>
       <InputNumber

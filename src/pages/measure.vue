@@ -137,6 +137,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     adc: adcStore.values,
     meta: featureEnabled('Meta') ? mStore.metadataForm : null
   })
+  show()
   await gStore.systemState.checkState()
 })
 
@@ -144,6 +145,11 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await stopMeasurement()
   await gStore.systemState.checkState()
 })
+
+const show = () => {
+  mStore.resetChartBounds();
+  open()
+}
 
 function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
   if (!assignedSensor) return ''
@@ -229,10 +235,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               :stop-loading="stopLoading"
               @start="start"
               @stop="stop"
-              @show="() => {
-                mStore.resetChartBounds();
-                open()
-              }"
+              @show="show"
               @hide="close"
             />
             <div class="flex flex-col">

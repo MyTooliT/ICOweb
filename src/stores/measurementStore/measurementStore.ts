@@ -42,6 +42,7 @@ export const chartDefaults = {
 }
 
 export const useMeasurementStore = defineStore('measurement', () => {
+  const autostream = ref<boolean>(false);
   const continuous = ref<boolean>(false)
   const acquisitionTime = ref<number>(10)
   const chartMaximumDisplayedTime = ref<number>(10)
@@ -190,7 +191,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     measurementDirectory,
     resetChartBounds,
     metadataForm,
-    metadataValid
+    metadataValid,
+    autostream
   }
 }, {
   persist: true
