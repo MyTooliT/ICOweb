@@ -5,7 +5,7 @@ before_script:
   - hostname
   - python3 --version
 
-deploy-revpi:
+deploy-revpi-tt:
   stage: deploy
   tags:
     - revpi104544
@@ -15,3 +15,13 @@ deploy-revpi:
     - chmod +x install.sh
     - ./install.sh --force
 
+
+deploy-revpi-mb:
+  stage: deploy
+  tags:
+    - revpi120532
+    - shell
+  script:
+    - echo "$ENV_CONFIG" > .env
+    - chmod +x install.sh
+    - ./install.sh --force
