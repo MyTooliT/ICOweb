@@ -192,26 +192,28 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
 <template>
   <div class="flex flex-row h-full">
     <DefaultLayout class="w-fill w-stretch">
-      <TextBlock
-        v-if="hwStore.hasSTU && hwStore.activeSTH"
-        heading="Measure "
-        subheading="Capture a measurement from the connected tool"
-        :button="false" />
       <div
         v-if="hwStore.hasSTU && hwStore.activeSTH"
       >
         <div class="flex flex-row">
-          <StreamingChart
-            class="flex flex-col flex-grow"
-            :data="chartData"
-            :boundaries="{
-              xmin: mStore.chartStartTime,
-              xmax: mStore.chartEndTime,
-              ymin: mStore.chartYMin,
-              ymax: mStore.chartYMax
-            }"
-          />
-          <div class="flex flex-col flex-grow gap-3">
+          <div class="flex flex-col flex-grow border-gray-200 border-r pr-3 mr-3">
+            <TextBlock
+              v-if="hwStore.hasSTU && hwStore.activeSTH"
+              heading="Measure "
+              subheading="Capture a measurement from the connected tool"
+              :button="false" />
+            <StreamingChart
+              class="flex flex-col flex-grow"
+              :data="chartData"
+              :boundaries="{
+                xmin: mStore.chartStartTime,
+                xmax: mStore.chartEndTime,
+                ymin: mStore.chartYMin,
+                ymax: mStore.chartYMax
+              }"
+            />
+          </div>
+          <div class="flex flex-col gap-3">
             <NamedInput title="Devices">
               <InputGroup>
                 <InputGroupAddon class="flex-grow !text-black">
