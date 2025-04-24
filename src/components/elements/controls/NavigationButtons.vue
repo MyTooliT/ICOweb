@@ -32,7 +32,7 @@ const menuItems: Array<{
   text: 'Analyze'
 }, {
   name: 'Config',
-  to: '/config',
+  to: '/config/sensors',
   icon: 'cog',
   text: 'Config'
 }, {
