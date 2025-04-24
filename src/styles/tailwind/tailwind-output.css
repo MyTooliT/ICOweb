@@ -738,6 +738,10 @@ video {
   display: none;
 }
 
+.\!hidden {
+  display: none !important;
+}
+
 .aspect-square {
   aspect-ratio: 1 / 1;
 }
@@ -809,6 +813,29 @@ video {
   width: 100%;
 }
 
+.\!w-fit {
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.\!w-24 {
+  width: 6rem !important;
+}
+
+.w-min {
+  width: -moz-min-content;
+  width: min-content;
+}
+
+.\!w-min {
+  width: -moz-min-content !important;
+  width: min-content !important;
+}
+
 .min-w-48 {
   min-width: 12rem;
 }
@@ -817,12 +844,20 @@ video {
   min-width: 24ch;
 }
 
+.min-w-36 {
+  min-width: 9rem;
+}
+
 .max-w-16 {
   max-width: 4rem;
 }
 
 .max-w-60 {
   max-width: 15rem;
+}
+
+.max-w-36 {
+  max-width: 9rem;
 }
 
 .flex-1 {
@@ -1287,6 +1322,38 @@ video {
   height: calc(100% - 39px);
 }
 
+.\[max-width\:calc\(15ch\+2\*var\(--p-select-padding-x\)\)\] {
+  max-width: calc(15ch + 2 * var(--p-select-padding-x));
+}
+
+.\[max-width\:calc\(6ch\+2\*var\(--p-inputtext-padding-x\)\)\] {
+  max-width: calc(6ch + 2 * var(--p-inputtext-padding-x));
+}
+
+.\[min-width\:calc\(10ch\+2\*var\(--p-select-padding-x\)\)\] {
+  min-width: calc(10ch + 2 * var(--p-select-padding-x));
+}
+
+.\[min-width\:calc\(11ch\+2\*var\(--p-select-padding-x\)\)\] {
+  min-width: calc(11ch + 2 * var(--p-select-padding-x));
+}
+
+.\[min-width\:calc\(12ch\+2\*var\(--p-select-padding-x\)\)\] {
+  min-width: calc(12ch + 2 * var(--p-select-padding-x));
+}
+
+.\[w\:6ch\] {
+  w: 6ch;
+}
+
+.\[width\:6ch\] {
+  width: 6ch;
+}
+
+.\[width\:7ch\] {
+  width: 7ch;
+}
+
 .hover\:border-0:hover {
   border-width: 0px;
 }
@@ -1555,6 +1622,42 @@ video {
 @-moz-document url-prefix() {
   .firefox\:w-6 {
     width: 1.5rem;
+  }
+}
+
+@media not all and (min-width: 768px) {
+  .max-md\:hidden {
+    display: none;
+  }
+
+  .max-md\:\!hidden {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:\!hidden {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:\!flex {
+    display: flex !important;
+  }
+
+  .lg\:\[display\:flex\] {
+    display: flex;
+  }
+
+  .lg\:\[display\:initial\] {
+    display: initial;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:\!flex {
+    display: flex !important;
   }
 }
 

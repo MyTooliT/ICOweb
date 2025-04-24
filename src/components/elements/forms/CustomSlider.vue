@@ -19,7 +19,7 @@ const emits = defineEmits<{
     <div
       v-if="title"
       class="
-        flex items-center bg-white w-36 px-3 py-2 box-content
+        flex items-center bg-white w-24 px-3 py-2 box-content
         rounded-l-md border-surface-300 border">
       {{ title }}
     </div>
@@ -45,7 +45,7 @@ const emits = defineEmits<{
           fluid
           :min="min"
           :max="max"
-          class="min-w-48 px-3 mx-3 rounded-l-md border-gray-200"
+          class="min-w-36 px-3 mx-3 rounded-l-md border-gray-200"
           @change="emits('slider-change')"
         />
       </div>

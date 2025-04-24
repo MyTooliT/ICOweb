@@ -215,10 +215,10 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             <NamedInput title="Devices">
               <InputGroup>
                 <InputGroupAddon class="flex-grow !text-black">
-                  STU: {{ hwStore.activeSTU?.getName() }}
+                  {{ hwStore.activeSTU?.getName() }}
                 </InputGroupAddon>
                 <InputGroupAddon class="flex-grow !text-black">
-                  STH: {{ hwStore.activeSTH?.getName() }}
+                  {{ hwStore.activeSTH?.getName() }}
                 </InputGroupAddon>
                 <Button
                   label="Change"
@@ -262,14 +262,13 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                     :option-value="(sens: TAssignedSensor) => sens.channel"
                     :option-label="channelSensorRepr"
                     :disabled="!mStore.activeChannels[slot]"
-                    placeholder="Disabled"
-                    fluid
+                    placeholder="No Selection"
                   />
                 </InputGroup>
               </NamedInput>
             </div>
-            <NamedInput title="IFT Value">
-              <InputGroup>
+            <NamedInput title="IFT Value" class="w-fit">
+              <InputGroup class="w-fit">
                 <InputGroupAddon class="w-12">
                   <Checkbox
                     v-model="mStore.IFTRequested"
@@ -278,7 +277,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 </InputGroupAddon>
                 <InputGroupAddon>
                   <span class="capitalize !text-black inline-block w-24">
-                    IFT Channel
+                    For Channel:
                   </span>
                 </InputGroupAddon>
                 <Select
@@ -286,14 +285,13 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                   :options="['first', 'second', 'third']"
                   :disabled="!hwStore.activeHolder"
                   placeholder="Disabled"
-                  fluid
                 />
               </InputGroup>
               <InputGroup>
                 <CustomSlider
                   v-model="mStore.windowWidth"
                   class="w-full"
-                  title="Window Width"
+                  title="Window Size"
                   :min="50"
                   :max="250"
                 />

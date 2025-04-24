@@ -23,7 +23,7 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
 
 <template>
   <NamedInput title="Measurement Control">
-    <div class="flex flex-row justify-between">
+    <div class="flex flex-col gap-2 flex-wrap">
       <div class="flex flex-row">
         <ToggleSwitch
           v-model="mStore.continuous"
@@ -40,7 +40,7 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
           input-id="continuous" />
         <label
           for="continuous"
-          class="ml-3">Auto-connect stream</label>
+          class="ml-3">Auto-connect to stream</label>
       </div>
     </div>
     <InputGroup>
@@ -52,6 +52,8 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
         input-id="acqTime"
         :min="0"
         :disabled="mStore.continuous"
+        :use-grouping="false"
+        class="!w-min"
       />
       <InputGroupAddon
         v-if="
@@ -79,7 +81,7 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
       />
       <Button
         v-if="gStore.systemState.running"
-        label="Stop Recording"
+        label="Stop"
         :loading="stopLoading"
         severity="danger"
         class="!px-5"
