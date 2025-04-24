@@ -121,13 +121,15 @@ export function updateChartData(
     data: firstChannelSubset,
     pointRadius: 1,
     borderColor: 'black',
+    yAxisID: 'yFirstChannel'
   })
   if(activeChannels.second) {
     datasets.push({
       label: channelNames.second ?? 'Second Channel',
       data: secondChannelSubset,
       pointRadius: 1,
-      borderColor: 'red'
+      borderColor: 'red',
+      yAxisID: 'ySecondChannel'
     })
   }
   if(activeChannels.third) {
@@ -135,7 +137,8 @@ export function updateChartData(
       label: channelNames.third ?? 'Third Channel',
       data: thirdChannelSubset,
       pointRadius: 1,
-      borderColor: 'green'
+      borderColor: 'green',
+      yAxisID: 'yThirdChannel'
     })
   }
   if(drawIFT && iftValues && iftValues.value.length > 0) {
@@ -145,7 +148,8 @@ export function updateChartData(
       backgroundColor: '#006599',
       borderColor: '#006599',
       pointRadius: 1,
-      showLines: true
+      showLines: true,
+      yAxisID: 'yIFT'
     })
   }
   chartData.value = {

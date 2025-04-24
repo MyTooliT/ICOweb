@@ -17,6 +17,8 @@ import {
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
+import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
+import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 
 Chart.register(
   LineController,
@@ -42,6 +44,9 @@ const props = defineProps<{
   }
 }>()
 
+const hwStore = useHardwareStore()
+const mStore = useMeasurementStore()
+
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
     animation: false,
@@ -56,17 +61,53 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
         },
         title: {
           text: 'Seconds since measurement start',
-          align: 'center',
           display: true
         }
       },
-      y: {
+      yFirstChannel: {
         type: 'linear',
-        max: props.boundaries?.ymax ?? 10,
-        min: props.boundaries?.ymin ?? -10,
+        display: true,
+        title: {
+          text: hwStore.activeHolder?.sensors?.find(sensor => sensor.channel === mStore.selectedChannels.first)?.sensor.name ?? 'First Channel',
+          color: props.data.datasets[0]?.borderColor ?? 'black',
+          display: true,
+          padding: {top: 15, left: 0, right: 0, bottom: 10}
+        }
+      },
+      ySecondChannel: {
+        type: 'linear',
+        display: mStore.activeChannels.second && mStore.selectedChannels.second > 0,
+        title: {
+          text: hwStore.activeHolder?.sensors?.find(sensor => sensor.channel === mStore.selectedChannels.second)?.sensor.name ?? 'Second Channel',
+          color: props.data.datasets[1]?.borderColor ?? 'black',
+          display: true,
+          padding: {top: 15, left: 0, right: 0, bottom: 10}
+        }
+      },
+      yThirdChannel: {
+        type: 'linear',
+        display: mStore.activeChannels.third && mStore.selectedChannels.third > 0,
+        title: {
+          text: hwStore.activeHolder?.sensors?.find(sensor => sensor.channel === mStore.selectedChannels.third)?.sensor.name ?? 'Third Channel',
+          color: props.data.datasets[2]?.borderColor ?? 'black',
+          display: true,
+          padding: {top: 15, left: 0, right: 0, bottom: 10}
+        }
+      },
+      yIFT: {
+        type: 'linear',
+        min: 0,
         ticks: {
           stepSize: 1
-        }
+        },
+        display: mStore.IFTRequested,
+        title: {
+          text: `${props.data.datasets[props.data.datasets.length - 1]?.label ?? 'IFT Value'}`,
+          color: `${props.data.datasets[props.data.datasets.length - 1]?.backgroundColor ?? 'black'}`,
+          display: true,
+          padding: {top: 15, left: 0, right: 0, bottom: 10}
+        },
+        position: 'right',
       }
     },
     plugins: {
@@ -74,6 +115,11 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
         enabled: true,
         algorithm: 'min-max',
       }
+    },
+    interaction: {
+      mode: 'nearest',
+      axis: 'xy',
+      intersect: false,
     }
   }
 })

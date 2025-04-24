@@ -1553,11 +1553,6 @@ video {
 }
 
 @-moz-document url-prefix() {
-  .firefox\:w-fit {
-    width: -moz-fit-content;
-    width: fit-content;
-  }
-
   .firefox\:w-6 {
     width: 1.5rem;
   }
