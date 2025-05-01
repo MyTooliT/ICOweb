@@ -28,11 +28,15 @@ const emits = defineEmits<{
   (event: 'removeHolder'): void,
   (event: 'removeSensor', sensor: TAssignedSensor): void,
   (event: 'addSensor'): void
-}>()</script>
+}>()
+</script>
 
 <template>
   <Panel
-    class="flex-auto basis-1/3">
+    :header="holder.name"
+    :toggleable="true"
+    :collapsed="true"
+    class="w-full">
     <template #header>
       <div class="flex justify-between items-center w-full">
         <h5 class="font-medium text-lg">
@@ -42,13 +46,9 @@ const emits = defineEmits<{
         <div
           v-if="editable && deletable"
           class="flex flex-row gap-3">
-          <Button
-            v-if="deletable"
-            icon="pi pi-times"
-            severity="danger"
-            rounded
-            outlined
-            size="small"
+          <DeleteButton
+            tooltip="Delete Holder"
+            borderless
             @click="emits('removeHolder')"
           />
         </div>
@@ -70,7 +70,7 @@ const emits = defineEmits<{
             v-model="data.channel"
             :min="1"
             :max="255"
-            input-class="w-16"
+            input-class="[width:6ch]"
           />
         </template>
       </Column>
@@ -90,10 +90,12 @@ const emits = defineEmits<{
       <Column
         v-if="editable"
         header="Action"
+        class="w-16"
       >
         <template
           #body="{ data }: { data: TAssignedSensor }">
           <DeleteButton
+            tooltip="Remove Sensor"
             @click="emits('removeSensor', data)"
           />
         </template>

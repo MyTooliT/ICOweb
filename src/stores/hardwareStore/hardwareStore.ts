@@ -188,10 +188,11 @@ export const useHardwareStore = defineStore('hardware', () => {
     }))
   })
 
-  const holderList = ref<Array<HolderConfig>>(holderListPreset)
+  const holderList = ref<Array<HolderConfig>>([])
+  const defaultHolderList = ref<Array<HolderConfig>>(holderListPreset)
 
   function getHolder(id: string): HolderConfig | undefined {
-    const holder = holderList.value.find(holder => holder.id === id)
+    const holder = [...holderList.value, ...defaultHolderList.value].find(holder => holder.id === id)
     return holder as HolderConfig ?? undefined
   }
 
@@ -229,7 +230,7 @@ export const useHardwareStore = defineStore('hardware', () => {
   }
 
   function addHolder(id: string, name: string) {
-    const holder = new HolderConfig(id, name, sensorListPreset.slice(0, 3)
+    const holder = new HolderConfig(name, id, sensorListPreset.slice(0, 3)
       .map((preset, index) => {
       return {
         channel: index + 1,
@@ -240,7 +241,7 @@ export const useHardwareStore = defineStore('hardware', () => {
   }
 
   function holderIDIsViable(id: string): boolean {
-    return !holderList.value.map(holder => holder.id).includes(id)
+    return ![...holderList.value, ...defaultHolderList.value].map(holder => holder.id).includes(id)
   }
 
   const activeHolder = computed<HolderConfig | undefined>(() => {
@@ -289,7 +290,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     hasSTH,
     checkSTUConnection,
     clearSTHDeviceList,
-    hasHolder
+    hasHolder,
+    defaultHolderList
   }
 }, {
   persist: {

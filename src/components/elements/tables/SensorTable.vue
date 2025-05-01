@@ -96,6 +96,7 @@ const store = useHardwareStore()
     >
       <template #body="{ data }: { data: Sensor }">
         <DeleteButton
+          tooltip="Delete Sensor"
           @click="store.removeSensor(data)"
         />
       </template>
