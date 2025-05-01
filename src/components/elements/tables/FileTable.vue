@@ -32,6 +32,8 @@ const emits = defineEmits<{
     removable-sort
     sort-field="created"
     :sort-order="-1"
+    :paginator="true"
+    :rows="10"
   >
     <Column
       field="name"
