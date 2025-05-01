@@ -200,7 +200,7 @@ to the ``type: linear`` property in the chart options, as without this, it works
 
 ## Concerning "Config" Tab
 
-- [ ] **Tool Holder**: Split into default and custom holder templates
+- [x] **Tool Holder**: Split into default and custom holder templates
     - [ ] Make Default hardcoded and with picture
     - [ ] **Sketches**: Create and show informational sketches
 
