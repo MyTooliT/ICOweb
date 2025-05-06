@@ -123,12 +123,18 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   }
   await startMeasurement({
     name: null,
-    first: mStore.activeChannels.first
-        ?  mStore.selectedChannels.first : 0,
-    second: mStore.activeChannels.second
-        ?  mStore.selectedChannels.second : 0,
-    third: mStore.activeChannels.third
-        ?  mStore.selectedChannels.third : 0,
+    first: {
+      channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
+      sensor_id: null
+    },
+    second: {
+      channel_number: mStore.activeChannels.second ? mStore.selectedChannels.second : 0,
+      sensor_id: null
+    },
+    third: {
+      channel_number: mStore.activeChannels.third ? mStore.selectedChannels.third : 0,
+      sensor_id: null
+    },
     mac: hwStore.activeSTH?.getMacAddress(),
     time: mStore.continuous ? null : mStore.acquisitionTime,
     ift_requested: mStore.IFTRequested,

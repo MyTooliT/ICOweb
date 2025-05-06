@@ -404,6 +404,29 @@ export const $MeasurementFileDetails = {
     title: 'MeasurementFileDetails'
 } as const;
 
+export const $MeasurementInstructionChannel = {
+    properties: {
+        channel_number: {
+            type: 'integer',
+            title: 'Channel Number'
+        },
+        sensor_id: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Sensor Id'
+        }
+    },
+    type: 'object',
+    required: ['channel_number', 'sensor_id'],
+    title: 'MeasurementInstructionChannel'
+} as const;
+
 export const $MeasurementInstructions_Input = {
     properties: {
         name: {
@@ -433,16 +456,13 @@ export const $MeasurementInstructions_Input = {
             title: 'Time'
         },
         first: {
-            type: 'integer',
-            title: 'First'
+            '$ref': '#/components/schemas/MeasurementInstructionChannel'
         },
         second: {
-            type: 'integer',
-            title: 'Second'
+            '$ref': '#/components/schemas/MeasurementInstructionChannel'
         },
         third: {
-            type: 'integer',
-            title: 'Third'
+            '$ref': '#/components/schemas/MeasurementInstructionChannel'
         },
         ift_requested: {
             type: 'boolean',
@@ -511,16 +531,13 @@ export const $MeasurementInstructions_Output = {
             title: 'Time'
         },
         first: {
-            type: 'integer',
-            title: 'First'
+            '$ref': '#/components/schemas/MeasurementInstructionChannel'
         },
         second: {
-            type: 'integer',
-            title: 'Second'
+            '$ref': '#/components/schemas/MeasurementInstructionChannel'
         },
         third: {
-            type: 'integer',
-            title: 'Third'
+            '$ref': '#/components/schemas/MeasurementInstructionChannel'
         },
         ift_requested: {
             type: 'boolean',
@@ -717,6 +734,63 @@ export const $STUDeviceResponseModel = {
     type: 'object',
     required: ['name', 'device_number', 'mac_address'],
     title: 'STUDeviceResponseModel'
+} as const;
+
+export const $Sensor = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        sensor_type: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Sensor Type'
+        },
+        sensor_id: {
+            type: 'string',
+            title: 'Sensor Id'
+        },
+        unit: {
+            type: 'string',
+            title: 'Unit'
+        },
+        phys_min: {
+            type: 'number',
+            title: 'Phys Min'
+        },
+        phys_max: {
+            type: 'number',
+            title: 'Phys Max'
+        },
+        volt_min: {
+            type: 'number',
+            title: 'Volt Min'
+        },
+        volt_max: {
+            type: 'number',
+            title: 'Volt Max'
+        },
+        scaling_factor: {
+            type: 'number',
+            title: 'Scaling Factor',
+            default: 1
+        },
+        offset: {
+            type: 'number',
+            title: 'Offset',
+            default: 0
+        }
+    },
+    type: 'object',
+    required: ['name', 'sensor_type', 'sensor_id', 'unit', 'phys_min', 'phys_max', 'volt_min', 'volt_max'],
+    title: 'Sensor'
 } as const;
 
 export const $SystemStateModel = {

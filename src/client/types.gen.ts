@@ -105,13 +105,18 @@ export type MeasurementFileDetails = {
     cloud: FileCloudDetails;
 };
 
+export type MeasurementInstructionChannel = {
+    channel_number: number;
+    sensor_id: string | null;
+};
+
 export type MeasurementInstructions_Input = {
     name: string | null;
     mac: string;
     time: number | null;
-    first: number;
-    second: number;
-    third: number;
+    first: MeasurementInstructionChannel;
+    second: MeasurementInstructionChannel;
+    third: MeasurementInstructionChannel;
     ift_requested: boolean;
     ift_channel: string;
     ift_window_width: number;
@@ -123,9 +128,9 @@ export type MeasurementInstructions_Output = {
     name: string | null;
     mac: string;
     time: number | null;
-    first: number;
-    second: number;
-    third: number;
+    first: MeasurementInstructionChannel;
+    second: MeasurementInstructionChannel;
+    third: MeasurementInstructionChannel;
     ift_requested: boolean;
     ift_channel: string;
     ift_window_width: number;
@@ -176,6 +181,19 @@ export type STUDeviceResponseModel = {
     name: string;
     device_number: number;
     mac_address: string;
+};
+
+export type Sensor = {
+    name: string;
+    sensor_type: string | null;
+    sensor_id: string;
+    unit: string;
+    phys_min: number;
+    phys_max: number;
+    volt_min: number;
+    volt_max: number;
+    scaling_factor?: number;
+    offset?: number;
 };
 
 export type SystemStateModel = {
@@ -350,6 +368,8 @@ export type DownloadLogFileApiV1LogsDownloadGetData = {
 };
 
 export type DownloadLogFileApiV1LogsDownloadGetResponse = unknown;
+
+export type QuerySensorsApiV1SensorGetResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -740,6 +760,20 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/sensor': {
+        get: {
+            res: {
+                /**
+                 * Available sensors for platform.
+                 */
+                200: unknown;
+                /**
+                 * Can't find sensor declaration.
+                 */
+                500: unknown;
             };
         };
     };
