@@ -188,7 +188,7 @@ to the ``type: linear`` property in the chart options, as without this, it works
     - Note: according to JG, just seconds input is fine.
 - [x] **Performance**: Maximum length of acquisition?
     - Note: a single axis measurement of 400MB was possible, so no worries there.
-- [ ] **Scales**: Make the graph scales represent the holder's actual unit and range
+- [x] **Scales**: Make the graph scales represent the holder's actual unit and range
 
 
 ## Concerning General Features
@@ -201,7 +201,8 @@ to the ``type: linear`` property in the chart options, as without this, it works
 ## Concerning "Config" Tab
 
 - [x] **Tool Holder**: Split into default and custom holder templates
-    - [ ] Make Default hardcoded and with picture
+    - [x] Make default holders hardcoded 
+    - [ ] Make default holders with picture
     - [ ] **Sketches**: Create and show informational sketches
 
 # Feature Request List
