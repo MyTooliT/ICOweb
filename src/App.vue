@@ -23,9 +23,10 @@ const store = useGeneralStore()
         <div
           v-if="store.globalLoader"
           class="
-            absolute w-full [height:calc(100%-39px)] flex
+            absolute w-full [height:calc(100%-39px)] flex flex-col gap-3
             justify-center items-center z-40 backdrop-blur">
           <ProgressSpinner />
+          <h4> {{ store.getLoaderInfoMessage }} </h4>
         </div>
         <div class="w-full h-full overflow-auto ">
           <router-view />

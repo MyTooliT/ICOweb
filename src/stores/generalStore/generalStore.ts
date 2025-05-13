@@ -48,6 +48,16 @@ export const useGeneralStore = defineStore('general', () => {
             globalLoader.value = state
         }
     }
+    const loaderInfoMessage = ref<string>('')
+    function setLoaderInfoMessage(message: string): void {
+        loaderInfoMessage.value = message
+    }
+    const getLoaderInfoMessage = computed<string>(() => {
+        return loaderInfoMessage.value
+    })
+    function resetLoaderInfoMessage(): void {
+        loaderInfoMessage.value = ''
+    }
 
     /*
     ******************************************************
@@ -96,7 +106,10 @@ export const useGeneralStore = defineStore('general', () => {
         navigationLoader,
         lastFileQuery,
         fileQuery,
-        systemState
+        systemState,
+        setLoaderInfoMessage,
+        resetLoaderInfoMessage,
+        getLoaderInfoMessage
     }
 }, {
     persist: true

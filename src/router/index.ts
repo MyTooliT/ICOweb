@@ -83,6 +83,7 @@ const router = createRouter({
 
 router.beforeEach(async (_to, _from, next) => {
   const store = useGeneralStore()
+  store.resetLoaderInfoMessage()
   store.setGlobalLoader(true)
 
   next()
@@ -90,13 +91,17 @@ router.beforeEach(async (_to, _from, next) => {
 
 router.afterEach(async (_to, _from, _failure) => {
   const store = useGeneralStore()
+  store.setLoaderInfoMessage('Checking system state...')
   await store.systemState.checkState()
 
   if(_to.name === 'Home') {
     const hwStore = useHardwareStore()
     if(hwStore.activeSTU) {
+      store.setLoaderInfoMessage('Checking for active measurement...')
       if(!await hwStore.checkSTUConnection()) {
+        store.setLoaderInfoMessage('Checking STU...')
         await hwStore.updateSTUDeviceList()
+        store.setLoaderInfoMessage('Checking STH devices...')
         await hwStore.updateSTHDeviceList()
       }
     } else {
@@ -107,11 +112,13 @@ router.afterEach(async (_to, _from, _failure) => {
   if(_to.name === 'Measure') {
     if(!store.systemState.running) {
       const hwStore = useHardwareStore()
+      store.setLoaderInfoMessage('Checking for active measurement...')
       await hwStore.checkSTUConnection()
 
       if(hwStore.activeSTH) {
         const adcStore = useADCStore()
         try {
+          store.setLoaderInfoMessage('Checking ADC settings...')
           await adcStore.fetchADCValues(hwStore.activeSTH?.getMacAddress())
         } catch (e) { console.log(e) }
       }
@@ -120,6 +127,7 @@ router.afterEach(async (_to, _from, _failure) => {
 
   if(_to.name === 'Files') {
     const mStore = useMeasurementStore()
+    store.setLoaderInfoMessage('Checking files...')
     await mStore.getFiles()
   }
 
