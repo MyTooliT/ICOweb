@@ -59,7 +59,7 @@ async function STHClickHandler() {
       />
       <STUDeviceTable />
     </div>
-    <div>
+    <div class="mt-8">
       <TextBlock
         heading="Sensory Tool Holders"
         subheading="
