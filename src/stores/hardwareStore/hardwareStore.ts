@@ -318,18 +318,7 @@ const sensorListPreset = Array<Sensor>(
 )
 
 const holderListPreset = Array<HolderConfig>(
-  new HolderConfig('STH 3AX', 'default-sth', [
-    {channel: 1, sensor: sensorListPreset[0]},
-    {channel: 2, sensor: sensorListPreset[1]},
-    {channel: 3, sensor: sensorListPreset[2]},
-  ]),
-  new HolderConfig('STH 1AX', 'sth-old', [
-    {channel: 1, sensor: sensorListPreset[0]},
-  ]),
-  new HolderConfig('Stamperl 1AX', 'stamperl-old', [
-    {channel: 1, sensor: sensorListPreset[0]},
-  ]),
-  new HolderConfig('Stamperl 3AX', 'stamperl-new', [
+  new HolderConfig('IFT Default 3AX', 'default-sth', [
     {channel: 1, sensor: sensorListPreset[0]},
     {channel: 2, sensor: sensorListPreset[1]},
     {channel: 3, sensor: sensorListPreset[2]},
@@ -341,4 +330,7 @@ const holderListPreset = Array<HolderConfig>(
     {channel: 9, sensor: sensorListPreset[8]},
     {channel: 10, sensor: sensorListPreset[9]},
   ]),
+  new HolderConfig('IFT Old 1AX', 'sth-old', [
+    {channel: 1, sensor: sensorListPreset[0]},
+  ])
 )
