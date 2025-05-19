@@ -1,6 +1,6 @@
 import { getWSLink } from '@/api/icoapi.ts';
 import { MeasurementStatus, SystemStateModel } from '@/client';
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 
 export function useSystemState() {
   const reachable = ref(false);
@@ -11,6 +11,10 @@ export function useSystemState() {
   let ws: WebSocket | null = null;
   let intervalID = 0;
   let retryTimer: number | null = null;
+
+  const hasWS = computed<boolean>(() => {
+    return ws !== null;
+  })
 
   function connectWebSocket(retries = 10, delay = 1000) {
     try {
@@ -33,11 +37,11 @@ export function useSystemState() {
       };
 
       ws.onerror = (event: any) => {
-        console.error('[WS] Error', event);
+        console.log('[WS] Error', event);
       };
 
       ws.onclose = (event: any) => {
-        console.warn('[WS] Closed', event);
+        console.log('[WS] Closed', event);
         reachable.value = false;
         canReady.value = false;
         running.value = false;
@@ -49,7 +53,7 @@ export function useSystemState() {
         }
       };
     } catch (e) {
-      console.error('[WS] Failed to connect', e);
+      console.log('[WS] Failed to connect', e);
       if (retries > 0) {
         retryTimer = window.setTimeout(() => connectWebSocket(retries - 1, delay), delay);
       }
@@ -89,6 +93,8 @@ export function useSystemState() {
     measurementStatus,
     checkState,
     registerInterval,
-    deregisterInterval
+    deregisterInterval,
+    hasWS,
+    connectWebSocket
   };
 }

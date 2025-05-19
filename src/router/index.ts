@@ -92,6 +92,9 @@ router.beforeEach(async (_to, _from, next) => {
 router.afterEach(async (_to, _from, _failure) => {
   const store = useGeneralStore()
   store.setLoaderInfoMessage('Checking system state...')
+  if(!store.systemState.hasWS) {
+    store.systemState.connectWebSocket()
+  }
   await store.systemState.checkState()
 
   if(_to.name === 'Home') {
@@ -100,9 +103,17 @@ router.afterEach(async (_to, _from, _failure) => {
       store.setLoaderInfoMessage('Checking for active measurement...')
       if(!await hwStore.checkSTUConnection()) {
         store.setLoaderInfoMessage('Checking STU...')
-        await hwStore.updateSTUDeviceList()
+        try {
+          await hwStore.updateSTUDeviceList()
+        } catch(e) {
+          store.setGlobalLoader(false)
+        }
         store.setLoaderInfoMessage('Checking STH devices...')
-        await hwStore.updateSTHDeviceList()
+        try {
+          await hwStore.updateSTHDeviceList()
+        } catch(e) {
+          store.setGlobalLoader(false)
+        }
       }
     } else {
         hwStore.clearSTHDeviceList()
