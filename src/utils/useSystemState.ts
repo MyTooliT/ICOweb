@@ -1,5 +1,5 @@
-import { getSystemState } from '@/api/icoapi.ts';
-import { MeasurementStatus } from '@/client';
+import {getWSLink} from '@/api/icoapi.ts';
+import {MeasurementStatus, SystemStateModel} from '@/client';
 import { ref } from 'vue';
 
 export function useSystemState() {
@@ -7,16 +7,34 @@ export function useSystemState() {
   const canReady = ref<boolean>(false);
   const running = ref<boolean>(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
-
+  const ws = new WebSocket(`${getWSLink()}/state`);
   let intervalID = 0;
+
+  ws.onmessage = (event: any) => {
+    try {
+      const parsed = JSON.parse(event.data) as SystemStateModel
+      reachable.value = true
+      canReady.value = parsed.can_ready
+      running.value = parsed.measurement_status.running
+      measurementStatus.value = parsed.measurement_status
+    }
+    catch(e) {
+      console.log(e)
+    }
+  }
+
+  ws.onerror = (event: any) => {
+    console.log(event)
+  }
+
+  ws.onclose = (event: any) => {
+    console.log(event)
+  }
 
   async function checkState(): Promise<void> {
     try {
-      const response = await getSystemState()
-      reachable.value = true
-      canReady.value = response.can_ready
-      running.value = response.measurement_status.running
-      measurementStatus.value = response.measurement_status
+        ws.send('get_state')
+        reachable.value = true
     } catch(e) {
       reachable.value = false
       canReady.value = false

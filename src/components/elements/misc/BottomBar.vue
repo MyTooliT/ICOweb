@@ -4,7 +4,6 @@ import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import {
-  onBeforeUnmount,
   onMounted
 } from 'vue';
 
@@ -12,11 +11,6 @@ const store = useGeneralStore();
 
 onMounted(async () => {
   await store.systemState.checkState()
-  store.systemState.registerInterval(5000)
-})
-
-onBeforeUnmount(() => {
-  store.systemState.deregisterInterval()
 })
 
 function clearCache() {

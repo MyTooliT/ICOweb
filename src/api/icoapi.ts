@@ -23,6 +23,15 @@ export function getAPILink(): string {
   return `${protocol}://${hostname}:${port}/api/${version}`
 }
 
+export function getWSLink(): string {
+  const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
+  const hostname = import.meta.env.VITE_API_HOSTNAME;
+  const port = import.meta.env.VITE_API_PORT;
+  const version = import.meta.env.VITE_API_VERSION;
+
+  return `${protocol}://${hostname}:${port}/api/${version}`
+}
+
 const {
   del,
   get,
