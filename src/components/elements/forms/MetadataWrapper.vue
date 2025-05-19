@@ -98,12 +98,17 @@ function getValue(key: ParameterKey, form: UnifiedMetadata = mStore.metadataForm
 }
 
 function saveToFormData(id: ParameterKey, value: any) {
+  console.log(id, value)
   if(mStore.metadataForm[id] !== null && parameters.value !== undefined) {
-    const value_to_safe = parameters.value[id].datatype.includes('text') ? value.toString() : value
+    let saveable_value = value
+    if(!(value === undefined || value === null) && parameters.value[id].datatype.includes('text')) {
+      saveable_value = value.toString()
+    }
+    //const value_to_safe = parameters.value[id].datatype.includes('text') ? value.toString() : value
     if(typeof mStore.metadataForm[id] === 'object') {
-      mStore.metadataForm[id].value = value_to_safe
+      mStore.metadataForm[id].value = saveable_value
     } else {
-      (mStore.metadataForm[id] as any) = value_to_safe
+      (mStore.metadataForm[id] as any) = saveable_value
     }
   }
 }
@@ -145,7 +150,6 @@ function saveToFormData(id: ParameterKey, value: any) {
             @complete="(event: any) => {
               filteredOptions[id] = [...(parameters && parameters[id] && parameters[id].options ? parameters[id].options : [])].filter(opt => String(opt).toLowerCase().includes(event.query.toLowerCase()))
             }"
-            @input="(event: any) => saveToFormData(id, event.value)"
             @update:model-value="(event: any) => saveToFormData(id, event)"
           />
         </NamedInput>
