@@ -1,64 +1,86 @@
-import {getWSLink} from '@/api/icoapi.ts';
-import {MeasurementStatus, SystemStateModel} from '@/client';
+import { getWSLink } from '@/api/icoapi.ts';
+import { MeasurementStatus, SystemStateModel } from '@/client';
 import { ref } from 'vue';
 
 export function useSystemState() {
-  const reachable = ref<boolean>(false);
-  const canReady = ref<boolean>(false);
-  const running = ref<boolean>(false);
+  const reachable = ref(false);
+  const canReady = ref(false);
+  const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
-  const ws = new WebSocket(`${getWSLink()}/state`);
+
+  let ws: WebSocket | null = null;
   let intervalID = 0;
+  let retryTimer: number | null = null;
 
-  ws.onmessage = (event: any) => {
+  function connectWebSocket(retries = 10, delay = 1000) {
     try {
-      const parsed = JSON.parse(event.data) as SystemStateModel
-      reachable.value = true
-      canReady.value = parsed.can_ready
-      running.value = parsed.measurement_status.running
-      measurementStatus.value = parsed.measurement_status
-    }
-    catch(e) {
-      console.log(e)
-    }
-  }
+      ws = new WebSocket(`${getWSLink()}/state`);
 
-  ws.onerror = (event: any) => {
-    console.log(event)
-  }
+      ws.onopen = () => {
+        console.log('[WS] Connected');
+      };
 
-  ws.onclose = (event: any) => {
-    console.log(event)
+      ws.onmessage = (event: any) => {
+        try {
+          const parsed = JSON.parse(event.data) as SystemStateModel;
+          reachable.value = true;
+          canReady.value = parsed.can_ready;
+          running.value = parsed.measurement_status.running;
+          measurementStatus.value = parsed.measurement_status;
+        } catch (e) {
+          console.error('[WS] Parse error', e);
+        }
+      };
+
+      ws.onerror = (event: any) => {
+        console.error('[WS] Error', event);
+      };
+
+      ws.onclose = (event: any) => {
+        console.warn('[WS] Closed', event);
+        reachable.value = false;
+        canReady.value = false;
+        running.value = false;
+
+        // Retry logic
+        if (retries > 0) {
+          console.log(`[WS] Retrying in ${delay}ms...`);
+          retryTimer = window.setTimeout(() => connectWebSocket(retries - 1, delay), delay);
+        }
+      };
+    } catch (e) {
+      console.error('[WS] Failed to connect', e);
+      if (retries > 0) {
+        retryTimer = window.setTimeout(() => connectWebSocket(retries - 1, delay), delay);
+      }
+    }
   }
 
   async function checkState(): Promise<void> {
     try {
-        ws.send('get_state')
-        reachable.value = true
-    } catch(e) {
-      reachable.value = false
-      canReady.value = false
-      running.value = false
+      ws?.send('get_state');
+      reachable.value = true;
+    } catch (e) {
+      reachable.value = false;
+      canReady.value = false;
+      running.value = false;
     }
   }
 
   function registerInterval(timeout_ms: number) {
-    if (!window) {
-      throw new Error('useSystemState needs the <window> object')
-    }
-
+    if (!window) throw new Error('useSystemState needs the <window> object');
     intervalID = window.setInterval(async () => checkState(), timeout_ms);
   }
 
   function deregisterInterval() {
-    if (!window) {
-      throw new Error('useSystemState needs the <window> object')
-    }
-
-    if(intervalID !== 0) {
-      window.clearInterval(intervalID)
-    }
+    if (!window) throw new Error('useSystemState needs the <window> object');
+    if (intervalID !== 0) window.clearInterval(intervalID);
+    if (retryTimer) window.clearTimeout(retryTimer);
+    if (ws) ws.close();
   }
+
+  // Immediately try to connect
+  connectWebSocket();
 
   return {
     reachable,
@@ -68,5 +90,5 @@ export function useSystemState() {
     checkState,
     registerInterval,
     deregisterInterval
-  }
+  };
 }
