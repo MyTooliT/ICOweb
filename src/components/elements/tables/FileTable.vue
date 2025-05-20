@@ -12,6 +12,7 @@ import {deleteMeasurementFile, uploadFile} from '@/api/icoapi.ts';
 import {defineEmits, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
+import DownloadButton from '@/components/elements/buttons/DownloadButton.vue';
 const mStore = useMeasurementStore()
 const router = useRouter()
 const { pageEnabled, featureEnabled } = useDisable()
@@ -93,17 +94,7 @@ const emits = defineEmits<{
             outlined
             @click.prevent="router.push(`/analyze?file=${data.name}`)"
           />
-          <Button
-            v-tooltip.top="'Download'"
-            icon="pi pi-download"
-            as="a"
-            download
-            :href="`${getAPILink()}/files/${data.name}`"
-            size="small"
-            rounded
-            aria-label="Download"
-            outlined
-          />
+          <DownloadButton :link="`${getAPILink()}/files/${data.name}`" />
           <Button
             v-tooltip.top="{
               value: 'Delete Locally',
