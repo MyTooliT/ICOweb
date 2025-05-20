@@ -7,6 +7,8 @@ export type ADCValues = {
     reference_voltage: number | null;
 };
 
+export type ActivityEnum = 'Tool Wear Monitoring';
+
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
     file: (Blob | File);
 };
@@ -196,6 +198,9 @@ export type Sensor = {
     offset?: number;
 };
 
+/**
+ * Data model for API state
+ */
 export type SystemStateModel = {
     can_ready: boolean;
     disk_capacity: DiskCapacity;
@@ -219,6 +224,7 @@ export type UnifiedMetadata = {
     machine: string;
     experiment: string;
     process: ProcessEnum;
+    activity: ActivityEnum;
     workpiece_material: WorkpieceMaterialEnum;
     cutting_speed: Quantity;
     tool_material: ToolMaterialEnum;

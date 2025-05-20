@@ -40,6 +40,13 @@ parameters:
       - thread_cutting
       - thread_milling
       - thread_forming
+  activity:
+    id: activity
+    label: Activity
+    datatype: dropdown
+    type: default
+    options:
+      - Tool Wear Monitoring
   workpiece_material:
     id: workpiece_material
     label: Workpiece Material
@@ -147,6 +154,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: required
@@ -170,6 +178,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden
@@ -193,6 +202,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden
@@ -216,6 +226,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden
@@ -239,6 +250,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden
@@ -262,6 +274,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden
@@ -285,6 +298,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden
@@ -308,6 +322,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: required
@@ -331,6 +346,7 @@ processes:
       machine: required
       experiment: required
       process: required
+      activity: required
       workpiece_material: required
       cutting_speed: required
       feed_per_tooth: hidden

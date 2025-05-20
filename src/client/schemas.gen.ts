@@ -52,6 +52,12 @@ export const $ADCValues = {
     title: 'ADCValues'
 } as const;
 
+export const $ActivityEnum = {
+    type: 'string',
+    enum: ['Tool Wear Monitoring'],
+    title: 'ActivityEnum'
+} as const;
+
 export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
@@ -812,7 +818,8 @@ export const $SystemStateModel = {
     },
     type: 'object',
     required: ['can_ready', 'disk_capacity', 'measurement_status', 'cloud_status'],
-    title: 'SystemStateModel'
+    title: 'SystemStateModel',
+    description: 'Data model for API state'
 } as const;
 
 export const $ToolMaterialEnum = {
@@ -868,6 +875,9 @@ export const $UnifiedMetadata = {
         },
         process: {
             '$ref': '#/components/schemas/ProcessEnum'
+        },
+        activity: {
+            '$ref': '#/components/schemas/ActivityEnum'
         },
         workpiece_material: {
             '$ref': '#/components/schemas/WorkpieceMaterialEnum'
@@ -982,7 +992,7 @@ export const $UnifiedMetadata = {
         }
     },
     type: 'object',
-    required: ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'tool_material', 'coolant', 'sth_mac', 'stu_mac'],
+    required: ['person', 'institution', 'machine', 'experiment', 'process', 'activity', 'workpiece_material', 'cutting_speed', 'tool_material', 'coolant', 'sth_mac', 'stu_mac'],
     title: 'UnifiedMetadata'
 } as const;
 
