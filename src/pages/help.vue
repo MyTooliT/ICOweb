@@ -34,7 +34,6 @@ const version = __APP_VERSION__
       icon="pi pi-download"
       link
       :href="`${getAPILink()}/logs/all`"
-      target="_blank"
     />
   </div>
 </template>

@@ -51,7 +51,6 @@ onMounted(async() => {
         label="Download All"
         as="a"
         :href="`${getAPILink()}/logs/all`"
-        target="_blank"
       />
     </div>
   </DefaultLayout>
