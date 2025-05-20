@@ -19,6 +19,7 @@ const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteM
 const { loading: uploadLoading, call: upload } = useLoadingHandler(uploadFile)
 const uploadedFile = ref<string>('')
 
+const disableTooltip = ref<boolean>(false)
 const emits = defineEmits<{
   (event: 'needs-refresh'): void,
 }>()
@@ -104,7 +105,10 @@ const emits = defineEmits<{
             outlined
           />
           <Button
-            v-tooltip.top="'Delete Locally'"
+            v-tooltip.top="{
+              value: 'Delete Locally',
+              disabled: disableTooltip
+            }"
             icon="pi pi-times"
             severity="danger"
             size="small"
@@ -113,7 +117,9 @@ const emits = defineEmits<{
             outlined
             :loading="deletionLoading"
             @click="async () => {
+              disableTooltip = true
               await deleteFile(data.name)
+              disableTooltip = false
               emits('needs-refresh')
             }"
           />
