@@ -17,8 +17,8 @@ const version = __APP_VERSION__
       Report a bug:
       <a
         class="underline underline-offset-2"
-        href="mailto:breurather@ift.at">
-        breurather@ift.at
+        href="mailto:icosupport@ift.at">
+        ICOsupport@ift.at
       </a>
     </p>
   </div>
