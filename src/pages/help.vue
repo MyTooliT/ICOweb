@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import {getAPILink} from '@/api/icoapi.ts';
+import Button from 'primevue/button';
+
 const version = __APP_VERSION__
 </script>
 
@@ -24,5 +27,14 @@ const version = __APP_VERSION__
     <p class="font-bold">
       Please report bugs with log files attached.
     </p>
+    <Button
+      label="Download Logs"
+      as="a"
+      outlined
+      icon="pi pi-download"
+      link
+      :href="`${getAPILink()}/logs/all`"
+      target="_blank"
+    />
   </div>
 </template>
