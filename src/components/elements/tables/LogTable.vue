@@ -4,8 +4,9 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ProgressSpinner from 'primevue/progressspinner';
 import { LogFileMeta, LogListResponse } from '@/client';
-import { getLog } from '@/api/icoapi.ts';
+import {getAPILink, getLog} from '@/api/icoapi.ts';
 import {formatFileSize} from '../../../utils/helper.ts';
+import DownloadButton from '@/components/elements/buttons/DownloadButton.vue';
 
 const loadingList = ref(false);
 const expandedRows = ref<LogFileMeta[]>([]);
@@ -82,6 +83,13 @@ const formatTimestamp = (ts: string): string => {
         <span v-if="data.first_timestamp && data.last_timestamp">
           {{ formatTimestamp(data.first_timestamp) }} - {{ formatTimestamp(data.last_timestamp) }}
         </span>
+      </template>
+    </Column>
+    <Column
+      header="Actions">
+      <template
+        #body="{ data }: { data: LogFileMeta }">
+        <DownloadButton :link="`${getAPILink()}/logs/download/${data.name}`" />
       </template>
     </Column>
     <template #expansion="slotProps">

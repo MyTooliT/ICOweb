@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import Button from 'primevue/button';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { LogListResponse } from '@/client';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
-import { getLogs } from '@/api/icoapi.ts';
+import {getAPILink, getLogs} from '@/api/icoapi.ts';
 import LogTable from '@/components/elements/tables/LogTable.vue';
 import {formatFileSize} from '../utils/helper.ts';
 
@@ -31,7 +32,7 @@ onMounted(async() => {
       :logs="logs" />
     <div
       v-if="logs"
-      class="mt-3">
+      class="my-3">
       <p class="flex items-start gap-3 ">
         <span class="font-semibold">Log file path:</span>
         <span>{{ logs.directory }}</span>
@@ -44,6 +45,14 @@ onMounted(async() => {
         <span class="font-semibold">Log file backups:</span>
         <span>{{ logs.backup_count }}</span>
       </p>
+    </div>
+    <div>
+      <Button
+        label="Download All"
+        as="a"
+        :href="`${getAPILink()}/logs/all`"
+        target="_blank"
+      />
     </div>
   </DefaultLayout>
 </template>
