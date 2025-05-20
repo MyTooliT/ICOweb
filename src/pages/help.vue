@@ -17,9 +17,12 @@ const version = __APP_VERSION__
       Report a bug:
       <a
         class="underline underline-offset-2"
-        href="mailto:icosupport@ift.at">
+        href="mailto:icosupport@ift.at?subject=ICOgui bug report&body=Please think about your developers and attach log files, thank you! With that and a brief description of the issue we will make sure to get back to you ASAP. You may delete this line (after attaching log files, of course)">
         ICOsupport@ift.at
       </a>
+    </p>
+    <p class="font-bold">
+      Please report bugs with log files attached.
     </p>
   </div>
 </template>
