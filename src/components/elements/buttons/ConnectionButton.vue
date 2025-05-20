@@ -61,6 +61,7 @@ function clickHandler(): void {
   <Button
     size="small"
     rounded
+    class="min-w-[17ch]"
     :label="label"
     :icon="`pi pi-${icon}`"
     :severity="props.device.getConnectionStatus() === 'connected'

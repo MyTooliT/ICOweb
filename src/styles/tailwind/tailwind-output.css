@@ -822,6 +822,26 @@ video {
   min-width: 15ch;
 }
 
+.min-w-\[12ch\] {
+  min-width: 12ch;
+}
+
+.min-w-\[120ch\] {
+  min-width: 120ch;
+}
+
+.min-w-\[20ch\] {
+  min-width: 20ch;
+}
+
+.min-w-\[16ch\] {
+  min-width: 16ch;
+}
+
+.min-w-\[17ch\] {
+  min-width: 17ch;
+}
+
 .max-w-16 {
   max-width: 4rem;
 }
