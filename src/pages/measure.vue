@@ -122,7 +122,14 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ws.value?.close()
   }
   await startMeasurement({
-    name: null,
+    name:
+      featureEnabled('Meta') &&
+      mStore.metadataForm.activity &&
+      mStore.metadataForm.activity.length > 0 &&
+      mStore.metadataForm.experiment &&
+      mStore.metadataForm.experiment.length > 0
+          ? mStore.metadataForm.activity.split(' ').join('') + '_' + mStore.metadataForm.experiment.split(' ').join('')
+          : null,
     first: {
       channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
       sensor_id: null
