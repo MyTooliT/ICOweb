@@ -71,13 +71,11 @@ async function sendRequest<ResponseType>(
           }
         } else {
           reject(
-            Object.assign(
               {
                 error: true,
                 status: response.status,
-              },
-              await response.json(),
-            ),
+                message: await response.text()
+              }
           );
         }
       })

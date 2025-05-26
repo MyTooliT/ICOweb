@@ -19,7 +19,7 @@ const { featureEnabled } = useDisable()
 const mStore = useMeasurementStore()
 
 const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
-const { loading: authLoading, call: refreshAuth } = useLoadingHandler(refreshTridentAuth)
+const { loading: authLoading, call: refreshAuth, error: authError } = useLoadingHandler(refreshTridentAuth)
 
 const meterItems = computed<MeterItem[]>(() => {
   if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
@@ -64,9 +64,12 @@ const meterItems = computed<MeterItem[]>(() => {
         >
           <InputGroup>
             <InputGroupAddon>
-              Connected
+              <span :class="authError ? 'text-red-500' : ''">
+                {{ authError ? 'Disconnected' : 'Connected' }}
+              </span>
             </InputGroupAddon>
             <Button
+              :severity="authError ? 'danger' : 'primary'"
               label="Refresh"
               icon="pi pi-sync"
               outlined
@@ -80,6 +83,7 @@ const meterItems = computed<MeterItem[]>(() => {
         </NamedInput>
       </div>
       <FileTable
+        :auth-error="authError.isError"
         @needs-refresh="loadFiles"
       />
     </div>

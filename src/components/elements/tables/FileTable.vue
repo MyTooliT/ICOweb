@@ -21,6 +21,9 @@ const { loading: uploadLoading, call: upload } = useLoadingHandler(uploadFile)
 const uploadedFile = ref<string>('')
 
 const disableTooltip = ref<boolean>(false)
+defineProps<{
+  authError: boolean
+}>()
 const emits = defineEmits<{
   (event: 'needs-refresh'): void,
 }>()
@@ -64,7 +67,7 @@ const emits = defineEmits<{
       <template #body="{ data }: { data: MeasurementFileDetails }">
         <div class="flex flex-row gap-2">
           <Button
-            v-if="featureEnabled('Cloud')"
+            v-if="featureEnabled('Cloud') && !authError"
             v-tooltip.top="{
               value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to Data space'
             }"
