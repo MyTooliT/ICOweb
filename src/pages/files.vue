@@ -14,12 +14,16 @@ import MeterGroup from 'primevue/metergroup';
 import { computed } from 'vue';
 import {useDisable} from '@/utils/useDisable.ts';
 import FileTable from '@/components/elements/tables/FileTable.vue';
+import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
+import {useToast} from 'primevue/usetoast';
 
+const ts = useToast()
 const { featureEnabled } = useDisable()
 const mStore = useMeasurementStore()
+const gStore = useGeneralStore()
 
 const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
-const { loading: authLoading, call: refreshAuth, error: authError } = useLoadingHandler(refreshTridentAuth)
+const { loading: authLoading, call: refreshAuth, error: authError, errorMessage } = useLoadingHandler(refreshTridentAuth)
 
 const meterItems = computed<MeterItem[]>(() => {
   if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
@@ -64,26 +68,36 @@ const meterItems = computed<MeterItem[]>(() => {
         >
           <InputGroup>
             <InputGroupAddon>
-              <span :class="authError ? 'text-red-500' : ''">
-                {{ authError ? 'Disconnected' : 'Connected' }}
+              <span :class="authError || !gStore.systemState.cloud_ready ? 'text-red-500' : ''">
+                {{ authError || !gStore.systemState.cloud_ready ? 'Disconnected' : 'Connected' }}
               </span>
             </InputGroupAddon>
             <Button
-              :severity="authError ? 'danger' : 'primary'"
+              :severity="authError || !gStore.systemState.cloud_ready ? 'danger' : 'primary'"
               label="Refresh"
               icon="pi pi-sync"
               outlined
               :loading="authLoading"
               @click="async () => {
-                await refreshAuth()
-                await getCloudFiles()
+                try {
+                  await refreshAuth()
+                  await getCloudFiles()
+                } catch(e: any) {
+                  ts.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: errorMessage,
+                    life: 5000,
+                    group: 'default'
+                  })
+                }
               }"
             />
           </InputGroup>
         </NamedInput>
       </div>
       <FileTable
-        :auth-error="authError.isError"
+        :auth-error="authError || !gStore.systemState.cloud_ready"
         @needs-refresh="loadFiles"
       />
     </div>

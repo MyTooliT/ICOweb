@@ -3,38 +3,44 @@ import {
   ref
 } from 'vue';
 
-type TError = {
-  isError: boolean,
-  error: unknown | undefined
-}
-
 export function useLoadingHandler<T = any>(fn: (...args: any[]) => Promise<T>): {
   loading: Ref<boolean>,
   call: (...args: any[]) => Promise<T>,
-  error: Ref<TError>
+  error: Ref<boolean>,
+  errorMessage: Ref<string>
 } {
   const loading = ref<boolean>(false)
-  const error = ref<TError>({
-    isError: false,
-    error: undefined
-  })
+  const error = ref<boolean>(false)
+  const msg = ref<string>('')
   async function call(...args: any[]): Promise<T> {
     loading.value = true
     try {
       const result = await fn(...args)
       loading.value = false
+      error.value = false
       return result
-    } catch(e) {
+    } catch(e: any) {
       loading.value = false
-      error.value.isError = true
-      error.value.error = e
-      throw e
+      error.value = true
+      msg.value = 'Unknown error'
+      if(e.message) {
+        try {
+          const parsed = JSON.parse(e.message)
+          if(parsed.detail) {
+            msg.value = parsed.detail
+          }
+        } catch {
+          msg.value = e.message
+        }
+      }
+      throw new Error(...e)
     }
   }
 
   return {
     loading,
     call,
-    error
+    error,
+    errorMessage: msg
   }
 }
