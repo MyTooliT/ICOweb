@@ -7,6 +7,7 @@ export function useSystemState() {
   const canReady = ref(false);
   const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
+  const cloud_ready = ref(false);
 
   let ws: WebSocket | null = null;
   let intervalID = 0;
@@ -31,6 +32,7 @@ export function useSystemState() {
           canReady.value = parsed.can_ready;
           running.value = parsed.measurement_status.running;
           measurementStatus.value = parsed.measurement_status;
+          cloud_ready.value = parsed.cloud_status
         } catch (e) {
           console.error('[WS] Parse error', e);
         }
@@ -45,6 +47,7 @@ export function useSystemState() {
         reachable.value = false;
         canReady.value = false;
         running.value = false;
+        cloud_ready.value = false;
 
         // Retry logic
         if (retries > 0) {
@@ -68,6 +71,7 @@ export function useSystemState() {
       reachable.value = false;
       canReady.value = false;
       running.value = false;
+      cloud_ready.value = false;
     }
   }
 
@@ -95,6 +99,7 @@ export function useSystemState() {
     registerInterval,
     deregisterInterval,
     hasWS,
-    connectWebSocket
+    connectWebSocket,
+    cloud_ready
   };
 }
