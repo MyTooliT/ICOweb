@@ -1,6 +1,6 @@
 {
-  "name": "icoclient",
-  "description": "Frontend for ICOgui",
+  "name": "icoweb",
+  "description": "Frontend for ICOdaq",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.ift.tuwien.ac.at/lab/ift/icotronic/icoclient"
+    "url": "https://git.ift.tuwien.ac.at/lab/ift/icotronic/icoweb"
   },
   "author": {
     "name": "Moritz Breurather",

@@ -1,4 +1,4 @@
-# ICOclient Application
+# ICOweb Application
 
 A frontend/client developed in conjunction with the corresponding [ICOapi](https://git.ift.tuwien.ac.at/lab/ift/icotronic/icoapi) backend.
 It is designed to be run in any form of modern browser.
@@ -31,8 +31,8 @@ For Linux, there is an installation script which sets the directory for the actu
 systemd service and the used systemd service name as well as the Node version. The (sensible) defaults are:
 
 ```
-SERVICE_NAME="icoclient"
-INSTALL_DIR="/etc/icoclient"
+SERVICE_NAME="icoweb"
+INSTALL_DIR="/etc/icoweb"
 SERVICE_PATH="/etc/systemd/system"
 NODE_VERSION="18.19.0"
 FORCE_REINSTALL=false

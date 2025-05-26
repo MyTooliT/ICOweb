@@ -20,7 +20,7 @@ onMounted(async() => {
 <template>
   <DefaultLayout>
     <TextBlock
-      heading="ICOgui Log Viewer"
+      heading="ICOdaq Log Viewer"
       subheading="Inspect backend logs, stream live updates, or download the full file."
       button-text="Reload Logs"
       button-icon-class="pi pi-sync"

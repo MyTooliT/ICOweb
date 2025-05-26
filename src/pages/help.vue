@@ -9,7 +9,7 @@ const version = __APP_VERSION__
   <div
     class="flex flex-col w-full justify-center items-center gap-4 h-stretch"
   >
-    <h1 class="text-4xl text-primary">ICOgui</h1>
+    <h1 class="text-4xl text-primary">ICOdaq</h1>
     <h2>Graphical User Interface for Sensory Tool Holder System by MyTooliT</h2>
     <p class="text-center">
       Technische Universität Wien <br />
@@ -20,7 +20,7 @@ const version = __APP_VERSION__
       Report a bug:
       <a
         class="underline underline-offset-2"
-        href="mailto:icosupport@ift.at?subject=ICOgui bug report&body=Please think about your developers and attach log files, thank you! With that and a brief description of the issue we will make sure to get back to you ASAP. You may delete this line (after attaching log files, of course)">
+        href="mailto:icosupport@ift.at?subject=ICOdaq bug report&body=Please think about your developers and attach log files, thank you! With that and a brief description of the issue we will make sure to get back to you ASAP. You may delete this line (after attaching log files, of course)">
         ICOsupport@ift.at
       </a>
     </p>

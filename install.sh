@@ -2,8 +2,8 @@
 
 set -e
 
-SERVICE_NAME="icoclient"
-INSTALL_DIR="/etc/icoclient"
+SERVICE_NAME="icoweb"
+INSTALL_DIR="/etc/icoweb"
 SERVICE_PATH="/etc/systemd/system"
 NODE_VERSION="18.19.0"
 FORCE_REINSTALL=false
@@ -62,7 +62,7 @@ npm install
 echo "Ensuring systemd service exists..."
 sudo bash -c "cat << EOF > $SERVICE_PATH/$SERVICE_NAME.service
 [Unit]
-Description=ICOclient Node.js Service
+Description=ICOweb Node.js Service
 After=network.target
 
 [Service]
