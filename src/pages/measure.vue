@@ -170,7 +170,7 @@ function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
 }
 
 // Maximum drawable points per channel for graph
-const maxNumberOfPoints = ref<number>(2000)
+const maxNumberOfPoints = ref<number>(1000)
 
 const datalossMeter = computed<MeterItem[]>(() => [
   {
