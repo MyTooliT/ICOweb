@@ -51,6 +51,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
     animation: false,
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         type: 'linear',

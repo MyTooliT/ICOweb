@@ -216,7 +216,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
 </script>
 
 <template>
-  <div class="flex flex-row h-full">
+  <div class="flex flex-row">
     <DefaultLayout class="w-fill w-stretch">
       <div
         v-if="hwStore.hasSTU && hwStore.activeSTH"
@@ -279,11 +279,6 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                       binary
                       :disabled="slot === 'first'"
                     />
-                  </InputGroupAddon>
-                  <InputGroupAddon>
-                    <span class="capitalize !text-black inline-block w-24">
-                      {{ slot }}
-                    </span>
                   </InputGroupAddon>
                   <Select
                     v-model="mStore.selectedChannels[slot]"
