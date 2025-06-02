@@ -270,7 +270,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             <div class="flex flex-col">
               <NamedInput title="Measurement Channels">
                 <InputGroup
-                  v-for="slot in measurementChannels"
+                  v-for="slot in measurementChannels.slice(0, hwStore.activeHolder?.sensors.length ?? 2)"
                   :key="slot"
                 >
                   <InputGroupAddon class="w-12">
