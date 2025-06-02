@@ -28,6 +28,14 @@ async function handleSubmit(name: string, device: STHDevice) {
 const device = ref<STHDevice | null>(null)
 
 const {call, loading} = useLoadingHandler<void>(handleSubmit)
+
+async function handleConnect(device: STHDevice) {
+  if(hwStore.activeSTH) {
+    await hwStore.activeSTH.disconnect()
+    await hwStore.activeSTU.reset()
+  }
+  await device.connect()
+}
 </script>
 
 <template>
@@ -84,7 +92,7 @@ const {call, loading} = useLoadingHandler<void>(handleSubmit)
         <ConnectionButton
           class="mx-3"
           :device="data"
-          @connect="() => data.connect()"
+          @connect="() => handleConnect(data)"
           @disconnect="() => data.disconnect()"
         />
         <Button
