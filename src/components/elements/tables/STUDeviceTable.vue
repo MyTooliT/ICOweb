@@ -6,9 +6,12 @@ import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { useToast } from 'primevue/usetoast';
+import {useDisable} from '@/utils/useDisable.ts';
 
 const store = useHardwareStore()
 const toast = useToast()
+
+const { featureEnabled } = useDisable()
 
 const {
   loading: resetLoading,
@@ -54,14 +57,15 @@ const {
           icon="pi pi-sync"
           :loading="resetLoading"
           @click="resetReload(data).catch((e: Error) => toast.add({
-              severity: 'error',
-              summary: e.name,
-              detail: e.message,
-              life: 3000,
-              group: 'default'
-            }))"
+            severity: 'error',
+            summary: e.name,
+            detail: e.message,
+            life: 3000,
+            group: 'default'
+          }))"
         />
         <Button
+          v-if="featureEnabled('OTA')"
           rounded
           size="small"
           label="Enable OTA"
@@ -78,6 +82,7 @@ const {
           }))"
         />
         <Button
+          v-if="featureEnabled('OTA')"
           rounded
           size="small"
           label="Disable OTA"
