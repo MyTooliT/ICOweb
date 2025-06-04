@@ -13,7 +13,7 @@ import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
-  measurementChannels, TChannelMap,
+  measurementChannels,
   useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
 import { MeterItem } from '@/utils/dataModels.ts';
@@ -396,10 +396,10 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
           />
         </div>
       </div>
-      <ADCDrawer />
+      <ADCDrawer v-if="featureEnabled('ADC')" />
     </DefaultLayout>
     <button
-      v-if="hwStore.activeSTH"
+      v-if="hwStore.activeSTH && featureEnabled('ADC')"
       class="
         vertical-writing-lr orientation-mixed rotate-180
         bg-gray-200 [height:calc(100%-39px)]"
