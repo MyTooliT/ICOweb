@@ -150,7 +150,9 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     adc: adcStore.values,
     meta: featureEnabled('Meta') ? mStore.metadataForm : null
   })
-  show()
+  if(mStore.autostream) {
+    show()
+  }
   await gStore.systemState.checkState()
 })
 
