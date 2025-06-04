@@ -98,7 +98,6 @@ function getValue(key: ParameterKey, form: UnifiedMetadata = mStore.metadataForm
 }
 
 function saveToFormData(id: ParameterKey, value: any) {
-  console.log(id, value)
   if(mStore.metadataForm[id] !== null && parameters.value !== undefined) {
     let saveable_value = value
     if(!(value === undefined || value === null) && parameters.value[id].datatype.includes('text')) {
