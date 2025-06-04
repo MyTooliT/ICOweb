@@ -1545,6 +1545,10 @@ video {
   background-color: var(--md-sys-color-surface);
 }
 
+.data-\[disabled\=true\]\:cursor-not-allowed[data-disabled="true"] {
+  cursor: not-allowed;
+}
+
 .data-\[active\=true\]\:bg-surface[data-active="true"] {
   background-color: var(--md-sys-color-surface);
 }
@@ -1580,6 +1584,10 @@ video {
 
 .data-\[can\~\=true\]\:text-on-primary-container[data-can~="true"] {
   color: var(--md-sys-color-on-primary-container);
+}
+
+.data-\[disabled\=true\]\:hover\:bg-inherit:hover[data-disabled="true"] {
+  background-color: inherit;
 }
 
 @-moz-document url-prefix() {

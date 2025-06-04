@@ -2,19 +2,22 @@
 import {useDisable} from '@/utils/useDisable.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import RouterLinkButton from '@/components/elements/buttons/RouterLinkButton.vue';
+import {computed} from 'vue';
 
 const store = useGeneralStore();
 
-const menuItems: Array<{
+const menuItems = computed<Array<{
   name: string,
   to: string,
   icon: string,
-  text: string
-}> = [{
+  text: string,
+  disabled?: boolean,
+}>>(() => [{
   name: 'Home',
   to: '/',
   icon: 'wrench',
-  text: 'Devices'
+  text: 'Devices',
+  disabled: store.systemState.running
 }, {
   name: 'Measure',
   to: '/measure',
@@ -40,7 +43,7 @@ const menuItems: Array<{
   to: '/logs',
   icon: 'file-word',
   text: 'Logs'
-}].filter(item => useDisable().pageEnabled(item.name))
+}].filter(item => useDisable().pageEnabled(item.name)))
 </script>
 
 <template>
@@ -49,6 +52,7 @@ const menuItems: Array<{
     :key="item.name"
     :name="item.name"
     :to="item.to"
+    :disabled="item.disabled ?? false"
   >
     <span
       :class="`pi pi-${item.icon}`"
