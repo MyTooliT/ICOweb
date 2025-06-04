@@ -40,7 +40,10 @@ import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
 import MetadataWrapper from '@/components/elements/forms/MetadataWrapper.vue';
 import {useDisable} from '@/utils/useDisable.ts';
+import {useToast} from 'primevue/usetoast';
 /* eslint-enable max-len */
+
+const toast = useToast()
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
@@ -158,6 +161,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await stopMeasurement()
+  toast.add({life: 7000, group:'newfile'})
   await gStore.systemState.checkState()
 })
 
