@@ -160,9 +160,9 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 })
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
-  await stopMeasurement()
-  toast.add({life: 7000, group:'newfile'})
+  ws.value?.send('stop')
   await gStore.systemState.checkState()
+  toast.add({life: 7000, group:'newfile'})
 })
 
 const show = () => {
