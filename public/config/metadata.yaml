@@ -13,8 +13,7 @@ parameters:
     type: default
     options:
       - TU Wien
-      - TU München
-      - ETH Zürich
+      - TU Darmstadt
   machine:
     id: machine
     label: Machine
@@ -53,10 +52,8 @@ parameters:
     datatype: text_suggestions
     type: default
     options:
-      - S235
-      - 4140
-      - TiAl
-      - Grade 5 Titanium
+      - C45
+      - Steel (generic)
   cutting_speed:
     id: cutting_speed
     label: Cutting Speed
@@ -116,10 +113,11 @@ parameters:
     datatype: text_suggestions
     type: default
     options:
-      - PCD
+      - Carbide (P40)
       - Carbide
       - MCD
       - Ceramic
+      - PCD
   tool_offset:
     id: tool_offset
     label: Tool Offset
@@ -132,9 +130,11 @@ parameters:
     datatype: dropdown
     type: default
     options:
-      - Flood
+      - Dry
+      - Air
       - MMQ
-      - …
+      - Flood
+      - Oil
   sth_mac:
     id: sth_mac
     label: STH Mac Address
