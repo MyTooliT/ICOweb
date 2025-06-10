@@ -128,7 +128,7 @@ function saveToFormData(id: ParameterKey, value: any) {
         class="w-full"
       >
         <NamedInput
-          :title="parameters[id].label"
+          :title="`${parameters[id].label} ${parameters[id].unit ? 'in ' + parameters[id].unit : ''}`"
           class="w-full"
         >
           <component
