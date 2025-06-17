@@ -31,7 +31,6 @@ function onEnter(e: KeyboardEvent) {
 }
 
 function resetName() {
-  console.log(props.initialName);
   if (props.initialName) {
     nameContent.value = props.initialName
   }
