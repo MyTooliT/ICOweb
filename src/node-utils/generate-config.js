@@ -1,221 +1,280 @@
-// generate-config.mjs
+// src/node-utils/generate-full.js
+import xlsx from 'xlsx';
 import fs from 'fs';
 import path from 'path';
-import xlsx from 'xlsx';
 import yaml from 'js-yaml';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 
-const argv = yargs(hideBin(process.argv))
-    .option('input', {
-        alias: 'i',
-        describe: 'Path to input Excel file',
-        default: 'metadata.xlsx',
-        type: 'string'
-    })
-    .option('output', {
-        alias: 'o',
-        describe: 'Path to output YAML file',
-        default: 'metadata.yaml',
-        type: 'string'
-    })
-    .option('types', {
-        alias: 't',
-        describe: 'Path to output TypeScript declaration file',
-        default: 'src/types/yaml.d.ts',
-        type: 'string'
-    })
-    .help()
-    .argv;
-
-function toSnakeCase(str) {
-    return str
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '_')
-        .replace(/^_+|_+$/g, '');
+function normalizeKey(key) {
+    if (typeof key !== 'string') return null;
+    return key.trim().toLowerCase().replace(/\s+/g, '_');
 }
 
-function parseWorkbook(filePath) {
-    const wb = xlsx.readFile(filePath);
-    const zuordnung = xlsx.utils.sheet_to_json(wb.Sheets['Zuordnung'], { header: 1 });
-    const listen = xlsx.utils.sheet_to_json(wb.Sheets['Listen'], { header: 1 });
+function loadWorkbook(filePath) {
+    return xlsx.readFile(filePath);
+}
 
-    const infoSheet = wb.Sheets['Info'];
-    const info = {};
-    if (infoSheet) {
-        const infoData = xlsx.utils.sheet_to_json(infoSheet, { header: 1 });
-        infoData.forEach(row => {
-            if (row[0] && row[1]) {
-                info[toSnakeCase(row[0])] = row[1];
-            }
-        });
+function parseFields(sheet) {
+    const rows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
+    const parameters = {};
+
+    for (const row of rows) {
+        const param = {};
+        // normalize all columns
+        for (const [key, value] of Object.entries(row)) {
+            const nk = normalizeKey(key);
+            if (!nk) continue;
+            // skip unit if empty
+            if (nk === 'unit' && String(value).trim() === '') continue;
+            param[nk] = value;
+        }
+
+        const id = normalizeKey(param['id'] || param['field_id']);
+        if (!id) continue;
+        parameters[id] = param;
     }
 
-    const warnings = [];
-    const parameters = {};
-    const processes = {};
+    return parameters;
+}
 
-    const processIDs = zuordnung[1].slice(6).map(id => toSnakeCase(id));
-    const processLabels = zuordnung[2].slice(6);
+function parseLists(sheet) {
+    const data = xlsx.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    if (data.length === 0) return {};
+    const headers = data[0].map(h => normalizeKey(h));
+    const lists = {};
+    headers.forEach(id => { if (id) lists[id] = []; });
+    for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        headers.forEach((id, j) => {
+            const val = row[j];
+            if (id && val !== undefined && val !== '') lists[id].push(val);
+        });
+    }
+    return lists;
+}
 
-    processIDs.forEach((id, idx) => {
-        processes[id] = {
-            label: processLabels[idx] || id,
-            parameters: {}
-        };
+function parseInfo(sheet) {
+    const data = xlsx.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    const info = {};
+    data.forEach(row => {
+        const key = row[0];
+        const value = row[1];
+        if (key && value !== undefined && value !== '') {
+            info[normalizeKey(key)] = value;
+        }
+    });
+    return info;
+}
+
+function parseCategories(sheet) {
+    const rows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
+    const categories = {};
+    rows.forEach(row => {
+        const id = normalizeKey(row['id']);
+        if (!id) return;
+        categories[id] = row['name'] || id;
+    });
+    return categories;
+}
+
+function parsePhase(sheet, parameters) {
+    const rows = xlsx.utils.sheet_to_json(sheet, { defval: '', range: 3 });
+    const phaseData = {};
+    rows.forEach(row => {
+        const norm = {};
+        for (const [key, value] of Object.entries(row)) {
+            const nk = normalizeKey(key);
+            if (nk) norm[nk] = value;
+        }
+        const fieldId = normalizeKey(norm['field_id'] || norm['id']);
+        if (!fieldId || !parameters[fieldId]) return;
+        const category = normalizeKey(norm['category'] || 'general');
+        phaseData[category] = phaseData[category] || {};
+        const details = {};
+        if (norm['required'] !== undefined && norm['required'] !== '') {
+            details.required = normalizeKey(norm['required']);
+        }
+        if (norm['default'] !== undefined && norm['default'] !== '') {
+            details.default = norm['default'];
+        }
+        if (norm['description'] !== undefined && norm['description'] !== '') {
+            details.description = norm['description'];
+        }
+        phaseData[category][fieldId] = details;
+    });
+    return phaseData;
+}
+
+function parseProfiles(wb, parameters) {
+    const profiles = {};
+    const preSheets = wb.SheetNames.filter(n => n.toLowerCase().startsWith('pre_'));
+    const bases = [...new Set(preSheets.map(n => normalizeKey(n).replace(/^pre_/, '')))];
+    bases.forEach(base => {
+        const profile = {};
+        const preSheet = wb.Sheets[`pre_${base}`] || wb.Sheets[`PRE_${base}`];
+        if (preSheet) {
+            const idCell   = preSheet['B1'];
+            const nameCell = preSheet['B2'];
+            profile.id   = idCell   && idCell.v   ? normalizeKey(idCell.v)   : base;
+            profile.name = nameCell && nameCell.v ? nameCell.v : base;
+            profile.pre  = parsePhase(preSheet, parameters);
+        }
+        const postSheet = wb.Sheets[`post_${base}`] || wb.Sheets[`POST_${base}`];
+        if (postSheet) profile.post = parsePhase(postSheet, parameters);
+        profiles[base] = profile;
+    });
+    return profiles;
+}
+
+function generateTs(config) {
+    const lines = [];
+    lines.push('// Auto-generated from metadata.yaml');
+    lines.push('');
+
+    // Lists as const arrays and types
+    Object.entries(config.lists).forEach(([listId, values]) => {
+        const constName = `${listId}List`;
+        const typeName  = `${listId.charAt(0).toUpperCase() + listId.slice(1)}`;
+        lines.push(`export const ${constName} = [${values.map(v => `'${v}'`).join(', ')}] as const;`);
+        lines.push(`export type ${typeName} = typeof ${constName}[number];`);
+        lines.push('');
     });
 
-    for (let i = 3; i < zuordnung.length; i++) {
-        const row = zuordnung[i];
-        const rawId = row[2];
-        if (!rawId || rawId.toLowerCase() === 'id') continue;
+    // Datatype union
+    const datatypes = new Set(Object.values(config.parameters).map(p => p.datatype));
+    lines.push(`export type Datatype = ${[...datatypes].map(dt => `'${dt}'`).join(' | ')};`);
+    lines.push('');
 
-        const id = toSnakeCase(rawId);
-        const label = row[1] || id;
-        const datatypeRaw = row[3] || 'unknown';
-        const unit = row[4] || undefined;
-        const type = row[5] || undefined;
-        const datatype = datatypeRaw.toLowerCase();
-
-        const paramDef = { id: rawId, label, datatype };
-        if (unit) paramDef.unit = unit;
-        if (type) paramDef.type = type;
-
-        if (datatype.includes('dropdown') || datatype.includes('suggestions')) {
-            const listHeaderRow = listen[2];
-            const colIndex = listHeaderRow.findIndex((v) => toSnakeCase(v) === id);
-
-            if (colIndex === -1) {
-                warnings.push(`⚠️  No values found in Listen for parameter: ${id}`);
-            } else {
-                paramDef.options = listen
-                    .slice(3)
-                    .map(row => row[colIndex])
-                    .filter(val => val != null && val !== '...');
-            }
+    // ParameterDefinition interface
+    const paramProps = new Set();
+    Object.values(config.parameters).forEach(p => Object.keys(p).forEach(k => paramProps.add(k)));
+    lines.push('export interface ParameterDefinition {');
+    paramProps.forEach(prop => {
+        switch(prop) {
+            case 'id':
+            case 'label':
+                lines.push(`  ${prop}: string;`);
+                break;
+            case 'datatype':
+                lines.push(`  ${prop}: Datatype;`);
+                break;
+            case 'options':
+                lines.push(`  ${prop}?: readonly string[];`);
+                break;
+            default:
+                lines.push(`  ${prop}?: string;`);
         }
+    });
+    lines.push('}');
+    lines.push('');
 
-        parameters[id] = paramDef;
+    // Parameters map
+    lines.push('export interface Parameters {');
+    Object.keys(config.parameters).forEach(id => {
+        lines.push(`  ${id}: ParameterDefinition;`);
+    });
+    lines.push('}');
+    lines.push('');
 
-        processIDs.forEach((procId, idx) => {
-            const state = (row[6 + idx] || 'hidden').toLowerCase();
-            processes[procId].parameters[id] = state;
+    // --- New: add readonly const array of Parameter (parameter IDs) ---
+    const paramIds = Object.keys(config.parameters);
+    lines.push(`export const ParameterList = [${paramIds.map(id => `'${id}'`).join(', ')}] as const;`);
+    lines.push('export type Parameter = typeof ParameterList[number];');
+    lines.push('');
+
+    // Info interface (skip duplicate generated_at)
+    lines.push('export interface Info {');
+    Object.keys(config.info)
+        .filter(key => key !== 'generated_at')
+        .forEach(key => {
+            lines.push(`  ${key}: string;`);
         });
+    lines.push('  generated_at: string;');
+    lines.push('}');
+    lines.push('');
+
+    // Category union
+    lines.push('export type Category =');
+    Object.keys(config.categories).forEach((cat, i, arr) => {
+        const sep = i === arr.length - 1 ? ';' : ' |';
+        lines.push(`  '${cat}'${sep}`);
+    });
+    lines.push('');
+
+    // ProfileParamDefinition alias
+    lines.push('export type ProfileParamDefinition = Partial<{ required: string; default: any; description: string }>;');
+    lines.push('');
+    lines.push('export type ProfileCategory = Record<Parameter, ProfileParamDefinition>');
+    lines.push('');
+
+    // ProfilePhase type alias
+    lines.push('export type ProfilePhase = Record<Category, ProfileCategory>;');
+    lines.push('');
+
+    // Profile interface
+    lines.push('export interface Profile {');
+    lines.push('  id: string;');
+    lines.push('  name: string;');
+    lines.push('  pre: ProfilePhase;');
+    lines.push('  post?: ProfilePhase;');
+    lines.push('}');
+    lines.push('');
+
+    // Profiles map
+    lines.push('export interface Profiles {');
+    Object.keys(config.profiles).forEach(key => {
+        lines.push(`  '${key}': Profile;`);
+    });
+    lines.push('}');
+    lines.push('');
+
+    // MetadataConfig
+    lines.push('export interface MetadataConfig {');
+    lines.push('  info: Info;');
+    lines.push('  parameters: Parameters;');
+    lines.push('  categories: Record<Category, string>;');
+    lines.push('  lists: Record<string, readonly string[]>;');
+    lines.push('  profiles: Profiles;');
+    lines.push('}');
+
+    return lines.join('\n');
+}
+
+function generateConfig(excelPath) {
+    const wb = loadWorkbook(excelPath);
+    const config = { info: {}, parameters: {}, categories: {}, lists: {}, profiles: {} };
+
+    if (wb.Sheets['fields'])     config.parameters = parseFields(wb.Sheets['fields']);
+    if (wb.Sheets['lists'])      config.lists      = parseLists(wb.Sheets['lists']);
+    if (wb.Sheets['info'])       config.info       = parseInfo(wb.Sheets['info']);
+    // append generated_at only once
+    if (!config.info.generated_at) {
+        config.info.generated_at = new Date().toISOString();
     }
+    if (wb.Sheets['categories']) config.categories  = parseCategories(wb.Sheets['categories']);
+    config.profiles = parseProfiles(wb, config.parameters);
 
-    return { info, parameters, processes, warnings };
-}
-
-function writeYAML(outputPath, data) {
-    const yamlStr = yaml.dump(data, { lineWidth: -1, noRefs: true });
-    fs.writeFileSync(outputPath, yamlStr, 'utf8');
-    console.log(`✅ YAML written to ${outputPath}`);
-}
-
-function writeTypescriptDeclaration(outputPath, yamlPath) {
-    const yamlRaw = fs.readFileSync(yamlPath, 'utf8');
-    const parsed = yaml.load(yamlRaw);
-
-    const paramStates = new Set();
-    const datatypes = new Set();
-    const types = new Set();
-
-    for (const process of Object.values(parsed.processes || {})) {
-        for (const state of Object.values(process.parameters || {})) {
-            paramStates.add(state);
+    // augment parameters with options for dropdown or text_suggestions
+    Object.entries(config.parameters).forEach(([paramId, param]) => {
+        if (param.datatype && ['dropdown', 'text_suggestions'].includes(param.datatype)) {
+            param.options = config.lists[paramId] || [];
         }
-    }
+    });
 
-    for (const param of Object.values(parsed.parameters || {})) {
-        if (param.datatype) datatypes.add(param.datatype);
-        if (param.type) types.add(param.type);
-    }
-
-    const hasUnits = Object.values(parsed.parameters || {}).some(p => 'unit' in p);
-    const hasOptions = Object.values(parsed.parameters || {}).some(p => 'options' in p);
-
-    const paramStateType = `export type ParameterState = ${[...paramStates].map(s => `'${s}'`).join(' | ')}`;
-    const datatypeType = `export type ParameterDatatype = ${[...datatypes].map(d => `'${d}'`).join(' | ')}`;
-    const datatypeArray = `export const parameterDatatypes = [${[...datatypes].map(d => `'${d}'`).join(', ')}] as const;`;
-
-    const typeType = `export type ParameterValueType = ${[...types].map(d => `'${d}'`).join(' | ')}`;
-    const typeArray = `export const parameterValueTypes = [${[...types].map(d => `'${d}'`).join(', ')}] as const;`;
-
-    const parameterKeys = Object.keys(parsed.parameters || {});
-    const parameterKeyType = `export type ParameterKey = ${parameterKeys.map(k => `'${k}'`).join(' | ')}`;
-    const parameterKeyArray = `export const parameterKeys = [${parameterKeys.map(k => `'${k}'`).join(', ')}] as const;`;
-
-    const processKeys = Object.keys(parsed.processes || {});
-    const processKeyType = `export type ProcessKey = ${processKeys.map(k => `'${k}'`).join(' | ')}`;
-    const processKeyArray = `export const processKeys = [${processKeys.map(k => `'${k}'`).join(', ')}] as const;`;
-
-    const paramDefinitionType = `export type ParameterDefinition = {
-  id: ParameterKey
-  label: string
-  datatype: ParameterDatatype${hasUnits ? '\n  unit?: string' : ''}${types.size ? '\n  type?: ParameterValueType' : ''}${hasOptions ? '\n  options?: string[]' : ''}
-}`;
-
-    const processDefinitionType = `export type ProcessDefinition = {
-  label: string
-  parameters: Record<ParameterKey, ParameterState>
-}`;
-
-    const infoType = `export type InfoType = {
-  ${Object.keys(parsed.info || {}).map(k => `${k}: string`).join('\n  ')}
-}`;
-
-    const configType = `export type YamlConfig = {
-  info: InfoType
-  parameters: Record<ParameterKey, ParameterDefinition>
-  processes: Record<ProcessKey, ProcessDefinition>
-}`;
-
-    const content = [
-        processKeyType,
-        '',
-        processKeyArray,
-        '',
-        parameterKeyType,
-        '',
-        parameterKeyArray,
-        '',
-        infoType,
-        '',
-        '// Auto-generated TypeScript declaration based on YAML',
-        paramStateType,
-        '',
-        datatypeType,
-        '',
-        datatypeArray,
-        '',
-        typeType,
-        '',
-        typeArray,
-        '',
-        paramDefinitionType,
-        '',
-        processDefinitionType,
-        '',
-        configType,
-        ''
-    ].join('\n');
-
-    fs.writeFileSync(outputPath, content, 'utf8');
-    console.log(`✅ Type declaration written to ${outputPath}`);
+    return config;
 }
 
 function main() {
-    const { info, parameters, processes, warnings } = parseWorkbook(argv.input);
-    warnings.forEach(w => console.warn(w));
+    const input      = path.resolve('metadata.xlsx');
+    const yamlOutput = path.resolve('public', 'config', 'metadata.yaml');
+    const tsOutput   = path.resolve('src', 'types', 'metadata.d.ts');
+    const cfg        = generateConfig(input);
 
-    const outputData = {
-        info,
-        parameters,
-        processes
-    };
+    fs.writeFileSync(yamlOutput, yaml.dump(cfg, { noRefs: true, lineWidth: 120 }), 'utf8');
+    console.log(`✅ metadata.yaml written to ${yamlOutput}`);
 
-    writeYAML(argv.output, outputData);
-    writeTypescriptDeclaration(argv.types, argv.output);
+    const tsDef = generateTs(cfg);
+    fs.writeFileSync(tsOutput, tsDef, 'utf8');
+    console.log(`✅ metadata.d.ts written to ${tsOutput}`);
 }
 
 main();

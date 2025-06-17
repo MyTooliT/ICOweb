@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getAPILink } from '@/api/icoapi.ts';
-import {startMeasurement, stopMeasurement} from '@/api/icoapi.ts';
+import { startMeasurement } from '@/api/icoapi.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
@@ -38,9 +38,9 @@ import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
-import MetadataWrapper from '@/components/elements/forms/MetadataWrapper.vue';
 import {useDisable} from '@/utils/useDisable.ts';
 import {useToast} from 'primevue/usetoast';
+import PreMetaData from '@/components/elements/forms/PreMetaData.vue';
 /* eslint-enable max-len */
 
 const toast = useToast()
@@ -127,11 +127,11 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   await startMeasurement({
     name:
       featureEnabled('Meta') &&
-      mStore.metadataForm.activity &&
-      mStore.metadataForm.activity.length > 0 &&
-      mStore.metadataForm.experiment &&
-      mStore.metadataForm.experiment.length > 0
-          ? mStore.metadataForm.activity.split(' ').join('') + '_' + mStore.metadataForm.experiment.split(' ').join('')
+      mStore.preMetaForm.profile &&
+      mStore.preMetaForm.profile.length > 0 &&
+      mStore.preMetaForm.parameters.experiment &&
+      (mStore.preMetaForm.parameters.experiment as string).length > 0
+          ? mStore.preMetaForm.profile + '_' + (mStore.preMetaForm.parameters.experiment as string).split(' ').join('')
           : null,
     first: {
       channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
@@ -151,7 +151,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_channel: mStore.IFTChannel,
     ift_window_width: mStore.windowWidth,
     adc: adcStore.values,
-    meta: featureEnabled('Meta') ? mStore.metadataForm : null
+    meta: featureEnabled('Meta') ? mStore.preMetaForm : null
   })
   if(mStore.autostream) {
     show()
@@ -160,7 +160,10 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 })
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
-  ws.value?.send('stop')
+  ws.value?.send(JSON.stringify({
+    ...mStore.postMetaForm,
+    message: 'stop',
+  }))
   await gStore.systemState.checkState()
   toast.add({life: 7000, group:'newfile'})
 })
@@ -175,7 +178,7 @@ function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
   return `[${assignedSensor.channel}] ${assignedSensor.sensor.name}`
 }
 
-// Maximum drawable points per channel for graph
+// Maximum drawable points per channel for the graph
 const maxNumberOfPoints = ref<number>(1000)
 
 const datalossMeter = computed<MeterItem[]>(() => [
@@ -201,7 +204,7 @@ const canMeasure = computed<boolean>(() => {
       hwStore.hasHolder &&
       (mStore.acquisitionTime > 0 || mStore.continuous) &&
       mStore.selectedChannels.first > 0 &&
-      (featureEnabled('Meta') ? mStore.metadataValid : true)
+      (featureEnabled('Meta') ? mStore.preMetaValid : true)
   )
 })
 
@@ -362,7 +365,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             <AccordionHeader class="!bg-transparent">
               Metadata
               <span
-                v-if="mStore.metadataValid"
+                v-if="mStore.preMetaValid"
                 class="pi pi-check text-primary ml-3 mr-auto"
               />
               <span
@@ -374,7 +377,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               class="!bg-transparent"
               style="--p-accordion-content-background: transparent;"
             >
-              <MetadataWrapper
+              <PreMetaData
                 :disabled="gStore.systemState.running"
               />
             </AccordionContent>

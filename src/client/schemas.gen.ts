@@ -52,12 +52,6 @@ export const $ADCValues = {
     title: 'ADCValues'
 } as const;
 
-export const $ActivityEnum = {
-    type: 'string',
-    enum: ['Tool Wear Monitoring'],
-    title: 'ActivityEnum'
-} as const;
-
 export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
@@ -207,7 +201,7 @@ export const $ControlResponse = {
 
 export const $CoolantEnum = {
     type: 'string',
-    enum: ['Flood', 'MMQ', '…'],
+    enum: ['Dry', 'Air', 'MMQ', 'Flood', 'Oil'],
     title: 'CoolantEnum'
 } as const;
 
@@ -302,7 +296,7 @@ export const $HTTPValidationError = {
 
 export const $InstitutionEnum = {
     type: 'string',
-    enum: ['TU Wien', 'TU München', 'ETH Zürich'],
+    enum: ['TU Wien', 'TU Darmstadt'],
     title: 'InstitutionEnum'
 } as const;
 
@@ -495,7 +489,7 @@ export const $MeasurementInstructions_Input = {
         meta: {
             anyOf: [
                 {
-                    '$ref': '#/components/schemas/UnifiedMetadata'
+                    '$ref': '#/components/schemas/Metadata'
                 },
                 {
                     type: 'null'
@@ -570,7 +564,7 @@ export const $MeasurementInstructions_Output = {
         meta: {
             anyOf: [
                 {
-                    '$ref': '#/components/schemas/UnifiedMetadata'
+                    '$ref': '#/components/schemas/Metadata'
                 },
                 {
                     type: 'null'
@@ -581,6 +575,28 @@ export const $MeasurementInstructions_Output = {
     type: 'object',
     required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
     title: 'MeasurementInstructions'
+} as const;
+
+export const $MeasurementSocketMessage = {
+    properties: {
+        message: {
+            type: 'string',
+            title: 'Message'
+        },
+        data: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Metadata'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        }
+    },
+    type: 'object',
+    required: ['message', 'data'],
+    title: 'MeasurementSocketMessage'
 } as const;
 
 export const $MeasurementStatus = {
@@ -638,6 +654,34 @@ export const $MeasurementStatus = {
     title: 'MeasurementStatus'
 } as const;
 
+export const $Metadata = {
+    properties: {
+        version: {
+            type: 'string',
+            title: 'Version'
+        },
+        profile: {
+            type: 'string',
+            title: 'Profile'
+        },
+        parameters: {
+            additionalProperties: {
+                anyOf: [
+                    {
+                        '$ref': '#/components/schemas/Quantity'
+                    },
+                    {}
+                ]
+            },
+            type: 'object',
+            title: 'Parameters'
+        }
+    },
+    type: 'object',
+    required: ['version', 'profile', 'parameters'],
+    title: 'Metadata'
+} as const;
+
 export const $ProcessEnum = {
     type: 'string',
     enum: ['milling', 'drilling', 'grinding', 'turning', 'reaming', 'shaping', 'thread_cutting', 'thread_milling', 'thread_forming'],
@@ -647,7 +691,14 @@ export const $ProcessEnum = {
 export const $Quantity = {
     properties: {
         value: {
-            type: 'number',
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'integer'
+                }
+            ],
             title: 'Value'
         },
         unit: {
@@ -824,7 +875,7 @@ export const $SystemStateModel = {
 
 export const $ToolMaterialEnum = {
     type: 'string',
-    enum: ['PCD', 'Carbide', 'MCD', 'Ceramic'],
+    enum: ['Carbide (P40)', 'Carbide', 'MCD', 'Ceramic', 'PCD'],
     title: 'ToolMaterialEnum'
 } as const;
 
@@ -863,7 +914,15 @@ export const $UnifiedMetadata = {
             title: 'Person'
         },
         institution: {
-            '$ref': '#/components/schemas/InstitutionEnum'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/InstitutionEnum'
+                },
+                {
+                    type: 'string'
+                }
+            ],
+            title: 'Institution'
         },
         machine: {
             type: 'string',
@@ -874,22 +933,76 @@ export const $UnifiedMetadata = {
             title: 'Experiment'
         },
         process: {
-            '$ref': '#/components/schemas/ProcessEnum'
-        },
-        activity: {
-            '$ref': '#/components/schemas/ActivityEnum'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ProcessEnum'
+                },
+                {
+                    type: 'string'
+                }
+            ],
+            title: 'Process'
         },
         workpiece_material: {
-            '$ref': '#/components/schemas/WorkpieceMaterialEnum'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/WorkpieceMaterialEnum'
+                },
+                {
+                    type: 'string'
+                }
+            ],
+            title: 'Workpiece Material'
         },
         cutting_speed: {
-            '$ref': '#/components/schemas/Quantity'
+            type: 'number',
+            title: 'Cutting Speed'
+        },
+        feed_per_tooth: {
+            type: 'number',
+            title: 'Feed Per Tooth'
+        },
+        doc_axial: {
+            type: 'number',
+            title: 'Doc Axial'
+        },
+        doc_radial: {
+            type: 'number',
+            title: 'Doc Radial'
+        },
+        tool_diameter: {
+            type: 'number',
+            title: 'Tool Diameter'
+        },
+        tool_tooth_count: {
+            type: 'integer',
+            title: 'Tool Tooth Count'
         },
         tool_material: {
-            '$ref': '#/components/schemas/ToolMaterialEnum'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ToolMaterialEnum'
+                },
+                {
+                    type: 'string'
+                }
+            ],
+            title: 'Tool Material'
+        },
+        tool_offset: {
+            type: 'number',
+            title: 'Tool Offset'
         },
         coolant: {
-            '$ref': '#/components/schemas/CoolantEnum'
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/CoolantEnum'
+                },
+                {
+                    type: 'string'
+                }
+            ],
+            title: 'Coolant'
         },
         sth_mac: {
             type: 'string',
@@ -899,100 +1012,76 @@ export const $UnifiedMetadata = {
             type: 'string',
             title: 'Stu Mac'
         },
-        feed_per_tooth: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
+        tool_failure: {
+            type: 'boolean',
+            title: 'Tool Failure'
+        },
+        wear_mark_width: {
+            type: 'number',
+            title: 'Wear Mark Width'
+        },
+        twm_layer: {
+            type: 'integer',
+            title: 'Twm Layer'
         },
         feed_per_rev: {
             anyOf: [
                 {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        doc_axial: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        doc_radial: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        doc: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        workpiece_diameter: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        tool_diameter: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Quantity'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        tool_tooth_count: {
-            anyOf: [
-                {
-                    type: 'integer'
+                    type: 'number'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Tool Tooth Count'
+            title: 'Feed Per Rev'
         },
-        tool_offset: {
+        doc: {
             anyOf: [
                 {
-                    '$ref': '#/components/schemas/Quantity'
+                    type: 'number'
                 },
                 {
                     type: 'null'
                 }
-            ]
+            ],
+            title: 'Doc'
+        },
+        workpiece_diameter: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Workpiece Diameter'
+        },
+        pictures: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Pictures'
+        },
+        comment: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Comment'
         }
     },
     type: 'object',
-    required: ['person', 'institution', 'machine', 'experiment', 'process', 'activity', 'workpiece_material', 'cutting_speed', 'tool_material', 'coolant', 'sth_mac', 'stu_mac'],
+    required: ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'doc_axial', 'doc_radial', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_failure', 'wear_mark_width', 'twm_layer'],
     title: 'UnifiedMetadata'
 } as const;
 
@@ -1028,6 +1117,6 @@ export const $ValidationError = {
 
 export const $WorkpieceMaterialEnum = {
     type: 'string',
-    enum: ['S235', '4140', 'TiAl', 'Grade 5 Titanium'],
+    enum: ['C45', 'Steel'],
     title: 'WorkpieceMaterialEnum'
 } as const;

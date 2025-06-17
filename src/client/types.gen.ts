@@ -7,8 +7,6 @@ export type ADCValues = {
     reference_voltage: number | null;
 };
 
-export type ActivityEnum = 'Tool Wear Monitoring';
-
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
     file: (Blob | File);
 };
@@ -57,7 +55,7 @@ export type ControlResponse = {
     data: MeasurementStatus;
 };
 
-export type CoolantEnum = 'Flood' | 'MMQ' | '…';
+export type CoolantEnum = 'Dry' | 'Air' | 'MMQ' | 'Flood' | 'Oil';
 
 export type DiskCapacity = {
     total: number | null;
@@ -79,7 +77,7 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
-export type InstitutionEnum = 'TU Wien' | 'TU München' | 'ETH Zürich';
+export type InstitutionEnum = 'TU Wien' | 'TU Darmstadt';
 
 export type LogFileMeta = {
     name: string;
@@ -123,7 +121,7 @@ export type MeasurementInstructions_Input = {
     ift_channel: string;
     ift_window_width: number;
     adc: ADCValues | null;
-    meta: UnifiedMetadata | null;
+    meta: Metadata | null;
 };
 
 export type MeasurementInstructions_Output = {
@@ -137,7 +135,12 @@ export type MeasurementInstructions_Output = {
     ift_channel: string;
     ift_window_width: number;
     adc: ADCValues | null;
-    meta: UnifiedMetadata | null;
+    meta: Metadata | null;
+};
+
+export type MeasurementSocketMessage = {
+    message: string;
+    data: Metadata | null;
 };
 
 export type MeasurementStatus = {
@@ -146,6 +149,14 @@ export type MeasurementStatus = {
     start_time?: string | null;
     tool_name?: string | null;
     instructions?: MeasurementInstructions_Output | null;
+};
+
+export type Metadata = {
+    version: string;
+    profile: string;
+    parameters: {
+        [key: string]: (Quantity | unknown);
+    };
 };
 
 export type ProcessEnum = 'milling' | 'drilling' | 'grinding' | 'turning' | 'reaming' | 'shaping' | 'thread_cutting' | 'thread_milling' | 'thread_forming';
@@ -208,7 +219,7 @@ export type SystemStateModel = {
     cloud_status: boolean;
 };
 
-export type ToolMaterialEnum = 'PCD' | 'Carbide' | 'MCD' | 'Ceramic';
+export type ToolMaterialEnum = 'Carbide (P40)' | 'Carbide' | 'MCD' | 'Ceramic' | 'PCD';
 
 export type TridentBucketObject = {
     Key: string;
@@ -220,26 +231,30 @@ export type TridentBucketObject = {
 
 export type UnifiedMetadata = {
     person: string;
-    institution: InstitutionEnum;
+    institution: InstitutionEnum | string;
     machine: string;
     experiment: string;
-    process: ProcessEnum;
-    activity: ActivityEnum;
-    workpiece_material: WorkpieceMaterialEnum;
-    cutting_speed: Quantity;
-    tool_material: ToolMaterialEnum;
-    coolant: CoolantEnum;
+    process: ProcessEnum | string;
+    workpiece_material: WorkpieceMaterialEnum | string;
+    cutting_speed: number;
+    feed_per_tooth: number;
+    doc_axial: number;
+    doc_radial: number;
+    tool_diameter: number;
+    tool_tooth_count: number;
+    tool_material: ToolMaterialEnum | string;
+    tool_offset: number;
+    coolant: CoolantEnum | string;
     sth_mac: string;
     stu_mac: string;
-    feed_per_tooth?: Quantity | null;
-    feed_per_rev?: Quantity | null;
-    doc_axial?: Quantity | null;
-    doc_radial?: Quantity | null;
-    doc?: Quantity | null;
-    workpiece_diameter?: Quantity | null;
-    tool_diameter?: Quantity | null;
-    tool_tooth_count?: number | null;
-    tool_offset?: Quantity | null;
+    tool_failure: boolean;
+    wear_mark_width: number;
+    twm_layer: number;
+    feed_per_rev?: number | null;
+    doc?: number | null;
+    workpiece_diameter?: number | null;
+    pictures?: string | null;
+    comment?: string | null;
 };
 
 export type ValidationError = {
@@ -248,7 +263,7 @@ export type ValidationError = {
     type: string;
 };
 
-export type WorkpieceMaterialEnum = 'S235' | '4140' | 'TiAl' | 'Grade 5 Titanium';
+export type WorkpieceMaterialEnum = 'C45' | 'Steel';
 
 export type StuApiV1StuGetResponse = unknown | void;
 
@@ -350,6 +365,10 @@ export type StartMeasurementApiV1MeasurementStartPostData = {
 
 export type StartMeasurementApiV1MeasurementStartPostResponse = ControlResponse;
 
+export type StopMeasurementApiV1MeasurementStopPostData = {
+    requestBody: MeasurementSocketMessage;
+};
+
 export type StopMeasurementApiV1MeasurementStopPostResponse = ControlResponse;
 
 export type MeasurementStatusApiV1MeasurementGetResponse = MeasurementStatus;
@@ -369,13 +388,17 @@ export type ViewLogFileApiV1LogsViewGetData = {
 
 export type ViewLogFileApiV1LogsViewGetResponse = LogResponse;
 
-export type DownloadLogFileApiV1LogsDownloadGetData = {
+export type DownloadLogFileApiV1LogsDownloadFileGetData = {
     file: string;
 };
 
-export type DownloadLogFileApiV1LogsDownloadGetResponse = unknown;
+export type DownloadLogFileApiV1LogsDownloadFileGetResponse = unknown;
+
+export type DownloadLogsZipApiV1LogsAllGetResponse = unknown;
 
 export type QuerySensorsApiV1SensorGetResponse = unknown;
+
+export type ResetSensorsToDefaultApiV1SensorresetPostResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -696,11 +719,16 @@ export type $OpenApiTs = {
     };
     '/api/v1/measurement/stop': {
         post: {
+            req: StopMeasurementApiV1MeasurementStopPostData;
             res: {
                 /**
                  * Successful Response
                  */
                 200: ControlResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
             };
         };
     };
@@ -754,9 +782,9 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/api/v1/logs/download': {
+    '/api/v1/logs/download/{file}': {
         get: {
-            req: DownloadLogFileApiV1LogsDownloadGetData;
+            req: DownloadLogFileApiV1LogsDownloadFileGetData;
             res: {
                 /**
                  * Successful Response
@@ -766,6 +794,16 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/logs/all': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
             };
         };
     };
@@ -780,6 +818,16 @@ export type $OpenApiTs = {
                  * Can't find sensor declaration.
                  */
                 500: unknown;
+            };
+        };
+    };
+    '/api/v1/sensorreset': {
+        post: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
             };
         };
     };

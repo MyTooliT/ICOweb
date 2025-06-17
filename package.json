@@ -13,7 +13,7 @@
     "tailwind": "tailwindcss -i .\\src\\styles\\tailwind\\tailwind.css -o .\\src\\styles\\tailwind\\tailwind-output.css --watch",
     "generate-client": "openapi-ts --input http://localhost:33215/openapi.json --output ./src/client --client fetch",
     "start": "concurrently \"npm run dev \" \"npm run tailwind \"",
-    "generate-config": "node src/node-utils/generate-config.js --input metadata.xlsx --output public/config/metadata.yaml --types src/types/metadata.ts"
+    "generate-config": "node src/node-utils/generate-config.js"
   },
   "repository": {
     "type": "git",

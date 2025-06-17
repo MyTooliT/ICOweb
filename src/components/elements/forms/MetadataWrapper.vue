@@ -7,6 +7,8 @@ import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import {AutoComplete} from 'primevue';
 import InputNumber from 'primevue/inputnumber';
+import {Textarea} from 'primevue';
+import Checkbox from 'primevue/checkbox';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {UnifiedMetadata} from '@/client';

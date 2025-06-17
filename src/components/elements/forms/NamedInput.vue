@@ -6,9 +6,11 @@ defineProps<{
 
 <template>
   <div class="flex flex-col gap-2">
-    <h4>
-      {{ title }}
-    </h4>
+    <slot name="header">
+      <h4>
+        {{ title }}
+      </h4>
+    </slot>
     <slot />
   </div>
 </template>

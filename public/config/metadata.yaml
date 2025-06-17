@@ -1,5 +1,6 @@
 info:
-  version: 0.0.1
+  version: 0.0.2
+  generated_at: '2025-06-17T11:41:41.798Z'
 parameters:
   person:
     id: person
@@ -30,22 +31,14 @@ parameters:
     datatype: dropdown
     type: default
     options:
-      - milling
-      - drilling
-      - grinding
-      - turning
-      - reaming
-      - shaping
-      - thread_cutting
-      - thread_milling
-      - thread_forming
-  activity:
-    id: activity
-    label: Activity
-    datatype: dropdown
-    type: default
-    options:
-      - Tool Wear Monitoring
+      - Milling
+      - Drilling
+      - Grinding
+      - Turning
+      - Reaming
+      - Thread Cutting
+      - Thread Forming
+      - Thread Milling
   workpiece_material:
     id: workpiece_material
     label: Workpiece Material
@@ -53,7 +46,7 @@ parameters:
     type: default
     options:
       - C45
-      - Steel (generic)
+      - Steel
   cutting_speed:
     id: cutting_speed
     label: Cutting Speed
@@ -139,226 +132,206 @@ parameters:
     id: sth_mac
     label: STH Mac Address
     datatype: text
-    type: default
+    type: implementation
   stu_mac:
     id: stu_mac
     label: STU Mac Address
     datatype: text
+    type: implementation
+  tool_failure:
+    id: tool_failure
+    label: Tool Failure
+    datatype: boolean
     type: default
-processes:
+  wear_mark_width:
+    id: wear_mark_width
+    label: Wear Mark Width
+    datatype: float
+    unit: mm
+    type: default
+  twm_layer:
+    id: twm_layer
+    label: Layer Number
+    datatype: int
+    type: default
+  pictures:
+    id: pictures
+    label: Pictures
+    datatype: text
+    type: implementation
+  comment:
+    id: comment
+    label: Comment
+    datatype: text_box
+    type: default
+categories:
+  general: general
+  hardware: hardware
+  process: process
+lists:
+  requirement:
+    - Required
+    - Optional
+    - Hidden
+  coolant:
+    - Dry
+    - Air
+    - MMQ
+    - Flood
+    - Oil
+  institution:
+    - TU Wien
+    - TU Darmstadt
+  workpiece_material:
+    - C45
+    - Steel
+  tool_material:
+    - Carbide (P40)
+    - Carbide
+    - MCD
+    - Ceramic
+    - PCD
+  process:
+    - Milling
+    - Drilling
+    - Grinding
+    - Turning
+    - Reaming
+    - Thread Cutting
+    - Thread Forming
+    - Thread Milling
+profiles:
+  twm:
+    id: tool_wear_monitoring
+    name: Tool Wear Monitoring
+    pre:
+      general:
+        person:
+          required: required
+          description: Person responsible for the measurement.
+        institution:
+          required: required
+          description: Institution at which the measurement is captured.
+        machine:
+          required: required
+          description: Machine tool used for the measurement.
+        experiment:
+          required: required
+          description: Experiment number or ID to identify the measurement.
+        process:
+          required: required
+          default: milling
+          description: Measured process.
+      process:
+        workpiece_material:
+          required: required
+          default: C45
+          description: Material of the workpiece.
+        cutting_speed:
+          required: required
+        feed_per_tooth:
+          required: required
+        doc_axial:
+          required: required
+        doc_radial:
+          required: required
+        tool_diameter:
+          required: required
+          default: 10
+        tool_tooth_count:
+          required: required
+          default: 2
+        tool_material:
+          required: required
+          default: Carbide (P40)
+        tool_offset:
+          required: required
+          description: Tool offset from the control.
+        coolant:
+          required: required
+      hardware:
+        sth_mac:
+          required: required
+          description: MAC Address of the STH. Will be automatically set.
+        stu_mac:
+          required: required
+          description: MAC Address of the STU. Will be automatically set.
+    post:
+      general:
+        twm_layer:
+          required: required
+          description: Layer number of the CIRP Tool Wear Activity Experiment.
+        wear_mark_width:
+          required: required
+          description: Measured width of the wear mark.
+        tool_failure:
+          required: required
+          description: Has the tool failed during the experiment?
+        pictures:
+          required: optional
+          description: Pictures of the experiment; will be stored in the .hdf5 file.
+        comment:
+          required: optional
   milling:
-    label: Milling
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: required
-      feed_per_rev: hidden
-      doc_axial: required
-      doc_radial: required
-      doc: hidden
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: required
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  drilling:
-    label: Drilling
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: required
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: optional
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: required
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  grinding:
-    label: Grinding
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: hidden
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: required
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: hidden
-      tool_material: required
-      tool_offset: hidden
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  turning:
-    label: Turning
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: required
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: required
-      workpiece_diameter: required
-      tool_diameter: hidden
-      tool_tooth_count: hidden
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  reaming:
-    label: Reaming
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: required
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: required
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: required
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  shaping:
-    label: Shaping
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: hidden
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: hidden
-      workpiece_diameter: hidden
-      tool_diameter: hidden
-      tool_tooth_count: hidden
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  thread_cutting:
-    label: Thread Cutting
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: required
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: hidden
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: required
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  thread_milling:
-    label: Thread Milling
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: required
-      feed_per_rev: hidden
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: hidden
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: required
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
-  thread_forming:
-    label: Thread Forming
-    parameters:
-      person: required
-      institution: required
-      machine: required
-      experiment: required
-      process: required
-      activity: required
-      workpiece_material: required
-      cutting_speed: required
-      feed_per_tooth: hidden
-      feed_per_rev: required
-      doc_axial: hidden
-      doc_radial: hidden
-      doc: hidden
-      workpiece_diameter: hidden
-      tool_diameter: required
-      tool_tooth_count: hidden
-      tool_material: required
-      tool_offset: required
-      coolant: required
-      sth_mac: required
-      stu_mac: required
+    id: milling
+    name: Milling (Generic)
+    pre:
+      general:
+        person:
+          required: optional
+          description: Person responsible for the measurement.
+        institution:
+          required: optional
+          description: Institution at which the measurement is captured.
+        machine:
+          required: optional
+          description: Machine tool used for the measurement.
+        experiment:
+          required: optional
+          description: Experiment number or ID to identify the measurement.
+        process:
+          required: optional
+          default: milling
+          description: Measured process.
+      process:
+        workpiece_material:
+          required: optional
+          description: Material of the workpiece.
+        cutting_speed:
+          required: optional
+        feed_per_tooth:
+          required: optional
+        doc_axial:
+          required: optional
+        doc_radial:
+          required: optional
+        tool_diameter:
+          required: optional
+        tool_tooth_count:
+          required: optional
+        tool_material:
+          required: optional
+        tool_offset:
+          required: optional
+          description: Tool offset from the control.
+        coolant:
+          required: optional
+      hardware:
+        sth_mac:
+          required: required
+          description: MAC Address of the STH. Will be automatically set.
+        stu_mac:
+          required: required
+          description: MAC Address of the STU. Will be automatically set.
+    post:
+      general:
+        tool_failure:
+          required: optional
+          description: Has the tool failed during the experiment?
+        pictures:
+          required: optional
+          description: Pictures of the experiment; will be stored in the .hdf5 file.
+        comment:
+          required: optional
+        wear_mark_width:
+          required: optional

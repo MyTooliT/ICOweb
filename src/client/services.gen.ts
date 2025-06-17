@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedPostData, StuConnectedApiV1StuConnectedPostResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, MeasurementStatusApiV1MeasurementGetResponse, SubmitMetadataApiV1MeasurementMetadataPostData, SubmitMetadataApiV1MeasurementMetadataPostResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadGetData, DownloadLogFileApiV1LogsDownloadGetResponse, QuerySensorsApiV1SensorGetResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedPostData, StuConnectedApiV1StuConnectedPostResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostData, StopMeasurementApiV1MeasurementStopPostResponse, MeasurementStatusApiV1MeasurementGetResponse, SubmitMetadataApiV1MeasurementMetadataPostData, SubmitMetadataApiV1MeasurementMetadataPostResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, ResetSensorsToDefaultApiV1SensorresetPostResponse } from './types.gen';
 
 /**
  * Stu
@@ -338,12 +338,19 @@ export const startMeasurementApiV1MeasurementStartPost = (data: StartMeasurement
 
 /**
  * Stop Measurement
+ * @param data The data for the request.
+ * @param data.requestBody
  * @returns ControlResponse Successful Response
  * @throws ApiError
  */
-export const stopMeasurementApiV1MeasurementStopPost = (): CancelablePromise<StopMeasurementApiV1MeasurementStopPostResponse> => { return __request(OpenAPI, {
+export const stopMeasurementApiV1MeasurementStopPost = (data: StopMeasurementApiV1MeasurementStopPostData): CancelablePromise<StopMeasurementApiV1MeasurementStopPostResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/api/v1/measurement/stop'
+    url: '/api/v1/measurement/stop',
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        422: 'Validation Error'
+    }
 }); };
 
 /**
@@ -412,15 +419,25 @@ export const viewLogFileApiV1LogsViewGet = (data: ViewLogFileApiV1LogsViewGetDat
  * @returns unknown Successful Response
  * @throws ApiError
  */
-export const downloadLogFileApiV1LogsDownloadGet = (data: DownloadLogFileApiV1LogsDownloadGetData): CancelablePromise<DownloadLogFileApiV1LogsDownloadGetResponse> => { return __request(OpenAPI, {
+export const downloadLogFileApiV1LogsDownloadFileGet = (data: DownloadLogFileApiV1LogsDownloadFileGetData): CancelablePromise<DownloadLogFileApiV1LogsDownloadFileGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/logs/download',
-    query: {
+    url: '/api/v1/logs/download/{file}',
+    path: {
         file: data.file
     },
     errors: {
         422: 'Validation Error'
     }
+}); };
+
+/**
+ * Download Logs Zip
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const downloadLogsZipApiV1LogsAllGet = (): CancelablePromise<DownloadLogsZipApiV1LogsAllGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/logs/all'
 }); };
 
 /**
@@ -434,4 +451,14 @@ export const querySensorsApiV1SensorGet = (): CancelablePromise<QuerySensorsApiV
     errors: {
         500: "Can't find sensor declaration."
     }
+}); };
+
+/**
+ * Reset Sensors To Default
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const resetSensorsToDefaultApiV1SensorresetPost = (): CancelablePromise<ResetSensorsToDefaultApiV1SensorresetPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/sensorreset'
 }); };
