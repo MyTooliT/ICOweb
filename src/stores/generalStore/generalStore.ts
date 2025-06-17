@@ -79,6 +79,7 @@ export const useGeneralStore = defineStore('general', () => {
     const addHolderModalVisible = ref<boolean>(false)
     const fileSelectionModalVisible = ref<boolean>(false)
     const renameSTHModalVisible = ref<boolean>(false)
+    const postMetaModalVisible = ref<boolean>(true)
 
     /*
     ******************************************************
@@ -109,7 +110,8 @@ export const useGeneralStore = defineStore('general', () => {
         systemState,
         setLoaderInfoMessage,
         resetLoaderInfoMessage,
-        getLoaderInfoMessage
+        getLoaderInfoMessage,
+        postMetaModalVisible
     }
 }, {
     persist: true

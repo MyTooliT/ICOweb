@@ -20,8 +20,6 @@ export function useYamlConfig() {
         }
     }
 
-    reload()
-
     return {
         config,
         error,

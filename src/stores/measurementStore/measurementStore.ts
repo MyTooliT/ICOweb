@@ -120,7 +120,7 @@ export const useMeasurementStore = defineStore('measurement', () => {
   })
   const preMetaValid = ref<boolean>(false)
   const postMetaForm = ref<MeasurementSocketMessage>({
-    message: '',
+    message: 'stop',
     data: {
       version: '',
       profile: '',

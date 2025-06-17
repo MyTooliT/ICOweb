@@ -6,14 +6,16 @@ import {AutoComplete, Textarea} from 'primevue';
 import InputNumber from 'primevue/inputnumber';
 import Checkbox from 'primevue/checkbox';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
-import {computed, ref} from 'vue';
+import {computed, ref, onMounted} from 'vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {Quantity} from '@/client';
+import CustomFileUpload from '@/components/elements/forms/CustomFileUpload.vue';
 
 const props = defineProps<{
   paramKey: Parameter,
   definition: ParameterDefinition & ProfileParamDefinition | undefined;
   disabled?: boolean,
+  phase: 'pre' | 'post'
 }>()
 const emits = defineEmits(['update'])
 const mStore = useMeasurementStore()
@@ -27,6 +29,7 @@ function getComponent(param: ParameterDefinition) {
     case 'float': return InputNumber
     case 'int': return InputNumber
     case 'boolean': return Checkbox
+    case 'file': return CustomFileUpload
     default: return InputText
   }
 }
@@ -53,9 +56,28 @@ function assembleFormEntry(value: any): Quantity | any {
 
 const getModelValue = computed(() => {
   if(props.definition?.unit && typeof mStore.preMetaForm.parameters[props.paramKey] === 'object') {
-    return (mStore.preMetaForm.parameters[props.paramKey] as Quantity).value
+    return props.phase === 'pre'
+        ? (mStore.preMetaForm.parameters[props.paramKey] as Quantity).value
+        : (mStore.postMetaForm.data.parameters[props.paramKey] as Quantity).value
   }
-  return mStore.preMetaForm.parameters[props.paramKey]
+  return props.phase === 'pre'
+    ? mStore.preMetaForm.parameters[props.paramKey]
+    : mStore.postMetaForm.data.parameters[props.paramKey]
+})
+
+function update(event: any) {
+  if(props.phase === 'pre') {
+    mStore.preMetaForm.parameters[props.paramKey] = assembleFormEntry(event)
+  } else {
+    mStore.postMetaForm.data.parameters[props.paramKey] = assembleFormEntry(event)
+  }
+  emits('update')
+}
+
+onMounted(() => {
+  if(props.definition?.default !== undefined) {
+    update(props.definition.default)
+  }
 })
 </script>
 
@@ -66,7 +88,7 @@ const getModelValue = computed(() => {
   >
     <component
       :is="getComponent(definition)"
-      :model-value="getModelValue"
+      :model-value="definition.datatype === 'boolean' ? Boolean(getModelValue) : getModelValue"
       :options="definition.options"
       :suggestions="suggestions"
       :required="definition.required === 'required'"
@@ -76,11 +98,9 @@ const getModelValue = computed(() => {
       :use-grouping="false"
       :disabled="disabled || definition.type === 'implementation'"
       input-class="w-full"
+      binary
       @complete="search"
-      @update:model-value="(event: any) => {
-        mStore.preMetaForm.parameters[paramKey] = assembleFormEntry(event);
-        emits('update')
-      }"
+      @update:model-value="update"
     />
   </NamedInput>
 </template>

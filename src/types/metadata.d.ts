@@ -18,7 +18,7 @@ export type Tool_material = typeof tool_materialList[number];
 export const processList = ['Milling', 'Drilling', 'Grinding', 'Turning', 'Reaming', 'Thread Cutting', 'Thread Forming', 'Thread Milling'] as const;
 export type Process = typeof processList[number];
 
-export type Datatype = 'text' | 'dropdown' | 'text_suggestions' | 'float' | 'int' | 'boolean' | 'text_box';
+export type Datatype = 'text' | 'dropdown' | 'text_suggestions' | 'float' | 'int' | 'boolean' | 'file' | 'text_box';
 
 export interface ParameterDefinition {
   id: string;
@@ -68,7 +68,10 @@ export interface Info {
 export type Category =
   'general' |
   'hardware' |
-  'process';
+  'process' |
+  'files' |
+  'additional' |
+  'results';
 
 export type ProfileParamDefinition = Partial<{ required: string; default: any; description: string }>;
 

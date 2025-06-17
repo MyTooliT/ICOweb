@@ -18,7 +18,8 @@ const hwStore = useHardwareStore()
 const { config, error, reload } = useYamlConfig()
 
 const props = defineProps<{
-  disabled: boolean
+  disabled: boolean,
+  phase: 'pre' | 'post'
 }>()
 
 const parameters = computed(() => {
@@ -67,6 +68,7 @@ function getProfileParamKeys(): Parameter[] {
 
 
 function validate() {
+  if(profile.value === undefined) return
   const params = getProfileParamKeys()
   let valid = true
   params.forEach(param => {
@@ -140,6 +142,7 @@ onMounted(async () => {
                   <MetaInput
                     :disabled="disabled"
                     :param-key="param_key as Parameter"
+                    :phase="phase"
                     :definition="getFullParameter(parameters, param_key as Parameter, profile_param_data)"
                     @update="update"
                   />

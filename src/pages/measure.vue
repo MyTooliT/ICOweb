@@ -40,7 +40,8 @@ import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
 import {useDisable} from '@/utils/useDisable.ts';
 import {useToast} from 'primevue/usetoast';
-import PreMetaData from '@/components/elements/forms/PreMetaData.vue';
+import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
+import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 /* eslint-enable max-len */
 
 const toast = useToast()
@@ -160,10 +161,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 })
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
-  ws.value?.send(JSON.stringify({
-    ...mStore.postMetaForm,
-    message: 'stop',
-  }))
+  ws.value?.send(JSON.stringify(mStore.postMetaForm))
   await gStore.systemState.checkState()
   toast.add({life: 7000, group:'newfile'})
 })
@@ -226,6 +224,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
 
 <template>
   <div class="flex flex-row">
+    <PostMetaModal />
     <DefaultLayout class="w-fill w-stretch">
       <div
         v-if="hwStore.hasSTU && hwStore.activeSTH"
@@ -378,6 +377,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               style="--p-accordion-content-background: transparent;"
             >
               <PreMetaData
+                phase="pre"
                 :disabled="gStore.systemState.running"
               />
             </AccordionContent>
