@@ -122,19 +122,14 @@ To support the usage of arbitrary metadata when creating measurements, a configu
 system starts as en Excel file in which all metadata fields are defined. This file is then parsed into a YAML file, from
 which it can be used further.
 
-This repository holds the ``.xlsx`` master file and the script to generate the ``.yaml`` file from it. Run the parser with:
+This repository holds the ``.xlsx`` master file and the script to generate the ``.yaml`` file and the typescript type 
+declarations from it. Run the parser with:
 
 ``
 npm run generate-config
 ``
 
 This script expects the Excel file to be in the project root and places the parsed YAML file into ``public/config``.
-
-After you have parsed the Excel file, run the ``generate_metadata.py`` file in the ``icoapi`` repository to create the 
-backend types for the API. Finally, you can run the openAPI command from above to get the types from the backend.
-
-> This may seem convoluted, but this way the metadata settings are stored in the client project (xlsx, yaml) where they 
-> semantically belong, but the types still all come from the openAPI specification from the backend to provide consistency.
 
 # Run
 
