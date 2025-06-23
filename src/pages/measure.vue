@@ -190,6 +190,8 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   }
 })
 
+const { loading: postMetaLoading, call: submitPostMeta } = useLoadingHandler(sendPostMeta)
+
 async function sendPostMeta() {
   await sendMeasurementPostMeta(mStore.postMetaForm)
   await gStore.systemState.checkState()
@@ -256,7 +258,8 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
   <div class="flex flex-row">
     <PostMetaModal
       :closable="!gStore.systemState.running"
-      @send="sendPostMeta"
+      :loading="postMetaLoading"
+      @send="submitPostMeta"
     />
     <DefaultLayout class="w-fill w-stretch">
       <div

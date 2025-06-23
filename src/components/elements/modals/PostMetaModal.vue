@@ -7,6 +7,7 @@ const gStore = useGeneralStore();
 const emits = defineEmits(['send'])
 defineProps<{
   closable: boolean,
+  loading: boolean,
 }>()
 </script>
 
@@ -21,6 +22,7 @@ defineProps<{
     class="[width:clamp(10rem,75%,60rem)]"
   >
     <PostMetaData
+      :loading="loading"
       @send="emits('send')"
     />
   </Dialog>

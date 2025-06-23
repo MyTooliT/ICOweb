@@ -12,6 +12,9 @@ const mStore = useMeasurementStore()
 const { config, reload, error } = useYamlConfig();
 
 const emits = defineEmits(['send'])
+defineProps<{
+  loading: boolean
+}>()
 
 const parameters = computed(() => {
   return config.value?.parameters || undefined
@@ -102,6 +105,7 @@ onMounted(async () => {
             <Button
               label="Finish Measurement"
               :disabled="mStore.postMetaValid"
+              :loading="loading"
               @click="emits('send')"
             />
           </div>
