@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getAPILink } from '@/api/icoapi.ts';
+import {sendMeasurementPostMeta, sendMeasurementStopFlag} from '@/api/icoapi.ts';
 import { startMeasurement } from '@/api/icoapi.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
@@ -42,6 +42,7 @@ import {useDisable} from '@/utils/useDisable.ts';
 import {useToast} from 'primevue/usetoast';
 import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
 import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
+import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 /* eslint-enable max-len */
 
 const toast = useToast()
@@ -116,6 +117,18 @@ function wrapUpdate() {
 
 const currentMin = ref<number | undefined>(undefined)
 const currentMax = ref<number | undefined>(undefined)
+const config = useYamlConfig()
+
+const hasPostMeta = computed<boolean>(() => {
+  if(config.config.value?.profiles) {
+    const profiles = Object.values(config.config.value.profiles)
+    const profile = profiles.find(p => p.id === mStore.preMetaForm.profile)
+    if(profile && profile.post) {
+      return true
+    }
+  }
+  return false
+})
 
 // eslint-disable-next-line max-len
 const { loading: startLoading, call: start } = useLoadingHandler(async () => {
@@ -125,6 +138,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   if(ws) {
     ws.value?.close()
   }
+  await config.reload()
   await startMeasurement({
     name:
       featureEnabled('Meta') &&
@@ -152,7 +166,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_channel: mStore.IFTChannel,
     ift_window_width: mStore.windowWidth,
     adc: adcStore.values,
-    meta: featureEnabled('Meta') ? mStore.preMetaForm : null
+    meta: featureEnabled('Meta') ? mStore.preMetaForm : null,
+    wait_for_post_meta: featureEnabled('Meta') && hasPostMeta.value
   })
   if(mStore.autostream) {
     show()
@@ -161,10 +176,27 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 })
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
-  ws.value?.send(JSON.stringify(mStore.postMetaForm))
+  await sendMeasurementStopFlag()
+  await config.reload()
+  if(hasPostMeta.value) {
+    mStore.postMetaForm = {
+      version: mStore.preMetaForm.version,
+      profile: mStore.preMetaForm.profile,
+      parameters: {}
+    }
+    gStore.postMetaModalVisible = true
+  } else {
+    await gStore.systemState.checkState()
+    toast.add({life: 7000, group:'newfile'})
+  }
+})
+
+async function sendPostMeta() {
+  await sendMeasurementPostMeta(mStore.postMetaForm)
+  gStore.postMetaModalVisible = false
   await gStore.systemState.checkState()
   toast.add({life: 7000, group:'newfile'})
-})
+}
 
 const show = () => {
   mStore.resetChartBounds();
@@ -224,7 +256,10 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
 
 <template>
   <div class="flex flex-row">
-    <PostMetaModal />
+    <PostMetaModal
+      :closable="!gStore.systemState.running"
+      @send="sendPostMeta"
+    />
     <DefaultLayout class="w-fill w-stretch">
       <div
         v-if="hwStore.hasSTU && hwStore.activeSTH"
@@ -335,7 +370,9 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             </NamedInput>
             <NamedInput title="Measurement Integrity (Packet Loss)">
               <InputGroup>
-                <MeterGroup :value="datalossMeter" class="w-full">
+                <MeterGroup
+                  :value="datalossMeter"
+                  class="w-full">
                   <template #label="{ value }">
                     <div class="flex flex-wrap gap-3 items-center">
                       <template
@@ -346,7 +383,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                           :data-color="val.color"
                           class="w-4 h-4 rounded-full"
                           :style="`background-color: ${val.color}`"
-                        ></span>
+                        />
                         <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
                       </template>
                     </div>
@@ -421,16 +458,12 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             File saved
           </h4>
           <h5 class="mb-3">
-            Your file has been saved successfully. Visit the <router-link class="underline" to="/files">Files page</router-link> or download it here:
+            Your file has been saved successfully. Visit the <router-link
+              class="underline"
+              to="/files">
+              Files page
+            </router-link> to download it.
           </h5>
-          <Button
-            as="a"
-            style="padding-left: 0;"
-            link
-            :href="`${getAPILink()}/files/${mStore.getLatestFileName}`">
-            {{ mStore.getLatestFileName }}
-            <i class="pi pi-download" />
-          </Button>
         </div>
       </template>
     </Toast>

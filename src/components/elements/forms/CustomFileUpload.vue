@@ -6,13 +6,15 @@ interface Base64Map {
   [filename: string]: string;
 }
 
+const emits = defineEmits<{
+  images: [Base64Map],
+}>()
 const base64Images = ref<Base64Map>({});
 
 function onFileSelect(event: { files: File[] }) {
   const files = event.files;
 
   files.forEach(file => {
-    // Nur Bilder verarbeiten
     if (!file.type.startsWith('image/')) {
       return;
     }
@@ -23,6 +25,8 @@ function onFileSelect(event: { files: File[] }) {
     };
     reader.readAsDataURL(file);
   });
+
+  emits('images', base64Images.value)
 }
 </script>
 
@@ -50,9 +54,8 @@ function onFileSelect(event: { files: File[] }) {
       >
         <img
           :src="src"
-          :alt="name"
-          class="shadow-md rounded-xl w-full sm:w-64"
-          style="filter: grayscale(100%)"
+          :alt="name ?? ''"
+          class="shadow-md w-full sm:w-64"
         >
         <span class="mt-2 text-sm text-gray-600">{{ name }}</span>
       </div>

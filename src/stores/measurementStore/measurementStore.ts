@@ -1,7 +1,7 @@
 import {getMeasurementFiles} from '@/api/icoapi.ts';
 import {
   DiskCapacity,
-  MeasurementFileDetails, MeasurementSocketMessage, Metadata
+  MeasurementFileDetails, Metadata
 } from '@/client';
 import { ChartData } from 'chart.js';
 import { defineStore } from 'pinia';
@@ -119,13 +119,10 @@ export const useMeasurementStore = defineStore('measurement', () => {
     parameters: {}
   })
   const preMetaValid = ref<boolean>(false)
-  const postMetaForm = ref<MeasurementSocketMessage>({
-    message: 'stop',
-    data: {
-      version: '',
-      profile: '',
-      parameters: {}
-    }
+  const postMetaForm = ref<Metadata>({
+    version: '',
+    profile: '',
+    parameters: {}
   })
   const postMetaValid = ref<boolean>(false)
 

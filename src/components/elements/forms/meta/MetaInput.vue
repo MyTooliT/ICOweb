@@ -55,21 +55,25 @@ function assembleFormEntry(value: any): Quantity | any {
 }
 
 const getModelValue = computed(() => {
-  if(props.definition?.unit && typeof mStore.preMetaForm.parameters[props.paramKey] === 'object') {
-    return props.phase === 'pre'
-        ? (mStore.preMetaForm.parameters[props.paramKey] as Quantity).value
-        : (mStore.postMetaForm.data.parameters[props.paramKey] as Quantity).value
+  const relevantForm = props.phase === 'pre' ? mStore.preMetaForm : mStore.postMetaForm
+  if (props.definition?.unit && typeof relevantForm.parameters[props.paramKey] === 'object') {
+    return (relevantForm.parameters[props.paramKey] as Quantity).value
   }
-  return props.phase === 'pre'
-    ? mStore.preMetaForm.parameters[props.paramKey]
-    : mStore.postMetaForm.data.parameters[props.paramKey]
+  return relevantForm.parameters[props.paramKey]
 })
 
 function update(event: any) {
   if(props.phase === 'pre') {
     mStore.preMetaForm.parameters[props.paramKey] = assembleFormEntry(event)
   } else {
-    mStore.postMetaForm.data.parameters[props.paramKey] = assembleFormEntry(event)
+    if(!mStore.postMetaForm) {
+      mStore.postMetaForm = {
+        version: '',
+        profile: '',
+        parameters: {}
+      }
+    }
+    mStore.postMetaForm.parameters[props.paramKey] = assembleFormEntry(event)
   }
   emits('update')
 }
@@ -101,6 +105,7 @@ onMounted(() => {
       binary
       @complete="search"
       @update:model-value="update"
+      @images="update"
     />
   </NamedInput>
 </template>

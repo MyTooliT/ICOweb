@@ -10,7 +10,7 @@ import {
   MeasurementInstructions_Input,
   MeasurementStatus,
   SystemStateModel,
-  TridentBucketObject, LogListResponse, LogResponse
+  TridentBucketObject, LogListResponse, LogResponse, Metadata
 } from '@/client';
 import { useAPI } from './api.ts';
 
@@ -224,6 +224,22 @@ export async function getLog(name: string, limit: number = 0): Promise<LogRespon
   return new Promise((resolve, reject) => {
     get<LogResponse>(`logs/view?file=${name}&limit=${limit}`)
         .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function sendMeasurementStopFlag(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<undefined, undefined>('measurement/stop', undefined)
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function sendMeasurementPostMeta(meta: Metadata): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<Metadata, undefined>('measurement/post_meta', meta)
+        .then(resolve)
         .catch(reject)
   })
 }

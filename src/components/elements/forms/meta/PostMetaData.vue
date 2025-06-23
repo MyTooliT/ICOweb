@@ -6,9 +6,12 @@ import MetaInput from '@/components/elements/forms/meta/MetaInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import Select from 'primevue/select';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
+import Button from 'primevue/button';
 
 const mStore = useMeasurementStore()
 const { config, reload, error } = useYamlConfig();
+
+const emits = defineEmits(['send'])
 
 const parameters = computed(() => {
   return config.value?.parameters || undefined
@@ -56,13 +59,9 @@ function validate() {
   const params = getProfileParamKeys()
   let valid = true
   params.forEach(param => {
-    valid = valid && (mStore.postMetaForm.data.parameters[param] !== null && mStore.postMetaForm.data.parameters[param] !== undefined && mStore.postMetaForm.data.parameters[param] !== '')
+    valid = valid && (mStore.postMetaForm.parameters[param] !== null && mStore.postMetaForm.parameters[param] !== undefined && mStore.postMetaForm.parameters[param] !== '')
   })
   mStore.postMetaValid = valid
-}
-
-function update() {
-
 }
 
 onMounted(async () => {
@@ -96,6 +95,15 @@ onMounted(async () => {
                 @update="validate"
               />
             </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t">
+          <div class="w-full flex justify-center">
+            <Button
+              label="Finish Measurement"
+              :disabled="mStore.postMetaValid"
+              @click="emits('send')"
+            />
           </div>
         </div>
       </div>

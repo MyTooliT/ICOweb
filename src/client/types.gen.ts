@@ -55,8 +55,6 @@ export type ControlResponse = {
     data: MeasurementStatus;
 };
 
-export type CoolantEnum = 'Dry' | 'Air' | 'MMQ' | 'Flood' | 'Oil';
-
 export type DiskCapacity = {
     total: number | null;
     available: number | null;
@@ -76,8 +74,6 @@ export type FileListResponseModel = {
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
-
-export type InstitutionEnum = 'TU Wien' | 'TU Darmstadt';
 
 export type LogFileMeta = {
     name: string;
@@ -122,6 +118,7 @@ export type MeasurementInstructions_Input = {
     ift_window_width: number;
     adc: ADCValues | null;
     meta: Metadata | null;
+    wait_for_post_meta?: boolean;
 };
 
 export type MeasurementInstructions_Output = {
@@ -136,6 +133,7 @@ export type MeasurementInstructions_Output = {
     ift_window_width: number;
     adc: ADCValues | null;
     meta: Metadata | null;
+    wait_for_post_meta?: boolean;
 };
 
 export type MeasurementSocketMessage = {
@@ -158,8 +156,6 @@ export type Metadata = {
         [key: string]: (Quantity | unknown);
     };
 };
-
-export type ProcessEnum = 'milling' | 'drilling' | 'grinding' | 'turning' | 'reaming' | 'shaping' | 'thread_cutting' | 'thread_milling' | 'thread_forming';
 
 export type Quantity = {
     value: number;
@@ -219,8 +215,6 @@ export type SystemStateModel = {
     cloud_status: boolean;
 };
 
-export type ToolMaterialEnum = 'Carbide (P40)' | 'Carbide' | 'MCD' | 'Ceramic' | 'PCD';
-
 export type TridentBucketObject = {
     Key: string;
     LastModified: string;
@@ -229,41 +223,11 @@ export type TridentBucketObject = {
     StorageClass: string;
 };
 
-export type UnifiedMetadata = {
-    person: string;
-    institution: InstitutionEnum | string;
-    machine: string;
-    experiment: string;
-    process: ProcessEnum | string;
-    workpiece_material: WorkpieceMaterialEnum | string;
-    cutting_speed: number;
-    feed_per_tooth: number;
-    doc_axial: number;
-    doc_radial: number;
-    tool_diameter: number;
-    tool_tooth_count: number;
-    tool_material: ToolMaterialEnum | string;
-    tool_offset: number;
-    coolant: CoolantEnum | string;
-    sth_mac: string;
-    stu_mac: string;
-    tool_failure: boolean;
-    wear_mark_width: number;
-    twm_layer: number;
-    feed_per_rev?: number | null;
-    doc?: number | null;
-    workpiece_diameter?: number | null;
-    pictures?: string | null;
-    comment?: string | null;
-};
-
 export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
 };
-
-export type WorkpieceMaterialEnum = 'C45' | 'Steel';
 
 export type StuApiV1StuGetResponse = unknown | void;
 
@@ -372,12 +336,6 @@ export type StopMeasurementApiV1MeasurementStopPostData = {
 export type StopMeasurementApiV1MeasurementStopPostResponse = ControlResponse;
 
 export type MeasurementStatusApiV1MeasurementGetResponse = MeasurementStatus;
-
-export type SubmitMetadataApiV1MeasurementMetadataPostData = {
-    requestBody: UnifiedMetadata;
-};
-
-export type SubmitMetadataApiV1MeasurementMetadataPostResponse = unknown;
 
 export type ListLogsApiV1LogsGetResponse = LogListResponse;
 
@@ -739,21 +697,6 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: MeasurementStatus;
-            };
-        };
-    };
-    '/api/v1/measurement/metadata': {
-        post: {
-            req: SubmitMetadataApiV1MeasurementMetadataPostData;
-            res: {
-                /**
-                 * Successful Response
-                 */
-                200: unknown;
-                /**
-                 * Validation Error
-                 */
-                422: HTTPValidationError;
             };
         };
     };
