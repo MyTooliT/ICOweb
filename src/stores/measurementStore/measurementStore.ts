@@ -42,8 +42,8 @@ export const chartDefaults = {
 }
 
 export const useMeasurementStore = defineStore('measurement', () => {
-  const autostream = ref<boolean>(false);
-  const continuous = ref<boolean>(false)
+  const autostream = ref<boolean>(true);
+  const continuous = ref<boolean>(true)
   const acquisitionTime = ref<number>(10)
   const chartMaximumDisplayedTime = ref<number>(10)
   const chartStartTime = ref<number>(chartDefaults.xmin)
