@@ -115,13 +115,13 @@ export const useMeasurementStore = defineStore('measurement', () => {
 
   const preMetaForm = ref<Metadata>({
     version: '',
-    profile: '',
+    profile: 'tool_wear_monitoring',
     parameters: {}
   })
   const preMetaValid = ref<boolean>(false)
   const postMetaForm = ref<Metadata>({
     version: '',
-    profile: '',
+    profile: 'tool_wear_monitoring',
     parameters: {}
   })
   const postMetaValid = ref<boolean>(false)

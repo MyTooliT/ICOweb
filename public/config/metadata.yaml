@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-06-17T14:50:54.676Z'
+  generated_at: '2025-06-23T09:37:58.606Z'
 parameters:
   person:
     id: person
@@ -223,7 +223,7 @@ profiles:
           description: Experiment number or ID to identify the measurement.
         process:
           required: required
-          default: milling
+          default: Milling
           description: Measured process.
       process:
         workpiece_material:
@@ -297,7 +297,7 @@ profiles:
           description: Experiment number or ID to identify the measurement.
         process:
           required: optional
-          default: milling
+          default: Milling
           description: Measured process.
       process:
         workpiece_material:
