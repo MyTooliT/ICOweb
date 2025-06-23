@@ -136,11 +136,6 @@ export type MeasurementInstructions_Output = {
     wait_for_post_meta?: boolean;
 };
 
-export type MeasurementSocketMessage = {
-    message: string;
-    data: Metadata | null;
-};
-
 export type MeasurementStatus = {
     running: boolean;
     name?: string | null;
@@ -329,11 +324,13 @@ export type StartMeasurementApiV1MeasurementStartPostData = {
 
 export type StartMeasurementApiV1MeasurementStartPostResponse = ControlResponse;
 
-export type StopMeasurementApiV1MeasurementStopPostData = {
-    requestBody: MeasurementSocketMessage;
+export type StopMeasurementApiV1MeasurementStopPostResponse = unknown;
+
+export type PostMetaApiV1MeasurementPostMetaPostData = {
+    requestBody: Metadata;
 };
 
-export type StopMeasurementApiV1MeasurementStopPostResponse = ControlResponse;
+export type PostMetaApiV1MeasurementPostMetaPostResponse = unknown;
 
 export type MeasurementStatusApiV1MeasurementGetResponse = MeasurementStatus;
 
@@ -677,12 +674,22 @@ export type $OpenApiTs = {
     };
     '/api/v1/measurement/stop': {
         post: {
-            req: StopMeasurementApiV1MeasurementStopPostData;
             res: {
                 /**
                  * Successful Response
                  */
-                200: ControlResponse;
+                200: unknown;
+            };
+        };
+    };
+    '/api/v1/measurement/post_meta': {
+        post: {
+            req: PostMetaApiV1MeasurementPostMetaPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
                 /**
                  * Validation Error
                  */

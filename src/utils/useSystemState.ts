@@ -1,5 +1,5 @@
 import { getWSLink } from '@/api/icoapi.ts';
-import { MeasurementStatus, SystemStateModel } from '@/client';
+import { MeasurementStatus } from '@/client';
 import {computed, ref} from 'vue';
 
 export function useSystemState(
@@ -27,19 +27,46 @@ export function useSystemState(
 
       ws.onopen = () => {
         console.log('[WS] Connected');
+        try {
+          ws?.send(JSON.stringify({
+            message: 'local_storage_state',
+            data: {
+              hardware: JSON.parse(localStorage.getItem('hardware') ?? '{}'),
+              measurement: JSON.parse(localStorage.getItem('measurement') ?? '{}'),
+            }
+          }))
+        } catch(e) {
+
+        }
       };
 
       ws.onmessage = (event: any) => {
         try {
-          // If this works, it is a system state information
-          const parsed = JSON.parse(event.data) as SystemStateModel;
-          reachable.value = true;
-          canReady.value = parsed.can_ready;
-          running.value = parsed.measurement_status.running;
-          measurementStatus.value = parsed.measurement_status;
-          cloud_ready.value = parsed.cloud_status
+          const parsed = JSON.parse(event.data)
+          switch (parsed.message) {
+            case 'local_storage_state':
+              // This could one day sync local state between clients
+              /*const saved_storage = JSON.parse(parsed.data)
+              Object.keys(saved_storage).forEach((key) => {
+                localStorage.setItem(key, saved_storage[key])
+              })*/
+              break;
+
+            case 'state':
+              reachable.value = true;
+              canReady.value = parsed.data.can_ready;
+              running.value = parsed.data.measurement_status.running;
+              measurementStatus.value = parsed.data.measurement_status;
+              cloud_ready.value = parsed.data.cloud_status
+              break;
+
+            default:
+              onCustomInstruction(parsed)
+              break;
+          }
         } catch (e) {
           // If it fails, it is a custom instruction
+          console.log('[WS] Received custom instruction', event.data);
           onCustomInstruction(event);
         }
       };
@@ -71,7 +98,9 @@ export function useSystemState(
 
   async function checkState(): Promise<void> {
     try {
-      ws?.send('get_state');
+      ws?.send(JSON.stringify({
+        message: 'get_state'
+      }));
       reachable.value = true;
     } catch (e) {
       reachable.value = false;

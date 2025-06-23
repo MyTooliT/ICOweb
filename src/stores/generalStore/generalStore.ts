@@ -29,7 +29,7 @@ export const useGeneralStore = defineStore('general', () => {
     }
 
     const systemState = useSystemState((event: any) => {
-        switch(event.data) {
+        switch(event.message) {
             case 'post_meta_request':
                 postMetaModalVisible.value = true
                 break;

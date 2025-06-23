@@ -575,28 +575,6 @@ export const $MeasurementInstructions_Output = {
     title: 'MeasurementInstructions'
 } as const;
 
-export const $MeasurementSocketMessage = {
-    properties: {
-        message: {
-            type: 'string',
-            title: 'Message'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/Metadata'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        }
-    },
-    type: 'object',
-    required: ['message', 'data'],
-    title: 'MeasurementSocketMessage'
-} as const;
-
 export const $MeasurementStatus = {
     properties: {
         running: {
