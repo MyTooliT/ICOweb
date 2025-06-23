@@ -1267,6 +1267,10 @@ video {
   color: color-mix(in srgb, var(--p-surface-500) calc(100% * var(--tw-text-opacity, 1)), transparent);
 }
 
+.\!text-on-primary {
+  color: var(--md-sys-color-on-primary) !important;
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -1605,6 +1609,11 @@ video {
   background-color: inherit;
 }
 
+.data-\[running\~\=true\]\:bg-green-600[data-running~="true"] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
+}
+
 .data-\[active\=true\]\:text-primary[data-active="true"] {
   color: var(--md-sys-color-primary);
 }
@@ -1619,6 +1628,18 @@ video {
 
 .data-\[can\~\=true\]\:text-on-primary-container[data-can~="true"] {
   color: var(--md-sys-color-on-primary-container);
+}
+
+.data-\[running\~\=true\]\:text-on-primary[data-running~="true"] {
+  color: var(--md-sys-color-on-primary);
+}
+
+.data-\[running\~\=true\]\:text-on-primary-container[data-running~="true"] {
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.data-\[running\~\=true\]\:\!text-on-primary[data-running~="true"] {
+  color: var(--md-sys-color-on-primary) !important;
 }
 
 .data-\[disabled\=true\]\:hover\:bg-inherit:hover[data-disabled="true"] {

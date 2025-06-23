@@ -23,47 +23,47 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 <template>
   <div class="w-full absolute bottom-0 left-0 ">
     <div
-      v-if="store.systemState.running"
-      class="w-full text-center
-      text-[length:--p-button-sm-font-size]
-      py-[--p-button-padding-y]
-      bg-green-600 text-on-primary"
-    >
-      Ongoing Measurement
-    </div>
-    <div
-      v-else
       :data-api="store.systemState.reachable"
       :data-can="store.systemState.canReady"
+      :data-running="store.systemState.running"
       class="
         w-full pr-6 pb-1 text-right
-        flex flex-row justify-end items-center
+        flex flex-row justify-between items-center
         bg-error-container text-on-error-container
         data-[api~=false]:bg-error-container
         data-[api~=false]:text-on-error-container
         data-[api~=true]:data-[can~=false]:bg-yellow-300
         data-[api~=true]:data-[can~=false]:text-on-error-container
         data-[can~=true]:bg-primary-container
-        data-[can~=true]:text-on-primary-container"
+        data-[can~=true]:text-on-primary-container
+        data-[running~=true]:bg-green-600
+        data-[running~=true]:text-on-primary"
     >
-      <Button
-        label="Clear Cache"
-        size="small"
-        link
-        @click="clearCache()" />
-      <Button
-        label="Reset CAN Network"
-        size="small"
-        link
-        class="mr-auto"
-        :loading="loading"
-        :disabled="loading"
-        @click="resetHandle" />
+      <div>
+        <Button
+          label="Clear Cache"
+          size="small"
+          link
+          :class="store.systemState.running ? '!text-on-primary' : ''"
+          @click="clearCache()" />
+        <Button
+          v-if="!store.systemState.running"
+          label="Reset CAN Network"
+          size="small"
+          link
+          :loading="loading"
+          :disabled="loading"
+          @click="resetHandle" />
+      </div>
+      <div
+        v-if="store.systemState.running"
+        class="text-sm h-min flex self-center">
+        Ongoing Measurement
+      </div>
       <div class="text-sm h-min flex self-center">
         API {{ store.systemState.reachable ? 'reachable' : 'disconnected' }} |
         CAN {{ store.systemState.canReady ? 'established' : 'disconnected' }}
       </div>
-
     </div>
   </div>
 </template>
