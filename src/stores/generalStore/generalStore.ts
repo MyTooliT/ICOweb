@@ -79,7 +79,7 @@ export const useGeneralStore = defineStore('general', () => {
     const addHolderModalVisible = ref<boolean>(false)
     const fileSelectionModalVisible = ref<boolean>(false)
     const renameSTHModalVisible = ref<boolean>(false)
-    const postMetaModalVisible = ref<boolean>(true)
+    const postMetaModalVisible = ref<boolean>(false)
 
     /*
     ******************************************************
