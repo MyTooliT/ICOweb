@@ -184,7 +184,6 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
       profile: mStore.preMetaForm.profile,
       parameters: {}
     }
-    gStore.postMetaModalVisible = true
   } else {
     await gStore.systemState.checkState()
     toast.add({life: 7000, group:'newfile'})
@@ -193,7 +192,6 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
 
 async function sendPostMeta() {
   await sendMeasurementPostMeta(mStore.postMetaForm)
-  gStore.postMetaModalVisible = false
   await gStore.systemState.checkState()
   toast.add({life: 7000, group:'newfile'})
 }

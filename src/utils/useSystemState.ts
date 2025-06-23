@@ -2,7 +2,11 @@ import { getWSLink } from '@/api/icoapi.ts';
 import { MeasurementStatus, SystemStateModel } from '@/client';
 import {computed, ref} from 'vue';
 
-export function useSystemState() {
+export function useSystemState(
+    onCustomInstruction: (event: any) => void = (event: any) => {
+      console.log('[WS] Received custom instruction', event.data);
+    },
+) {
   const reachable = ref(false);
   const canReady = ref(false);
   const running = ref(false);
@@ -27,6 +31,7 @@ export function useSystemState() {
 
       ws.onmessage = (event: any) => {
         try {
+          // If this works, it is a system state information
           const parsed = JSON.parse(event.data) as SystemStateModel;
           reachable.value = true;
           canReady.value = parsed.can_ready;
@@ -34,7 +39,8 @@ export function useSystemState() {
           measurementStatus.value = parsed.measurement_status;
           cloud_ready.value = parsed.cloud_status
         } catch (e) {
-          console.error('[WS] Parse error', e);
+          // If it fails, it is a custom instruction
+          onCustomInstruction(event);
         }
       };
 
