@@ -35,6 +35,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.0.0",
+    "rollup": "^4.44.0",
     "tailwindcss-primeui": "^0.3.4",
     "vue": "^3.4.31",
     "vue-chartjs": "^5.3.1",
