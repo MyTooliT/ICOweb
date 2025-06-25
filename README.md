@@ -121,9 +121,9 @@ VITE_APPLICATION_PORT=8081
 This repository is based on typescript and relies heavily on the ``openapi-ts`` package to generate type declarations
 in ``src/client`` from the backend directly. To update the type declarations, **ensure the API is running** and run:
 
-``
+```
 npm run generate-client
-``
+```
 
 ## Metadata
 
