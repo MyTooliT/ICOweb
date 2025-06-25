@@ -128,7 +128,7 @@ npm run generate-client
 ## Metadata
 
 To support the usage of arbitrary metadata when creating measurements, a configuration system has been set up. This
-system starts as en Excel file in which all metadata fields are defined. This file is then parsed into a YAML file, from
+system starts as an Excel file in which all metadata fields are defined. This file is then parsed into a YAML file, from
 which it can be used further.
 
 This repository holds the ``metadata.xlsx`` master file and the script to generate the ``.yaml`` file and the typescript type 
@@ -260,7 +260,7 @@ This is the list of features to be implemented.
 - [x] **Scales**: Make the graph scales represent the holder's actual unit and range
 
 Notes on crosshair and window selection: Both are enabled by the plugin [chartjs-plugin-crosshair](https://chartjs-plugin-crosshair.netlify.app/)
-and would be perfectly suitable. However, when using the plugin, upon zooming the datasets disappear. This seems to be connectect
+and would be perfectly suitable. However, when using the plugin, upon zooming the datasets disappear. This seems to be connected
 to the ``type: linear`` property in the chart options, as without this, it works - but with an unformated scale.
 
 ## Concerning "Measure" Tab
