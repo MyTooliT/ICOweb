@@ -27,7 +27,9 @@ import {
 import {ParsedMetadata} from '@/client';
 import {JsonViewer} from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
-
+import {Image} from 'primevue';
+import Button from 'primevue/button';
+import mime from 'mime'
 const route = useRoute();
 const router = useRouter();
 const store = useGeneralStore();
@@ -186,6 +188,10 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
   }
 })
 watch(() => route.query['file'], handleRouteWatch, { immediate: true });
+
+function decode(content: string): string {
+  return content.substring(2,content.length - 1)
+}
 </script>
 
 <template>
@@ -226,6 +232,42 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
               theme="light"
               class="!bg-transparent"
             />
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
+      <Accordion
+        v-if="parsedMetadata?.pictures && Object.keys(parsedMetadata?.pictures).length > 0"
+        class="border rounded-md mt-3"
+      >
+        <AccordionPanel value="0">
+          <AccordionHeader class="!bg-transparent">
+            Pictures
+          </AccordionHeader>
+          <AccordionContent
+            class="!bg-transparent [margin-bottom:40px]"
+            style="--p-accordion-content-background: transparent;"
+          >
+            <div class="grid grid-cols-3 gap-3">
+              <div
+                v-for="[name, content] in Object.entries(parsedMetadata?.pictures)"
+                :key="name"
+                class="flex flex-col items-center border rounded">
+                <Image
+                  :src="decode(content)"
+                  :alt="name"
+                  preview
+                />
+                <Button
+                  :label="`${name}.${mime.getExtension(content.split(':')[1].split(';')[0])}`"
+                  :href="decode(content)"
+                  icon="pi pi-download"
+                  :download="`${name}.${mime.getExtension(content.split(':')[1].split(';')[0])}`"
+                  link
+                  as="a"
+                  class="w-fit"
+                />
+              </div>
+            </div>
           </AccordionContent>
         </AccordionPanel>
       </Accordion>

@@ -794,6 +794,10 @@ video {
   width: min-content !important;
 }
 
+.w-1\/3 {
+  width: 33.333333%;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -821,6 +825,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-1\/2 {
+  width: 50%;
 }
 
 .min-w-36 {
@@ -880,6 +888,10 @@ video {
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .flex-row {
