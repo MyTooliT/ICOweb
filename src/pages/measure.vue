@@ -8,7 +8,7 @@ import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import SplitLayout from '@/layouts/SplitLayout.vue';
 import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
@@ -261,139 +261,138 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
       :loading="postMetaLoading"
       @send="submitPostMeta"
     />
-    <DefaultLayout class="w-fill w-stretch">
-      <div
+    <SplitLayout
+      v-if="hwStore.hasSTU && hwStore.activeSTH"
+      class="w-fill w-stretch"
+    >
+      <TextBlock
         v-if="hwStore.hasSTU && hwStore.activeSTH"
-      >
-        <div class="flex flex-row">
-          <div class="flex flex-col flex-grow border-gray-200 border-r pr-3 mr-3">
-            <TextBlock
-              v-if="hwStore.hasSTU && hwStore.activeSTH"
-              heading="Measure "
-              subheading="Capture a measurement from the connected tool"
-              :button="false" />
-            <StreamingChart
-              class="flex flex-col flex-grow"
-              :data="chartData"
-              :boundaries="{
-                xmin: mStore.chartStartTime,
-                xmax: mStore.chartEndTime,
-                ymin: mStore.chartYMin,
-                ymax: mStore.chartYMax
-              }"
-            />
-          </div>
-          <div class="flex flex-col gap-3">
-            <NamedInput title="Devices">
-              <InputGroup>
-                <InputGroupAddon class="flex-grow !text-black">
-                  {{ hwStore.activeSTU?.getName() }}
-                </InputGroupAddon>
-                <InputGroupAddon class="flex-grow !text-black">
-                  {{ hwStore.activeSTH?.getName() }}
-                </InputGroupAddon>
-                <Button
-                  :disabled="gStore.systemState.running"
-                  label="Change"
-                  icon="pi pi-cog"
-                  outlined
-                  @click="router.push('/')"
-                />
-              </InputGroup>
-            </NamedInput>
-            <ChartStreamControls
-              :ready="canMeasure"
-              :state="state"
-              :start-loading="startLoading"
-              :stop-loading="stopLoading"
-              @start="start"
-              @stop="stop"
-              @show="show"
-              @hide="close"
-            />
-            <div class="flex flex-col">
-              <NamedInput title="Measurement Channels">
-                <InputGroup
-                  v-for="slot in measurementChannels.slice(0, hwStore.activeHolder?.sensors.length ?? 2)"
-                  :key="slot"
-                >
-                  <InputGroupAddon class="w-12">
-                    <Checkbox
-                      v-model="mStore.activeChannels[slot]"
-                      binary
-                      :disabled="slot === 'first'"
-                    />
-                  </InputGroupAddon>
-                  <Select
-                    v-model="mStore.selectedChannels[slot]"
-                    :options="hwStore.activeHolder?.sensors ?? []"
-                    :option-value="(sens: TAssignedSensor) => sens.channel"
-                    :option-label="channelSensorRepr"
-                    :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
-                    placeholder="No Selection"
-                  />
-                </InputGroup>
-              </NamedInput>
-            </div>
-            <NamedInput
-              title="IFT Value"
-              class="w-fit">
-              <InputGroup class="w-fit">
+        heading="Measure "
+        subheading="Capture a measurement from the connected tool"
+        :button="false" />
+      <StreamingChart
+        class="flex flex-col flex-grow"
+        :data="chartData"
+        :boundaries="{
+          xmin: mStore.chartStartTime,
+          xmax: mStore.chartEndTime,
+          ymin: mStore.chartYMin,
+          ymax: mStore.chartYMax
+        }"
+      />
+      <template #aside>
+        <div class="flex flex-col gap-3">
+          <NamedInput title="Devices">
+            <InputGroup>
+              <InputGroupAddon class="flex-grow !text-black">
+                {{ hwStore.activeSTU?.getName() }}
+              </InputGroupAddon>
+              <InputGroupAddon class="flex-grow !text-black">
+                {{ hwStore.activeSTH?.getName() }}
+              </InputGroupAddon>
+              <Button
+                :disabled="gStore.systemState.running"
+                label="Change"
+                icon="pi pi-cog"
+                outlined
+                @click="router.push('/')"
+              />
+            </InputGroup>
+          </NamedInput>
+          <ChartStreamControls
+            :ready="canMeasure"
+            :state="state"
+            :start-loading="startLoading"
+            :stop-loading="stopLoading"
+            @start="start"
+            @stop="stop"
+            @show="show"
+            @hide="close"
+          />
+          <div class="flex flex-col">
+            <NamedInput title="Measurement Channels">
+              <InputGroup
+                v-for="slot in measurementChannels.slice(0, hwStore.activeHolder?.sensors.length ?? 2)"
+                :key="slot"
+              >
                 <InputGroupAddon class="w-12">
                   <Checkbox
-                    v-model="mStore.IFTRequested"
+                    v-model="mStore.activeChannels[slot]"
                     binary
-                    :disabled="gStore.systemState.running"
+                    :disabled="slot === 'first'"
                   />
                 </InputGroupAddon>
-                <InputGroupAddon>
-                  <span class="capitalize !text-black inline-block w-24">
-                    For Channel:
-                  </span>
-                </InputGroupAddon>
                 <Select
-                  v-model="mStore.IFTChannel"
-                  :options="possibleIFTChannels"
-                  :disabled="!hwStore.activeHolder || gStore.systemState.running"
-                  placeholder="Disabled"
+                  v-model="mStore.selectedChannels[slot]"
+                  :options="hwStore.activeHolder?.sensors ?? []"
+                  :option-value="(sens: TAssignedSensor) => sens.channel"
+                  :option-label="channelSensorRepr"
+                  :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
+                  placeholder="No Selection"
                 />
-              </InputGroup>
-              <InputGroup>
-                <CustomSlider
-                  v-model="mStore.windowWidth"
-                  class="w-full"
-                  title="Window Size"
-                  :min="50"
-                  :max="250"
-                  :disabled="gStore.systemState.running"
-                />
-              </InputGroup>
-            </NamedInput>
-            <NamedInput title="Measurement Integrity (Packet Loss)">
-              <InputGroup>
-                <MeterGroup
-                  :value="datalossMeter"
-                  class="w-full">
-                  <template #label="{ value }">
-                    <div class="flex flex-wrap gap-3 items-center">
-                      <template
-                        v-for="val in value"
-                        :key="val.label"
-                      >
-                        <span
-                          :data-color="val.color"
-                          class="w-4 h-4 rounded-full"
-                          :style="`background-color: ${val.color}`"
-                        />
-                        <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
-                      </template>
-                    </div>
-                  </template>
-                </MeterGroup>
               </InputGroup>
             </NamedInput>
           </div>
+          <NamedInput
+            title="IFT Value"
+            class="w-fit">
+            <InputGroup class="w-fit">
+              <InputGroupAddon class="w-12">
+                <Checkbox
+                  v-model="mStore.IFTRequested"
+                  binary
+                  :disabled="gStore.systemState.running"
+                />
+              </InputGroupAddon>
+              <InputGroupAddon>
+                <span class="capitalize !text-black inline-block w-24">
+                  For Channel:
+                </span>
+              </InputGroupAddon>
+              <Select
+                v-model="mStore.IFTChannel"
+                :options="possibleIFTChannels"
+                :disabled="!hwStore.activeHolder || gStore.systemState.running"
+                placeholder="Disabled"
+              />
+            </InputGroup>
+            <InputGroup>
+              <CustomSlider
+                v-model="mStore.windowWidth"
+                class="w-full"
+                title="Window Size"
+                :min="50"
+                :max="250"
+                :disabled="gStore.systemState.running"
+              />
+            </InputGroup>
+          </NamedInput>
+          <NamedInput title="Measurement Integrity (Packet Loss)">
+            <InputGroup>
+              <MeterGroup
+                :value="datalossMeter"
+                class="w-full">
+                <template #label="{ value }">
+                  <div class="flex flex-wrap gap-3 items-center">
+                    <template
+                      v-for="val in value"
+                      :key="val.label"
+                    >
+                      <span
+                        :data-color="val.color"
+                        class="w-4 h-4 rounded-full"
+                        :style="`background-color: ${val.color}`"
+                      />
+                      <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
+                    </template>
+                  </div>
+                </template>
+              </MeterGroup>
+            </InputGroup>
+          </NamedInput>
         </div>
+      </template>
+      <template #bottom>
         <Accordion
           v-if="featureEnabled('Meta')"
           class="border rounded-md mt-3"
@@ -421,28 +420,28 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             </AccordionContent>
           </AccordionPanel>
         </Accordion>
+      </template>
+    </SplitLayout>
+    <div
+      v-else
+      class="text-center h-stretch flex justify-center w-full"
+    >
+      <div class="flex flex-col gap-4 w-fit mt-[20%]">
+        <h2 class="text-lg">
+          Nothing to Measure
+        </h2>
+        <h4>
+          There is no running stream. Connect a device to start measuring.
+        </h4>
+        <Button
+          label="Connect a Device"
+          severity="primary"
+          outlined
+          @click="router.push('/')"
+        />
       </div>
-      <div
-        v-else
-        class="text-center h-stretch flex justify-center w-full"
-      >
-        <div class="flex flex-col gap-4 w-fit mt-[20%]">
-          <h2 class="text-lg">
-            Nothing to Measure
-          </h2>
-          <h4>
-            There is no running stream. Connect a device to start measuring.
-          </h4>
-          <Button
-            label="Connect a Device"
-            severity="primary"
-            outlined
-            @click="router.push('/')"
-          />
-        </div>
-      </div>
-      <ADCDrawer v-if="featureEnabled('ADC')" />
-    </DefaultLayout>
+    </div>
+    <ADCDrawer v-if="featureEnabled('ADC')" />
     <button
       v-if="hwStore.activeSTH && featureEnabled('ADC')"
       class="

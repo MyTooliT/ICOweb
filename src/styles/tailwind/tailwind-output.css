@@ -1054,11 +1054,6 @@ video {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
-.bg-green-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
-}
-
 .bg-inherit {
   background-color: inherit;
 }
@@ -1114,11 +1109,6 @@ video {
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-}
-
-.py-\[--p-button-padding-y\] {
-  padding-top: var(--p-button-padding-y);
-  padding-bottom: var(--p-button-padding-y);
 }
 
 .pb-1 {
@@ -1177,10 +1167,6 @@ video {
   line-height: 2.5rem;
 }
 
-.text-\[length\:--p-button-sm-font-size\] {
-  font-size: var(--p-button-sm-font-size);
-}
-
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -1226,6 +1212,10 @@ video {
   color: rgb(0 0 0 / var(--tw-text-opacity, 1)) !important;
 }
 
+.\!text-on-primary {
+  color: var(--md-sys-color-on-primary) !important;
+}
+
 .\!text-on-primary-container {
   color: var(--md-sys-color-on-primary-container) !important;
 }
@@ -1249,10 +1239,6 @@ video {
   color: var(--md-sys-color-on-error-container);
 }
 
-.text-on-primary {
-  color: var(--md-sys-color-on-primary);
-}
-
 .text-primary {
   color: var(--md-sys-color-primary);
 }
@@ -1265,10 +1251,6 @@ video {
 .text-surface-500 {
   --tw-text-opacity: 1;
   color: color-mix(in srgb, var(--p-surface-500) calc(100% * var(--tw-text-opacity, 1)), transparent);
-}
-
-.\!text-on-primary {
-  color: var(--md-sys-color-on-primary) !important;
 }
 
 .underline {
@@ -1605,13 +1587,13 @@ video {
   background-color: var(--md-sys-color-primary-container);
 }
 
-.data-\[state\=readyToEdit\]\:bg-inherit[data-state="readyToEdit"] {
-  background-color: inherit;
-}
-
 .data-\[running\~\=true\]\:bg-green-600[data-running~="true"] {
   --tw-bg-opacity: 1;
   background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
+}
+
+.data-\[state\=readyToEdit\]\:bg-inherit[data-state="readyToEdit"] {
+  background-color: inherit;
 }
 
 .data-\[active\=true\]\:text-primary[data-active="true"] {
@@ -1632,14 +1614,6 @@ video {
 
 .data-\[running\~\=true\]\:text-on-primary[data-running~="true"] {
   color: var(--md-sys-color-on-primary);
-}
-
-.data-\[running\~\=true\]\:text-on-primary-container[data-running~="true"] {
-  color: var(--md-sys-color-on-primary-container);
-}
-
-.data-\[running\~\=true\]\:\!text-on-primary[data-running~="true"] {
-  color: var(--md-sys-color-on-primary) !important;
 }
 
 .data-\[disabled\=true\]\:hover\:bg-inherit:hover[data-disabled="true"] {
