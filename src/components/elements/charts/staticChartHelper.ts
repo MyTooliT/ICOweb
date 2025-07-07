@@ -1,5 +1,5 @@
 /// <reference types="chart.js" />
-import {ParsedMeasurement} from '@/client';
+import {ParsedMeasurement, ParsedMetadata} from '@/client';
 import {Ref} from 'vue';
 
 export type ChartBoundaries = {
@@ -69,7 +69,8 @@ export function computeChartBoundaries(data: Chart.ChartPoint[][]): ChartBoundar
 export function processLine(
     line: string,
     result: DisplayableMeasurement,
-    progress: Ref<number>
+    progress: Ref<number>,
+    parsedMetadata: Ref<ParsedMetadata|undefined>
 ): void {
     if (!line.trim()) return;
 
@@ -77,13 +78,15 @@ export function processLine(
 
     if (parsedLine.progress !== undefined) {
         progress.value = Math.floor(parsedLine.progress * 100)
-    } else {
+        return
+    }
+    if (parsedLine.name !== undefined) {
         const chunk: ParsedMeasurement = parsedLine;
 
         result.counter.push(...chunk.counter);
-        result.timestamp.push(...(chunk.timestamp.map(ts => ts / 1000000)));
+        result.timestamp.push(...(chunk.timestamp.map((ts: number) => ts / 1000000)));
 
-        chunk.datasets.forEach((dataset) => {
+        chunk.datasets.forEach((dataset: any) => {
             const combined = []
             for (let i = 0; i < chunk.timestamp.length; i++) {
                 combined.push({
@@ -102,7 +105,11 @@ export function processLine(
                 });
             }
         });
+        return
     }
+
+    const meta = JSON.parse(line)
+    parsedMetadata.value = meta as ParsedMetadata
 }
 
 export function findNextClosestSmaller(sortedArr: number[], num: number): number {

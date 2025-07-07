@@ -199,6 +199,25 @@ export const $ControlResponse = {
     title: 'ControlResponse'
 } as const;
 
+export const $Dataset = {
+    properties: {
+        data: {
+            items: {
+                type: 'number'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['data', 'name'],
+    title: 'Dataset'
+} as const;
+
 export const $DiskCapacity = {
     properties: {
         total: {
@@ -272,6 +291,30 @@ export const $FileListResponseModel = {
     type: 'object',
     required: ['capacity', 'files', 'directory'],
     title: 'FileListResponseModel'
+} as const;
+
+export const $HDF5NodeInfo = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        type: {
+            type: 'string',
+            title: 'Type'
+        },
+        path: {
+            type: 'string',
+            title: 'Path'
+        },
+        attributes: {
+            type: 'object',
+            title: 'Attributes'
+        }
+    },
+    type: 'object',
+    required: ['name', 'type', 'path', 'attributes'],
+    title: 'HDF5NodeInfo'
 } as const;
 
 export const $HTTPValidationError = {
@@ -656,6 +699,58 @@ export const $Metadata = {
     type: 'object',
     required: ['version', 'profile', 'parameters'],
     title: 'Metadata'
+} as const;
+
+export const $ParsedMeasurement = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        counter: {
+            items: {
+                type: 'integer'
+            },
+            type: 'array',
+            title: 'Counter'
+        },
+        timestamp: {
+            items: {
+                type: 'number'
+            },
+            type: 'array',
+            title: 'Timestamp'
+        },
+        datasets: {
+            items: {
+                '$ref': '#/components/schemas/Dataset'
+            },
+            type: 'array',
+            title: 'Datasets'
+        }
+    },
+    type: 'object',
+    required: ['name', 'counter', 'timestamp', 'datasets'],
+    title: 'ParsedMeasurement',
+    description: 'Data model for parsed measurement for analyze tab'
+} as const;
+
+export const $ParsedMetadata = {
+    properties: {
+        acceleration: {
+            '$ref': '#/components/schemas/HDF5NodeInfo'
+        },
+        pictures: {
+            additionalProperties: {
+                type: 'string'
+            },
+            type: 'object',
+            title: 'Pictures'
+        }
+    },
+    type: 'object',
+    required: ['acceleration', 'pictures'],
+    title: 'ParsedMetadata'
 } as const;
 
 export const $Quantity = {

@@ -29,6 +29,7 @@
     "chart.js": "^4.4.3",
     "chartjs-plugin-crosshair": "^2.0.0",
     "chartjs-plugin-zoom": "^2.0.1",
+    "clipboard": "^2.0.11",
     "date-fns": "^4.1.0",
     "js-yaml": "^4.1.0",
     "pinia": "^2.1.7",
@@ -40,6 +41,7 @@
     "vue": "^3.4.31",
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.4.0",
+    "vue3-json-viewer": "^2.4.1",
     "xlsx": "^0.18.5",
     "yargs": "^17.7.2"
   },

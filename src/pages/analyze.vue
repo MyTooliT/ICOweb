@@ -3,8 +3,8 @@ import { getAPILink } from '@/api/icoapi.ts';
 import StaticChart from '@/components/elements/charts/StaticChart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import {ProgressBar} from 'primevue';
+import SplitLayout from '@/layouts/SplitLayout.vue';
+import {Accordion, AccordionContent, AccordionHeader, AccordionPanel, ProgressBar} from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import {ChartData, ChartOptions, ChartDataset} from 'chart.js';
 import {
@@ -24,6 +24,9 @@ import {
   useRoute,
   useRouter
 } from 'vue-router';
+import {ParsedMetadata} from '@/client';
+import {JsonViewer} from 'vue3-json-viewer';
+import 'vue3-json-viewer/dist/vue3-json-viewer.css';
 
 const route = useRoute();
 const router = useRouter();
@@ -46,6 +49,7 @@ const chartBoundaries = ref<ChartBoundaries>({
 
 const progress = ref<number>(0)
 const data = ref<DisplayableMeasurement|undefined>(undefined)
+const parsedMetadata = ref<ParsedMetadata | undefined>(undefined)
 
 const handleParsedData = (
     data: DisplayableMeasurement,
@@ -98,7 +102,7 @@ async function fetchParsedMeasurement(fileName: string): Promise<DisplayableMeas
 
       // Process each line except the last (incomplete line)
       for (const line of lines.slice(0, -1)) {
-        processLine(line, combinedResult, progress)
+        processLine(line, combinedResult, progress, parsedMetadata)
       }
 
       // Keep the last incomplete line for the next iteration
@@ -185,7 +189,9 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
 </script>
 
 <template>
-  <DefaultLayout class="h-stretch">
+  <SplitLayout
+    v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
+    class="h-stretch">
     <TextBlock
       :heading="route.query['file']?.toString() ?? 'Analyze Measurement'"
       subheading="Analyze data from existing measurements."
@@ -199,30 +205,55 @@ watch(() => route.query['file'], handleRouteWatch, { immediate: true });
       :data="chartData"
       :options="chartOptions"
     />
-    <div
-      v-else
-      class="w-full h-stretch max-h-60 flex justify-center items-center"
-    >
-      <div class="max-w-60 flex flex-col gap-4">
-        <h4>Fetching Measurement</h4>
-        <ProgressBar 
-          :value="progress" 
-          :pt="{
-            value: {
-              style: ['transition-duration: .25s;']
-            }
-          }" />
-      </div>
+    <template #aside />
+    <template #bottom>
+      <Accordion
+        v-if="parsedMetadata?.acceleration"
+        class="border rounded-md mt-3"
+      >
+        <AccordionPanel value="0">
+          <AccordionHeader class="!bg-transparent">
+            Metadata
+          </AccordionHeader>
+          <AccordionContent
+            class="!bg-transparent"
+            style="--p-accordion-content-background: transparent;"
+          >
+            <JsonViewer
+              :value="parsedMetadata?.acceleration.attributes"
+              :expand-depth="10"
+              :preview-mode="true"
+              theme="light"
+              class="!bg-transparent"
+            />
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
+    </template>
+  </SplitLayout>
+  <div
+    v-else
+    class="w-full h-stretch max-h-60 flex justify-center items-center"
+  >
+    <div class="max-w-60 flex flex-col gap-4">
+      <h4>Fetching Measurement</h4>
+      <ProgressBar
+        :value="progress"
+        :pt="{
+          value: {
+            style: ['transition-duration: .25s;']
+          }
+        }" />
     </div>
-    <FileSelectionModal
-      @upload="(event) => {
-        const query = { ...route.query }
-        query['file'] = (event as string)
-        router.replace( { query } )
-        store.fileSelectionModalVisible = false;
-      }"
-    />
-  </DefaultLayout>
+  </div>
+  <FileSelectionModal
+    @upload="(event) => {
+      const query = { ...route.query }
+      query['file'] = (event as string)
+      router.replace( { query } )
+      store.fileSelectionModalVisible = false;
+    }"
+  />
 </template>
 
 <style scoped>
