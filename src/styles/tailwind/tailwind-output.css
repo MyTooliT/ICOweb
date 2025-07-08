@@ -1035,10 +1035,6 @@ video {
   background-color: var(--md-sys-color-primary-container) !important;
 }
 
-.\!bg-transparent {
-  background-color: transparent !important;
-}
-
 .bg-black {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
@@ -1073,10 +1069,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-.bg-transparent {
-  background-color: transparent;
 }
 
 .\!p-0 {
@@ -1125,10 +1117,6 @@ video {
 
 .pb-3 {
   padding-bottom: 0.75rem;
-}
-
-.pr-3 {
-  padding-right: 0.75rem;
 }
 
 .pr-6 {
