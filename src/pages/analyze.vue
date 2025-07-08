@@ -82,8 +82,8 @@ watch(() => route.query['file'], routerWatcher, { immediate: true });
       :boundaries="chartBoundaries"
       @zoom="handleZoom"
     />
-    <template #aside />
     <template #bottom>
+      <h4>Measurement File Information</h4>
       <MetadataAccordion
         v-if="parsedMetadata"
         :parsed-metadata="parsedMetadata" />
