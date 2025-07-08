@@ -5,7 +5,7 @@ import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.
 import SplitLayout from '@/layouts/SplitLayout.vue';
 import { ProgressBar } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import {ChartData} from 'chart.js';
+import {ChartData, ChartYAxe, LinearScale} from 'chart.js';
 import {
   ChartBoundaries,
   DisplayableMeasurement,
@@ -18,6 +18,7 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
+import {LabelAnnotationOptions} from 'chartjs-plugin-annotation';
 
 const route = useRoute();
 const router = useRouter();
@@ -48,7 +49,11 @@ const routerWatcher = async () => {
     store.fileSelectionModalVisible = false;
     const reader = await fetchFileReader(fileName)
     parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
-    computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries)
+    if(parsedMetadata.value) {
+      datasetUnits.value = getDatasetUnits(parsedMetadata.value)
+      scales.value = computeChartScales(datasetUnits.value)
+    }
+    computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries, datasetUnits.value)
   } else {
     store.fileSelectionModalVisible = true;
   }
@@ -58,7 +63,31 @@ function handleZoom(start: number, end: number): void {
   if(!parsedData.value) {return}
   const startIndex = findNextClosestSmaller(parsedData.value.timestamp, start)
   const endIndex = findNextClosestSmaller(parsedData.value.timestamp, end)
-  computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries , startIndex, endIndex)
+  computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries,  datasetUnits.value, startIndex, endIndex)
+}
+
+const scales = ref<Record<string, ChartYAxe>>({})
+const datasetUnits = ref<string[]>([])
+
+function getDatasetUnits(meta: ParsedMetadata): string[] {
+  return meta.sensors.map(s => s.unit)
+}
+
+function computeChartScales(units: string[]): Record<string, ChartYAxe> {
+  const uniqueUnits = new Set(...units)
+  const scales: Record<string, ChartYAxe> = {}
+
+  uniqueUnits.forEach((unit) => {
+    scales[unit] = {
+      position: 'left',
+      type: 'linear',
+      title: {
+        display: false,
+      }
+    }
+  })
+
+  return scales
 }
 
 watch(() => route.query['file'], routerWatcher, { immediate: true });
@@ -80,6 +109,7 @@ watch(() => route.query['file'], routerWatcher, { immediate: true });
       v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
       :data="chartData"
       :boundaries="chartBoundaries"
+      :scales="scales"
       @zoom="handleZoom"
     />
     <template #bottom>

@@ -23,6 +23,7 @@ export type DisplayableMeasurement = {
 
 export function getSubsetOfMeasurement(
     data: DisplayableMeasurement,
+    datasetUnits: Array<string>,
     startIndex: number = 0,
     endIndex: number|undefined = undefined,
     maxPointsPerSet: number = 2000,
@@ -47,6 +48,7 @@ export function getSubsetOfMeasurement(
             label: dataset.name,
             pointRadius: 1,
             borderColor: chartColors[index],
+            yAxisID: datasetUnits[index]
         }
     })
 }
@@ -136,9 +138,10 @@ export function computeChartDataAndBoundaries(
     parsedData: DisplayableMeasurement,
     data: Ref<ChartData<'line'>>,
     boundaries: Ref<ChartBoundaries>,
+    datasetUnits: Array<string>,
     startIndex: number = 0,
     endIndex: number|undefined = undefined): void {
-    const newDatasets = getSubsetOfMeasurement(parsedData, startIndex, endIndex);
+    const newDatasets = getSubsetOfMeasurement(parsedData, datasetUnits, startIndex, endIndex);
     const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
 
     data.value.datasets = newDatasets as ChartDataset<'line', Chart.Point[]>[]

@@ -13,11 +13,13 @@ import {
   Title,
   Tooltip,
   Interaction,
-  TimeScale
+  TimeScale,
+  ChartYAxe
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
-import { computed } from 'vue';
+import Annotation, {AnnotationOptions} from 'chartjs-plugin-annotation';
+import {computed} from 'vue';
 import { Line } from 'vue-chartjs';
 import { ChartBoundaries } from '@/components/elements/charts/staticChartHelper.ts';
 
@@ -31,7 +33,8 @@ Chart.register(
   Tooltip,
   Legend,
   zoomPlugin,
-  TimeScale
+  TimeScale,
+  Annotation
 );
 
 Interaction.modes.interpolate = Interpolate;
@@ -54,12 +57,39 @@ Chart.register(CustomCrosshairPlugin(CrosshairPlugin));
 
 const props = defineProps<{
   data: ChartData<'line'> ,
-  boundaries: ChartBoundaries
+  boundaries: ChartBoundaries,
+  scales: Record<string, LinearScale>
 }>()
 
 const emits = defineEmits<{
   (event: 'zoom', start: number, end: number): void,
 }>()
+
+function computeChartAnnotations(ctx: any, scales: Record<string, ChartYAxe>): Record<string, AnnotationOptions> {
+  const annotations: Record<string, AnnotationOptions> = {}
+  Object.entries(scales).forEach(([unit, scale]) => {
+    annotations[unit] = {
+      type: 'label',
+      xValue: 0,
+      yValue: ctx.chart.scales[unit].bottom,
+      font:{
+        size: 14,
+        weight: 'bold'
+      },
+      position: {
+        x: 'start',
+        y: 'end'
+      },
+      padding: {
+        bottom: 20
+      },
+      xAdjust: (ctx.chart.scales[unit].left - ctx.chart.scales[unit].right) / 2,
+      content: unit
+    }
+  })
+  return annotations
+}
+
 
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
@@ -68,16 +98,15 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     scales: {
       x: {
         type: 'linear',
-        max: props.boundaries.xmax ?? 10,
-        min: props.boundaries.xmin ?? 0,
+        max: props.boundaries.xmax,
+        min: props.boundaries.xmin,
         title: {
           text: 'Seconds since measurement start',
           display: true
         }
       },
-      y: {
-        type: 'linear',
-      }
+      y: {display: false},
+      ...props.scales
     },
     plugins: {
       decimation: {
@@ -98,6 +127,12 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
         mode: 'index',
         intersect: true,
       },
+      annotation: {
+        clip: false,
+        annotations(ctx: any) {
+          return computeChartAnnotations(ctx, props.scales)
+        }
+      }
     },
     hover: {
       intersect: false,
