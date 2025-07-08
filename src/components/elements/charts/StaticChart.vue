@@ -84,7 +84,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     },
     plugins: {
       decimation: {
-        enabled: true,
+        enabled: false,
         algorithm: 'lldb',
       },
       crosshair: {
@@ -116,9 +116,24 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
 </script>
 
 <template>
-  <div>
+  <div class="block relative">
     <Line
       :data="data"
       :options="chartOptions" />
   </div>
 </template>
+
+<style>
+.reset-zoom {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border: 1px solid var(--md-sys-color-on-primary-container);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+</style>
