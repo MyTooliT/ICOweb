@@ -28,19 +28,16 @@ const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: str
     <AccordionPanel
       v-if="parsedMetadata?.acceleration"
       value="0">
-      <AccordionHeader class="!bg-transparent">
+      <AccordionHeader>
         Metadata
       </AccordionHeader>
-      <AccordionContent
-        class="!bg-transparent"
-        style="--p-accordion-content-background: transparent;"
-      >
+      <AccordionContent>
         <JsonViewer
           :value="parsedMetadata?.acceleration.attributes"
           :expand-depth="10"
           :preview-mode="true"
           theme="light"
-          class="!bg-transparent"
+         
         />
       </AccordionContent>
     </AccordionPanel>
@@ -48,12 +45,10 @@ const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: str
       v-if="parsedMetadata?.pictures && Object.keys(parsedMetadata?.pictures).length > 0"
       value="1"
     >
-      <AccordionHeader class="!bg-transparent">
+      <AccordionHeader>
         Pictures
       </AccordionHeader>
-      <AccordionContent
-        style="--p-accordion-content-background: transparent;"
-      >
+      <AccordionContent>
         <div class="grid grid-cols-3 gap-3">
           <div
             v-for="[name, content] in Object.entries(parsedMetadata?.pictures)"
@@ -80,18 +75,12 @@ const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: str
     <AccordionPanel
       v-if="parsedMetadata?.sensors && parsedMetadata.sensors.length > 0"
       value="2"
-      class="!bg-transparent"
     >
-      <AccordionHeader class="!bg-transparent">
+      <AccordionHeader>
         Sensor Data
       </AccordionHeader>
-      <AccordionContent style="--p-accordion-content-background: transparent;">
-        <DataTable
-          :value="parsedMetadata.sensors"
-          style="
-            --p-datatable-header-cell-background: transparent;
-            --p-datatable-row-background: transparent;"
-        >
+      <AccordionContent>
+        <DataTable :value="parsedMetadata.sensors">
           <Column
             v-for="col of sensorColumns"
             :key="col.field"

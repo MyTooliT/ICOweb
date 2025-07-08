@@ -398,7 +398,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
           class="border rounded-md mt-3"
         >
           <AccordionPanel value="0">
-            <AccordionHeader class="!bg-transparent">
+            <AccordionHeader>
               Metadata
               <span
                 v-if="mStore.preMetaValid"
@@ -409,10 +409,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 class="pi pi-exclamation-triangle text-red-500 ml-3 mr-auto"
               />
             </AccordionHeader>
-            <AccordionContent
-              class="!bg-transparent"
-              style="--p-accordion-content-background: transparent;"
-            >
+            <AccordionContent>
               <PreMetaData
                 phase="pre"
                 :disabled="gStore.systemState.running"
