@@ -13,15 +13,14 @@ import {
   Title,
   Tooltip,
   Interaction,
-  TimeScale,
-  ChartYAxe
+  TimeScale
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
-import Annotation, {AnnotationOptions} from 'chartjs-plugin-annotation';
+import Annotation from 'chartjs-plugin-annotation';
 import {computed} from 'vue';
 import { Line } from 'vue-chartjs';
-import { ChartBoundaries } from '@/components/elements/charts/staticChartHelper.ts';
+import {ChartBoundaries, computeChartAnnotations} from '@/components/elements/charts/staticChartHelper.ts';
 
 Chart.register(
   LineController,
@@ -64,31 +63,6 @@ const props = defineProps<{
 const emits = defineEmits<{
   (event: 'zoom', start: number, end: number): void,
 }>()
-
-function computeChartAnnotations(ctx: any, scales: Record<string, ChartYAxe>): Record<string, AnnotationOptions> {
-  const annotations: Record<string, AnnotationOptions> = {}
-  Object.entries(scales).forEach(([unit, scale]) => {
-    annotations[unit] = {
-      type: 'label',
-      xValue: 0,
-      yValue: ctx.chart.scales[unit].bottom,
-      font:{
-        size: 14,
-        weight: 'bold'
-      },
-      position: {
-        x: 'start',
-        y: 'end'
-      },
-      padding: {
-        bottom: 20
-      },
-      xAdjust: (ctx.chart.scales[unit].left - ctx.chart.scales[unit].right) / 2,
-      content: unit
-    }
-  })
-  return annotations
-}
 
 
 const chartOptions = computed<ChartOptions<'line'>>(() => {
