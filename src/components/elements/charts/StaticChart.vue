@@ -19,6 +19,7 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
+import { ChartBoundaries } from '@/components/elements/charts/staticChartHelper.ts';
 
 Chart.register(
   LineController,
@@ -33,7 +34,7 @@ Chart.register(
   TimeScale
 );
 
-Interaction.modes.Interpolate = Interpolate;
+Interaction.modes.interpolate = Interpolate;
 
 // eslint-disable-next-line max-len
 // https://github.com/AbelHeinsbroek/chartjs-plugin-crosshair/issues/119#issuecomment-1748680274
@@ -53,13 +54,11 @@ Chart.register(CustomCrosshairPlugin(CrosshairPlugin));
 
 const props = defineProps<{
   data: ChartData<'line'> ,
-  options?: ChartOptions<'line'>
-  boundaries?: {
-    xmin: number,
-    xmax: number,
-    ymin: number,
-    ymax: number
-  }
+  boundaries: ChartBoundaries
+}>()
+
+const emits = defineEmits<{
+  (event: 'zoom', start: number, end: number): void,
 }>()
 
 const chartOptions = computed<ChartOptions<'line'>>(() => {
@@ -69,11 +68,9 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     scales: {
       x: {
         type: 'linear',
-        max: props.boundaries?.xmax ?? 10,
-        min: props.boundaries?.xmin ?? 0,
-        ticks: {
-          stepSize: 1
-        },
+        max: props.boundaries.xmax ?? 10,
+        min: props.boundaries.xmin ?? 0,
+
         title: {
           text: 'Seconds passed',
           align: 'center',
@@ -82,18 +79,33 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       },
       y: {
         type: 'linear',
-        max: props.boundaries?.ymax ?? 10,
-        min: props.boundaries?.ymin ?? -10,
-        ticks: {
-          stepSize: 1
-        }
+        max: props.boundaries.ymax ?? 10,
+        min: props.boundaries.ymin ?? -10,
+
       }
     },
     plugins: {
       decimation: {
         enabled: true,
-        algorithm: 'min-max',
+        algorithm: 'lldb',
       },
+      crosshair: {
+        callbacks: {
+          afterZoom: () => function(start: number, end: number) {
+            emits('zoom', start, end);
+          }
+        },
+        snap: {
+          enabled: true,
+        }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: true,
+      },
+    },
+    hover: {
+      intersect: false,
     }
   }
 })
@@ -102,8 +114,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
 <template>
   <div>
     <Line
-      ref="chartInstanceStatic"
       :data="data"
-      :options="options ?? chartOptions" />
+      :options="chartOptions" />
   </div>
 </template>

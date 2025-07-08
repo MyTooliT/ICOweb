@@ -1,39 +1,32 @@
 <script setup lang="ts">
-import { getAPILink } from '@/api/icoapi.ts';
 import StaticChart from '@/components/elements/charts/StaticChart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import SplitLayout from '@/layouts/SplitLayout.vue';
-import {Accordion, AccordionContent, AccordionHeader, AccordionPanel, ProgressBar} from 'primevue';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel, ProgressBar } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import {ChartData, ChartOptions, ChartDataset} from 'chart.js';
+import {ChartData} from 'chart.js';
 import {
   ChartBoundaries,
   DisplayableMeasurement,
-  getSubsetOfMeasurement,
-  computeChartBoundaries,
-  processLine,
-  findNextClosestSmaller
+  computeChartDataAndBoundaries,
+  findNextClosestSmaller,
+  fetchFileReader,
+  consumeFileReader,
+  decode
 } from '@/components/elements/charts/staticChartHelper.ts';
-import {
-  computed,
-  ref,
-  watch
-} from 'vue';
-import {
-  useRoute,
-  useRouter
-} from 'vue-router';
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
-import {JsonViewer} from 'vue3-json-viewer';
+import { JsonViewer } from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
-import {Image} from 'primevue';
+import Image from 'primevue/image';
 import Button from 'primevue/button';
 import mime from 'mime'
+
 const route = useRoute();
 const router = useRouter();
 const store = useGeneralStore();
-
 
 const chartData = ref<ChartData<'line'>>({
   datasets: [{
@@ -49,149 +42,31 @@ const chartBoundaries = ref<ChartBoundaries>({
   ymax: 10,
 })
 
-const progress = ref<number>(0)
-const data = ref<DisplayableMeasurement|undefined>(undefined)
+const fetchingProgress = ref<number>(0)
+const parsedData = ref<DisplayableMeasurement|undefined>(undefined)
 const parsedMetadata = ref<ParsedMetadata | undefined>(undefined)
 
-const handleParsedData = (
-    data: DisplayableMeasurement,
-    startIndex: number = 0,
-    endIndex: number|undefined = undefined): void => {
-  const newDatasets = getSubsetOfMeasurement(data, startIndex, endIndex);
-  const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
-
-  chartData.value = {
-    datasets: newDatasets as ChartDataset<'line', Chart.Point[]>[]
-  }
-  chartBoundaries.value = { ...computeChartBoundaries(dataOnly) }
-}
-
-const handleRouteWatch = async () => {
+const routerWatcher = async () => {
   if(route.query['file']) {
-    store.lastFileQuery = route.query['file'].toString();
+    const fileName = route.query['file'].toString();
+    store.lastFileQuery = fileName;
     store.fileSelectionModalVisible = false;
-    data.value = await fetchParsedMeasurement(route.query['file'].toString())
-    handleParsedData(data.value)
+    const reader = await fetchFileReader(fileName)
+    parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
+    computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries)
   } else {
     store.fileSelectionModalVisible = true;
   }
 }
 
-// eslint-disable-next-line max-len
-async function fetchParsedMeasurement(fileName: string): Promise<DisplayableMeasurement> {
-  const response = await fetch(`${getAPILink()}/files/analyze/${fileName}`);
-  const reader = response.body?.getReader();
-  if (!reader) {
-    throw new Error('Failed to read response body');
-  }
-
-  const decoder = new TextDecoder('utf-8');
-  let receivedText = '';
-  let combinedResult: DisplayableMeasurement = {
-    name: fileName,
-    counter: [],
-    timestamp: [],
-    datasets: []
-  };
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      receivedText += decoder.decode(value, { stream: true });
-      const lines = receivedText.split('\n');
-
-      // Process each line except the last (incomplete line)
-      for (const line of lines.slice(0, -1)) {
-        processLine(line, combinedResult, progress, parsedMetadata)
-      }
-
-      // Keep the last incomplete line for the next iteration
-      receivedText = lines[lines.length - 1];
-    }
-  } catch (error) {
-    console.log('This should never be reached - if it was, good luck');
-    throw error
-  }
-
-  return combinedResult;
-}
-
 function handleZoom(start: number, end: number): void {
-  if(!data.value) {return}
-  const startIndex = findNextClosestSmaller(data.value.timestamp, start)
-  const endIndex = findNextClosestSmaller(data.value.timestamp, end)
-  handleParsedData(data.value, startIndex, endIndex)
+  if(!parsedData.value) {return}
+  const startIndex = findNextClosestSmaller(parsedData.value.timestamp, start)
+  const endIndex = findNextClosestSmaller(parsedData.value.timestamp, end)
+  computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries , startIndex, endIndex)
 }
 
-const chartOptions = computed<ChartOptions<'line'>>(() => {
-  return {
-    animation: false,
-    responsive: true,
-    scales: {
-      x: {
-        type: 'linear',
-        max: chartBoundaries.value.xmax ?? 10,
-        min: chartBoundaries.value.xmin ?? 0,
-
-        title: {
-          text: 'Seconds passed',
-          align: 'center',
-          display: true
-        }
-      },
-      y: {
-        type: 'linear',
-        max: chartBoundaries.value.ymax ?? 10,
-        min: chartBoundaries.value.ymin ?? -10,
-
-      }
-    },
-    plugins: {
-      decimation: {
-        enabled: true,
-        algorithm: 'lldb',
-      },
-      zoom: {
-        zoom: {
-          wheel: {
-            enabled: true,
-          },
-          pinch: {
-            enabled: false
-          },
-          mode: 'x',
-        },
-        pan: {
-          enabled: false
-        }
-      },
-      crosshair: {
-        callbacks: {
-          afterZoom: () => function(start: number, end: number) {
-            handleZoom(start, end);
-          }
-        },
-        snap: {
-          enabled: true,
-        }
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: true,
-      },
-    },
-    hover: {
-      intersect: false,
-    }
-  }
-})
-watch(() => route.query['file'], handleRouteWatch, { immediate: true });
-
-function decode(content: string): string {
-  return content.substring(2,content.length - 1)
-}
+watch(() => route.query['file'], routerWatcher, { immediate: true });
 </script>
 
 <template>
@@ -209,7 +84,8 @@ function decode(content: string): string {
     <StaticChart
       v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
       :data="chartData"
-      :options="chartOptions"
+      :boundaries="chartBoundaries"
+      @zoom="handleZoom"
     />
     <template #aside />
     <template #bottom>
@@ -280,7 +156,7 @@ function decode(content: string): string {
     <div class="max-w-60 flex flex-col gap-4">
       <h4>Fetching Measurement</h4>
       <ProgressBar
-        :value="progress"
+        :value="fetchingProgress"
         :pt="{
           value: {
             style: ['transition-duration: .25s;']
@@ -297,7 +173,3 @@ function decode(content: string): string {
     }"
   />
 </template>
-
-<style scoped>
-
-</style>
