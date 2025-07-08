@@ -181,6 +181,7 @@ export type ParsedMetadata = {
     pictures: {
         [key: string]: (string);
     };
+    sensors: Array<Sensor>;
 };
 
 export type Quantity = {

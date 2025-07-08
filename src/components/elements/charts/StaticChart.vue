@@ -70,18 +70,13 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
         type: 'linear',
         max: props.boundaries.xmax ?? 10,
         min: props.boundaries.xmin ?? 0,
-
         title: {
-          text: 'Seconds passed',
-          align: 'center',
+          text: 'Seconds since measurement start',
           display: true
         }
       },
       y: {
         type: 'linear',
-        max: props.boundaries.ymax ?? 10,
-        min: props.boundaries.ymin ?? -10,
-
       }
     },
     plugins: {

@@ -746,10 +746,17 @@ export const $ParsedMetadata = {
             },
             type: 'object',
             title: 'Pictures'
+        },
+        sensors: {
+            items: {
+                '$ref': '#/components/schemas/Sensor'
+            },
+            type: 'array',
+            title: 'Sensors'
         }
     },
     type: 'object',
-    required: ['acceleration', 'pictures'],
+    required: ['acceleration', 'pictures', 'sensors'],
     title: 'ParsedMetadata'
 } as const;
 

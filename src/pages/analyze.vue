@@ -3,7 +3,7 @@ import StaticChart from '@/components/elements/charts/StaticChart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import SplitLayout from '@/layouts/SplitLayout.vue';
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel, ProgressBar } from 'primevue';
+import { ProgressBar } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import {ChartData} from 'chart.js';
 import {
@@ -13,16 +13,11 @@ import {
   findNextClosestSmaller,
   fetchFileReader,
   consumeFileReader,
-  decode
 } from '@/components/elements/charts/staticChartHelper.ts';
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
-import { JsonViewer } from 'vue3-json-viewer';
-import 'vue3-json-viewer/dist/vue3-json-viewer.css';
-import Image from 'primevue/image';
-import Button from 'primevue/button';
-import mime from 'mime'
+import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -89,64 +84,9 @@ watch(() => route.query['file'], routerWatcher, { immediate: true });
     />
     <template #aside />
     <template #bottom>
-      <Accordion
-        v-if="parsedMetadata?.acceleration"
-        class="border rounded-md mt-3"
-      >
-        <AccordionPanel value="0">
-          <AccordionHeader class="!bg-transparent">
-            Metadata
-          </AccordionHeader>
-          <AccordionContent
-            class="!bg-transparent"
-            style="--p-accordion-content-background: transparent;"
-          >
-            <JsonViewer
-              :value="parsedMetadata?.acceleration.attributes"
-              :expand-depth="10"
-              :preview-mode="true"
-              theme="light"
-              class="!bg-transparent"
-            />
-          </AccordionContent>
-        </AccordionPanel>
-      </Accordion>
-      <Accordion
-        v-if="parsedMetadata?.pictures && Object.keys(parsedMetadata?.pictures).length > 0"
-        class="border rounded-md mt-3"
-      >
-        <AccordionPanel value="0">
-          <AccordionHeader class="!bg-transparent">
-            Pictures
-          </AccordionHeader>
-          <AccordionContent
-            class="!bg-transparent [margin-bottom:40px]"
-            style="--p-accordion-content-background: transparent;"
-          >
-            <div class="grid grid-cols-3 gap-3">
-              <div
-                v-for="[name, content] in Object.entries(parsedMetadata?.pictures)"
-                :key="name"
-                class="flex flex-col items-center border rounded">
-                <Image
-                  :src="decode(content)"
-                  :alt="name"
-                  preview
-                />
-                <Button
-                  :label="`${name}.${mime.getExtension(content.split(':')[1].split(';')[0])}`"
-                  :href="decode(content)"
-                  icon="pi pi-download"
-                  :download="`${name}.${mime.getExtension(content.split(':')[1].split(';')[0])}`"
-                  link
-                  as="a"
-                  class="w-fit"
-                />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionPanel>
-      </Accordion>
+      <MetadataAccordion
+        v-if="parsedMetadata"
+        :parsed-metadata="parsedMetadata" />
     </template>
   </SplitLayout>
   <div

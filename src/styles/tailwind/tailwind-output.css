@@ -1075,6 +1075,10 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+.bg-transparent {
+  background-color: transparent;
+}
+
 .\!p-0 {
   padding: 0px !important;
 }
