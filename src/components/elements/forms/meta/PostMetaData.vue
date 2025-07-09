@@ -7,6 +7,7 @@ import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts
 import Select from 'primevue/select';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import Button from 'primevue/button';
+import {Quantity} from '@/client';
 
 const mStore = useMeasurementStore()
 const { config, reload, error } = useYamlConfig();
@@ -37,7 +38,7 @@ const profile = computed<Profile | undefined>(() => {
 
 function getProfileParamKeys(): Parameter[] {
   const params: Parameter[] = []
-  const categories = Object.values(profile.value?.pre ?? {})
+  const categories = Object.values(profile.value?.post ?? {})
   categories.forEach(category => {
     Object.entries(category).forEach(([k, param]) => {
       if(param.required === 'required') {
@@ -63,6 +64,10 @@ function validate() {
   let valid = true
   params.forEach(param => {
     valid = valid && (mStore.postMetaForm.parameters[param] !== null && mStore.postMetaForm.parameters[param] !== undefined && mStore.postMetaForm.parameters[param] !== '')
+    if(typeof mStore.postMetaForm.parameters[param] === 'object') {
+      const qty = mStore.postMetaForm.parameters[param] as Quantity
+      valid = valid && (qty.value !== null)
+    }
   })
   mStore.postMetaValid = valid
 }
@@ -104,7 +109,7 @@ onMounted(async () => {
           <div class="w-full flex justify-center">
             <Button
               label="Finish Measurement"
-              :disabled="mStore.postMetaValid"
+              :disabled="!mStore.postMetaValid"
               :loading="loading"
               @click="emits('send')"
             />
