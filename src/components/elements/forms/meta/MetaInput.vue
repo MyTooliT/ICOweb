@@ -102,7 +102,7 @@ onMounted(() => {
       :min-fraction-digits="0"
       :max-fraction-digits="definition.datatype === 'int' ? 0: 4"
       :use-grouping="false"
-      :disabled="disabled || definition.type === 'implementation'"
+      :disabled="disabled || definition.type === 'implementation' || definition.required === 'restricted'"
       input-class="w-full"
       binary
       @complete="search"
