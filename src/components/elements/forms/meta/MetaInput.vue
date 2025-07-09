@@ -50,6 +50,8 @@ function assembleFormEntry(value: any): Quantity | any {
       unit: props.definition.unit,
       value: value
     }
+  } else if(props.definition?.datatype === 'boolean') {
+    return value === 'false' ? false : Boolean(value)
   }
   return value
 }
