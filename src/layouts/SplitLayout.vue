@@ -16,7 +16,7 @@ const slots = defineSlots<{
         </div>
         <div
           v-if="slots.aside"
-          class="flex flex-col"
+          class="flex flex-row"
         >
           <Divider layout="vertical" />
           <slot name="aside" />
