@@ -31,8 +31,7 @@ import {AccordionContent} from 'primevue';
 import {AccordionPanel} from 'primevue';
 import {AccordionHeader} from 'primevue';
 import {
-  computed, onBeforeUnmount,
-  ref, watch
+  computed, onBeforeUnmount, ref, watch
 } from 'vue';
 import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
@@ -85,6 +84,11 @@ function wrapUpdate() {
       second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)) ?? 'Second Channel',
       third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)) ?? 'Third Channel',
       ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
+    },
+    {
+      first: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)?.sensor.sensorType.physicalUnit ?? 'g',
+      second: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)?.sensor.sensorType.physicalUnit ?? 'g',
+      third: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)?.sensor.sensorType.physicalUnit ?? 'g',
     },
     3175,
     mStore.chartMaximumDisplayedTime,
@@ -242,6 +246,27 @@ const possibleIFTChannels = computed<Array<string>>(() => {
   return Object.entries(mStore.activeChannels).filter(channel => channel[1]).map(channel => channel[0])
 })
 
+const scales = computed<Record<string, Chart.ChartYAxe>>(() => {
+  const scales: Record<string, Chart.ChartYAxe> = {}
+  const channelNumbers = Object.values<number>(mStore.selectedChannels)
+  const sensorsForChannels = channelNumbers.map(channelNumber =>
+      hwStore.activeHolder?.sensors.find(sensor => sensor.channel === channelNumber)
+  )
+  const unitsForChannels = sensorsForChannels.map(s => s?.sensor.sensorType.physicalUnit)
+  const uniqueUnits = new Set(...unitsForChannels)
+  uniqueUnits.forEach(unit => {
+    scales[unit] = {
+      position: 'left',
+      type: 'linear',
+      title: {
+        display: true,
+        text: `${hwStore.sensorDimensionList.find((dim) => dim.physicalUnit === unit)?.physicalDimension} in ${unit}`,
+      }
+    }
+  })
+  return scales
+})
+
 
 watch(mStore.activeChannels, () => {
   if(!(possibleIFTChannels.value && mStore.IFTChannel)) return
@@ -279,6 +304,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
           ymin: mStore.chartYMin,
           ymax: mStore.chartYMax
         }"
+        :scales="scales"
       />
       <template #aside>
         <div class="flex flex-col gap-3">

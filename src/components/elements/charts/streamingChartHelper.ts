@@ -22,6 +22,7 @@ import { Ref } from 'vue';
 * @param maxNumberOfPoints Maximum points per channel that should be drawn
 * @param iftValues Optional Vue Ref<> to the array of calculated IFT values
 * @param channelNames Names for the to-be-drawn datasets
+* @param channelUnits Units for the to-be-drawn datasets
 * @param sampleRate Acquisition sample rate of the ADC
 * @param drawTime Timeframe for the chart to display
 * @param minRef Vue Ref<> to the chart's minimum for setting
@@ -39,6 +40,11 @@ export function updateChartData(
     second?: string,
     third?: string,
     ift?: string
+  },
+  channelUnits: {
+    first: string,
+    second: string,
+    third: string,
   },
   sampleRate: number = 3175,
   drawTime: number = 10,
@@ -121,7 +127,7 @@ export function updateChartData(
     data: firstChannelSubset,
     pointRadius: 1,
     borderColor: 'black',
-    yAxisID: 'yFirstChannel'
+    yAxisID: channelUnits.first
   })
   if(activeChannels.second) {
     datasets.push({
@@ -129,7 +135,7 @@ export function updateChartData(
       data: secondChannelSubset,
       pointRadius: 1,
       borderColor: 'red',
-      yAxisID: 'ySecondChannel'
+      yAxisID: channelUnits.second
     })
   }
   if(activeChannels.third) {
@@ -138,7 +144,7 @@ export function updateChartData(
       data: thirdChannelSubset,
       pointRadius: 1,
       borderColor: 'green',
-      yAxisID: 'yThirdChannel'
+      yAxisID: channelUnits.third
     })
   }
   if(drawIFT && iftValues && iftValues.value.length > 0) {
