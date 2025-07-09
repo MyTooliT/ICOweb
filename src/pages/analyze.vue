@@ -5,7 +5,7 @@ import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.
 import SplitLayout from '@/layouts/SplitLayout.vue';
 import { ProgressBar } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import {ChartData, ChartYAxe, LinearScale} from 'chart.js';
+import {ChartData} from 'chart.js';
 import {
   ChartBoundaries,
   DisplayableMeasurement,
@@ -18,7 +18,6 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
-import {LabelAnnotationOptions} from 'chartjs-plugin-annotation';
 
 const route = useRoute();
 const router = useRouter();
@@ -66,24 +65,21 @@ function handleZoom(start: number, end: number): void {
   computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries,  datasetUnits.value, startIndex, endIndex)
 }
 
-const scales = ref<Record<string, ChartYAxe>>({})
+const scales = ref<Record<string, Chart.ChartYAxe>>({})
 const datasetUnits = ref<string[]>([])
 
 function getDatasetUnits(meta: ParsedMetadata): string[] {
   return meta.sensors.map(s => s.unit)
 }
 
-function computeChartScales(units: string[]): Record<string, ChartYAxe> {
+function computeChartScales(units: string[]): Record<string, Chart.ChartYAxe> {
   const uniqueUnits = new Set(...units)
-  const scales: Record<string, ChartYAxe> = {}
+  const scales: Record<string, Chart.ChartYAxe> = {}
 
   uniqueUnits.forEach((unit) => {
     scales[unit] = {
       position: 'left',
       type: 'linear',
-      title: {
-        display: false,
-      }
     }
   })
 

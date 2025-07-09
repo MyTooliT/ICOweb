@@ -57,7 +57,7 @@ Chart.register(CustomCrosshairPlugin(CrosshairPlugin));
 const props = defineProps<{
   data: ChartData<'line'> ,
   boundaries: ChartBoundaries,
-  scales: Record<string, LinearScale>
+  scales: Record<string, Chart.ChartYAxe>
 }>()
 
 const emits = defineEmits<{
@@ -104,7 +104,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       annotation: {
         clip: false,
         annotations(ctx: any) {
-          return computeChartAnnotations(ctx, props.scales)
+          return computeChartAnnotations(ctx.chart, props.scales)
         }
       }
     },

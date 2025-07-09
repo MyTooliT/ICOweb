@@ -1,7 +1,7 @@
 /// <reference types="chart.js" />
 import {ParsedMeasurement, ParsedMetadata} from '@/client';
 import {Ref} from 'vue';
-import {ChartData, ChartDataset, ChartYAxe} from 'chart.js';
+import {ChartData, ChartDataset} from 'chart.js';
 import {getAPILink} from '@/api/icoapi.ts';
 import {AnnotationOptions} from 'chartjs-plugin-annotation';
 
@@ -212,13 +212,13 @@ export function decode(content: string): string {
     return content
 }
 
-export function computeChartAnnotations(ctx: any, scales: Record<string, ChartYAxe>): Record<string, AnnotationOptions> {
+export function computeChartAnnotations(chart: any, scales: Record<string, Chart.ChartYAxe>): Record<string, AnnotationOptions> {
     const annotations: Record<string, AnnotationOptions> = {}
     Object.keys(scales).forEach((key) => {
         annotations[key] = {
             type: 'label',
             xValue: 0,
-            yValue: ctx.chart.scales[key].bottom,
+            yValue: chart.scales[key].bottom,
             font:{
                 size: 14,
                 weight: 'bold'
@@ -230,7 +230,7 @@ export function computeChartAnnotations(ctx: any, scales: Record<string, ChartYA
             padding: {
                 bottom: 20
             },
-            xAdjust: (ctx.chart.scales[key].left - ctx.chart.scales[key].right) / 2,
+            xAdjust: (chart.scales[key].left - chart.scales[key].right) / 2,
             content: key
         }
     })
