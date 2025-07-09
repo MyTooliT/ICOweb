@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {Parameter, ParameterDefinition, Parameters, Profile, ProfileParamDefinition} from '@/types/metadata';
+import {Category, Parameter, ParameterDefinition, Parameters, Profile, ProfileParamDefinition} from '@/types/metadata';
 import {capitalize, computed, onMounted} from 'vue';
 import MetaInput from '@/components/elements/forms/meta/MetaInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
@@ -74,6 +74,7 @@ function validate() {
 
 onMounted(async () => {
   await reload()
+  console.log(config.value)
 })
 </script>
 
@@ -88,7 +89,7 @@ onMounted(async () => {
           class="mt-4 pt-3 border-t"
         >
           <h4 class="font-semibold">
-            {{ capitalize(category) }}
+            {{ config?.categories[(category as Category)] }}
           </h4>
           <div class="flex flex-row gap-3 justify-between">
             <div
