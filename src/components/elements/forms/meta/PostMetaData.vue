@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {Parameter, ParameterDefinition, Parameters, Profile, ProfileParamDefinition} from '@/types/metadata';
+import {Category, Parameter, ParameterDefinition, Parameters, Profile, ProfileParamDefinition} from '@/types/metadata';
 import {capitalize, computed, onMounted} from 'vue';
 import MetaInput from '@/components/elements/forms/meta/MetaInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import Select from 'primevue/select';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import Button from 'primevue/button';
+import {Quantity} from '@/client';
 
 const mStore = useMeasurementStore()
 const { config, reload, error } = useYamlConfig();
@@ -37,7 +38,7 @@ const profile = computed<Profile | undefined>(() => {
 
 function getProfileParamKeys(): Parameter[] {
   const params: Parameter[] = []
-  const categories = Object.values(profile.value?.pre ?? {})
+  const categories = Object.values(profile.value?.post ?? {})
   categories.forEach(category => {
     Object.entries(category).forEach(([k, param]) => {
       if(param.required === 'required') {
@@ -63,12 +64,17 @@ function validate() {
   let valid = true
   params.forEach(param => {
     valid = valid && (mStore.postMetaForm.parameters[param] !== null && mStore.postMetaForm.parameters[param] !== undefined && mStore.postMetaForm.parameters[param] !== '')
+    if(typeof mStore.postMetaForm.parameters[param] === 'object') {
+      const qty = mStore.postMetaForm.parameters[param] as Quantity
+      valid = valid && (qty.value !== null)
+    }
   })
   mStore.postMetaValid = valid
 }
 
 onMounted(async () => {
   await reload()
+  console.log(config.value)
 })
 </script>
 
@@ -83,7 +89,7 @@ onMounted(async () => {
           class="mt-4 pt-3 border-t"
         >
           <h4 class="font-semibold">
-            {{ capitalize(category) }}
+            {{ config?.categories[(category as Category)] }}
           </h4>
           <div class="flex flex-row gap-3 justify-between">
             <div
@@ -104,7 +110,7 @@ onMounted(async () => {
           <div class="w-full flex justify-center">
             <Button
               label="Finish Measurement"
-              :disabled="mStore.postMetaValid"
+              :disabled="!mStore.postMetaValid"
               :loading="loading"
               @click="emits('send')"
             />

@@ -55,7 +55,7 @@ export const useHardwareStore = defineStore('hardware', () => {
 
   const sensorDimensionList = ref<Array<SensorType>>([
     new SensorType('Acceleration', 'g'),
-    new SensorType('Temperature', 'K'),
+    new SensorType('Temperature', '°C'),
     new SensorType('Light', 'cd'),
     new SensorType('Voltage', 'V'),
     new SensorType('Backpack', '-'),

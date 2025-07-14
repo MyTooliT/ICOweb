@@ -10,7 +10,7 @@ import {
   ParameterDefinition,
   Parameters,
   ProfileParamDefinition,
-  Parameter
+  Parameter, Category
 } from '@/types/metadata';
 import MetaInput from '@/components/elements/forms/meta/MetaInput.vue';
 const mStore = useMeasurementStore()
@@ -132,7 +132,7 @@ onMounted(async () => {
               class="mt-4 pt-3 border-t "
             >
               <h4 class="font-semibold">
-                {{ capitalize(category) }}
+                {{ config?.categories[category as Category] }}
               </h4>
               <div class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(30ch,1fr))]">
                 <div

@@ -1,6 +1,8 @@
 /// <reference types="chart.js" />
-import {ParsedMeasurement} from '@/client';
+import {ParsedMeasurement, ParsedMetadata} from '@/client';
 import {Ref} from 'vue';
+import {ChartData, ChartDataset} from 'chart.js';
+import {getAPILink} from '@/api/icoapi.ts';
 
 export type ChartBoundaries = {
     xmin: number,
@@ -21,9 +23,10 @@ export type DisplayableMeasurement = {
 
 export function getSubsetOfMeasurement(
     data: DisplayableMeasurement,
+    datasetUnits: Array<string>,
     startIndex: number = 0,
     endIndex: number|undefined = undefined,
-    maxPointsPerSet: number = 2000,
+    maxPointsPerSet: number = 5000,
     chartColors: string[] = ['red', 'green', 'blue', 'yellow', 'purple']
 ): Chart.ChartDataSets[] {
     const length = endIndex ? endIndex - startIndex : data.timestamp.length
@@ -45,6 +48,7 @@ export function getSubsetOfMeasurement(
             label: dataset.name,
             pointRadius: 1,
             borderColor: chartColors[index],
+            yAxisID: datasetUnits[index]
         }
     })
 }
@@ -69,7 +73,8 @@ export function computeChartBoundaries(data: Chart.ChartPoint[][]): ChartBoundar
 export function processLine(
     line: string,
     result: DisplayableMeasurement,
-    progress: Ref<number>
+    progress: Ref<number>,
+    parsedMetadata: Ref<ParsedMetadata|undefined>
 ): void {
     if (!line.trim()) return;
 
@@ -77,13 +82,15 @@ export function processLine(
 
     if (parsedLine.progress !== undefined) {
         progress.value = Math.floor(parsedLine.progress * 100)
-    } else {
+        return
+    }
+    if (parsedLine.name !== undefined) {
         const chunk: ParsedMeasurement = parsedLine;
 
         result.counter.push(...chunk.counter);
-        result.timestamp.push(...(chunk.timestamp.map(ts => ts / 1000000)));
+        result.timestamp.push(...(chunk.timestamp.map((ts: number) => ts / 1000000)));
 
-        chunk.datasets.forEach((dataset) => {
+        chunk.datasets.forEach((dataset: any) => {
             const combined = []
             for (let i = 0; i < chunk.timestamp.length; i++) {
                 combined.push({
@@ -102,7 +109,11 @@ export function processLine(
                 });
             }
         });
+        return
     }
+
+    const meta = JSON.parse(line)
+    parsedMetadata.value = meta as ParsedMetadata
 }
 
 export function findNextClosestSmaller(sortedArr: number[], num: number): number {
@@ -121,4 +132,81 @@ export function findNextClosestSmaller(sortedArr: number[], num: number): number
     }
 
     return closestIndex;
+}
+
+export function computeChartDataAndBoundaries(
+    parsedData: DisplayableMeasurement,
+    data: Ref<ChartData<'line'>>,
+    boundaries: Ref<ChartBoundaries>,
+    datasetUnits: Array<string>,
+    startIndex: number = 0,
+    endIndex: number|undefined = undefined): void {
+    const newDatasets = getSubsetOfMeasurement(parsedData, datasetUnits, startIndex, endIndex);
+    const dataOnly = newDatasets.map(set => set.data as Chart.ChartPoint[])
+
+    data.value.datasets = newDatasets as ChartDataset<'line', Chart.Point[]>[]
+    boundaries.value = { ...computeChartBoundaries(dataOnly) }
+}
+
+export async function consumeFileReader(
+    reader: ReadableStreamDefaultReader,
+    progress: Ref<number>,
+    parsedMetadata: Ref<ParsedMetadata | undefined>,
+    fileName: string,
+): Promise<DisplayableMeasurement> {
+    const decoder = new TextDecoder('utf-8');
+    let receivedText = '';
+    const combinedResult: DisplayableMeasurement = {
+        name: fileName,
+        counter: [],
+        timestamp: [],
+        datasets: []
+    };
+
+    try {
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            receivedText += decoder.decode(value, { stream: true });
+            const lines = receivedText.split('\n');
+
+            // Process each line except the last (incomplete line)
+            for (const line of lines.slice(0, -1)) {
+                processLine(line, combinedResult, progress, parsedMetadata)
+            }
+
+            // Keep the last incomplete line for the next iteration
+            receivedText = lines[lines.length - 1];
+        }
+    } catch (error) {
+        console.log('This should never be reached - if it was, good luck');
+        throw error
+    }
+
+    return combinedResult;
+}
+
+export async function fetchFileReader(fileName: string): Promise<ReadableStreamDefaultReader> {
+    const response = await fetch(`${getAPILink()}/files/analyze/${fileName}`);
+    const reader = response.body?.getReader();
+    if (!reader) {
+        throw new Error('Failed to read response body');
+    }
+    return reader
+}
+
+
+/**
+ * This function is solely to strip the incoming base64 string of its artifacts.
+ * The used backend (FastAPI) seems to wrap the encoded string in b'', which we remove here.
+ * If the prefix and suffix are not found, the content is simply returned.
+ * @param content The encoded, unstripped string.
+ * @returns The stripped base64 encoded string or the provided string
+ */
+export function decode(content: string): string {
+    if(content.startsWith('b\'') && content.endsWith('\'')) {
+        return content.substring(2,content.length - 1)
+    }
+    return content
 }

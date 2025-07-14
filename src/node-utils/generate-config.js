@@ -71,7 +71,7 @@ function parseCategories(sheet) {
     rows.forEach(row => {
         const id = normalizeKey(row['id']);
         if (!id) return;
-        categories[id] = row['name'] || id;
+        categories[id] = row['display_name'] || id;
     });
     return categories;
 }

@@ -17,8 +17,10 @@ import {
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
-import { computed } from 'vue';
+import Annotation from 'chartjs-plugin-annotation';
+import {computed} from 'vue';
 import { Line } from 'vue-chartjs';
+import {ChartBoundaries} from '@/components/elements/charts/staticChartHelper.ts';
 
 Chart.register(
   LineController,
@@ -30,10 +32,11 @@ Chart.register(
   Tooltip,
   Legend,
   zoomPlugin,
-  TimeScale
+  TimeScale,
+  Annotation
 );
 
-Interaction.modes.Interpolate = Interpolate;
+Interaction.modes.interpolate = Interpolate;
 
 // eslint-disable-next-line max-len
 // https://github.com/AbelHeinsbroek/chartjs-plugin-crosshair/issues/119#issuecomment-1748680274
@@ -53,14 +56,15 @@ Chart.register(CustomCrosshairPlugin(CrosshairPlugin));
 
 const props = defineProps<{
   data: ChartData<'line'> ,
-  options?: ChartOptions<'line'>
-  boundaries?: {
-    xmin: number,
-    xmax: number,
-    ymin: number,
-    ymax: number
-  }
+  boundaries: ChartBoundaries,
+  scales: Record<string, Chart.ChartYAxe>,
+  title: string,
 }>()
+
+const emits = defineEmits<{
+  (event: 'zoom', start: number, end: number): void,
+}>()
+
 
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
@@ -69,41 +73,72 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     scales: {
       x: {
         type: 'linear',
-        max: props.boundaries?.xmax ?? 10,
-        min: props.boundaries?.xmin ?? 0,
-        ticks: {
-          stepSize: 1
-        },
+        max: props.boundaries.xmax,
+        min: props.boundaries.xmin,
         title: {
-          text: 'Seconds passed',
-          align: 'center',
+          text: 'Seconds since measurement start',
           display: true
         }
       },
-      y: {
-        type: 'linear',
-        max: props.boundaries?.ymax ?? 10,
-        min: props.boundaries?.ymin ?? -10,
-        ticks: {
-          stepSize: 1
-        }
-      }
+      y: {display: false},
+      ...props.scales
     },
     plugins: {
-      decimation: {
-        enabled: true,
-        algorithm: 'min-max',
+      title: {
+        text: props.title,
+        display: true,
+        position: 'top',
+        font: {
+          size: '16',
+          style: 'normal',
+          weight: 'bold'
+        }
       },
+      decimation: {
+        enabled: false,
+        algorithm: 'lldb',
+      },
+      crosshair: {
+        callbacks: {
+          afterZoom: () => function(start: number, end: number) {
+            emits('zoom', start, end);
+          }
+        },
+        snap: {
+          enabled: true,
+        }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: true,
+      }
+    },
+    hover: {
+      intersect: false,
     }
   }
 })
 </script>
 
 <template>
-  <div>
+  <div class="block relative">
     <Line
-      ref="chartInstanceStatic"
       :data="data"
-      :options="options ?? chartOptions" />
+      :options="chartOptions" />
   </div>
 </template>
+
+<style>
+.reset-zoom {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border: 1px solid var(--md-sys-color-on-primary-container);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+</style>

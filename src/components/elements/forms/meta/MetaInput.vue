@@ -6,10 +6,11 @@ import {AutoComplete, Textarea} from 'primevue';
 import InputNumber from 'primevue/inputnumber';
 import Checkbox from 'primevue/checkbox';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
-import {computed, ref, onMounted} from 'vue';
+import {computed, ref, onMounted, watch} from 'vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {Quantity} from '@/client';
 import CustomFileUpload from '@/components/elements/forms/CustomFileUpload.vue';
+import {assembleFormEntry} from '@/utils/metadataHelper.ts';
 
 const props = defineProps<{
   paramKey: Parameter,
@@ -44,16 +45,6 @@ const search = (event: any) => {
   }
 }
 
-function assembleFormEntry(value: any): Quantity | any {
-  if(props.definition?.unit) {
-    return {
-      unit: props.definition.unit,
-      value: value
-    }
-  }
-  return value
-}
-
 const getModelValue = computed(() => {
   const relevantForm = props.phase === 'pre' ? mStore.preMetaForm : mStore.postMetaForm
   if (props.definition?.unit && typeof relevantForm.parameters[props.paramKey] === 'object') {
@@ -64,7 +55,7 @@ const getModelValue = computed(() => {
 
 function update(event: any) {
   if(props.phase === 'pre') {
-    mStore.preMetaForm.parameters[props.paramKey] = assembleFormEntry(event)
+    mStore.preMetaForm.parameters[props.paramKey] = assembleFormEntry(event, props.definition)
   } else {
     if(!mStore.postMetaForm) {
       mStore.postMetaForm = {
@@ -73,16 +64,22 @@ function update(event: any) {
         parameters: {}
       }
     }
-    mStore.postMetaForm.parameters[props.paramKey] = assembleFormEntry(event)
+    mStore.postMetaForm.parameters[props.paramKey] = assembleFormEntry(event, props.definition)
   }
   emits('update')
 }
 
-onMounted(() => {
+function setDefaults() {
   if(props.definition?.default !== undefined) {
     update(props.definition.default)
   }
+}
+
+onMounted(() => {
+  setDefaults()
 })
+
+watch(props, setDefaults)
 </script>
 
 <template>
@@ -100,7 +97,7 @@ onMounted(() => {
       :min-fraction-digits="0"
       :max-fraction-digits="definition.datatype === 'int' ? 0: 4"
       :use-grouping="false"
-      :disabled="disabled || definition.type === 'implementation'"
+      :disabled="disabled || definition.type === 'implementation' || definition.required === 'restricted'"
       input-class="w-full"
       binary
       @complete="search"

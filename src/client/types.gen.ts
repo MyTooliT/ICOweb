@@ -55,6 +55,11 @@ export type ControlResponse = {
     data: MeasurementStatus;
 };
 
+export type Dataset = {
+    data: Array<(number)>;
+    name: string;
+};
+
 export type DiskCapacity = {
     total: number | null;
     available: number | null;
@@ -69,6 +74,15 @@ export type FileListResponseModel = {
     capacity: DiskCapacity;
     files: Array<MeasurementFileDetails>;
     directory: string;
+};
+
+export type HDF5NodeInfo = {
+    name: string;
+    type: string;
+    path: string;
+    attributes: {
+        [key: string]: unknown;
+    };
 };
 
 export type HTTPValidationError = {
@@ -150,6 +164,24 @@ export type Metadata = {
     parameters: {
         [key: string]: (Quantity | unknown);
     };
+};
+
+/**
+ * Data model for parsed measurement for analyze tab
+ */
+export type ParsedMeasurement = {
+    name: string;
+    counter: Array<(number)>;
+    timestamp: Array<(number)>;
+    datasets: Array<Dataset>;
+};
+
+export type ParsedMetadata = {
+    acceleration: HDF5NodeInfo;
+    pictures: {
+        [key: string]: (string);
+    };
+    sensors: Array<Sensor>;
 };
 
 export type Quantity = {
@@ -300,13 +332,19 @@ export type GetAnalyzedFileApiV1FilesAnalyzeNameGetData = {
     name: string;
 };
 
-export type GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse = unknown;
+export type GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse = ParsedMeasurement;
 
 export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
     formData: Body_post_analyzed_file_api_v1_files_analyze_post;
 };
 
 export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = unknown;
+
+export type GetFileMetaApiV1FilesAnalyzeMetaNameGetData = {
+    name: string;
+};
+
+export type GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse = ParsedMetadata;
 
 export type UploadFileApiV1CloudUploadPostData = {
     requestBody: Body_upload_file_api_v1_cloud_upload_post;
@@ -599,7 +637,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: unknown;
+                200: ParsedMeasurement;
                 /**
                  * Validation Error
                  */
@@ -615,6 +653,21 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/files/analyze/meta/{name}': {
+        get: {
+            req: GetFileMetaApiV1FilesAnalyzeMetaNameGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ParsedMetadata;
                 /**
                  * Validation Error
                  */
