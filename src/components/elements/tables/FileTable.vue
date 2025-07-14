@@ -2,7 +2,6 @@
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import Button from 'primevue/button';
-import { MeasurementFileDetails } from '@/client';
 import { formatFileSize } from '@/utils/helper.ts';
 import { format } from 'date-fns';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
