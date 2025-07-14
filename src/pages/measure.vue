@@ -268,7 +268,7 @@ const scales = computed<Record<string, Chart.ChartYAxe>>(() => {
       hwStore.activeHolder?.sensors.find(sensor => sensor.channel === channelNumber)
   )
   const unitsForChannels = sensorsForChannels.map(s => s?.sensor.sensorType.physicalUnit)
-  const uniqueUnits = new Set(...unitsForChannels)
+  const uniqueUnits = new Set(unitsForChannels)
   uniqueUnits.forEach(unit => {
     scales[unit] = {
       position: 'left',
