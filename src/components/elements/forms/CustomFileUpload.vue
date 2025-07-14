@@ -6,6 +6,10 @@ interface Base64Map {
   [filename: string]: string;
 }
 
+defineProps<{
+  required: boolean,
+}>()
+
 const emits = defineEmits<{
   images: [Base64Map],
 }>()
@@ -38,7 +42,7 @@ function onFileSelect(event: { files: File[] }) {
       auto
       multiple
       accept="image/*"
-      severity="secondary"
+      :choose-button-props="{ severity: (required && Object.keys(base64Images).length === 0 ) ? 'danger' : 'primary' }"
       class="p-button-outlined"
       @select="onFileSelect"
     />
