@@ -18,10 +18,12 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
+import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
 
 const route = useRoute();
 const router = useRouter();
 const store = useGeneralStore();
+const hwStore = useHardwareStore();
 
 const chartData = ref<ChartData<'line'>>({
   datasets: [{
@@ -73,16 +75,19 @@ function getDatasetUnits(meta: ParsedMetadata): string[] {
 }
 
 function computeChartScales(units: string[]): Record<string, Chart.ChartYAxe> {
-  const uniqueUnits = new Set(...units)
+  const uniqueUnits = new Set(units)
   const scales: Record<string, Chart.ChartYAxe> = {}
 
-  uniqueUnits.forEach((unit) => {
+  uniqueUnits.forEach(unit => {
     scales[unit] = {
       position: 'left',
       type: 'linear',
+      title: {
+        display: true,
+        text: `${hwStore.sensorDimensionList.find((dim) => dim.physicalUnit === unit)?.physicalDimension} in ${unit}`,
+      }
     }
   })
-
   return scales
 }
 

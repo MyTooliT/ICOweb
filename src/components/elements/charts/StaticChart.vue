@@ -20,7 +20,7 @@ import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
 import Annotation from 'chartjs-plugin-annotation';
 import {computed} from 'vue';
 import { Line } from 'vue-chartjs';
-import {ChartBoundaries, computeChartAnnotations} from '@/components/elements/charts/staticChartHelper.ts';
+import {ChartBoundaries} from '@/components/elements/charts/staticChartHelper.ts';
 
 Chart.register(
   LineController,
@@ -100,12 +100,6 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       tooltip: {
         mode: 'index',
         intersect: true,
-      },
-      annotation: {
-        clip: false,
-        annotations(ctx: any) {
-          return computeChartAnnotations(ctx.chart, props.scales)
-        }
       }
     },
     hover: {
