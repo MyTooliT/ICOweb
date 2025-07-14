@@ -42,6 +42,9 @@ import {useToast} from 'primevue/usetoast';
 import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
 import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
+import {Parameter, ParameterDefinition} from '@/types/metadata';
+import {Quantity} from '@/client';
+import {assembleFormEntry} from '@/utils/metadataHelper.ts';
 /* eslint-enable max-len */
 
 const toast = useToast()
@@ -183,10 +186,22 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await sendMeasurementStopFlag()
   await config.reload()
   if(hasPostMeta.value) {
-    mStore.postMetaForm = {
-      version: mStore.preMetaForm.version,
-      profile: mStore.preMetaForm.profile,
-      parameters: {}
+    mStore.postMetaForm.version = mStore.preMetaForm.version
+    mStore.postMetaForm.profile = mStore.preMetaForm.profile
+    mStore.postMetaForm.parameters = {}
+    if(config.config.value?.profiles) {
+      Object.values(config.config.value?.profiles).forEach((profile) => {
+        if(profile.post) {
+          Object.values(profile.post).forEach(category => {
+            Object.entries(category).forEach(([param_key, param])  => {
+              if(param.default !== undefined) {
+                const definition = config.config.value?.parameters[param_key as Parameter]
+                mStore.postMetaForm.parameters[param_key] = assembleFormEntry(param.default, definition)
+              }
+            })
+          })
+        }
+      })
     }
   } else {
     await gStore.systemState.checkState()

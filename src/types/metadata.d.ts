@@ -1,6 +1,6 @@
 // Auto-generated from metadata.yaml
 
-export const requirementList = ['Required', 'Optional', 'Hidden'] as const;
+export const requirementList = ['Required', 'Optional', 'Hidden', 'Restricted'] as const;
 export type Requirement = typeof requirementList[number];
 
 export const coolantList = ['Dry', 'Air', 'MMQ', 'Flood', 'Oil'] as const;
@@ -17,6 +17,9 @@ export type Tool_material = typeof tool_materialList[number];
 
 export const processList = ['Milling', 'Drilling', 'Grinding', 'Turning', 'Reaming', 'Thread Cutting', 'Thread Forming', 'Thread Milling'] as const;
 export type Process = typeof processList[number];
+
+export const directionList = ['Climb', 'Conventional'] as const;
+export type Direction = typeof directionList[number];
 
 export type Datatype = 'text' | 'dropdown' | 'text_suggestions' | 'float' | 'int' | 'boolean' | 'file' | 'text_box';
 
@@ -50,14 +53,24 @@ export interface Parameters {
   coolant: ParameterDefinition;
   sth_mac: ParameterDefinition;
   stu_mac: ParameterDefinition;
-  tool_failure: ParameterDefinition;
-  wear_mark_width: ParameterDefinition;
+  tool_breakage: ParameterDefinition;
+  primary_tool_wear_exceeded: ParameterDefinition;
+  primary_wear_mark_width: ParameterDefinition;
+  primary_max_wear_mark_width: ParameterDefinition;
+  secondary_wear_mark_width: ParameterDefinition;
+  secondary_max_wear_mark_width: ParameterDefinition;
+  secondary_tool_wear_exceeded: ParameterDefinition;
   twm_layer: ParameterDefinition;
   pictures: ParameterDefinition;
   comment: ParameterDefinition;
+  direction: ParameterDefinition;
+  n_cuts: ParameterDefinition;
+  n_measurement: ParameterDefinition;
+  primary_pictures: ParameterDefinition;
+  secondary_pictures: ParameterDefinition;
 }
 
-export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_failure', 'wear_mark_width', 'twm_layer', 'pictures', 'comment'] as const;
+export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'primary_tool_wear_exceeded', 'primary_wear_mark_width', 'primary_max_wear_mark_width', 'secondary_wear_mark_width', 'secondary_max_wear_mark_width', 'secondary_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts', 'n_measurement', 'primary_pictures', 'secondary_pictures'] as const;
 export type Parameter = typeof ParameterList[number];
 
 export interface Info {
@@ -71,7 +84,9 @@ export type Category =
   'process' |
   'files' |
   'additional' |
-  'results';
+  'results' |
+  'primary_ce' |
+  'secondary_ce';
 
 export type ProfileParamDefinition = Partial<{ required: string; default: any; description: string }>;
 
@@ -87,7 +102,8 @@ export interface Profile {
 }
 
 export interface Profiles {
-  'twm': Profile;
+  'twm1': Profile;
+  'twm2': Profile;
   'milling': Profile;
 }
 

@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-06-23T16:55:06.712Z'
+  generated_at: '2025-07-09T12:30:51.090Z'
 parameters:
   person:
     id: person
@@ -138,16 +138,44 @@ parameters:
     label: STU Mac Address
     datatype: text
     type: implementation
-  tool_failure:
-    id: tool_failure
-    label: Tool Failure
+  tool_breakage:
+    id: tool_breakage
+    label: Tool Breakage
     datatype: boolean
     type: default
-  wear_mark_width:
-    id: wear_mark_width
-    label: Wear Mark Width
+  primary_tool_wear_exceeded:
+    id: primary_tool_wear_exceeded
+    label: Tool Wear Exceeded (Primary CE)
+    datatype: boolean
+    type: default
+  primary_wear_mark_width:
+    id: primary_wear_mark_width
+    label: Avg. Wear Mark Width (Primary CE)
     datatype: float
     unit: mm
+    type: default
+  primary_max_wear_mark_width:
+    id: primary_max_wear_mark_width
+    label: Max. Wear Mark Width (Primary CE)
+    datatype: float
+    unit: mm
+    type: default
+  secondary_wear_mark_width:
+    id: secondary_wear_mark_width
+    label: Avg. Wear Mark Width (Secondary CE)
+    datatype: float
+    unit: mm
+    type: default
+  secondary_max_wear_mark_width:
+    id: secondary_max_wear_mark_width
+    label: Max. Wear Mark Width (Secondary CE)
+    datatype: float
+    unit: mm
+    type: default
+  secondary_tool_wear_exceeded:
+    id: secondary_tool_wear_exceeded
+    label: Tool Wear Exceeded (Secondary CE)
+    datatype: boolean
     type: default
   twm_layer:
     id: twm_layer
@@ -164,18 +192,49 @@ parameters:
     label: Comment
     datatype: text_box
     type: default
+  direction:
+    id: direction
+    label: Milling Direction
+    datatype: dropdown
+    type: default
+    options:
+      - Climb
+      - Conventional
+  n_cuts:
+    id: n_cuts
+    label: Number of Cuts in Measurement
+    datatype: int
+    type: default
+  n_measurement:
+    id: n_measurement
+    label: Measurement Number
+    datatype: int
+    type: default
+  primary_pictures:
+    id: primary_pictures
+    label: Pictures of Primary Cutting Edge
+    datatype: file
+    type: default
+  secondary_pictures:
+    id: secondary_pictures
+    label: Pictures of Secondary Cutting Edge
+    datatype: file
+    type: default
 categories:
-  general: general
-  hardware: hardware
-  process: process
-  files: files
-  additional: additional
-  results: results
+  general: General
+  hardware: Hardware
+  process: Process
+  files: Files
+  additional: Additional
+  results: Results
+  primary_ce: Primary Cutting Edge
+  secondary_ce: Secondary Cutting Edge
 lists:
   requirement:
     - Required
     - Optional
     - Hidden
+    - Restricted
   coolant:
     - Dry
     - Air
@@ -203,10 +262,13 @@ lists:
     - Thread Cutting
     - Thread Forming
     - Thread Milling
+  direction:
+    - Climb
+    - Conventional
 profiles:
-  twm:
-    id: tool_wear_monitoring
-    name: Tool Wear Monitoring
+  twm1:
+    id: twm_cirp_tool1
+    name: CIRP TWM 1 (ae=2mm)
     pre:
       general:
         person:
@@ -222,36 +284,38 @@ profiles:
           required: required
           description: Experiment number or ID to identify the measurement.
         process:
-          required: required
+          required: restricted
           default: Milling
           description: Measured process.
       process:
         workpiece_material:
-          required: required
-          default: C45
+          required: restricted
+          default: '1.2379'
           description: Material of the workpiece.
         cutting_speed:
-          required: required
+          required: restricted
+          default: 80
         feed_per_tooth:
-          required: required
+          required: restricted
+          default: 0.05
         doc_axial:
-          required: required
+          required: restricted
+          default: 5
         doc_radial:
-          required: required
+          required: restricted
+          default: 2
         tool_diameter:
-          required: required
+          required: restricted
           default: 10
         tool_tooth_count:
-          required: required
+          required: restricted
           default: 2
         tool_material:
-          required: required
+          required: restricted
           default: Carbide (P40)
-        tool_offset:
-          required: required
-          description: Tool offset from the control.
         coolant:
-          required: required
+          required: restricted
+          default: Dry
       hardware:
         sth_mac:
           required: required
@@ -261,20 +325,140 @@ profiles:
           description: MAC Address of the STU. Will be automatically set.
     post:
       results:
-        twm_layer:
+        n_cuts:
           required: required
-          description: Layer number of the CIRP Tool Wear Activity Experiment.
-        wear_mark_width:
+          default: 5
+          description: Number of cuts in current measurement file
+        n_measurement:
           required: required
-          description: Measured width of the wear mark.
-        tool_failure:
+          default: 1
+          description: Measurement number in experiment
+      primary_ce:
+        primary_wear_mark_width:
           required: required
-          default: 0
-          description: Has the tool failed during the experiment?
-      files:
-        pictures:
+          description: Measured avg. width of the wear mark on the primary cutting edge
+        primary_max_wear_mark_width:
+          required: required
+          description: Measured max. width of the wear mark on the primary cutting edge
+        primary_tool_wear_exceeded:
+          required: required
+          default: 'false'
+          description: Has the tool exceeded the maximum wear on the primary cutting edge?
+        primary_pictures:
+          required: required
+          description: Pictures of the primary cutting edge
+      secondary_ce:
+        secondary_wear_mark_width:
+          required: required
+          description: Measured avg. width of the wear mark on the secondary cutting edge
+        secondary_max_wear_mark_width:
+          required: required
+          description: Measured max. width of the wear mark on the secondary cutting edge
+        secondary_tool_wear_exceeded:
+          required: required
+          default: 'false'
+          description: Has the tool exceeded the maximum wear on the secondary cutting edge?
+        secondary_pictures:
+          required: required
+          description: Pictures of the secondary cutting edge
+      additional:
+        comment:
           required: optional
-          description: Pictures of the experiment; will be stored in the .hdf5 file.
+  twm2:
+    id: twm_cirp_tool2
+    name: CIRP TWM 2 (ae=10mm)
+    pre:
+      general:
+        person:
+          required: required
+          description: Person responsible for the measurement.
+        institution:
+          required: required
+          description: Institution at which the measurement is captured.
+        machine:
+          required: required
+          description: Machine tool used for the measurement.
+        experiment:
+          required: required
+          description: Experiment number or ID to identify the measurement.
+        process:
+          required: restricted
+          default: Milling
+          description: Measured process.
+      process:
+        workpiece_material:
+          required: restricted
+          default: '1.2379'
+          description: Material of the workpiece.
+        cutting_speed:
+          required: restricted
+          default: 80
+        feed_per_tooth:
+          required: restricted
+          default: 0.05
+        doc_axial:
+          required: restricted
+          default: 5
+        doc_radial:
+          required: restricted
+          default: 10
+        tool_diameter:
+          required: restricted
+          default: 10
+        tool_tooth_count:
+          required: restricted
+          default: 2
+        tool_material:
+          required: restricted
+          default: Carbide (P40)
+        coolant:
+          required: restricted
+          default: Dry
+      hardware:
+        sth_mac:
+          required: required
+          description: MAC Address of the STH. Will be automatically set.
+        stu_mac:
+          required: required
+          description: MAC Address of the STU. Will be automatically set.
+    post:
+      results:
+        n_cuts:
+          required: required
+          default: 5
+          description: Number of cuts in current measurement file
+        n_measurement:
+          required: required
+          default: 1
+          description: Measurement number in experiment
+      primary_ce:
+        primary_wear_mark_width:
+          required: required
+          description: Measured avg. width of the wear mark on the primary cutting edge
+        primary_max_wear_mark_width:
+          required: required
+          description: Measured max. width of the wear mark on the primary cutting edge
+        primary_tool_wear_exceeded:
+          required: required
+          default: 'false'
+          description: Has the tool exceeded the maximum wear on the primary cutting edge?
+        primary_pictures:
+          required: required
+          description: Pictures of the primary cutting edge
+      secondary_ce:
+        secondary_wear_mark_width:
+          required: required
+          description: Measured avg. width of the wear mark on the secondary cutting edge
+        secondary_max_wear_mark_width:
+          required: required
+          description: Measured max. width of the wear mark on the secondary cutting edge
+        secondary_tool_wear_exceeded:
+          required: required
+          default: 'false'
+          description: Has the tool exceeded the maximum wear on the secondary cutting edge?
+        secondary_pictures:
+          required: required
+          description: Pictures of the secondary cutting edge
       additional:
         comment:
           required: optional
@@ -331,9 +515,6 @@ profiles:
           description: MAC Address of the STU. Will be automatically set.
     post:
       general:
-        tool_failure:
-          required: optional
-          description: Has the tool failed during the experiment?
         pictures:
           required: optional
           description: Pictures of the experiment; will be stored in the .hdf5 file.
