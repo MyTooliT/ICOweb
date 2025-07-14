@@ -97,7 +97,9 @@ const emits = defineEmits<{
             outlined
             @click.prevent="router.push(`/analyze?file=${data.name}`)"
           />
-          <DownloadButton :link="`${getAPILink()}/files/${data.name}`" />
+          <DownloadButton
+            :link="`${getAPILink()}/files/${data.name}`"
+            compact />
           <Button
             v-tooltip.top="{
               value: 'Delete Locally',
