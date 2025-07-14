@@ -10,6 +10,7 @@ import {JsonViewer} from 'vue3-json-viewer';
 import {ParsedMetadata} from '@/client';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
+import {capitalize} from 'vue';
 
 const props = defineProps<{
   parsedMetadata: ParsedMetadata
@@ -51,23 +52,29 @@ const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: str
       <AccordionContent>
         <div class="grid grid-cols-3 gap-3">
           <div
-            v-for="[name, content] in Object.entries(parsedMetadata?.pictures)"
-            :key="name"
+            v-for="[picture_param, content] in Object.entries(parsedMetadata.pictures)"
+            :key="picture_param"
             class="flex flex-col items-center border rounded">
-            <Image
-              :src="decode(content)"
-              :alt="name"
-              preview
-            />
-            <Button
-              :label="`${name}.${mime.getExtension(content.split(':')[1].split(';')[0])}`"
-              :href="decode(content)"
-              icon="pi pi-download"
-              :download="`${name}.${mime.getExtension(content.split(':')[1].split(';')[0])}`"
-              link
-              as="a"
-              class="w-fit"
-            />
+            <h4 class="font-semibold m-3">{{ picture_param.split('_').map(s => capitalize(s)).join(' ') }}</h4>
+            <div
+              v-for="(picture, index) in content"
+              :key="picture"
+              class="flex flex-col items-center"
+            >
+              <Image
+                :src="picture"
+                :alt="`Image ${index} of ${picture_param}`"
+                preview
+              />
+              <Button
+                :label="`${picture_param}_${index}.${mime.getExtension(picture.split(':')[1].split(';')[0])}`"
+                :href="picture"
+                icon="pi pi-download"
+                :download="`${picture_param}_${index}.${mime.getExtension(picture.split(':')[1].split(';')[0])}`"
+                link
+                as="a"
+              />
+            </div>
           </div>
         </div>
       </AccordionContent>
