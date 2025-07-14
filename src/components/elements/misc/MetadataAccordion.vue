@@ -50,30 +50,32 @@ const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: str
         Pictures
       </AccordionHeader>
       <AccordionContent>
-        <div class="grid grid-cols-3 gap-3">
+        <div class="flex flex-wrap gap-3">
           <div
             v-for="[picture_param, content] in Object.entries(parsedMetadata.pictures)"
             :key="picture_param"
-            class="flex flex-col items-center border rounded">
-            <h4 class="font-semibold m-3">{{ picture_param.split('_').map(s => capitalize(s)).join(' ') }}</h4>
-            <div
-              v-for="(picture, index) in content"
-              :key="picture"
-              class="flex flex-col items-center"
-            >
-              <Image
-                :src="picture"
-                :alt="`Image ${index} of ${picture_param}`"
-                preview
-              />
-              <Button
-                :label="`${picture_param}_${index}.${mime.getExtension(picture.split(':')[1].split(';')[0])}`"
-                :href="picture"
-                icon="pi pi-download"
-                :download="`${picture_param}_${index}.${mime.getExtension(picture.split(':')[1].split(';')[0])}`"
-                link
-                as="a"
-              />
+            class="border rounded">
+            <h4 class="font-semibold m-3"> {{ picture_param.split('_').map(s => capitalize(s)).join(' ') }} </h4>
+            <div class="grid grid-cols-3 gap-3 p-3">
+              <div
+                v-for="(picture, index) in content"
+                :key="picture"
+                class="flex flex-col items-center"
+              >
+                <Image
+                  :src="picture"
+                  :alt="`Image ${index} of ${picture_param}`"
+                  preview
+                />
+                <Button
+                  :label="`${picture_param}_${index}.${mime.getExtension(picture.split(':')[1].split(';')[0])}`"
+                  :href="picture"
+                  icon="pi pi-download"
+                  :download="`${picture_param}_${index}.${mime.getExtension(picture.split(':')[1].split(';')[0])}`"
+                  link
+                  as="a"
+                />
+              </div>
             </div>
           </div>
         </div>
