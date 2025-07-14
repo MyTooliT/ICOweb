@@ -57,7 +57,8 @@ Chart.register(CustomCrosshairPlugin(CrosshairPlugin));
 const props = defineProps<{
   data: ChartData<'line'> ,
   boundaries: ChartBoundaries,
-  scales: Record<string, Chart.ChartYAxe>
+  scales: Record<string, Chart.ChartYAxe>,
+  title: string,
 }>()
 
 const emits = defineEmits<{
@@ -83,6 +84,16 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
       ...props.scales
     },
     plugins: {
+      title: {
+        text: props.title,
+        display: true,
+        position: 'top',
+        font: {
+          size: '16',
+          style: 'normal',
+          weight: 'bold'
+        }
+      },
       decimation: {
         enabled: false,
         algorithm: 'lldb',

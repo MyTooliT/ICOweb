@@ -3,7 +3,7 @@ import StaticChart from '@/components/elements/charts/StaticChart.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
 import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
 import SplitLayout from '@/layouts/SplitLayout.vue';
-import { ProgressBar } from 'primevue';
+import { ProgressBar, Button, Divider } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import {ChartData} from 'chart.js';
 import {
@@ -19,6 +19,8 @@ import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
 import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
+import {getAPILink} from '@/api/icoapi.ts';
+import DownloadButton from '@/components/elements/buttons/DownloadButton.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -92,6 +94,20 @@ function computeChartScales(units: string[]): Record<string, Chart.ChartYAxe> {
 }
 
 watch(() => route.query['file'], routerWatcher, { immediate: true });
+
+function getCanvasExport() {
+  const canvas = document.getElementsByTagName('canvas')[0]
+  if(!canvas) {return ''}
+  return canvas.toDataURL( 'image/png')
+}
+
+function downloadImage() {
+  const image = getCanvasExport()
+  const link = document.createElement('a')
+  link.href = image
+  link.download = route.query['file']?.toString().split('.')[0] + '.png'
+  link.click()
+}
 </script>
 
 <template>
@@ -99,8 +115,8 @@ watch(() => route.query['file'], routerWatcher, { immediate: true });
     v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
     class="h-stretch">
     <TextBlock
-      :heading="route.query['file']?.toString() ?? 'Analyze Measurement'"
-      subheading="Analyze data from existing measurements."
+      heading="Analyze Measurement"
+      subheading="Perform simple analysis on existing or external measurement files."
       :button="true"
       button-text="Select File"
       button-icon-class="pi pi-file-import"
@@ -111,13 +127,28 @@ watch(() => route.query['file'], routerWatcher, { immediate: true });
       :data="chartData"
       :boundaries="chartBoundaries"
       :scales="scales"
+      :title="route.query['file']?.toString() ?? 'Analyze Measurement'"
       @zoom="handleZoom"
     />
     <template #bottom>
-      <h4>Measurement File Information</h4>
-      <MetadataAccordion
-        v-if="parsedMetadata"
-        :parsed-metadata="parsedMetadata" />
+      <div class="flex flex-col gap-3">
+        <h4>Additional Actions</h4>
+        <div class="flex flex-row gap-3">
+          <Button
+            label="Download View as PNG"
+            as="a"
+            variant="outlined"
+            icon="pi pi-download"
+            @click="downloadImage"
+          />
+          <DownloadButton :link="`${getAPILink()}/files/${route.query['file']}`" />
+        </div>
+        <Divider />
+        <h4>Measurement File Information</h4>
+        <MetadataAccordion
+          v-if="parsedMetadata"
+          :parsed-metadata="parsedMetadata" />
+      </div>
     </template>
   </SplitLayout>
   <div

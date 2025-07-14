@@ -3,7 +3,6 @@ import Image from 'primevue/image';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import {decode} from '@/components/elements/charts/staticChartHelper.ts';
 import mime from 'mime';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primevue';
 import {JsonViewer} from 'vue3-json-viewer';
@@ -25,7 +24,7 @@ const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: str
 </script>
 
 <template>
-  <Accordion class="border rounded-md mt-3 [margin-bottom:40px]">
+  <Accordion class="border rounded-md [margin-bottom:40px]">
     <AccordionPanel
       v-if="parsedMetadata?.acceleration"
       value="0">
