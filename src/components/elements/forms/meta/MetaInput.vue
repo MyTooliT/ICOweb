@@ -85,6 +85,7 @@ watch(props, setDefaults)
 <template>
   <NamedInput
     v-if="definition"
+    :tooltip="definition.description"
     :title="`${definition?.label}${definition?.unit ? ' in ' + definition?.unit : ''}${definition?.required === 'required' ? ' *' : ''}`"
   >
     <component

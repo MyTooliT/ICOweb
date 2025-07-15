@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
-  title: string
+  title: string,
+  tooltip?: string,
 }>()
 </script>
 
@@ -9,6 +10,12 @@ defineProps<{
     <slot name="header">
       <h4>
         {{ title }}
+        <i
+          v-if="tooltip"
+          v-tooltip.top="{
+            value: tooltip
+          }"
+          class="pi pi-info-circle" />
       </h4>
     </slot>
     <slot />
