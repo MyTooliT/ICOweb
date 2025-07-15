@@ -755,6 +755,10 @@ video {
   display: grid;
 }
 
+.hidden {
+  display: none;
+}
+
 .aspect-square {
   aspect-ratio: 1 / 1;
 }
@@ -1336,6 +1340,22 @@ video {
 
 .\[margin-bottom\:40px\] {
   margin-bottom: 40px;
+}
+
+.\[min-width\:24ch\] {
+  min-width: 24ch;
+}
+
+.\[min-width\:36ch\] {
+  min-width: 36ch;
+}
+
+.\[min-width\:400px\] {
+  min-width: 400px;
+}
+
+.\[min-width\:48ch\] {
+  min-width: 48ch;
 }
 
 .\[width\:6ch\] {

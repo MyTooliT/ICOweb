@@ -44,6 +44,7 @@ import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import {Parameter} from '@/types/metadata';
 import {assembleFormEntry} from '@/utils/metadataHelper.ts';
+import IFTValueControls from '@/components/elements/controls/IFTValueControls.vue';
 /* eslint-enable max-len */
 
 const toast = useToast()
@@ -74,7 +75,6 @@ const {
 )
 
 function wrapUpdate() {
-  console.log("update chart data")
   updateChartData(
     storage.value,
     chartData,
@@ -167,7 +167,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_window_width: mStore.windowWidth,
     adc: adcStore.values,
     meta: featureEnabled('Meta') ? mStore.preMetaForm : null,
-    wait_for_post_meta: featureEnabled('Meta') && hasPostMeta.value
+    wait_for_post_meta: featureEnabled('Meta') && hasPostMeta.value,
+    disconnect_after_measurement: mStore.disconnectAfterMeasurement
   })
   //scales.value = computeScales()
   if(mStore.autostream) {
@@ -219,7 +220,10 @@ const assembledFilename = computed<string | null>(() => {
 
 async function afterMeasurementCleanup() {
   await gStore.systemState.checkState()
-  toast.add({life: 7000, group:'newfile'})
+  /*toast.add({life: 7000, group:'newfile'})*/
+  if(mStore.disconnectAfterMeasurement) {
+    await router.push('/')
+  }
 }
 
 async function sendPostMeta() {
@@ -267,10 +271,6 @@ const canMeasure = computed<boolean>(() => {
   )
 })
 
-const possibleIFTChannels = computed<Array<string>>(() => {
-  return Object.entries(mStore.activeChannels).filter(channel => channel[1]).map(channel => channel[0])
-})
-
 const scales = ref<Record<string, Chart.ChartYAxe>>(computeScales())
 
 function computeScales(): Record<string, Chart.ChartYAxe> {
@@ -296,15 +296,6 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
   return scl
 }
 
-
-watch(mStore.activeChannels, () => {
-  if(!(possibleIFTChannels.value && mStore.IFTChannel)) return
-  if(!possibleIFTChannels.value.includes(mStore.IFTChannel)) {
-    mStore.IFTChannel = measurementChannels[0]
-  }
-}, {
-  deep: true,
-})
 watch(mStore.selectedChannels, () => scales.value = computeScales())
 watch(mStore.activeChannels, () => scales.value = computeScales())
 onBeforeUnmount(() => window.setTimeout(close, 0))
@@ -386,44 +377,11 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                   :option-label="channelSensorRepr"
                   :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
                   placeholder="No Selection"
+                  class=""
                 />
               </InputGroup>
             </NamedInput>
           </div>
-          <NamedInput
-            title="IFT Value"
-            class="w-fit">
-            <InputGroup class="w-fit">
-              <InputGroupAddon class="w-12">
-                <Checkbox
-                  v-model="mStore.IFTRequested"
-                  binary
-                  :disabled="gStore.systemState.running"
-                />
-              </InputGroupAddon>
-              <InputGroupAddon>
-                <span class="capitalize !text-black inline-block w-24">
-                  For Channel:
-                </span>
-              </InputGroupAddon>
-              <Select
-                v-model="mStore.IFTChannel"
-                :options="possibleIFTChannels"
-                :disabled="!hwStore.activeHolder || gStore.systemState.running"
-                placeholder="Disabled"
-              />
-            </InputGroup>
-            <InputGroup>
-              <CustomSlider
-                v-model="mStore.windowWidth"
-                class="w-full"
-                title="Window Size"
-                :min="50"
-                :max="250"
-                :disabled="gStore.systemState.running"
-              />
-            </InputGroup>
-          </NamedInput>
           <NamedInput title="Measurement Integrity (Packet Loss)">
             <InputGroup>
               <MeterGroup
@@ -447,6 +405,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               </MeterGroup>
             </InputGroup>
           </NamedInput>
+          <div class="[min-width:36ch]" />
         </div>
       </template>
       <template #bottom>

@@ -531,6 +531,11 @@ export const $MeasurementInstructions_Input = {
             type: 'boolean',
             title: 'Wait For Post Meta',
             default: false
+        },
+        disconnect_after_measurement: {
+            type: 'boolean',
+            title: 'Disconnect After Measurement',
+            default: false
         }
     },
     type: 'object',
@@ -610,6 +615,11 @@ export const $MeasurementInstructions_Output = {
         wait_for_post_meta: {
             type: 'boolean',
             title: 'Wait For Post Meta',
+            default: false
+        },
+        disconnect_after_measurement: {
+            type: 'boolean',
+            title: 'Disconnect After Measurement',
             default: false
         }
     },
@@ -742,7 +752,10 @@ export const $ParsedMetadata = {
         },
         pictures: {
             additionalProperties: {
-                type: 'string'
+                items: {
+                    type: 'string'
+                },
+                type: 'array'
             },
             type: 'object',
             title: 'Pictures'

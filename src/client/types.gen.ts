@@ -133,6 +133,7 @@ export type MeasurementInstructions_Input = {
     adc: ADCValues | null;
     meta: Metadata | null;
     wait_for_post_meta?: boolean;
+    disconnect_after_measurement?: boolean;
 };
 
 export type MeasurementInstructions_Output = {
@@ -148,6 +149,7 @@ export type MeasurementInstructions_Output = {
     adc: ADCValues | null;
     meta: Metadata | null;
     wait_for_post_meta?: boolean;
+    disconnect_after_measurement?: boolean;
 };
 
 export type MeasurementStatus = {
@@ -179,7 +181,7 @@ export type ParsedMeasurement = {
 export type ParsedMetadata = {
     acceleration: HDF5NodeInfo;
     pictures: {
-        [key: string]: (string);
+        [key: string]: Array<(string)>;
     };
     sensors: Array<Sensor>;
 };
@@ -389,7 +391,7 @@ export type DownloadLogFileApiV1LogsDownloadFileGetResponse = unknown;
 
 export type DownloadLogsZipApiV1LogsAllGetResponse = unknown;
 
-export type QuerySensorsApiV1SensorGetResponse = unknown;
+export type QuerySensorsApiV1SensorGetResponse = Array<Sensor>;
 
 export type ResetSensorsToDefaultApiV1SensorresetPostResponse = unknown;
 
@@ -814,13 +816,9 @@ export type $OpenApiTs = {
         get: {
             res: {
                 /**
-                 * Available sensors for platform.
+                 * Successful Response
                  */
-                200: unknown;
-                /**
-                 * Can't find sensor declaration.
-                 */
-                500: unknown;
+                200: Array<Sensor>;
             };
         };
     };

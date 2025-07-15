@@ -42,6 +42,15 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
           for="continuous"
           class="ml-3">Auto-connect to stream</label>
       </div>
+      <div class="flex flex-row">
+        <ToggleSwitch
+          v-model="mStore.disconnectAfterMeasurement"
+          :disabled="gStore.systemState.running"
+          input-id="disconnect" />
+        <label
+          for="disconnect"
+          class="ml-3">Disconnect after measurement</label>
+      </div>
     </div>
     <InputGroup>
       <InputNumber

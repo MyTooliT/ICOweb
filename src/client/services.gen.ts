@@ -451,15 +451,12 @@ export const downloadLogsZipApiV1LogsAllGet = (): CancelablePromise<DownloadLogs
 
 /**
  * Query Sensors
- * @returns unknown Available sensors for platform.
+ * @returns Sensor Successful Response
  * @throws ApiError
  */
 export const querySensorsApiV1SensorGet = (): CancelablePromise<QuerySensorsApiV1SensorGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/sensor',
-    errors: {
-        500: "Can't find sensor declaration."
-    }
+    url: '/api/v1/sensor'
 }); };
 
 /**
