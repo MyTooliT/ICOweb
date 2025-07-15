@@ -74,7 +74,6 @@ function validate() {
 
 onMounted(async () => {
   await reload()
-  console.log(config.value)
 })
 </script>
 
