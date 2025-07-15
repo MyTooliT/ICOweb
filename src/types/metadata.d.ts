@@ -54,23 +54,23 @@ export interface Parameters {
   sth_mac: ParameterDefinition;
   stu_mac: ParameterDefinition;
   tool_breakage: ParameterDefinition;
-  primary_tool_wear_exceeded: ParameterDefinition;
-  primary_wear_mark_width: ParameterDefinition;
-  primary_max_wear_mark_width: ParameterDefinition;
-  secondary_wear_mark_width: ParameterDefinition;
-  secondary_max_wear_mark_width: ParameterDefinition;
-  secondary_tool_wear_exceeded: ParameterDefinition;
+  first_tool_wear_exceeded: ParameterDefinition;
+  first_wear_mark_width: ParameterDefinition;
+  first_max_wear_mark_width: ParameterDefinition;
+  second_wear_mark_width: ParameterDefinition;
+  second_max_wear_mark_width: ParameterDefinition;
+  second_tool_wear_exceeded: ParameterDefinition;
   twm_layer: ParameterDefinition;
   pictures: ParameterDefinition;
   comment: ParameterDefinition;
   direction: ParameterDefinition;
   n_cuts: ParameterDefinition;
   n_measurement: ParameterDefinition;
-  primary_pictures: ParameterDefinition;
-  secondary_pictures: ParameterDefinition;
+  first_pictures: ParameterDefinition;
+  second_pictures: ParameterDefinition;
 }
 
-export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'primary_tool_wear_exceeded', 'primary_wear_mark_width', 'primary_max_wear_mark_width', 'secondary_wear_mark_width', 'secondary_max_wear_mark_width', 'secondary_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts', 'n_measurement', 'primary_pictures', 'secondary_pictures'] as const;
+export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'first_tool_wear_exceeded', 'first_wear_mark_width', 'first_max_wear_mark_width', 'second_wear_mark_width', 'second_max_wear_mark_width', 'second_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts', 'n_measurement', 'first_pictures', 'second_pictures'] as const;
 export type Parameter = typeof ParameterList[number];
 
 export interface Info {
@@ -85,8 +85,8 @@ export type Category =
   'files' |
   'additional' |
   'results' |
-  'primary_ce' |
-  'secondary_ce';
+  'first_ce' |
+  'second_ce';
 
 export type ProfileParamDefinition = Partial<{ required: string; default: any; description: string }>;
 

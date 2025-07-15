@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-07-09T12:30:51.090Z'
+  generated_at: '2025-07-15T06:09:47.124Z'
 parameters:
   person:
     id: person
@@ -143,38 +143,38 @@ parameters:
     label: Tool Breakage
     datatype: boolean
     type: default
-  primary_tool_wear_exceeded:
-    id: primary_tool_wear_exceeded
-    label: Tool Wear Exceeded (Primary CE)
+  first_tool_wear_exceeded:
+    id: first_tool_wear_exceeded
+    label: Tool Wear Exceeded (First Peripheral CE)
     datatype: boolean
     type: default
-  primary_wear_mark_width:
-    id: primary_wear_mark_width
-    label: Avg. Wear Mark Width (Primary CE)
+  first_wear_mark_width:
+    id: first_wear_mark_width
+    label: Avg. Wear Mark Width (First Peripheral CE)
     datatype: float
     unit: mm
     type: default
-  primary_max_wear_mark_width:
-    id: primary_max_wear_mark_width
-    label: Max. Wear Mark Width (Primary CE)
+  first_max_wear_mark_width:
+    id: first_max_wear_mark_width
+    label: Max. Wear Mark Width (First Peripheral CE)
     datatype: float
     unit: mm
     type: default
-  secondary_wear_mark_width:
-    id: secondary_wear_mark_width
-    label: Avg. Wear Mark Width (Secondary CE)
+  second_wear_mark_width:
+    id: second_wear_mark_width
+    label: Avg. Wear Mark Width (Second Peripheral CE)
     datatype: float
     unit: mm
     type: default
-  secondary_max_wear_mark_width:
-    id: secondary_max_wear_mark_width
-    label: Max. Wear Mark Width (Secondary CE)
+  second_max_wear_mark_width:
+    id: second_max_wear_mark_width
+    label: Max. Wear Mark Width (Second Peripheral CE)
     datatype: float
     unit: mm
     type: default
-  secondary_tool_wear_exceeded:
-    id: secondary_tool_wear_exceeded
-    label: Tool Wear Exceeded (Secondary CE)
+  second_tool_wear_exceeded:
+    id: second_tool_wear_exceeded
+    label: Tool Wear Exceeded (Second Peripheral CE)
     datatype: boolean
     type: default
   twm_layer:
@@ -210,14 +210,14 @@ parameters:
     label: Measurement Number
     datatype: int
     type: default
-  primary_pictures:
-    id: primary_pictures
-    label: Pictures of Primary Cutting Edge
+  first_pictures:
+    id: first_pictures
+    label: Pictures of First Peripheral Cutting Edge
     datatype: file
     type: default
-  secondary_pictures:
-    id: secondary_pictures
-    label: Pictures of Secondary Cutting Edge
+  second_pictures:
+    id: second_pictures
+    label: Pictures of Second Peripheral Cutting Edge
     datatype: file
     type: default
 categories:
@@ -227,8 +227,8 @@ categories:
   files: Files
   additional: Additional
   results: Results
-  primary_ce: Primary Cutting Edge
-  secondary_ce: Secondary Cutting Edge
+  first_ce: First Cutting Edge
+  second_ce: Second Cutting Edge
 lists:
   requirement:
     - Required
@@ -327,40 +327,39 @@ profiles:
       results:
         n_cuts:
           required: required
-          default: 5
+          default: 3
           description: Number of cuts in current measurement file
         n_measurement:
           required: required
-          default: 1
           description: Measurement number in experiment
-      primary_ce:
-        primary_wear_mark_width:
+      first_ce:
+        first_wear_mark_width:
           required: required
-          description: Measured avg. width of the wear mark on the primary cutting edge
-        primary_max_wear_mark_width:
+          description: Measured avg. width of the wear mark on the first peripheral cutting edge
+        first_max_wear_mark_width:
           required: required
-          description: Measured max. width of the wear mark on the primary cutting edge
-        primary_tool_wear_exceeded:
-          required: required
-          default: 'false'
-          description: Has the tool exceeded the maximum wear on the primary cutting edge?
-        primary_pictures:
-          required: required
-          description: Pictures of the primary cutting edge
-      secondary_ce:
-        secondary_wear_mark_width:
-          required: required
-          description: Measured avg. width of the wear mark on the secondary cutting edge
-        secondary_max_wear_mark_width:
-          required: required
-          description: Measured max. width of the wear mark on the secondary cutting edge
-        secondary_tool_wear_exceeded:
+          description: Measured max. width of the wear mark on the first peripheral cutting edge
+        first_tool_wear_exceeded:
           required: required
           default: 'false'
-          description: Has the tool exceeded the maximum wear on the secondary cutting edge?
-        secondary_pictures:
+          description: Has the tool exceeded the maximum wear on the first peripheral cutting edge?
+        first_pictures:
           required: required
-          description: Pictures of the secondary cutting edge
+          description: Pictures of the first peripheral cutting edge
+      second_ce:
+        second_wear_mark_width:
+          required: required
+          description: Measured avg. width of the wear mark on the second peripheral cutting edge
+        second_max_wear_mark_width:
+          required: required
+          description: Measured max. width of the wear mark on the second peripheral cutting edge
+        second_tool_wear_exceeded:
+          required: required
+          default: 'false'
+          description: Has the tool exceeded the maximum wear on the second peripheral cutting edge?
+        second_pictures:
+          required: required
+          description: Pictures of the second peripheral cutting edge
       additional:
         comment:
           required: optional
@@ -425,40 +424,39 @@ profiles:
       results:
         n_cuts:
           required: required
-          default: 5
+          default: 2
           description: Number of cuts in current measurement file
         n_measurement:
           required: required
-          default: 1
           description: Measurement number in experiment
-      primary_ce:
-        primary_wear_mark_width:
+      first_ce:
+        first_wear_mark_width:
           required: required
-          description: Measured avg. width of the wear mark on the primary cutting edge
-        primary_max_wear_mark_width:
+          description: Measured avg. width of the wear mark on the first peripheral cutting edge
+        first_max_wear_mark_width:
           required: required
-          description: Measured max. width of the wear mark on the primary cutting edge
-        primary_tool_wear_exceeded:
-          required: required
-          default: 'false'
-          description: Has the tool exceeded the maximum wear on the primary cutting edge?
-        primary_pictures:
-          required: required
-          description: Pictures of the primary cutting edge
-      secondary_ce:
-        secondary_wear_mark_width:
-          required: required
-          description: Measured avg. width of the wear mark on the secondary cutting edge
-        secondary_max_wear_mark_width:
-          required: required
-          description: Measured max. width of the wear mark on the secondary cutting edge
-        secondary_tool_wear_exceeded:
+          description: Measured max. width of the wear mark on the first peripheral cutting edge
+        first_tool_wear_exceeded:
           required: required
           default: 'false'
-          description: Has the tool exceeded the maximum wear on the secondary cutting edge?
-        secondary_pictures:
+          description: Has the tool exceeded the maximum wear on the first peripheral cutting edge?
+        first_pictures:
           required: required
-          description: Pictures of the secondary cutting edge
+          description: Pictures of the first peripheral cutting edge
+      second_ce:
+        second_wear_mark_width:
+          required: required
+          description: Measured avg. width of the wear mark on the second peripheral cutting edge
+        second_max_wear_mark_width:
+          required: required
+          description: Measured max. width of the wear mark on the second peripheral cutting edge
+        second_tool_wear_exceeded:
+          required: required
+          default: 'false'
+          description: Has the tool exceeded the maximum wear on the second peripheral cutting edge?
+        second_pictures:
+          required: required
+          description: Pictures of the second peripheral cutting edge
       additional:
         comment:
           required: optional
