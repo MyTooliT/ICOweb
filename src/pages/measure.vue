@@ -147,14 +147,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   }
   await config.reload()
   await startMeasurement({
-    name:
-      featureEnabled('Meta') &&
-      mStore.preMetaForm.profile &&
-      mStore.preMetaForm.profile.length > 0 &&
-      mStore.preMetaForm.parameters.experiment &&
-      (mStore.preMetaForm.parameters.experiment as string).length > 0
-          ? mStore.preMetaForm.profile + '_' + (mStore.preMetaForm.parameters.experiment as string).split(' ').join('')
-          : null,
+    name: featureEnabled('Meta') ? assembledFilename.value : null,
     first: {
       channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
       sensor_id: null
@@ -210,6 +203,19 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
 })
 
 const { loading: postMetaLoading, call: submitPostMeta } = useLoadingHandler(sendPostMeta)
+
+const assembledFilename = computed<string | null>(() => {
+  if (!mStore.preMetaForm.profile || mStore.preMetaForm.profile?.length === 0) return null
+  let name = mStore.preMetaForm.profile
+  if(mStore.preMetaForm.parameters.institution) {
+    name += '_' + (mStore.preMetaForm.parameters.institution as string).split(' ').join('')
+  }
+  if(mStore.preMetaForm.parameters.experiment) {
+    name += '_' + (mStore.preMetaForm.parameters.experiment as string).split(' ').join('')
+  }
+  return name
+})
+
 
 async function afterMeasurementCleanup() {
   await gStore.systemState.checkState()
