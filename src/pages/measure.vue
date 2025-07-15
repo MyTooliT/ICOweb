@@ -74,6 +74,7 @@ const {
 )
 
 function wrapUpdate() {
+  console.log("update chart data")
   updateChartData(
     storage.value,
     chartData,
@@ -213,11 +214,6 @@ const { loading: postMetaLoading, call: submitPostMeta } = useLoadingHandler(sen
 async function afterMeasurementCleanup() {
   await gStore.systemState.checkState()
   toast.add({life: 7000, group:'newfile'})
-  mStore.resetChartBounds()
-  chartData.value = {
-    labels: [],
-    datasets: []
-  }
 }
 
 async function sendPostMeta() {
@@ -305,11 +301,6 @@ watch(mStore.activeChannels, () => {
 })
 watch(mStore.selectedChannels, () => scales.value = computeScales())
 watch(mStore.activeChannels, () => scales.value = computeScales())
-watch(gStore.systemState, () => {
-  if(!gStore.systemState.running) {
-    mStore.resetChartBounds()
-  }
-})
 onBeforeUnmount(() => window.setTimeout(close, 0))
 </script>
 
