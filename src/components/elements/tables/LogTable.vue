@@ -89,7 +89,9 @@ const formatTimestamp = (ts: string): string => {
       header="Actions">
       <template
         #body="{ data }: { data: LogFileMeta }">
-        <DownloadButton :link="`${getAPILink()}/logs/download/${data.name}`" />
+        <DownloadButton
+          compact
+          :link="`${getAPILink()}/logs/download/${data.name}`" />
       </template>
     </Column>
     <template #expansion="slotProps">

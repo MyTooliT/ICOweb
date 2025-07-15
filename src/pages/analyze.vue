@@ -141,7 +141,9 @@ function downloadImage() {
             icon="pi pi-download"
             @click="downloadImage"
           />
-          <DownloadButton :link="`${getAPILink()}/files/${route.query['file']}`" />
+          <DownloadButton
+            :link="`${getAPILink()}/files/${route.query['file']}`"
+            label="Download HDF5 File" />
         </div>
         <Divider />
         <h4>Measurement File Information</h4>

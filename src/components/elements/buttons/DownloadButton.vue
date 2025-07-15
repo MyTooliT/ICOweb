@@ -2,6 +2,7 @@
 import Button from 'primevue/button';
 
 defineProps<{
+  label?: string,
   link: string
   compact?: boolean
 }>()
@@ -16,7 +17,7 @@ defineProps<{
     :href="link"
     :size="compact ? 'small' : undefined"
     :rounded="compact"
-    :label="compact ? '' : 'Download HDF5 File'"
+    :label="compact ? '' : label"
     aria-label="Download"
     outlined
   />
