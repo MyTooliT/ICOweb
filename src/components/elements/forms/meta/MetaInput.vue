@@ -79,6 +79,14 @@ onMounted(() => {
   setDefaults()
 })
 
+const title = computed(() => {
+  let needsAsterik = props.definition?.required === 'required'
+  if(props.definition?.type) {
+    needsAsterik = needsAsterik && !['restricted', 'implementation'].includes(props.definition?.type)
+  }
+  return `${props.definition?.label}${props.definition?.unit ? ' in ' + props.definition?.unit : ''}${needsAsterik ? ' *' : ''}`
+})
+
 watch(props, setDefaults)
 </script>
 
@@ -86,7 +94,7 @@ watch(props, setDefaults)
   <NamedInput
     v-if="definition"
     :tooltip="definition.description"
-    :title="`${definition?.label}${definition?.unit ? ' in ' + definition?.unit : ''}${definition?.required === 'required' ? ' *' : ''}`"
+    :title="title"
   >
     <component
       :is="getComponent(definition)"

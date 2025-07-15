@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-07-15T06:23:15.934Z'
+  generated_at: '2025-07-15T06:33:00.652Z'
 parameters:
   person:
     id: person
@@ -273,22 +273,20 @@ profiles:
       general:
         person:
           required: required
-          description: Person responsible for the measurement.
+          description: Person responsible for conducting the measurement.
         institution:
           required: required
-          description: Institution at which the measurement is captured.
+          description: CIRP institution at which the measurement is captured.
         machine:
           required: required
-          description: Machine tool used for the measurement.
+          description: Machine tool in which the measurement was conducted.
         process:
           required: restricted
           default: Milling
-          description: Measured process.
       process:
         workpiece_material:
           required: restricted
           default: '1.2379'
-          description: Material of the workpiece.
         cutting_speed:
           required: restricted
           default: 80
@@ -316,10 +314,8 @@ profiles:
       hardware:
         sth_mac:
           required: required
-          description: MAC Address of the STH. Will be automatically set.
         stu_mac:
           required: required
-          description: MAC Address of the STU. Will be automatically set.
     post:
       results:
         n_cuts:
@@ -367,22 +363,20 @@ profiles:
       general:
         person:
           required: required
-          description: Person responsible for the measurement.
+          description: Person responsible for conducting the measurement.
         institution:
           required: required
-          description: Institution at which the measurement is captured.
+          description: CIRP institution at which the measurement is captured.
         machine:
           required: required
-          description: Machine tool used for the measurement.
+          description: Machine tool in which the measurement was conducted.
         process:
           required: restricted
           default: Milling
-          description: Measured process.
       process:
         workpiece_material:
           required: restricted
           default: '1.2379'
-          description: Material of the workpiece.
         cutting_speed:
           required: restricted
           default: 80
@@ -410,10 +404,8 @@ profiles:
       hardware:
         sth_mac:
           required: required
-          description: MAC Address of the STH. Will be automatically set.
         stu_mac:
           required: required
-          description: MAC Address of the STU. Will be automatically set.
     post:
       results:
         n_cuts:
