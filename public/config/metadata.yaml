@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-07-15T06:09:47.124Z'
+  generated_at: '2025-07-15T06:23:15.934Z'
 parameters:
   person:
     id: person
@@ -280,9 +280,6 @@ profiles:
         machine:
           required: required
           description: Machine tool used for the measurement.
-        experiment:
-          required: required
-          description: Experiment number or ID to identify the measurement.
         process:
           required: restricted
           default: Milling
@@ -377,9 +374,6 @@ profiles:
         machine:
           required: required
           description: Machine tool used for the measurement.
-        experiment:
-          required: required
-          description: Experiment number or ID to identify the measurement.
         process:
           required: restricted
           default: Milling
