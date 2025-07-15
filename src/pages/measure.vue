@@ -13,7 +13,7 @@ import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
-  measurementChannels,
+  measurementChannels, TChannelMap,
   useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
 import { MeterItem } from '@/utils/dataModels.ts';
@@ -42,8 +42,7 @@ import {useToast} from 'primevue/usetoast';
 import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
 import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {Parameter, ParameterDefinition} from '@/types/metadata';
-import {Quantity} from '@/client';
+import {Parameter} from '@/types/metadata';
 import {assembleFormEntry} from '@/utils/metadataHelper.ts';
 /* eslint-enable max-len */
 
@@ -176,6 +175,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     meta: featureEnabled('Meta') ? mStore.preMetaForm : null,
     wait_for_post_meta: featureEnabled('Meta') && hasPostMeta.value
   })
+  //scales.value = computeScales()
   if(mStore.autostream) {
     show()
   }
@@ -204,17 +204,25 @@ const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
       })
     }
   } else {
-    await gStore.systemState.checkState()
-    toast.add({life: 7000, group:'newfile'})
+    await afterMeasurementCleanup()
   }
 })
 
 const { loading: postMetaLoading, call: submitPostMeta } = useLoadingHandler(sendPostMeta)
 
-async function sendPostMeta() {
-  await sendMeasurementPostMeta(mStore.postMetaForm)
+async function afterMeasurementCleanup() {
   await gStore.systemState.checkState()
   toast.add({life: 7000, group:'newfile'})
+  mStore.resetChartBounds()
+  chartData.value = {
+    labels: [],
+    datasets: []
+  }
+}
+
+async function sendPostMeta() {
+  await sendMeasurementPostMeta(mStore.postMetaForm)
+  await afterMeasurementCleanup()
 }
 
 const show = () => {
@@ -261,16 +269,20 @@ const possibleIFTChannels = computed<Array<string>>(() => {
   return Object.entries(mStore.activeChannels).filter(channel => channel[1]).map(channel => channel[0])
 })
 
-const scales = computed<Record<string, Chart.ChartYAxe>>(() => {
-  const scales: Record<string, Chart.ChartYAxe> = {}
-  const channelNumbers = Object.values<number>(mStore.selectedChannels)
-  const sensorsForChannels = channelNumbers.map(channelNumber =>
+const scales = ref<Record<string, Chart.ChartYAxe>>(computeScales())
+
+function computeScales(): Record<string, Chart.ChartYAxe> {
+  const scl: Record<string, Chart.ChartYAxe> = {}
+  const relevantChannelNumbers = Object.entries(mStore.selectedChannels).filter(([channel_key, _]) => {
+    return mStore.activeChannels[channel_key as typeof measurementChannels[number]]
+  }).map(([_, channel_nr]) => channel_nr)
+  const sensorsForChannels = relevantChannelNumbers.map(channelNumber =>
       hwStore.activeHolder?.sensors.find(sensor => sensor.channel === channelNumber)
   )
-  const unitsForChannels = sensorsForChannels.map(s => s?.sensor.sensorType.physicalUnit)
+  const unitsForChannels = sensorsForChannels.map(s => s?.sensor.sensorType.physicalUnit).filter(u => u !== undefined)
   const uniqueUnits = new Set(unitsForChannels)
   uniqueUnits.forEach(unit => {
-    scales[unit] = {
+    scl[unit] = {
       position: 'left',
       type: 'linear',
       title: {
@@ -279,8 +291,8 @@ const scales = computed<Record<string, Chart.ChartYAxe>>(() => {
       }
     }
   })
-  return scales
-})
+  return scl
+}
 
 
 watch(mStore.activeChannels, () => {
@@ -290,6 +302,13 @@ watch(mStore.activeChannels, () => {
   }
 }, {
   deep: true,
+})
+watch(mStore.selectedChannels, () => scales.value = computeScales())
+watch(mStore.activeChannels, () => scales.value = computeScales())
+watch(gStore.systemState, () => {
+  if(!gStore.systemState.running) {
+    mStore.resetChartBounds()
+  }
 })
 onBeforeUnmount(() => window.setTimeout(close, 0))
 </script>

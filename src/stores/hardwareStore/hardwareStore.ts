@@ -74,7 +74,7 @@ export const useHardwareStore = defineStore('hardware', () => {
   const sensorRangeList = ref<Array<SensorRange>>([
     new SensorRange('g', -100, 100),
     new SensorRange('g', -40, 40),
-    new SensorRange('K', 0, 1000),
+    new SensorRange('°C', 0, 1000),
     new SensorRange('cd', 0, 1000),
     new SensorRange('V', 0, 3.7),
     new SensorRange('-', 0, 0)
