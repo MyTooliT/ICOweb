@@ -55,6 +55,11 @@ const routerWatcher = async () => {
     if(parsedMetadata.value) {
       datasetUnits.value = getDatasetUnits(parsedMetadata.value)
       scales.value = computeChartScales(datasetUnits.value)
+      if(parsedMetadata.value.sensors.length > 0) {
+        parsedData.value.datasets.forEach((dataset, index) => {
+          dataset.name = parsedMetadata.value?.sensors[index].name ?? dataset.name
+        })
+      }
     }
     computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries, datasetUnits.value)
   } else {
