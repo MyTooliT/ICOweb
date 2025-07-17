@@ -68,9 +68,21 @@ export interface Parameters {
   n_measurement: ParameterDefinition;
   first_pictures: ParameterDefinition;
   second_pictures: ParameterDefinition;
+  tool_d_at_0: ParameterDefinition;
+  tool_d_at_1: ParameterDefinition;
+  tool_d_at_2: ParameterDefinition;
+  tool_d_at_3: ParameterDefinition;
+  tool_d_at_4: ParameterDefinition;
+  tool_d_at_5: ParameterDefinition;
+  tool_d_at_6: ParameterDefinition;
+  first_peripheral_pictures: ParameterDefinition;
+  first_face_pictures: ParameterDefinition;
+  second_peripheral_pictures: ParameterDefinition;
+  second_face_pictures: ParameterDefinition;
+  abnormal_tool_wear: ParameterDefinition;
 }
 
-export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'first_tool_wear_exceeded', 'first_wear_mark_width', 'first_max_wear_mark_width', 'second_wear_mark_width', 'second_max_wear_mark_width', 'second_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts', 'n_measurement', 'first_pictures', 'second_pictures'] as const;
+export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'first_tool_wear_exceeded', 'first_wear_mark_width', 'first_max_wear_mark_width', 'second_wear_mark_width', 'second_max_wear_mark_width', 'second_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts', 'n_measurement', 'first_pictures', 'second_pictures', 'tool_d_at_0', 'tool_d_at_1', 'tool_d_at_2', 'tool_d_at_3', 'tool_d_at_4', 'tool_d_at_5', 'tool_d_at_6', 'first_peripheral_pictures', 'first_face_pictures', 'second_peripheral_pictures', 'second_face_pictures', 'abnormal_tool_wear'] as const;
 export type Parameter = typeof ParameterList[number];
 
 export interface Info {
@@ -86,7 +98,8 @@ export type Category =
   'additional' |
   'results' |
   'first_ce' |
-  'second_ce';
+  'second_ce' |
+  'wear';
 
 export type ProfileParamDefinition = Partial<{ required: string; default: any; description: string }>;
 
