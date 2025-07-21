@@ -29,6 +29,7 @@ const profiles = computed<Profile[] | undefined>(() => {
   }
 })
 const profile = computed<Profile | undefined>(() => {
+  console.log(profiles.value, mStore.preMetaForm.profile)
   if (profiles.value && mStore.preMetaForm.profile) {
     return profiles.value.find(p => p.id === mStore.preMetaForm.profile)
   } else {
@@ -74,6 +75,15 @@ function validate() {
 
 onMounted(async () => {
   await reload()
+  mStore.postMetaForm.profile = mStore.preMetaForm.profile
+  mStore.postMetaForm.version = mStore.preMetaForm.version
+  const params = getProfileParamKeys()
+  Object.keys(mStore.postMetaForm.parameters).forEach(param => {
+    if(!params.includes(param as Parameter)) {
+      delete mStore.postMetaForm.parameters[param]
+    }
+  })
+  validate()
 })
 </script>
 
