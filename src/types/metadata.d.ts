@@ -6,7 +6,7 @@ export type Requirement = typeof requirementList[number];
 export const coolantList = ['Dry', 'Air', 'MMQ', 'Flood', 'Oil'] as const;
 export type Coolant = typeof coolantList[number];
 
-export const institutionList = ['TU Wien', 'TU Darmstadt'] as const;
+export const institutionList = ['CNRC', 'Georgia Institute of Technology', 'Mondragon Unibertsitatea', 'Université de Mons', 'KIT Karlsruhe', 'IFW - Universität Stuttgart', 'AMRC - University of Sheffield', 'Centrale Lyon ENISE', 'CIIRC - CTU Prague', 'University of Ljubljana', 'University of Tokyo', 'Keio University', 'PTW - TU Darmstadt', 'IFT - TU Wien', 'ETH Zürich, Inspire', 'ISF - TU Dortmund', 'MTI - RWTH Aachen', 'MAL - University of British Columbia', 'SECO'] as const;
 export type Institution = typeof institutionList[number];
 
 export const workpiece_materialList = ['C45', 'Steel'] as const;
