@@ -309,7 +309,7 @@ const sensorListPreset = Array<Sensor>(
   new Sensor('Acceleration', 'g', -40, 40, true, 'Y Axis 40'),
   new Sensor('Acceleration', 'g', -40, 40, true, 'Z Axis 40'),
   new Sensor('Acceleration', 'g', -40, 40, true, 'X Axis 40'),
-  new Sensor('Temperature', 'K', 0, 1000, true, 'Tool Temperature'),
+  new Sensor('Temperature', '°C', 0, 1000, true, 'Tool Temperature'),
   new Sensor('Light', 'cd', 0, 1000, true, 'Light'),
   new Sensor('Backpack', '-', 0, 0, true, 'Backpack-Slot Channel 1'),
   new Sensor('Backpack', '-', 0, 0, true, 'Backpack-Slot Channel 2'),
