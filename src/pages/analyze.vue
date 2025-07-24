@@ -48,7 +48,6 @@ const parsedMetadata = ref<ParsedMetadata | undefined>(undefined)
 const routerWatcher = async () => {
   if(route.query['file']) {
     const fileName = route.query['file'].toString();
-    store.lastFileQuery = fileName;
     store.fileSelectionModalVisible = false;
     const reader = await fetchFileReader(fileName)
     parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
@@ -159,7 +158,7 @@ function downloadImage() {
     </template>
   </SplitLayout>
   <div
-    v-else
+    v-else-if="fetchingProgress > 0 && fetchingProgress < 100"
     class="w-full h-stretch max-h-60 flex justify-center items-center"
   >
     <div class="max-w-60 flex flex-col gap-4">
@@ -168,7 +167,7 @@ function downloadImage() {
         :value="fetchingProgress"
         :pt="{
           value: {
-            style: ['transition-duration: .25s;']
+            style: ['transition: none;']
           }
         }" />
     </div>
