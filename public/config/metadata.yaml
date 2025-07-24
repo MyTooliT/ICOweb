@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-07-21T07:55:09.110Z'
+  generated_at: '2025-07-24T09:25:29.099Z'
 parameters:
   person:
     id: person
@@ -219,7 +219,7 @@ parameters:
       - Conventional
   n_cuts:
     id: n_cuts
-    label: Number of Cuts in Measurement
+    label: Total Number of Cuts at Inspection
     datatype: int
     type: default
   n_measurement:
@@ -413,6 +413,9 @@ profiles:
         coolant:
           required: restricted
           default: Dry
+        direction:
+          required: restricted
+          default: Climb
       hardware:
         sth_mac:
           required: required
@@ -421,55 +424,54 @@ profiles:
     post:
       results:
         n_cuts:
-          required: required
-          default: 3
-          description: Number of cuts in current measurement file (not absolute!)
+          required: optional
+          description: Total number of cuts performed by tool at this inspection.
         n_measurement:
-          required: required
+          required: optional
           description: Measurement number in experiment (0 for inital tool measurement; then start from 1)
         tool_breakage:
-          required: required
+          required: optional
           default: 'false'
           description: Has the tool failed during this run?
         abnormal_tool_wear:
-          required: required
+          required: optional
           default: 'false'
-          description: Signs of abnormal wear (buildup, chipping) visible - Comment!
+          description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
       wear:
         tool_d_at_0:
-          required: required
+          required: optional
           description: Tool diameter at a height of 0mm from the face (at the cutter's face)
         tool_d_at_1:
-          required: required
+          required: optional
           description: Tool diameter at a height of 1mm from the face
         tool_d_at_2:
-          required: required
+          required: optional
           description: Tool diameter at a height of 2mm from the face
         tool_d_at_3:
-          required: required
+          required: optional
           description: Tool diameter at a height of 3mm from the face
         tool_d_at_4:
-          required: required
+          required: optional
           description: Tool diameter at a height of 4mm from the face
         tool_d_at_5:
-          required: required
+          required: optional
           description: Tool diameter at a height of 5mm from the face
         tool_d_at_6:
-          required: required
+          required: optional
           description: Tool diameter at a height of 6mm from the face (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
-          required: required
+          required: optional
           description: Picture of the first cutting edge (peripheral)
         first_face_pictures:
-          required: required
+          required: optional
           description: Picture of the first cutting edge (face)
       second_ce:
         second_peripheral_pictures:
-          required: required
+          required: optional
           description: Picture of the second cutting edge (peripheral)
         second_face_pictures:
-          required: required
+          required: optional
           description: Picture of the second cutting edge (face)
       additional:
         comment:
@@ -520,6 +522,9 @@ profiles:
         coolant:
           required: restricted
           default: Dry
+        direction:
+          required: restricted
+          default: Climb
       hardware:
         sth_mac:
           required: required
@@ -528,55 +533,54 @@ profiles:
     post:
       results:
         n_cuts:
-          required: required
-          default: 3
-          description: Number of cuts in current measurement file (not absolute!)
+          required: optional
+          description: Total number of cuts performed by tool at this inspection.
         n_measurement:
-          required: required
+          required: optional
           description: Measurement number in experiment (0 for inital tool measurement; then start from 1)
         tool_breakage:
-          required: required
+          required: optional
           default: 'false'
           description: Has the tool failed during this run?
         abnormal_tool_wear:
-          required: required
+          required: optional
           default: 'false'
-          description: Signs of abnormal wear (buildup, chipping) visible - Comment!
+          description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
       wear:
         tool_d_at_0:
-          required: required
+          required: optional
           description: Tool diameter at a height of 0mm from the face (at the cutter's face)
         tool_d_at_1:
-          required: required
+          required: optional
           description: Tool diameter at a height of 1mm from the face
         tool_d_at_2:
-          required: required
+          required: optional
           description: Tool diameter at a height of 2mm from the face
         tool_d_at_3:
-          required: required
+          required: optional
           description: Tool diameter at a height of 3mm from the face
         tool_d_at_4:
-          required: required
+          required: optional
           description: Tool diameter at a height of 4mm from the face
         tool_d_at_5:
-          required: required
+          required: optional
           description: Tool diameter at a height of 5mm from the face
         tool_d_at_6:
-          required: required
+          required: optional
           description: Tool diameter at a height of 6mm from the face (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
-          required: required
+          required: optional
           description: Picture of the first cutting edge (peripheral)
         first_face_pictures:
-          required: required
+          required: optional
           description: Picture of the first cutting edge (face)
       second_ce:
         second_peripheral_pictures:
-          required: required
+          required: optional
           description: Picture of the second cutting edge (peripheral)
         second_face_pictures:
-          required: required
+          required: optional
           description: Picture of the second cutting edge (face)
       additional:
         comment:
@@ -625,6 +629,8 @@ profiles:
           required: optional
           description: Tool offset from the control.
         coolant:
+          required: optional
+        direction:
           required: optional
       hardware:
         sth_mac:
