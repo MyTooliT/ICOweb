@@ -77,54 +77,6 @@ export const $Body_sth_connect_api_v1_sth_connect_put = {
     title: 'Body_sth_connect_api_v1_sth_connect_put'
 } as const;
 
-export const $Body_stu_connected_api_v1_stu_connected_post = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['name'],
-    title: 'Body_stu_connected_api_v1_stu_connected_post'
-} as const;
-
-export const $Body_stu_disable_ota_api_v1_stu_ota_disable_put = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['name'],
-    title: 'Body_stu_disable_ota_api_v1_stu_ota_disable_put'
-} as const;
-
-export const $Body_stu_enable_ota_api_v1_stu_ota_enable_put = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['name'],
-    title: 'Body_stu_enable_ota_api_v1_stu_ota_enable_put'
-} as const;
-
-export const $Body_stu_reset_api_v1_stu_reset_put = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['name'],
-    title: 'Body_stu_reset_api_v1_stu_reset_put'
-} as const;
-
 export const $Body_upload_file_api_v1_cloud_upload_post = {
     properties: {
         filename: {

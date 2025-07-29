@@ -3,12 +3,11 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutData, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutData, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutData, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedPostData, StuConnectedApiV1StuConnectedPostResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, ResetSensorsToDefaultApiV1SensorresetPostResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, ResetSensorsToDefaultApiV1SensorresetPostResponse } from './types.gen';
 
 /**
  * Stu
- * @returns unknown Return the STU Devices connected to the system
- * @returns void Indicates no STU Devices connected to the system
+ * @returns STUDeviceResponseModel Successful Response
  * @throws ApiError
  */
 export const stuApiV1StuGet = (): CancelablePromise<StuApiV1StuGetResponse> => { return __request(OpenAPI, {
@@ -18,75 +17,59 @@ export const stuApiV1StuGet = (): CancelablePromise<StuApiV1StuGetResponse> => {
 
 /**
  * Stu Reset
- * @param data The data for the request.
- * @param data.requestBody
- * @returns void Device was successfully reset.
+ * @returns unknown Indicates the STU has been reset.
  * @throws ApiError
  */
-export const stuResetApiV1StuResetPut = (data: StuResetApiV1StuResetPutData): CancelablePromise<StuResetApiV1StuResetPutResponse> => { return __request(OpenAPI, {
+export const stuResetApiV1StuResetPut = (): CancelablePromise<StuResetApiV1StuResetPutResponse> => { return __request(OpenAPI, {
     method: 'PUT',
     url: '/api/v1/stu/reset',
-    body: data.requestBody,
-    mediaType: 'application/json',
     errors: {
-        422: 'Validation Error',
-        502: 'The CAN Network did not respond. This can either be because the Node is not connected, or the Network is unresponsive.'
+        502: 'The STU could not be reset.'
     }
 }); };
 
 /**
  * Stu Enable Ota
- * @param data The data for the request.
- * @param data.requestBody
- * @returns unknown Successful Response
+ * @returns unknown Indicates the OTA has been enabled.
  * @throws ApiError
  */
-export const stuEnableOtaApiV1StuOtaEnablePut = (data: StuEnableOtaApiV1StuOtaEnablePutData): CancelablePromise<StuEnableOtaApiV1StuOtaEnablePutResponse> => { return __request(OpenAPI, {
+export const stuEnableOtaApiV1StuOtaEnablePut = (): CancelablePromise<StuEnableOtaApiV1StuOtaEnablePutResponse> => { return __request(OpenAPI, {
     method: 'PUT',
     url: '/api/v1/stu/ota/enable',
-    body: data.requestBody,
-    mediaType: 'application/json',
     errors: {
-        422: 'Validation Error'
+        502: 'The OTA could not be enabled.'
     }
 }); };
 
 /**
  * Stu Disable Ota
- * @param data The data for the request.
- * @param data.requestBody
- * @returns unknown Successful Response
+ * @returns unknown Indicates the OTA has been disabled.
  * @throws ApiError
  */
-export const stuDisableOtaApiV1StuOtaDisablePut = (data: StuDisableOtaApiV1StuOtaDisablePutData): CancelablePromise<StuDisableOtaApiV1StuOtaDisablePutResponse> => { return __request(OpenAPI, {
+export const stuDisableOtaApiV1StuOtaDisablePut = (): CancelablePromise<StuDisableOtaApiV1StuOtaDisablePutResponse> => { return __request(OpenAPI, {
     method: 'PUT',
     url: '/api/v1/stu/ota/disable',
-    body: data.requestBody,
-    mediaType: 'application/json',
     errors: {
-        422: 'Validation Error'
+        502: 'The OTA could not be disabled.'
     }
 }); };
 
 /**
  * Stu Connected
- * @param data The data for the request.
- * @param data.requestBody
- * @returns unknown Successful Response
+ * @returns boolean Returns true if the STU is connected, false otherwise.
  * @throws ApiError
  */
-export const stuConnectedApiV1StuConnectedPost = (data: StuConnectedApiV1StuConnectedPostData): CancelablePromise<StuConnectedApiV1StuConnectedPostResponse> => { return __request(OpenAPI, {
-    method: 'POST',
+export const stuConnectedApiV1StuConnectedGet = (): CancelablePromise<StuConnectedApiV1StuConnectedGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
     url: '/api/v1/stu/connected',
-    body: data.requestBody,
-    mediaType: 'application/json',
     errors: {
-        422: 'Validation Error'
+        502: 'The STU could not be reached.'
     }
 }); };
 
 /**
  * Sth
+ * Get a list of available sensor devices
  * @returns unknown Return the STH Devices reachable
  * @throws ApiError
  */

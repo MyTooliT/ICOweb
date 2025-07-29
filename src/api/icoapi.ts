@@ -91,9 +91,9 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   })
 }
 
-export async function requestSTUConnectionStatus(name: string): Promise<boolean> {
+export async function requestSTUConnectionStatus(): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    post<{name: string}, boolean>('stu/connected', { name: name})
+    get<boolean>('stu/connected')
       .then(data => resolve(data))
       .catch(reject)
   })
@@ -116,25 +116,25 @@ export async function writeADCValues(mac: string, values: ADCValues): Promise<vo
   })
 }
 
-export async function resetSTUDevice(deviceName: string): Promise<void> {
+export async function resetSTUDevice(): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<any, void>('stu/reset', { name : deviceName })
+    put<any, void>('stu/reset', {})
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function enableSTUOTA(deviceName: string): Promise<void> {
+export async function enableSTUOTA(): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<any, void>('stu/ota/enable', { name : deviceName })
+    put<any, void>('stu/ota/enable', {})
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function disableSTUOTA(deviceName: string): Promise<void> {
+export async function disableSTUOTA(): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ name: string }, void>('stu/ota/disable', { name: deviceName })
+    put<any, void>('stu/ota/disable', {})
       .then(data => resolve(data))
       .catch(reject)
   })

@@ -15,22 +15,6 @@ export type Body_sth_connect_api_v1_sth_connect_put = {
     mac: string;
 };
 
-export type Body_stu_connected_api_v1_stu_connected_post = {
-    name: string;
-};
-
-export type Body_stu_disable_ota_api_v1_stu_ota_disable_put = {
-    name: string;
-};
-
-export type Body_stu_enable_ota_api_v1_stu_ota_enable_put = {
-    name: string;
-};
-
-export type Body_stu_reset_api_v1_stu_reset_put = {
-    name: string;
-};
-
 export type Body_upload_file_api_v1_cloud_upload_post = {
     filename: string;
 };
@@ -258,31 +242,15 @@ export type ValidationError = {
     type: string;
 };
 
-export type StuApiV1StuGetResponse = unknown | void;
+export type StuApiV1StuGetResponse = Array<STUDeviceResponseModel>;
 
-export type StuResetApiV1StuResetPutData = {
-    requestBody: Body_stu_reset_api_v1_stu_reset_put;
-};
+export type StuResetApiV1StuResetPutResponse = unknown;
 
-export type StuResetApiV1StuResetPutResponse = void;
-
-export type StuEnableOtaApiV1StuOtaEnablePutData = {
-    requestBody: Body_stu_enable_ota_api_v1_stu_ota_enable_put;
-};
-
-export type StuEnableOtaApiV1StuOtaEnablePutResponse = CANResponseError | null;
-
-export type StuDisableOtaApiV1StuOtaDisablePutData = {
-    requestBody: Body_stu_disable_ota_api_v1_stu_ota_disable_put;
-};
+export type StuEnableOtaApiV1StuOtaEnablePutResponse = unknown;
 
 export type StuDisableOtaApiV1StuOtaDisablePutResponse = CANResponseError | null;
 
-export type StuConnectedApiV1StuConnectedPostData = {
-    requestBody: Body_stu_connected_api_v1_stu_connected_post;
-};
-
-export type StuConnectedApiV1StuConnectedPostResponse = unknown;
+export type StuConnectedApiV1StuConnectedGetResponse = boolean;
 
 export type SthApiV1SthGetResponse = unknown;
 
@@ -400,77 +368,77 @@ export type $OpenApiTs = {
         get: {
             res: {
                 /**
-                 * Return the STU Devices connected to the system
+                 * Successful Response
                  */
-                200: unknown;
-                /**
-                 * Indicates no STU Devices connected to the system
-                 */
-                204: void;
+                200: Array<STUDeviceResponseModel>;
             };
         };
     };
     '/api/v1/stu/reset': {
         put: {
-            req: StuResetApiV1StuResetPutData;
             res: {
                 /**
-                 * Device was successfully reset.
+                 * Indicates the STU has been reset.
                  */
-                204: void;
+                200: unknown;
                 /**
-                 * Validation Error
+                 * The STU could not be reset.
                  */
-                422: HTTPValidationError;
-                /**
-                 * The CAN Network did not respond. This can either be because the Node is not connected, or the Network is unresponsive.
-                 */
-                502: unknown;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
     '/api/v1/stu/ota/enable': {
         put: {
-            req: StuEnableOtaApiV1StuOtaEnablePutData;
             res: {
                 /**
-                 * Successful Response
+                 * Indicates the OTA has been enabled.
                  */
-                200: CANResponseError | null;
+                200: unknown;
                 /**
-                 * Validation Error
+                 * The OTA could not be enabled.
                  */
-                422: HTTPValidationError;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
     '/api/v1/stu/ota/disable': {
         put: {
-            req: StuDisableOtaApiV1StuOtaDisablePutData;
             res: {
                 /**
-                 * Successful Response
+                 * Indicates the OTA has been disabled.
                  */
                 200: CANResponseError | null;
                 /**
-                 * Validation Error
+                 * The OTA could not be disabled.
                  */
-                422: HTTPValidationError;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
     '/api/v1/stu/connected': {
-        post: {
-            req: StuConnectedApiV1StuConnectedPostData;
+        get: {
             res: {
                 /**
-                 * Successful Response
+                 * Returns true if the STU is connected, false otherwise.
                  */
-                200: unknown;
+                200: boolean;
                 /**
-                 * Validation Error
+                 * The STU could not be reached.
                  */
-                422: HTTPValidationError;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
