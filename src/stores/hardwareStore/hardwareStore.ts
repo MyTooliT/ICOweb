@@ -318,6 +318,9 @@ const sensorListPreset = Array<Sensor>(
 )
 
 const holderListPreset = Array<HolderConfig>(
+  new HolderConfig('CIRP TWM', 'cirp-twm', [
+    {channel: 1, sensor: sensorListPreset[0]},
+  ]),
   new HolderConfig('IFT Default 3AX', 'default-sth', [
     {channel: 1, sensor: sensorListPreset[0]},
     {channel: 2, sensor: sensorListPreset[1]},
