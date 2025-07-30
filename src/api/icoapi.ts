@@ -83,9 +83,9 @@ export async function renameSTHDevice(model: STHRenameRequestModel): Promise<STH
   })
 }
 
-export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
+export async function getSTU(): Promise<STUDeviceResponseModel> {
   return new Promise((resolve, reject) => {
-    get<STUDeviceResponseModel[]>('stu')
+    get<STUDeviceResponseModel>('stu')
       .then(data => resolve(data))
       .catch(reject)
   })

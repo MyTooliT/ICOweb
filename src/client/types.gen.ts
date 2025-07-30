@@ -232,7 +232,7 @@ export type ValidationError = {
     type: string;
 };
 
-export type StuApiV1StuGetResponse = Array<STUDeviceResponseModel>;
+export type StuApiV1StuGetResponse = STUDeviceResponseModel;
 
 export type StuConnectApiV1StuConnectPostResponse = unknown;
 
@@ -358,7 +358,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: Array<STUDeviceResponseModel>;
+                200: STUDeviceResponseModel;
             };
         };
     };

@@ -1,6 +1,6 @@
 import {
   getSTHDevicesMeta,
-  getSTUDevices
+  getSTU
 } from '@/api/icoapi.ts';
 import {
   HolderConfig,
@@ -136,7 +136,7 @@ export const useHardwareStore = defineStore('hardware', () => {
   async function updateSTUDeviceList(): Promise<void> {
     STUDeviceLoading.value = true
     try {
-      const meta = await getSTUDevices()
+      const meta = [await getSTU()]
       STUDeviceList.value = meta.map(entry => {
         return new STUDevice(
           entry.device_number,

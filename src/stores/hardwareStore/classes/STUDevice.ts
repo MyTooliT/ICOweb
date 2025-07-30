@@ -7,7 +7,7 @@ import {
 import {
   Device,
   TDeviceConnectionStatus,
-  TDeviceNumber,
+  TSensorNodeNumber,
   TMac,
   TName
 } from './Device.ts';
@@ -17,7 +17,7 @@ export type TOTAState = 'enabled' | 'enabling' | 'disabled' | 'disabling'
 export class STUDevice extends Device {
   private OTAState: TOTAState;
   constructor(
-    device_number: TDeviceNumber,
+    device_number: TSensorNodeNumber,
     name: TName,
     mac_address: TMac,
     status: TDeviceConnectionStatus = 'disconnected',
@@ -28,7 +28,7 @@ export class STUDevice extends Device {
   }
   public async reset(): Promise<void> {
     try {
-      await resetSTUDevice(this.name)
+      await resetSTUDevice()
     } catch(e) {
       throw e
     }
@@ -37,7 +37,7 @@ export class STUDevice extends Device {
   public async enableOTA(): Promise<void> {
     try {
       this.OTAState = 'enabling'
-      await enableSTUOTA(this.name)
+      await enableSTUOTA()
       this.OTAState = 'enabled'
     } catch(e) {
       throw e;
@@ -47,7 +47,7 @@ export class STUDevice extends Device {
   public async disableOTA(): Promise<void> {
     try {
       this.OTAState = 'disabling'
-      await disableSTUOTA(this.name)
+      await disableSTUOTA()
       this.OTAState = 'disabled'
     } catch(e) {
       throw e;
@@ -60,7 +60,7 @@ export class STUDevice extends Device {
 
   public async checkConnection() {
     try {
-      this.connection_status = await requestSTUConnectionStatus(this.name)
+      this.connection_status = await requestSTUConnectionStatus()
         ? 'connected'
         : 'disconnected'
     } catch(e) {
@@ -74,7 +74,7 @@ export class STUDevice extends Device {
 
   public toJSON() {
     return {
-      device_number: this.device_number,
+      device_number: this.sensor_node_number,
       name: this.name,
       mac_address: this.mac_address,
       status: this.connection_status,

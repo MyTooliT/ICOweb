@@ -6,14 +6,14 @@ import {
 } from 'vitest';
 import { STUDevice } from './STUDevice.ts';
 import {
-  TDeviceNumber,
+  TSensorNodeNumber,
   TMac,
   TName
 } from './Device.ts';
 
 describe('STU Device', () => {
   let device: STUDevice;
-  const device_number: TDeviceNumber = 1;
+  const device_number: TSensorNodeNumber = 1;
   const name: TName = 'Test Device';
   const mac_address: TMac = '00:00:00:00:00:00';
 
