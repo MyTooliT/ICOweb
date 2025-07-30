@@ -91,6 +91,14 @@ export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
   })
 }
 
+export async function connectSTUDevice(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<any, void>('stu/connect', {})
+      .then(data => resolve(data))
+      .catch(reject)
+  })
+}
+
 export async function requestSTUConnectionStatus(): Promise<boolean> {
   return new Promise((resolve, reject) => {
     get<boolean>('stu/connected')
@@ -99,9 +107,9 @@ export async function requestSTUConnectionStatus(): Promise<boolean> {
   })
 }
 
-export async function getADCValues(mac: string): Promise<ADCValues> {
+export async function getADCValues(): Promise<ADCValues> {
   return new Promise((resolve, reject) => {
-    get<ADCValues>(`sth/read-adc/${mac}`)
+    get<ADCValues>('sth/read-adc')
       .then(data => resolve(data))
       .catch(reject)
   })

@@ -6,8 +6,9 @@ withDefaults(defineProps<{
   subheading?: string,
   button?: boolean,
   buttonText?: string,
-  buttonIconClass?: string
-  buttonLoading?: boolean
+  buttonIconClass?: string,
+  buttonLoading?: boolean,
+  buttonDisabled?: boolean,
   border?: boolean
 }>(), {
   heading: '',
@@ -16,6 +17,7 @@ withDefaults(defineProps<{
   buttonText: 'Add',
   buttonIconClass: 'pi pi-plus',
   buttonLoading: false,
+  buttonDisabled: false,
   border: true
 })
 
@@ -45,6 +47,7 @@ const emits = defineEmits<{
       <Button
         v-if="button"
         outlined
+        :disabled="buttonDisabled"
         :label="buttonText"
         :icon="buttonIconClass"
         :loading="buttonLoading"

@@ -89,53 +89,6 @@ export const $Body_upload_file_api_v1_cloud_upload_post = {
     title: 'Body_upload_file_api_v1_cloud_upload_post'
 } as const;
 
-export const $Body_write_adc_api_v1_sth_write_adc_put = {
-    properties: {
-        mac: {
-            type: 'string',
-            title: 'Mac'
-        },
-        config: {
-            '$ref': '#/components/schemas/ADCValues'
-        }
-    },
-    type: 'object',
-    required: ['mac', 'config'],
-    title: 'Body_write_adc_api_v1_sth_write_adc_put'
-} as const;
-
-export const $CANResponseError = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        message: {
-            type: 'string',
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['name', 'message'],
-    title: 'CANResponseError'
-} as const;
-
-export const $ConnectionTimeoutError = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        message: {
-            type: 'string',
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['name', 'message'],
-    title: 'ConnectionTimeoutError'
-} as const;
-
 export const $ControlResponse = {
     properties: {
         message: {
@@ -754,9 +707,9 @@ export const $STHDeviceResponseModel = {
             type: 'string',
             title: 'Name'
         },
-        device_number: {
+        sensor_node_number: {
             type: 'integer',
-            title: 'Device Number'
+            title: 'Sensor Node Number'
         },
         mac_address: {
             type: 'string',
@@ -768,7 +721,7 @@ export const $STHDeviceResponseModel = {
         }
     },
     type: 'object',
-    required: ['name', 'device_number', 'mac_address', 'rssi'],
+    required: ['name', 'sensor_node_number', 'mac_address', 'rssi'],
     title: 'STHDeviceResponseModel',
     description: 'Wrapper for STH Device class implementing Pydantic features'
 } as const;
@@ -887,11 +840,17 @@ export const $Sensor = {
     title: 'Sensor'
 } as const;
 
+export const $State = {
+    type: 'string',
+    enum: ['DISCONNECTED', 'STU_CONNECTED', 'SENSOR_NODE_CONNECTED'],
+    title: 'State',
+    description: 'Contains the various states the ICOtronic system can be in'
+} as const;
+
 export const $SystemStateModel = {
     properties: {
-        can_ready: {
-            type: 'boolean',
-            title: 'Can Ready'
+        state: {
+            '$ref': '#/components/schemas/State'
         },
         disk_capacity: {
             '$ref': '#/components/schemas/DiskCapacity'
@@ -905,7 +864,7 @@ export const $SystemStateModel = {
         }
     },
     type: 'object',
-    required: ['can_ready', 'disk_capacity', 'measurement_status', 'cloud_status'],
+    required: ['state', 'disk_capacity', 'measurement_status', 'cloud_status'],
     title: 'SystemStateModel',
     description: 'Data model for API state'
 } as const;

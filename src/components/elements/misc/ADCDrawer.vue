@@ -41,7 +41,7 @@ const hwStore = useHardwareStore()
             :loading="ADCStore.loading"
             :disabled="!hwStore.activeSTH"
             fluid
-            @click="ADCStore.fetchADCValues(hwStore.activeSTH?.getMacAddress())"
+            @click="ADCStore.fetchADCValues()"
           />
         </div>
         <div class="flex flex-col gap-3">

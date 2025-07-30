@@ -1,14 +1,15 @@
 import { getWSLink } from '@/api/icoapi.ts';
-import { MeasurementStatus } from '@/client';
+import {MeasurementStatus, State, SystemStateModel} from '@/client';
 import {computed, ref} from 'vue';
 
 export function useSystemState(
-    onCustomInstruction: (event: any) => void = (event: any) => {
+    onDefault: (event: any) => void = (event: any) => {
       console.log('[WS] Received custom instruction', event.data);
     },
+    onSystemState: (event: SystemStateModel) => void = () => {}
 ) {
   const reachable = ref(false);
-  const canReady = ref(false);
+  const state = ref<State>('DISCONNECTED');
   const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
   const cloud_ready = ref(false);
@@ -54,20 +55,21 @@ export function useSystemState(
 
             case 'state':
               reachable.value = true;
-              canReady.value = parsed.data.can_ready;
+              state.value = parsed.data.state;
               running.value = parsed.data.measurement_status.running;
               measurementStatus.value = parsed.data.measurement_status;
               cloud_ready.value = parsed.data.cloud_status
+              onSystemState(parsed.data as SystemStateModel)
               break;
 
             default:
-              onCustomInstruction(parsed)
+              onDefault(parsed)
               break;
           }
         } catch (e) {
           // If it fails, it is a custom instruction
           console.log('[WS] Received custom instruction', event.data);
-          onCustomInstruction(event);
+          onDefault(event);
         }
       };
 
@@ -78,7 +80,7 @@ export function useSystemState(
       ws.onclose = (event: any) => {
         console.log('[WS] Closed', event);
         reachable.value = false;
-        canReady.value = false;
+        state.value = 'DISCONNECTED';
         running.value = false;
         cloud_ready.value = false;
 
@@ -104,7 +106,7 @@ export function useSystemState(
       reachable.value = true;
     } catch (e) {
       reachable.value = false;
-      canReady.value = false;
+      state.value = 'DISCONNECTED';
       running.value = false;
       cloud_ready.value = false;
     }
@@ -127,7 +129,7 @@ export function useSystemState(
 
   return {
     reachable,
-    canReady,
+    state,
     running,
     measurementStatus,
     checkState,

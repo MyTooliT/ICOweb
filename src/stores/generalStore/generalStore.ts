@@ -6,6 +6,7 @@ import {
     type Ref,
     ref
 } from 'vue';
+import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
 
 export enum ThemeStyle {
     Light = 'light',
@@ -16,7 +17,9 @@ export enum ThemeStyle {
     DarkHighContrast = 'dark-high-contrast',
 }
 
+
 export const useGeneralStore = defineStore('general', () => {
+    const hwStore = useHardwareStore()
     const _activeTheme: Ref<ThemeStyle> = ref<ThemeStyle>(ThemeStyle.Light);
     /* eslint-disable-next-line max-len */
     const getActiveTheme: ComputedRef<ThemeStyle> = computed(() => _activeTheme.value)
@@ -28,7 +31,8 @@ export const useGeneralStore = defineStore('general', () => {
         return false
     }
 
-    const systemState = useSystemState((event: any) => {
+    const systemState = useSystemState(
+    (event: any) => {
         switch(event.message) {
             case 'post_meta_request':
                 postMetaModalVisible.value = true
@@ -40,7 +44,13 @@ export const useGeneralStore = defineStore('general', () => {
                 console.error(`Unknown event: ${event.data}`)
                 break;
         }
-    })
+    },
+        (event) => {
+            if(event.state !== 'SENSOR_NODE_CONNECTED' && hwStore.activeSTH) {
+                hwStore.deselectSTHDevices()
+            }
+        }
+    )
 
     /*
     ******************************************************

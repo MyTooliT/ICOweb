@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { resetCAN } from '@/api/icoapi.ts';
+import {connectSTUDevice, resetCAN} from '@/api/icoapi.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
@@ -18,13 +18,14 @@ function clearCache() {
 }
 
 const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
+const { loading: connectLoading, call: connectCall} = useLoadingHandler(connectSTUDevice)
 </script>
 
 <template>
   <div class="w-full absolute bottom-0 left-0 ">
     <div
       :data-api="store.systemState.reachable"
-      :data-can="store.systemState.canReady"
+      :data-can="store.systemState.state !== 'DISCONNECTED'"
       :data-running="store.systemState.running"
       class="
         w-full pr-6 pb-1 text-right
@@ -54,6 +55,14 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
           :loading="loading"
           :disabled="loading"
           @click="resetHandle" />
+        <Button
+          v-if="store.systemState.state === 'DISCONNECTED'"
+          label="Connect STU"
+          size="small"
+          link
+          :loading="connectLoading"
+          :disabled="connectLoading"
+          @click="connectCall" />
       </div>
       <div
         v-if="store.systemState.running"
@@ -62,7 +71,7 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
       </div>
       <div class="text-sm h-min flex self-center">
         API {{ store.systemState.reachable ? 'reachable' : 'disconnected' }} |
-        CAN {{ store.systemState.canReady ? 'established' : 'disconnected' }}
+        CAN {{ store.systemState.state !== 'DISCONNECTED' ? 'established' : 'disconnected' }}
       </div>
     </div>
   </div>

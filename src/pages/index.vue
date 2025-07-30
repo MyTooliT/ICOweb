@@ -6,20 +6,22 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { useToast } from 'primevue/usetoast';
+import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 
 const toast = useToast()
-const store = useHardwareStore()
+const hwStore = useHardwareStore()
+const gStore = useGeneralStore()
 
 const { loading: STULoading, call: STUReload } = useLoadingHandler(
-  store.updateSTUDeviceList
+  hwStore.updateSTUDeviceList
 )
 const { loading: STHLoading, call: STHReload } = useLoadingHandler(
-  store.updateSTHDeviceList
+  hwStore.updateSTHDeviceList
 )
 
 async function STUClickHandler() {
   STUReload().then(() => {
-    if(store.STUDeviceList.length === 0) {
+    if(hwStore.STUDeviceList.length === 0) {
       toast.add({
         summary: 'No STU connected',
         detail: 'Check your CAN adapter',
@@ -32,8 +34,9 @@ async function STUClickHandler() {
 }
 
 async function STHClickHandler() {
+  hwStore.deselectSTHDevices()
   STHReload().then(() => {
-    if(store.STHDeviceList.length === 0) {
+    if(hwStore.STHDeviceList.length === 0) {
       toast.add({
         summary: 'No STH found',
         detail: 'Check battery',
@@ -52,9 +55,10 @@ async function STHClickHandler() {
       <TextBlock
         heading="Stationary Transceiver Units"
         subheading="Manage the STU all the connections are made from."
-        :button-text="store.hasSTU ? 'Reload' : 'Load'"
-        :button-icon-class="store.hasSTU ? 'pi pi-sync' : 'pi pi-download'"
+        :button-text="hwStore.hasSTU ? 'Reload' : 'Load'"
+        :button-icon-class="hwStore.hasSTU ? 'pi pi-sync' : 'pi pi-download'"
         :button-loading="STULoading"
+        :button-disabled="gStore.systemState.state === 'SENSOR_NODE_CONNECTED'"
         @button-click="STUClickHandler"
       />
       <STUDeviceTable />
@@ -65,9 +69,10 @@ async function STHClickHandler() {
         subheading="
           Manage STH devices visible to the STU
           and set holder configuration templates."
-        :button-text="store.hasSTH ? 'Reload' : 'Load'"
-        :button-icon-class="store.hasSTH ? 'pi pi-sync' : 'pi pi-download'"
+        :button-text="hwStore.hasSTH ? 'Reload' : 'Load'"
+        :button-icon-class="hwStore.hasSTH ? 'pi pi-sync' : 'pi pi-download'"
         :button-loading="STHLoading"
+        :button-disabled="gStore.systemState.state === 'SENSOR_NODE_CONNECTED'"
         @button-click="STHClickHandler"
       />
       <STHDeviceTable />

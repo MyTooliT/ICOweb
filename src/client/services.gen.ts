@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcMacGetData, ReadAdcApiV1SthReadAdcMacGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, ResetSensorsToDefaultApiV1SensorresetPostResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuConnectApiV1StuConnectPostResponse, StuResetApiV1StuResetPutResponse, StuEnableOtaApiV1StuOtaEnablePutResponse, StuDisableOtaApiV1StuOtaDisablePutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, ResetSensorsToDefaultApiV1SensorresetPostResponse } from './types.gen';
 
 /**
  * Stu
@@ -16,6 +16,16 @@ export const stuApiV1StuGet = (): CancelablePromise<StuApiV1StuGetResponse> => {
 }); };
 
 /**
+ * Stu Connect
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const stuConnectApiV1StuConnectPost = (): CancelablePromise<StuConnectApiV1StuConnectPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/stu/connect'
+}); };
+
+/**
  * Stu Reset
  * @returns unknown Indicates the STU has been reset.
  * @throws ApiError
@@ -24,7 +34,7 @@ export const stuResetApiV1StuResetPut = (): CancelablePromise<StuResetApiV1StuRe
     method: 'PUT',
     url: '/api/v1/stu/reset',
     errors: {
-        502: 'The STU could not be reset.'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
@@ -37,7 +47,7 @@ export const stuEnableOtaApiV1StuOtaEnablePut = (): CancelablePromise<StuEnableO
     method: 'PUT',
     url: '/api/v1/stu/ota/enable',
     errors: {
-        502: 'The OTA could not be enabled.'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
@@ -50,39 +60,42 @@ export const stuDisableOtaApiV1StuOtaDisablePut = (): CancelablePromise<StuDisab
     method: 'PUT',
     url: '/api/v1/stu/ota/disable',
     errors: {
-        502: 'The OTA could not be disabled.'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
 /**
  * Stu Connected
- * @returns boolean Returns true if the STU is connected, false otherwise.
+ * @returns boolean Returns true if the STU is connected to a sensor node, false otherwise.
  * @throws ApiError
  */
 export const stuConnectedApiV1StuConnectedGet = (): CancelablePromise<StuConnectedApiV1StuConnectedGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/api/v1/stu/connected',
     errors: {
-        502: 'The STU could not be reached.'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
 /**
  * Sth
  * Get a list of available sensor devices
- * @returns unknown Return the STH Devices reachable
+ * @returns STHDeviceResponseModel Return the STH Devices reachable
  * @throws ApiError
  */
 export const sthApiV1SthGet = (): CancelablePromise<SthApiV1SthGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/sth'
+    url: '/api/v1/sth',
+    errors: {
+        502: 'The CAN network did not respond to the request.'
+    }
 }); };
 
 /**
  * Sth Connect
  * @param data The data for the request.
  * @param data.requestBody
- * @returns unknown Connection was successful
+ * @returns unknown Connection was successful.
  * @throws ApiError
  */
 export const sthConnectApiV1SthConnectPut = (data: SthConnectApiV1SthConnectPutData): CancelablePromise<SthConnectApiV1SthConnectPutResponse> => { return __request(OpenAPI, {
@@ -91,21 +104,22 @@ export const sthConnectApiV1SthConnectPut = (data: SthConnectApiV1SthConnectPutD
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        404: 'Indicates no STH Devices in reach',
-        422: 'Validation Error'
+        404: 'STH could not be connected and must be out of reach or discharged.',
+        422: 'Validation Error',
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
 /**
  * Sth Disconnect
- * @returns unknown Disconnection was successful
+ * @returns unknown Disconnect was successful.
  * @throws ApiError
  */
 export const sthDisconnectApiV1SthDisconnectPut = (): CancelablePromise<SthDisconnectApiV1SthDisconnectPutResponse> => { return __request(OpenAPI, {
     method: 'PUT',
     url: '/api/v1/sth/disconnect',
     errors: {
-        404: 'Indicates error in disconnection'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
@@ -113,7 +127,7 @@ export const sthDisconnectApiV1SthDisconnectPut = (): CancelablePromise<SthDisco
  * Sth Rename
  * @param data The data for the request.
  * @param data.requestBody
- * @returns unknown Rename was successful
+ * @returns STHRenameResponseModel Connection was successful.
  * @throws ApiError
  */
 export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData): CancelablePromise<SthRenameApiV1SthRenamePutResponse> => { return __request(OpenAPI, {
@@ -122,27 +136,24 @@ export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData)
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
+        400: 'The provided MAC address is invalid.',
+        404: 'STH could not be connected and must be out of reach or discharged.',
         422: 'Validation Error',
-        502: 'Indicates error in rename'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
 /**
  * Read Adc
- * @param data The data for the request.
- * @param data.mac
- * @returns unknown ADC reading was successful
+ * @returns ADCValues Connection was successful.
  * @throws ApiError
  */
-export const readAdcApiV1SthReadAdcMacGet = (data: ReadAdcApiV1SthReadAdcMacGetData): CancelablePromise<ReadAdcApiV1SthReadAdcMacGetResponse> => { return __request(OpenAPI, {
+export const readAdcApiV1SthReadAdcGet = (): CancelablePromise<ReadAdcApiV1SthReadAdcGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/sth/read-adc/{mac}',
-    path: {
-        mac: data.mac
-    },
+    url: '/api/v1/sth/read-adc',
     errors: {
-        422: 'Validation Error',
-        504: 'ADC reading timed out'
+        404: 'STH could not be connected and must be out of reach or discharged.',
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 
@@ -150,7 +161,7 @@ export const readAdcApiV1SthReadAdcMacGet = (data: ReadAdcApiV1SthReadAdcMacGetD
  * Write Adc
  * @param data The data for the request.
  * @param data.requestBody
- * @returns unknown ADC writing was successful
+ * @returns unknown ADC configuration written successfully.
  * @throws ApiError
  */
 export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutData): CancelablePromise<WriteAdcApiV1SthWriteAdcPutResponse> => { return __request(OpenAPI, {
@@ -159,8 +170,9 @@ export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutDat
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
+        404: 'STH could not be connected and must be out of reach or discharged.',
         422: 'Validation Error',
-        504: 'ADC writing timed out'
+        502: 'The CAN network did not respond to the request.'
     }
 }); };
 

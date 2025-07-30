@@ -16,7 +16,10 @@ const { featureEnabled } = useDisable()
 const {
   loading: resetLoading,
   call: resetReload
-} = useLoadingHandler(async (data: STUDevice) => { await data.reset() })
+} = useLoadingHandler(async (data: STUDevice) => {
+  await data.reset()
+  store.deselectSTHDevices()
+})
 
 const {
   loading: enableLoading,

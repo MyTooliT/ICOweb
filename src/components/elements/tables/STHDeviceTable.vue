@@ -84,6 +84,7 @@ async function handleConnect(device: STHDevice) {
           size="small"
           label="Rename"
           icon="pi pi-pencil"
+          :disabled="hwStore.activeSTH && hwStore.activeSTH?.getMacAddress() !== data.getMacAddress()"
           @click="() => {
             device = data
             store.renameSTHModalVisible = true
@@ -92,6 +93,7 @@ async function handleConnect(device: STHDevice) {
         <ConnectionButton
           class="mx-3"
           :device="data"
+          :disabled="hwStore.activeSTH && hwStore.activeSTH?.getMacAddress() !== data.getMacAddress()"
           @connect="() => handleConnect(data)"
           @disconnect="() => data.disconnect()"
         />

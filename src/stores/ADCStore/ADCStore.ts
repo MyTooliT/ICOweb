@@ -69,10 +69,10 @@ export const useADCStore = defineStore('adc', () => {
   // Loading state
   const loading = ref<boolean>(false)
 
-  async function fetchADCValues(mac: string) {
+  async function fetchADCValues() {
     loading.value = true
     try {
-      values.value = await getADCValues(mac)
+      values.value = await getADCValues()
     } catch (error) {
       console.log(error);
     }
