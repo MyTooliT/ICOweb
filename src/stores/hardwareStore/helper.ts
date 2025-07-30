@@ -29,7 +29,7 @@ export function consumeNewMetadata(
   if(newList.length > 0) {
     newList.forEach(item => {
       assembledList.push(new STHDevice(
-        item.device_number,
+        item.sensor_node_number,
         item.name,
         item.mac_address,
         item.rssi,

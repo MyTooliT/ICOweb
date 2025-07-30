@@ -6,7 +6,7 @@ import {
 import {
   Device,
   TDeviceConnectionStatus,
-  TDeviceNumber,
+  TSensorNodeNumber,
   TMac,
   TName
 } from './Device.ts';
@@ -19,14 +19,14 @@ export class STHDevice extends Device {
   public holderConfigId: string | undefined = undefined;
 
   constructor(
-    device_number: TDeviceNumber,
+    sensor_node_number: TSensorNodeNumber,
     name: TName,
     mac_address: TMac,
     rssi: number,
     holderConfigId: string,
     status: TDeviceConnectionStatus = 'disconnected',
   ) {
-    super(device_number, name, mac_address, status)
+    super(sensor_node_number, name, mac_address, status)
     this.rssi = rssi
     this.holderConfigId = holderConfigId
   }
@@ -50,12 +50,12 @@ export class STHDevice extends Device {
   }
 
   public setMetadata(body: {
-    device_number: TDeviceNumber,
+    sensor_node_number: TSensorNodeNumber,
     name: TName,
     mac_address: TMac,
     rssi: TRssi
   }): void {
-    this.device_number = body.device_number;
+    this.sensor_node_number = body.sensor_node_number;
     this.name = body.name;
     this.mac_address = body.mac_address;
     this.rssi = body.rssi
@@ -93,7 +93,7 @@ export class STHDevice extends Device {
 
   public toJSON() {
     return {
-      device_number: this.device_number,
+      sensor_node_number: this.sensor_node_number,
       name: this.name,
       mac_address: this.mac_address,
       rssi: this.rssi,

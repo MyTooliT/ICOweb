@@ -14,7 +14,7 @@ describe('STHDevice', () => {
 
   it('correctly sets and gets metadata', () => {
     device.setMetadata({
-      device_number: 2,
+      sensor_node_number: 2,
       name: 'New Name',
       mac_address: '11:22:33:44:55:66',
       rssi: 10
