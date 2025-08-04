@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { STUDevice } from '@/stores/hardwareStore/classes/STUDevice.ts';
-import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
@@ -8,18 +7,15 @@ import DataTable from 'primevue/datatable';
 import { useToast } from 'primevue/usetoast';
 import {useDisable} from '@/utils/useDisable.ts';
 
-const store = useHardwareStore()
 const toast = useToast()
-
 const { featureEnabled } = useDisable()
+
+defineProps<{ stu: STUDevice }>()
 
 const {
   loading: resetLoading,
   call: resetReload
-} = useLoadingHandler(async (data: STUDevice) => {
-  await data.reset()
-  store.deselectSTHDevices()
-})
+} = useLoadingHandler(async (data: STUDevice) => { await data.reset() })
 
 const {
   loading: enableLoading,
@@ -33,7 +29,7 @@ const {
 </script>
 
 <template>
-  <DataTable :value="store.STUDeviceList">
+  <DataTable :value="[stu]">
     <Column
       header="ID">
       <template #body="{ data }: { data: STUDevice }">
@@ -104,7 +100,3 @@ const {
     </Column>
   </DataTable>
 </template>
-
-<style scoped>
-
-</style>

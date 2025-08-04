@@ -1,8 +1,6 @@
 <script setup lang="ts">
-// eslint-disable-next-line max-len
 import ConnectionButton from '@/components/elements/buttons/ConnectionButton.vue';
 import RenameSTHModal from '@/components/elements/modals/RenameSTHModal.vue';
-import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { HolderConfig } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { STHDevice } from '@/stores/hardwareStore/classes/STHDevice.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
@@ -14,28 +12,18 @@ import { ref } from 'vue';
 import Select from 'primevue/select';
 
 const hwStore = useHardwareStore()
-const store = useGeneralStore()
+
+const renameModalVisible = ref<boolean>(false)
+const device = ref<STHDevice | null>(null)
 
 function rowClass(data: STHDevice) {
-  // eslint-disable-next-line max-len
   return [{'!bg-primary-container !text-on-primary-container': data.isConnected()}]
 }
 
-async function handleSubmit(name: string, device: STHDevice) {
+const { call, loading } = useLoadingHandler<void>(async (name: string, device: STHDevice) => {
   await device.setName(name)
-}
-
-const device = ref<STHDevice | null>(null)
-
-const {call, loading} = useLoadingHandler<void>(handleSubmit)
-
-async function handleConnect(device: STHDevice) {
-  if(hwStore.activeSTH) {
-    await hwStore.activeSTH.disconnect()
-    await hwStore.activeSTU.reset()
-  }
-  await device.connect()
-}
+  renameModalVisible.value = false
+})
 </script>
 
 <template>
@@ -87,14 +75,14 @@ async function handleConnect(device: STHDevice) {
           :disabled="hwStore.activeSTH && hwStore.activeSTH?.getMacAddress() !== data.getMacAddress()"
           @click="() => {
             device = data
-            store.renameSTHModalVisible = true
+            renameModalVisible = true
           }"
         />
         <ConnectionButton
           class="mx-3"
           :device="data"
           :disabled="hwStore.activeSTH && hwStore.activeSTH?.getMacAddress() !== data.getMacAddress()"
-          @connect="() => handleConnect(data)"
+          @connect="() => data.connect()"
           @disconnect="() => data.disconnect()"
         />
         <Button
@@ -108,11 +96,12 @@ async function handleConnect(device: STHDevice) {
       </template>
     </Column>
     <RenameSTHModal
+      :visible="renameModalVisible"
       :regex="STHDevice.regex"
       :initial-name="device?.getName() || ''"
       :loading="loading"
       @rename="call($event, device).then(() => {
-        store.renameSTHModalVisible = false
+        renameModalVisible = false
       })"
     />
   </DataTable>

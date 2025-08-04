@@ -4,15 +4,13 @@ import { useTextInput } from '@/utils/useTextInput.ts';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import {
-  onBeforeUnmount,
-  onMounted
-} from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 
 const props = defineProps<{
   regex: RegExp,
   initialName: string,
   loading: boolean,
+  visible: boolean,
 }>()
 
 const store = useGeneralStore()
@@ -38,7 +36,6 @@ function resetName() {
 
 onMounted(() => {
   resetName()
-
   window.addEventListener('keyup', onEnter);
 })
 
@@ -48,17 +45,19 @@ onBeforeUnmount(() => {
 
 const emits = defineEmits<{
   (event: 'rename', name: string): void,
+  (event: 'update:visible', value: boolean): void
 }>()
 </script>
 
 <template>
   <Dialog
-    v-model:visible="store.renameSTHModalVisible"
+    :visible="props.visible"
     modal
     header="Rename STH Device"
     :style="{ width: '25rem' }"
     :dismissable-mask="true"
     @show="resetName()"
+    @hide="emits('update:visible', false)"
   >
     <span class="text-surface-500 dark:text-surface-400 block">
       To be compliant with the specification, the name must be at most 8 characters.
@@ -90,7 +89,7 @@ const emits = defineEmits<{
         class="ml-auto"
         :loading="props.loading"
         @click="emits('rename', nameContent)"
-        />
+      />
     </div>
   </Dialog>
 </template>

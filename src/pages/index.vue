@@ -53,7 +53,7 @@ async function STHClickHandler() {
   <DefaultLayout class="flex flex-col gap-8">
     <div>
       <TextBlock
-        heading="Stationary Transceiver Units"
+        heading="Stationary Transceiver Unit"
         subheading="Manage the STU all the connections are made from."
         :button-text="hwStore.hasSTU ? 'Reload' : 'Load'"
         :button-icon-class="hwStore.hasSTU ? 'pi pi-sync' : 'pi pi-download'"
@@ -61,7 +61,9 @@ async function STHClickHandler() {
         :button-disabled="gStore.systemState.state === 'SENSOR_NODE_CONNECTED'"
         @button-click="STUClickHandler"
       />
-      <STUDeviceTable />
+      <STUDeviceTable
+        v-if="hwStore.activeSTU"
+        :stu="hwStore.activeSTU" />
     </div>
     <div class="mt-8">
       <TextBlock
@@ -79,7 +81,3 @@ async function STHClickHandler() {
     </div>
   </DefaultLayout>
 </template>
-
-<style scoped>
-
-</style>
