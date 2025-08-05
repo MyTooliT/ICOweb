@@ -134,7 +134,7 @@ router.afterEach(async (_to, _from, _failure) => {
         const adcStore = useADCStore()
         try {
           store.setLoaderInfoMessage('Checking ADC settings...')
-          await adcStore.fetchADCValues(hwStore.activeSTH?.getMacAddress())
+          await adcStore.fetchADCValues()
         } catch (e) { console.log(e) }
       }
     }

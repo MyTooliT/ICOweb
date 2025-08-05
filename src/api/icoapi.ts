@@ -99,9 +99,9 @@ export async function requestSTUConnectionStatus(): Promise<boolean> {
   })
 }
 
-export async function getADCValues(mac: string): Promise<ADCValues> {
+export async function getADCValues(): Promise<ADCValues> {
   return new Promise((resolve, reject) => {
-    get<ADCValues>(`sth/read-adc/${mac}`)
+    get<ADCValues>('sth/read-adc')
       .then(data => resolve(data))
       .catch(reject)
   })
