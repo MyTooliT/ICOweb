@@ -13,7 +13,8 @@ import { STHDevice } from './classes/STHDevice.ts';
  */
 export function consumeNewMetadata(
   list: Array<STHDevice>,
-  newList: Array<STHDeviceResponseModel>
+  newList: Array<STHDeviceResponseModel>,
+  defaultHolderId: string
 ): Array<STHDevice> {
   const assembledList: Array<STHDevice> = [];
   list.forEach(item => {
@@ -33,7 +34,7 @@ export function consumeNewMetadata(
         item.name,
         item.mac_address,
         item.rssi,
-        'default-sth' //Todo: Give sensible default
+        defaultHolderId
       ))
     })
   }
