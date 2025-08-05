@@ -1,5 +1,5 @@
 import { getWSLink } from '@/api/icoapi.ts';
-import {MeasurementStatus, State, SystemStateModel} from '@/client';
+import {MeasurementStatus, SensorNodeAttributesModel, State, SystemStateModel} from '@/client';
 import {computed, ref} from 'vue';
 
 export function useSystemState(
@@ -13,6 +13,7 @@ export function useSystemState(
   const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
   const cloud_ready = ref(false);
+  const connectedNodeAttributes = ref<SensorNodeAttributesModel | null>(null)
 
   let ws: WebSocket | null = null;
   let intervalID = 0;
@@ -59,6 +60,7 @@ export function useSystemState(
               running.value = parsed.data.measurement_status.running;
               measurementStatus.value = parsed.data.measurement_status;
               cloud_ready.value = parsed.data.cloud_status
+              connectedNodeAttributes.value = parsed.data.connected_node_attributes
               onSystemState(parsed.data as SystemStateModel)
               break;
 
@@ -83,6 +85,7 @@ export function useSystemState(
         state.value = 'DISCONNECTED';
         running.value = false;
         cloud_ready.value = false;
+        connectedNodeAttributes.value = null;
 
         // Retry logic
         if (retries > 0) {
@@ -109,6 +112,7 @@ export function useSystemState(
       state.value = 'DISCONNECTED';
       running.value = false;
       cloud_ready.value = false;
+      connectedNodeAttributes.value = null;
     }
   }
 
@@ -137,6 +141,7 @@ export function useSystemState(
     deregisterInterval,
     hasWS,
     connectWebSocket,
-    cloud_ready
+    cloud_ready,
+    connectedNodeAttributes
   };
 }

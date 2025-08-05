@@ -17,12 +17,15 @@ export const stuApiV1StuGet = (): CancelablePromise<StuApiV1StuGetResponse> => {
 
 /**
  * Stu Connect
- * @returns unknown Successful Response
+ * @returns unknown Indicates the STU has been reset.
  * @throws ApiError
  */
 export const stuConnectApiV1StuConnectPost = (): CancelablePromise<StuConnectApiV1StuConnectPostResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/api/v1/stu/connect'
+    url: '/api/v1/stu/connect',
+    errors: {
+        502: 'The CAN network did not respond to the request.'
+    }
 }); };
 
 /**
@@ -145,7 +148,7 @@ export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData)
 
 /**
  * Read Adc
- * @returns ADCValues Connection was successful.
+ * @returns ADCConfigurationModel Connection was successful.
  * @throws ApiError
  */
 export const readAdcApiV1SthReadAdcGet = (): CancelablePromise<ReadAdcApiV1SthReadAdcGetResponse> => { return __request(OpenAPI, {

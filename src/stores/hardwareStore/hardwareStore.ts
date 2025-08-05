@@ -23,8 +23,15 @@ import {
 } from './classes/Sensor.ts';
 import { STHDevice } from './classes/STHDevice.ts';
 import { consumeNewMetadata } from './helper.ts';
+import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 
 export const useHardwareStore = defineStore('hardware', () => {
+  const gStore = useGeneralStore()
+  /*
+  ******************************************************
+  *                   Sensor State                     *
+  ******************************************************
+  */
   const sensorList = ref<Array<Sensor>>(sensorListPreset);
   function addSensor(newSensor: Sensor) {
     sensorList.value.push(newSensor);
@@ -114,7 +121,25 @@ export const useHardwareStore = defineStore('hardware', () => {
     STHDeviceList.value = []
   }
   const activeSTH = computed(() => {
-    return STHDeviceList.value.filter(entry => entry.isConnected())[0]
+    if(!gStore.systemState.connectedNodeAttributes) { return undefined }
+    const attrs = gStore.systemState.connectedNodeAttributes
+    const match = STHDeviceList.value.find(sth => sth.getMacAddress() === attrs?.mac_address)
+    if(match) {
+      match.setConnectionStatus('connected')
+      return match
+    }
+    STHDeviceList.value.forEach(sth => sth.setConnectionStatus('disconnected'))
+    const newSTH = new STHDevice(
+        STHDeviceList.value.length + 1,
+        attrs.name,
+        attrs.mac_address,
+        0,
+        'default-sth',
+        'connected'
+    )
+    STHDeviceList.value.push(newSTH)
+    console.log(newSTH)
+    return newSTH
   })
   function deselectSTHDevices() {
     STHDeviceList.value.forEach(
