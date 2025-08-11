@@ -28,7 +28,7 @@ export class STUDevice extends Device {
   }
   public async reset(): Promise<void> {
     try {
-      await resetSTUDevice(this.name)
+      await resetSTUDevice()
     } catch(e) {
       throw e
     }
@@ -37,7 +37,7 @@ export class STUDevice extends Device {
   public async enableOTA(): Promise<void> {
     try {
       this.OTAState = 'enabling'
-      await enableSTUOTA(this.name)
+      await enableSTUOTA()
       this.OTAState = 'enabled'
     } catch(e) {
       throw e;
@@ -47,7 +47,7 @@ export class STUDevice extends Device {
   public async disableOTA(): Promise<void> {
     try {
       this.OTAState = 'disabling'
-      await disableSTUOTA(this.name)
+      await disableSTUOTA()
       this.OTAState = 'disabled'
     } catch(e) {
       throw e;
@@ -60,7 +60,7 @@ export class STUDevice extends Device {
 
   public async checkConnection() {
     try {
-      this.connection_status = await requestSTUConnectionStatus(this.name)
+      this.connection_status = await requestSTUConnectionStatus()
         ? 'connected'
         : 'disconnected'
     } catch(e) {
