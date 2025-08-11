@@ -24,25 +24,35 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
 <template>
   <NamedInput title="Measurement Control">
     <div class="flex flex-col gap-2 flex-wrap">
-      <div class="flex flex-row">
+      <div class="flex flex-row items-center">
         <ToggleSwitch
           v-model="mStore.continuous"
           :disabled="gStore.systemState.running"
           input-id="continuous" />
         <label
           for="continuous"
-          class="ml-3">Run&nbsp;continuously</label>
+          class="ml-3">Manual Stop</label>
+        <i
+          v-tooltip.top="{
+            value: 'Manual stop will let the measurement run until the user stops it manually.\n\nDisabling this will stop the measurement after the acquisition time is reached.'
+          }"
+          class="pi pi-info-circle ml-2" />
       </div>
-      <div class="flex flex-row">
+      <div class="flex flex-row items-center">
         <ToggleSwitch
           v-model="mStore.autostream"
           :disabled="gStore.systemState.running"
           input-id="continuous" />
         <label
           for="continuous"
-          class="ml-3">Auto-connect to stream</label>
+          class="ml-3">Show data on start</label>
+        <i
+          v-tooltip.top="{
+            value: 'Immediately show the data in the graph on start. \n\nDisabling this will start the measurement but not display the data.'
+          }"
+          class="pi pi-info-circle ml-2" />
       </div>
-      <div class="flex flex-row">
+      <div class="flex flex-row items-center">
         <ToggleSwitch
           v-model="mStore.disconnectAfterMeasurement"
           :disabled="gStore.systemState.running"
@@ -50,6 +60,11 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
         <label
           for="disconnect"
           class="ml-3">Disconnect after measurement</label>
+        <i
+          v-tooltip.left="{
+            value: 'Disconnect the tool after the measurement is finished for inspection. Disabling this will keep the tool connected.'
+          }"
+          class="pi pi-info-circle ml-2" />
       </div>
     </div>
     <InputGroup>

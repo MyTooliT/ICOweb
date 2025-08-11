@@ -731,6 +731,10 @@ video {
   margin-top: auto;
 }
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .box-content {
   box-sizing: content-box;
 }
@@ -1634,6 +1638,14 @@ video {
 
 .data-\[running\~\=true\]\:text-on-primary[data-running~="true"] {
   color: var(--md-sys-color-on-primary);
+}
+
+.data-\[disabled\=true\]\:opacity-50[data-disabled="true"] {
+  opacity: 0.5;
+}
+
+.data-\[disabled\=true\]\:opacity-60[data-disabled="true"] {
+  opacity: 0.6;
 }
 
 .data-\[disabled\=true\]\:hover\:bg-inherit:hover[data-disabled="true"] {
