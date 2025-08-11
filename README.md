@@ -107,6 +107,12 @@ VITE_APPLICATION_EXTRA_LOGO_ALT="CIRP"
 
 The logo file must be placed in the ``public/extra`` folder and will be displayed above the IFT logo in the menu.
 
+```
+VITE_APPLICATION_PORT=8081
+```
+
+``VITE_APPLICATION_PORT`` defines on what port the client is served at.
+
 ## Type Generation
 
 This repository is based on typescript and relies heavily on the ``openapi-ts`` package to generate type declarations

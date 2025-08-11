@@ -1,4 +1,5 @@
 stages:
+  - build
   - deploy
 
 before_script:
@@ -16,12 +17,45 @@ deploy-revpi-tt:
     - ./install.sh --force
 
 
-#deploy-revpi-mb:
-#  stage: deploy
-#  tags:
-#    - revpi120532
-#    - shell
-#  script:
-#    - echo "$ENV_CONFIG" > .env
-#    - chmod +x install.sh
-#    - ./install.sh --force
+deploy-revpi-mb:
+  stage: deploy
+  tags:
+    - revpi120532
+    - shell
+  script:
+    - echo "$ENV_CONFIG" > .env
+    - chmod +x install.sh
+    - ./install.sh --force
+
+
+build_and_push:
+  stage: build
+  image: docker:24.0.5
+  tags:
+    - cijobs
+    - docker
+  services:
+    - name: docker:24.0.5-dind
+      command: ["--mtu=1460"]       # optional, helps in some runners
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - when: never
+  before_script:
+    # Login to your self-hosted GitLab registry (these vars are auto-provided by GitLab CI)
+    - echo "Logging in to registry $CI_REGISTRY as $CI_REGISTRY_USER"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    # Basic debug info (optional)
+    - docker info
+  script:
+    # Build with build-arg so Vite sees the port during build (if your app uses it at build time)
+    - |
+      echo "Building $IMAGE_LATEST and $IMAGE_SHA"
+      docker build \
+        --build-arg VITE_APPLICATION_PORT="$VITE_APPLICATION_PORT" \
+        -t "$IMAGE_LATEST" \
+        -t "$IMAGE_SHA" \
+        .
+    # Push both tags
+    - docker push "$IMAGE_LATEST"
+    - docker push "$IMAGE_SHA"
