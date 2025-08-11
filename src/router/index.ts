@@ -3,7 +3,6 @@ import Analyze from '@/pages/analyze.vue';
 import Config from '@/pages/config.vue';
 import Sensors from '@/pages/config/sensors.vue';
 import Tools from '@/pages/config/tools.vue';
-import Debug from '@/pages/debug.vue';
 import Files from '@/pages/files.vue';
 import Help from '@/pages/help.vue';
 import Home from '@/pages/index.vue';
@@ -46,11 +45,6 @@ const routes = [
         component: Tools,
       },
     ],
-  },
-  {
-    path: '/debug',
-    name: 'Debug',
-    component: Debug,
   },
   {
     path: '/files',
