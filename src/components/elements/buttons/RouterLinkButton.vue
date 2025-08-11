@@ -24,6 +24,7 @@ const route = useRoute()
       aspect-square transition-all duration-100
       hover:bg-surface-variant
       data-[disabled=true]:hover:bg-inherit data-[disabled=true]:cursor-not-allowed
+      data-[disabled=true]:opacity-60
       data-[active=true]:bg-surface data-[active=true]:text-primary"
     @click="router.push(props.to)">
     <slot>
