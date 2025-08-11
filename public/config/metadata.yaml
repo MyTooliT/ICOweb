@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-07-24T09:25:29.099Z'
+  generated_at: '2025-08-11T16:31:48.707Z'
 parameters:
   person:
     id: person
@@ -237,45 +237,45 @@ parameters:
     label: Pictures of Second Peripheral Cutting Edge
     datatype: file
     type: default
-  tool_d_at_0:
-    id: tool_d_at_0
-    label: Tool Diameter at 0mm
+  tool_r_at_0:
+    id: tool_r_at_0
+    label: Tool Radius at 0mm
     datatype: float
     unit: mm
     type: default
-  tool_d_at_1:
-    id: tool_d_at_1
-    label: Tool Diameter at 1mm
+  tool_r_at_1:
+    id: tool_r_at_1
+    label: Tool Radius at 1mm
     datatype: float
     unit: mm
     type: default
-  tool_d_at_2:
-    id: tool_d_at_2
-    label: Tool Diameter at 2mm
+  tool_r_at_2:
+    id: tool_r_at_2
+    label: Tool Radius at 2mm
     datatype: float
     unit: mm
     type: default
-  tool_d_at_3:
-    id: tool_d_at_3
-    label: Tool Diameter at 3mm
+  tool_r_at_3:
+    id: tool_r_at_3
+    label: Tool Radius at 3mm
     datatype: float
     unit: mm
     type: default
-  tool_d_at_4:
-    id: tool_d_at_4
-    label: Tool Diameter at 4mm
+  tool_r_at_4:
+    id: tool_r_at_4
+    label: Tool Radius at 4mm
     datatype: float
     unit: mm
     type: default
-  tool_d_at_5:
-    id: tool_d_at_5
-    label: Tool Diameter at 5mm
+  tool_r_at_5:
+    id: tool_r_at_5
+    label: Tool Radius at 5mm
     datatype: float
     unit: mm
     type: default
-  tool_d_at_6:
-    id: tool_d_at_6
-    label: Tool Diameter at 6mm
+  tool_r_at_6:
+    id: tool_r_at_6
+    label: Tool Radius at 6mm
     datatype: float
     unit: mm
     type: default
@@ -438,27 +438,27 @@ profiles:
           default: 'false'
           description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
       wear:
-        tool_d_at_0:
+        tool_r_at_0:
           required: optional
-          description: Tool diameter at a height of 0mm from the face (at the cutter's face)
-        tool_d_at_1:
+          description: Tool radius at a height of 0mm from the face (at the cutter's face)
+        tool_r_at_1:
           required: optional
-          description: Tool diameter at a height of 1mm from the face
-        tool_d_at_2:
+          description: Tool radius at a height of 1mm from the face
+        tool_r_at_2:
           required: optional
-          description: Tool diameter at a height of 2mm from the face
-        tool_d_at_3:
+          description: Tool radius at a height of 2mm from the face
+        tool_r_at_3:
           required: optional
-          description: Tool diameter at a height of 3mm from the face
-        tool_d_at_4:
+          description: Tool radius at a height of 3mm from the face
+        tool_r_at_4:
           required: optional
-          description: Tool diameter at a height of 4mm from the face
-        tool_d_at_5:
+          description: Tool radius at a height of 4mm from the face
+        tool_r_at_5:
           required: optional
-          description: Tool diameter at a height of 5mm from the face
-        tool_d_at_6:
+          description: Tool radius at a height of 5mm from the face
+        tool_r_at_6:
           required: optional
-          description: Tool diameter at a height of 6mm from the face (reference - not in cut)
+          description: Tool radius at a height of 6mm from the face (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
           required: optional
@@ -547,27 +547,27 @@ profiles:
           default: 'false'
           description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
       wear:
-        tool_d_at_0:
+        tool_r_at_0:
           required: optional
-          description: Tool diameter at a height of 0mm from the face (at the cutter's face)
-        tool_d_at_1:
+          description: Tool radius at a height of 0mm from the face (at the cutter's face)
+        tool_r_at_1:
           required: optional
-          description: Tool diameter at a height of 1mm from the face
-        tool_d_at_2:
+          description: Tool radius at a height of 1mm from the face
+        tool_r_at_2:
           required: optional
-          description: Tool diameter at a height of 2mm from the face
-        tool_d_at_3:
+          description: Tool radius at a height of 2mm from the face
+        tool_r_at_3:
           required: optional
-          description: Tool diameter at a height of 3mm from the face
-        tool_d_at_4:
+          description: Tool radius at a height of 3mm from the face
+        tool_r_at_4:
           required: optional
-          description: Tool diameter at a height of 4mm from the face
-        tool_d_at_5:
+          description: Tool radius at a height of 4mm from the face
+        tool_r_at_5:
           required: optional
-          description: Tool diameter at a height of 5mm from the face
-        tool_d_at_6:
+          description: Tool radius at a height of 5mm from the face
+        tool_r_at_6:
           required: optional
-          description: Tool diameter at a height of 6mm from the face (reference - not in cut)
+          description: Tool radius at a height of 6mm from the face (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
           required: optional
