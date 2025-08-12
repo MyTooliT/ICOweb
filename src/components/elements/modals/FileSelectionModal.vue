@@ -4,7 +4,8 @@ import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import FileUpload from 'primevue/fileupload';
-import { defineEmits } from 'vue';
+import ProgressBar from 'primevue/progressbar';
+import {defineEmits, ref} from 'vue';
 import { useRouter } from 'vue-router';
 
 const store = useGeneralStore();
@@ -14,6 +15,8 @@ const emits = defineEmits<{
   (event: 'upload', data: string): void,
 }>()
 
+const showUploadProgress = ref(false)
+const uploadProgress = ref(0)
 </script>
 
 <template>
@@ -42,7 +45,9 @@ const emits = defineEmits<{
         </p>
       </div>
       <div class="flex-auto basis-0">
-        <p class="text-center">Select from external source</p>
+        <p class="text-center">
+          Select from external source
+        </p>
         <FileUpload
           class="my-10 w-full"
           name="file"
@@ -51,10 +56,26 @@ const emits = defineEmits<{
           :url="`${getAPILink()}/files/analyze`"
           :multiple="false"
           auto
-          @upload="emits('upload', $event.xhr.response as string)"
-          @error="console.error($event)">
-        </FileUpload>
-        <p class="text-center">Upload from your computer</p>
+          @before-upload="showUploadProgress = true"
+          @progress="(event) => uploadProgress = event.progress"
+          @upload="(event) => {
+            emits('upload', event.xhr.response as string)
+            uploadProgress = 0
+            showUploadProgress = false
+          }"
+          @error="console.error($event)" />
+        <ProgressBar
+          v-if="showUploadProgress"
+          :value="uploadProgress"
+          :pt="{
+            value: {
+              style: ['transition: none;']
+            }
+          }"
+        />
+        <p class="text-center">
+          Upload from your computer
+        </p>
       </div>
     </div>
   </Dialog>
