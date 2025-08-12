@@ -15,12 +15,14 @@ const props = defineProps<{
   parsedMetadata: ParsedMetadata
 }>()
 
-const sensorColumns = Object.keys(props.parsedMetadata.sensors[0]).map((key: string) => {
-  return {
-    field: key,
-    header: key
-  }
-})
+const sensorColumns = props.parsedMetadata.sensors[0]
+    ? Object.keys(props.parsedMetadata.sensors[0]).map((key: string) => {
+      return {
+        field: key,
+        header: key
+      }
+    })
+    : []
 </script>
 
 <template>
