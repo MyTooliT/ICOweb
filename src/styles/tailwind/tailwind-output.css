@@ -687,6 +687,10 @@ video {
   margin-bottom: 2rem;
 }
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -729,10 +733,6 @@ video {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.ml-2 {
-  margin-left: 0.5rem;
 }
 
 .box-content {
@@ -1638,10 +1638,6 @@ video {
 
 .data-\[running\~\=true\]\:text-on-primary[data-running~="true"] {
   color: var(--md-sys-color-on-primary);
-}
-
-.data-\[disabled\=true\]\:opacity-50[data-disabled="true"] {
-  opacity: 0.5;
 }
 
 .data-\[disabled\=true\]\:opacity-60[data-disabled="true"] {

@@ -44,10 +44,10 @@ const menuItems = computed<Array<{
   icon: 'file-word',
   text: 'Logs'
 }, {
-  name: 'Catalogue',
+  name: 'Dataspace',
   to: '/',
-  icon: 'copy',
-  text: 'Catalogue',
+  icon: 'box',
+  text: 'Dataspace',
   disabled: true
 }].filter(item => useDisable().pageEnabled(item.name)))
 </script>

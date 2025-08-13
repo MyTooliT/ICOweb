@@ -20,7 +20,7 @@ const route = useRoute()
     :data-disabled="disabled"
     :disabled="disabled"
     class="
-      p-3 flex flex-col justify-center items-center w-full
+      p-2 flex flex-col justify-center items-center w-full
       aspect-square transition-all duration-100
       hover:bg-surface-variant
       data-[disabled=true]:hover:bg-inherit data-[disabled=true]:cursor-not-allowed
