@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-08-11T16:31:48.707Z'
+  generated_at: '2025-08-13T11:22:58.069Z'
 parameters:
   person:
     id: person
@@ -284,9 +284,9 @@ parameters:
     label: Pictures of First Peripheral Cutting Edge
     datatype: file
     type: default
-  first_face_pictures:
-    id: first_face_pictures
-    label: Pictures of First Face Cutting Edge
+  first_end_pictures:
+    id: first_end_pictures
+    label: Pictures of First End Cutting Edge
     datatype: file
     type: default
   second_peripheral_pictures:
@@ -294,9 +294,9 @@ parameters:
     label: Pictures of Second Peripheral Cutting Edge
     datatype: file
     type: default
-  second_face_pictures:
-    id: second_face_pictures
-    label: Pictures of Second Face Cutting Edge
+  second_end_pictures:
+    id: second_end_pictures
+    label: Pictures of Second End Cutting Edge
     datatype: file
     type: default
   abnormal_tool_wear:
@@ -440,39 +440,39 @@ profiles:
       wear:
         tool_r_at_0:
           required: optional
-          description: Tool radius at a height of 0mm from the face (at the cutter's face)
+          description: Tool radius at a height of 0mm from the end (at the cutter's end)
         tool_r_at_1:
           required: optional
-          description: Tool radius at a height of 1mm from the face
+          description: Tool radius at a height of 1mm from the end
         tool_r_at_2:
           required: optional
-          description: Tool radius at a height of 2mm from the face
+          description: Tool radius at a height of 2mm from the end
         tool_r_at_3:
           required: optional
-          description: Tool radius at a height of 3mm from the face
+          description: Tool radius at a height of 3mm from the end
         tool_r_at_4:
           required: optional
-          description: Tool radius at a height of 4mm from the face
+          description: Tool radius at a height of 4mm from the end
         tool_r_at_5:
           required: optional
-          description: Tool radius at a height of 5mm from the face
+          description: Tool radius at a height of 5mm from the end
         tool_r_at_6:
           required: optional
-          description: Tool radius at a height of 6mm from the face (reference - not in cut)
+          description: Tool radius at a height of 6mm from the end (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
           required: optional
           description: Picture of the first cutting edge (peripheral)
-        first_face_pictures:
+        first_end_pictures:
           required: optional
-          description: Picture of the first cutting edge (face)
+          description: Picture of the first cutting edge (end)
       second_ce:
         second_peripheral_pictures:
           required: optional
           description: Picture of the second cutting edge (peripheral)
-        second_face_pictures:
+        second_end_pictures:
           required: optional
-          description: Picture of the second cutting edge (face)
+          description: Picture of the second cutting edge (end)
       additional:
         comment:
           required: optional
@@ -549,39 +549,39 @@ profiles:
       wear:
         tool_r_at_0:
           required: optional
-          description: Tool radius at a height of 0mm from the face (at the cutter's face)
+          description: Tool radius at a height of 0mm from the end (at the cutter's end)
         tool_r_at_1:
           required: optional
-          description: Tool radius at a height of 1mm from the face
+          description: Tool radius at a height of 1mm from the end
         tool_r_at_2:
           required: optional
-          description: Tool radius at a height of 2mm from the face
+          description: Tool radius at a height of 2mm from the end
         tool_r_at_3:
           required: optional
-          description: Tool radius at a height of 3mm from the face
+          description: Tool radius at a height of 3mm from the end
         tool_r_at_4:
           required: optional
-          description: Tool radius at a height of 4mm from the face
+          description: Tool radius at a height of 4mm from the end
         tool_r_at_5:
           required: optional
-          description: Tool radius at a height of 5mm from the face
+          description: Tool radius at a height of 5mm from the end
         tool_r_at_6:
           required: optional
-          description: Tool radius at a height of 6mm from the face (reference - not in cut)
+          description: Tool radius at a height of 6mm from the end (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
           required: optional
           description: Picture of the first cutting edge (peripheral)
-        first_face_pictures:
+        first_end_pictures:
           required: optional
-          description: Picture of the first cutting edge (face)
+          description: Picture of the first cutting edge (end)
       second_ce:
         second_peripheral_pictures:
           required: optional
           description: Picture of the second cutting edge (peripheral)
-        second_face_pictures:
+        second_end_pictures:
           required: optional
-          description: Picture of the second cutting edge (face)
+          description: Picture of the second cutting edge (end)
       additional:
         comment:
           required: optional
