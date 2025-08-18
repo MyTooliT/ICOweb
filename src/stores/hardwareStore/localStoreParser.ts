@@ -42,8 +42,7 @@ function parseItem(item: any): any {
           item.mac_address,
           item.rssi,
           item.holderConfigId,
-          item.status,
-          item.regex,
+          item.status
         )
 
       case 'Sensor':
