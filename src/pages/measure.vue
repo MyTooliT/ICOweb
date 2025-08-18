@@ -4,7 +4,6 @@ import { startMeasurement } from '@/api/icoapi.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
-import CustomSlider from '@/components/elements/forms/CustomSlider.vue';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
 import TextBlock from '@/components/elements/misc/TextBlock.vue';
@@ -13,8 +12,7 @@ import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
-  measurementChannels, TChannelMap,
-  useMeasurementStore
+  measurementChannels, useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
 import { MeterItem } from '@/utils/dataModels.ts';
 import { useMeasurementWebsocket } from '@/utils/useMeasurementWebSocket.ts';
@@ -31,23 +29,19 @@ import {AccordionContent} from 'primevue';
 import {AccordionPanel} from 'primevue';
 import {AccordionHeader} from 'primevue';
 import {
-  computed, onBeforeUnmount, ref, watch
+  computed, onBeforeUnmount, onMounted, ref, watch
 } from 'vue';
 import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
 import {useDisable} from '@/utils/useDisable.ts';
-import {useToast} from 'primevue/usetoast';
 import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
 import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import {Parameter} from '@/types/metadata';
 import {assembleFormEntry} from '@/utils/metadataHelper.ts';
-import IFTValueControls from '@/components/elements/controls/IFTValueControls.vue';
 /* eslint-enable max-len */
-
-const toast = useToast()
 
 const chartData = ref<ChartData<'line'>>({
   labels: [],
@@ -275,9 +269,11 @@ const scales = ref<Record<string, Chart.ChartYAxe>>(computeScales())
 
 function computeScales(): Record<string, Chart.ChartYAxe> {
   const scl: Record<string, Chart.ChartYAxe> = {}
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const relevantChannelNumbers = Object.entries(mStore.selectedChannels).filter(([channel_key, _]) => {
     return mStore.activeChannels[channel_key as typeof measurementChannels[number]]
   }).map(([_, channel_nr]) => channel_nr)
+  /* eslint-enable @typescript-eslint/no-unused-vars */
   const sensorsForChannels = relevantChannelNumbers.map(channelNumber =>
       hwStore.activeHolder?.sensors.find(sensor => sensor.channel === channelNumber)
   )
@@ -296,6 +292,22 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
   return scl
 }
 
+onMounted(() => {
+  if(hwStore.activeHolder) {
+    if(hwStore.activeHolder.sensors.length < Object.values(mStore.activeChannels).filter(channel => channel).length) {
+      mStore.activeChannels = {
+        first: true,
+        second: false,
+        third: false
+      }
+      mStore.selectedChannels = {
+        first: hwStore.activeHolder.sensors[0].channel,
+        second: 0,
+        third: 0
+      }
+    }
+  }
+})
 watch(mStore.selectedChannels, () => scales.value = computeScales())
 watch(mStore.activeChannels, () => scales.value = computeScales())
 onBeforeUnmount(() => window.setTimeout(close, 0))
@@ -310,7 +322,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
     />
     <SplitLayout
       v-if="hwStore.hasSTU && hwStore.activeSTH"
-      class="w-fill w-stretch"
+      class="w-stretch"
     >
       <TextBlock
         v-if="hwStore.hasSTU && hwStore.activeSTH"
