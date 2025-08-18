@@ -12,26 +12,11 @@ export type Body_post_analyzed_file_api_v1_files_analyze_post = {
 };
 
 export type Body_sth_connect_api_v1_sth_connect_put = {
-    mac: string;
+    mac_address: string;
 };
 
 export type Body_upload_file_api_v1_cloud_upload_post = {
     filename: string;
-};
-
-export type Body_write_adc_api_v1_sth_write_adc_put = {
-    mac: string;
-    config: ADCValues;
-};
-
-export type CANResponseError = {
-    name: string;
-    message: string;
-};
-
-export type ConnectionTimeoutError = {
-    name: string;
-    message: string;
 };
 
 export type ControlResponse = {
@@ -106,7 +91,7 @@ export type MeasurementInstructionChannel = {
 
 export type MeasurementInstructions_Input = {
     name: string | null;
-    mac: string;
+    mac_address: string;
     time: number | null;
     first: MeasurementInstructionChannel;
     second: MeasurementInstructionChannel;
@@ -122,7 +107,7 @@ export type MeasurementInstructions_Input = {
 
 export type MeasurementInstructions_Output = {
     name: string | null;
-    mac: string;
+    mac_address: string;
     time: number | null;
     first: MeasurementInstructionChannel;
     second: MeasurementInstructionChannel;
@@ -246,13 +231,9 @@ export type StuApiV1StuGetResponse = Array<STUDeviceResponseModel>;
 
 export type StuResetApiV1StuResetPutResponse = unknown;
 
-export type StuEnableOtaApiV1StuOtaEnablePutResponse = unknown;
-
-export type StuDisableOtaApiV1StuOtaDisablePutResponse = CANResponseError | null;
-
 export type StuConnectedApiV1StuConnectedGetResponse = boolean;
 
-export type SthApiV1SthGetResponse = unknown;
+export type SthApiV1SthGetResponse = Array<STHDeviceResponseModel>;
 
 export type SthConnectApiV1SthConnectPutData = {
     requestBody: Body_sth_connect_api_v1_sth_connect_put;
@@ -266,16 +247,12 @@ export type SthRenameApiV1SthRenamePutData = {
     requestBody: STHRenameRequestModel;
 };
 
-export type SthRenameApiV1SthRenamePutResponse = unknown;
+export type SthRenameApiV1SthRenamePutResponse = STHRenameResponseModel;
 
-export type ReadAdcApiV1SthReadAdcMacGetData = {
-    mac: string;
-};
-
-export type ReadAdcApiV1SthReadAdcMacGetResponse = unknown;
+export type ReadAdcApiV1SthReadAdcGetResponse = ADCValues;
 
 export type WriteAdcApiV1SthWriteAdcPutData = {
-    requestBody: Body_write_adc_api_v1_sth_write_adc_put;
+    requestBody: ADCValues;
 };
 
 export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
@@ -382,41 +359,7 @@ export type $OpenApiTs = {
                  */
                 200: unknown;
                 /**
-                 * The STU could not be reset.
-                 */
-                502: {
-                    detail: string;
-                    status_code: number;
-                };
-            };
-        };
-    };
-    '/api/v1/stu/ota/enable': {
-        put: {
-            res: {
-                /**
-                 * Indicates the OTA has been enabled.
-                 */
-                200: unknown;
-                /**
-                 * The OTA could not be enabled.
-                 */
-                502: {
-                    detail: string;
-                    status_code: number;
-                };
-            };
-        };
-    };
-    '/api/v1/stu/ota/disable': {
-        put: {
-            res: {
-                /**
-                 * Indicates the OTA has been disabled.
-                 */
-                200: CANResponseError | null;
-                /**
-                 * The OTA could not be disabled.
+                 * The CAN network did not respond to the request.
                  */
                 502: {
                     detail: string;
@@ -433,7 +376,7 @@ export type $OpenApiTs = {
                  */
                 200: boolean;
                 /**
-                 * The STU could not be reached.
+                 * The CAN network did not respond to the request.
                  */
                 502: {
                     detail: string;
@@ -448,7 +391,14 @@ export type $OpenApiTs = {
                 /**
                  * Return the STH Devices reachable
                  */
-                200: unknown;
+                200: Array<STHDeviceResponseModel>;
+                /**
+                 * The CAN network did not respond to the request.
+                 */
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
@@ -457,17 +407,27 @@ export type $OpenApiTs = {
             req: SthConnectApiV1SthConnectPutData;
             res: {
                 /**
-                 * Connection was successful
+                 * Connection was successful.
                  */
                 200: unknown;
                 /**
-                 * Indicates no STH Devices in reach
+                 * STH could not be connected and must be out of reach or discharged.
                  */
-                404: unknown;
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
+                /**
+                 * The CAN network did not respond to the request.
+                 */
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
@@ -475,13 +435,16 @@ export type $OpenApiTs = {
         put: {
             res: {
                 /**
-                 * Disconnection was successful
+                 * Disconnect was successful.
                  */
                 200: unknown;
                 /**
-                 * Indicates error in disconnection
+                 * The CAN network did not respond to the request.
                  */
-                404: unknown;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
@@ -490,36 +453,51 @@ export type $OpenApiTs = {
             req: SthRenameApiV1SthRenamePutData;
             res: {
                 /**
-                 * Rename was successful
+                 * Connection was successful.
                  */
-                200: unknown;
+                200: STHRenameResponseModel;
+                /**
+                 * STH could not be connected and must be out of reach or discharged.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
                 /**
-                 * Indicates error in rename
+                 * The CAN network did not respond to the request.
                  */
-                502: unknown;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
-    '/api/v1/sth/read-adc/{mac}': {
+    '/api/v1/sth/read-adc': {
         get: {
-            req: ReadAdcApiV1SthReadAdcMacGetData;
             res: {
                 /**
-                 * ADC reading was successful
+                 * Connection was successful.
                  */
-                200: unknown;
+                200: ADCValues;
                 /**
-                 * Validation Error
+                 * STH could not be connected and must be out of reach or discharged.
                  */
-                422: HTTPValidationError;
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
-                 * ADC reading timed out
+                 * The CAN network did not respond to the request.
                  */
-                504: unknown;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
@@ -528,17 +506,27 @@ export type $OpenApiTs = {
             req: WriteAdcApiV1SthWriteAdcPutData;
             res: {
                 /**
-                 * ADC writing was successful
+                 * ADC configuration written successfully.
                  */
                 200: unknown;
+                /**
+                 * STH could not be connected and must be out of reach or discharged.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
                  * Validation Error
                  */
                 422: HTTPValidationError;
                 /**
-                 * ADC writing timed out
+                 * The CAN network did not respond to the request.
                  */
-                504: unknown;
+                502: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };

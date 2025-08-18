@@ -61,7 +61,7 @@ export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
 
 export async function connectSTHDevice(mac_address: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ mac: string }, void>('sth/connect', {mac: mac_address})
+    put<{ mac_address: string }, void>('sth/connect', {mac_address: mac_address})
       .then(data => resolve(data))
       .catch(reject)
   })
@@ -107,10 +107,10 @@ export async function getADCValues(): Promise<ADCValues> {
   })
 }
 
-export async function writeADCValues(mac: string, values: ADCValues): Promise<void> {
+export async function writeADCValues(values: ADCValues): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ mac: string, config: ADCValues}, void>
-      ('sth/write-adc', { mac: mac, config: values })
+    put<{ config: ADCValues }, void>
+      ('sth/write-adc', { config: values })
       .then(data => resolve(data))
       .catch(reject)
   })

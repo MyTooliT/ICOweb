@@ -67,13 +67,13 @@ export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
 
 export const $Body_sth_connect_api_v1_sth_connect_put = {
     properties: {
-        mac: {
+        mac_address: {
             type: 'string',
-            title: 'Mac'
+            title: 'Mac Address'
         }
     },
     type: 'object',
-    required: ['mac'],
+    required: ['mac_address'],
     title: 'Body_sth_connect_api_v1_sth_connect_put'
 } as const;
 
@@ -87,53 +87,6 @@ export const $Body_upload_file_api_v1_cloud_upload_post = {
     type: 'object',
     required: ['filename'],
     title: 'Body_upload_file_api_v1_cloud_upload_post'
-} as const;
-
-export const $Body_write_adc_api_v1_sth_write_adc_put = {
-    properties: {
-        mac: {
-            type: 'string',
-            title: 'Mac'
-        },
-        config: {
-            '$ref': '#/components/schemas/ADCValues'
-        }
-    },
-    type: 'object',
-    required: ['mac', 'config'],
-    title: 'Body_write_adc_api_v1_sth_write_adc_put'
-} as const;
-
-export const $CANResponseError = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        message: {
-            type: 'string',
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['name', 'message'],
-    title: 'CANResponseError'
-} as const;
-
-export const $ConnectionTimeoutError = {
-    properties: {
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        message: {
-            type: 'string',
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['name', 'message'],
-    title: 'ConnectionTimeoutError'
 } as const;
 
 export const $ControlResponse = {
@@ -260,6 +213,7 @@ export const $HDF5NodeInfo = {
             title: 'Path'
         },
         attributes: {
+            additionalProperties: true,
             type: 'object',
             title: 'Attributes'
         }
@@ -423,9 +377,9 @@ export const $MeasurementInstructions_Input = {
             ],
             title: 'Name'
         },
-        mac: {
+        mac_address: {
             type: 'string',
-            title: 'Mac'
+            title: 'Mac Address'
         },
         time: {
             anyOf: [
@@ -491,7 +445,7 @@ export const $MeasurementInstructions_Input = {
         }
     },
     type: 'object',
-    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
+    required: ['name', 'mac_address', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
     title: 'MeasurementInstructions'
 } as const;
 
@@ -508,9 +462,9 @@ export const $MeasurementInstructions_Output = {
             ],
             title: 'Name'
         },
-        mac: {
+        mac_address: {
             type: 'string',
-            title: 'Mac'
+            title: 'Mac Address'
         },
         time: {
             anyOf: [
@@ -576,7 +530,7 @@ export const $MeasurementInstructions_Output = {
         }
     },
     type: 'object',
-    required: ['name', 'mac', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
+    required: ['name', 'mac_address', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
     title: 'MeasurementInstructions'
 } as const;
 

@@ -160,7 +160,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
       channel_number: mStore.activeChannels.third ? mStore.selectedChannels.third : 0,
       sensor_id: null
     },
-    mac: hwStore.activeSTH?.getMacAddress(),
+    mac_address: hwStore.activeSTH?.getMacAddress(),
     time: mStore.continuous ? null : mStore.acquisitionTime,
     ift_requested: mStore.IFTRequested,
     ift_channel: mStore.IFTChannel,
