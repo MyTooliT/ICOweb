@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {capitalize, computed, onMounted} from 'vue';
+import {computed, onMounted} from 'vue';
 import Select from 'primevue/select';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
@@ -68,7 +68,10 @@ function getProfileParamKeys(): Parameter[] {
 
 
 function validate() {
-  if(profile.value === undefined) return
+  if(profile.value === undefined) {
+    mStore.preMetaValid = false
+    return
+  }
   const params = getProfileParamKeys()
   let valid = true
   params.forEach(param => {
