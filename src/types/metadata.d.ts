@@ -64,7 +64,8 @@ export interface Parameters {
   pictures: ParameterDefinition;
   comment: ParameterDefinition;
   direction: ParameterDefinition;
-  n_cuts: ParameterDefinition;
+  n_cuts_in_file: ParameterDefinition;
+  n_cuts_total: ParameterDefinition;
   n_measurement: ParameterDefinition;
   first_pictures: ParameterDefinition;
   second_pictures: ParameterDefinition;
@@ -80,9 +81,10 @@ export interface Parameters {
   second_peripheral_pictures: ParameterDefinition;
   second_end_pictures: ParameterDefinition;
   abnormal_tool_wear: ParameterDefinition;
+  tool_id: ParameterDefinition;
 }
 
-export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'first_tool_wear_exceeded', 'first_wear_mark_width', 'first_max_wear_mark_width', 'second_wear_mark_width', 'second_max_wear_mark_width', 'second_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts', 'n_measurement', 'first_pictures', 'second_pictures', 'tool_r_at_0', 'tool_r_at_1', 'tool_r_at_2', 'tool_r_at_3', 'tool_r_at_4', 'tool_r_at_5', 'tool_r_at_6', 'first_peripheral_pictures', 'first_end_pictures', 'second_peripheral_pictures', 'second_end_pictures', 'abnormal_tool_wear'] as const;
+export const ParameterList = ['person', 'institution', 'machine', 'experiment', 'process', 'workpiece_material', 'cutting_speed', 'feed_per_tooth', 'feed_per_rev', 'doc_axial', 'doc_radial', 'doc', 'workpiece_diameter', 'tool_diameter', 'tool_tooth_count', 'tool_material', 'tool_offset', 'coolant', 'sth_mac', 'stu_mac', 'tool_breakage', 'first_tool_wear_exceeded', 'first_wear_mark_width', 'first_max_wear_mark_width', 'second_wear_mark_width', 'second_max_wear_mark_width', 'second_tool_wear_exceeded', 'twm_layer', 'pictures', 'comment', 'direction', 'n_cuts_in_file', 'n_cuts_total', 'n_measurement', 'first_pictures', 'second_pictures', 'tool_r_at_0', 'tool_r_at_1', 'tool_r_at_2', 'tool_r_at_3', 'tool_r_at_4', 'tool_r_at_5', 'tool_r_at_6', 'first_peripheral_pictures', 'first_end_pictures', 'second_peripheral_pictures', 'second_end_pictures', 'abnormal_tool_wear', 'tool_id'] as const;
 export type Parameter = typeof ParameterList[number];
 
 export interface Info {
@@ -99,7 +101,8 @@ export type Category =
   'results' |
   'first_ce' |
   'second_ce' |
-  'wear';
+  'wear' |
+  'initial_inspection';
 
 export type ProfileParamDefinition = Partial<{ required: string; default: any; description: string }>;
 

@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-08-13T11:22:58.069Z'
+  generated_at: '2025-08-19T09:02:52.237Z'
 parameters:
   person:
     id: person
@@ -217,9 +217,14 @@ parameters:
     options:
       - Climb
       - Conventional
-  n_cuts:
-    id: n_cuts
-    label: Total Number of Cuts at Inspection
+  n_cuts_in_file:
+    id: n_cuts_in_file
+    label: Number of cuts captured in this file
+    datatype: int
+    type: default
+  n_cuts_total:
+    id: n_cuts_total
+    label: Total number of cuts at inspection
     datatype: int
     type: default
   n_measurement:
@@ -301,8 +306,13 @@ parameters:
     type: default
   abnormal_tool_wear:
     id: abnormal_tool_wear
-    label: Abnormal Tool Wear Present
+    label: Abnormal Tool Wear
     datatype: boolean
+    type: default
+  tool_id:
+    id: tool_id
+    label: Tool ID
+    datatype: text
     type: default
 categories:
   general: General
@@ -314,6 +324,7 @@ categories:
   first_ce: First Cutting Edge
   second_ce: Second Cutting Edge
   wear: Overall Tool Wear
+  initial_inspection: Initial Tool Inspection
 lists:
   requirement:
     - Required
@@ -369,7 +380,7 @@ lists:
     - Conventional
 profiles:
   twm1:
-    id: twm_cirp_tool1
+    id: cirp_twm_1
     name: CIRP TWM 1 (ae=2mm)
     pre:
       general:
@@ -382,10 +393,44 @@ profiles:
         machine:
           required: required
           description: Machine tool in which the measurement was conducted.
+        tool_id:
+          required: required
+          description: "Tool ID for the experiment; can be found on the tool shank and packaging. \r\n\r\nLooks like ABC-001"
+      initial_inspection:
+        tool_r_at_0:
+          required: required
+          description: Tool radius at the tip before any cut (initial inspection)
+        tool_r_at_1:
+          required: required
+          description: Tool radius at 1mm from the tip before any cut (initial inspection)
+        tool_r_at_2:
+          required: required
+          description: Tool radius at 2mm from the tip before any cut (initial inspection)
+        tool_r_at_3:
+          required: required
+          description: Tool radius at 3mm from the tip before any cut (initial inspection)
+        tool_r_at_4:
+          required: required
+          description: Tool radius at 4mm from the tip before any cut (initial inspection)
+        tool_r_at_5:
+          required: required
+          description: Tool radius at 5mm from the tip before any cut (initial inspection)
+        tool_r_at_6:
+          required: required
+          description: Tool radius at 6mm from the tip before any cut (initial inspection)
+      process:
         process:
           required: restricted
           default: Milling
-      process:
+        tool_diameter:
+          required: restricted
+          default: 10
+        tool_tooth_count:
+          required: restricted
+          default: 2
+        tool_material:
+          required: restricted
+          default: Carbide (P40)
         workpiece_material:
           required: restricted
           default: '1.2379'
@@ -401,15 +446,6 @@ profiles:
         doc_radial:
           required: restricted
           default: 2
-        tool_diameter:
-          required: restricted
-          default: 10
-        tool_tooth_count:
-          required: restricted
-          default: 2
-        tool_material:
-          required: restricted
-          default: Carbide (P40)
         coolant:
           required: restricted
           default: Dry
@@ -423,62 +459,63 @@ profiles:
           required: required
     post:
       results:
-        n_cuts:
-          required: optional
-          description: Total number of cuts performed by tool at this inspection.
-        n_measurement:
-          required: optional
-          description: Measurement number in experiment (0 for inital tool measurement; then start from 1)
+        n_cuts_in_file:
+          required: required
+          default: 8
+          description: Number of cuts captured in this measurement (*.hdf5) file
+        n_cuts_total:
+          required: required
+          description: Total number of cuts the tool has performed up to this measurement
         tool_breakage:
-          required: optional
+          required: required
           default: 'false'
           description: Has the tool failed during this run?
         abnormal_tool_wear:
-          required: optional
+          required: required
           default: 'false'
           description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
       wear:
         tool_r_at_0:
-          required: optional
+          required: required
           description: Tool radius at a height of 0mm from the end (at the cutter's end)
         tool_r_at_1:
-          required: optional
+          required: required
           description: Tool radius at a height of 1mm from the end
         tool_r_at_2:
-          required: optional
+          required: required
           description: Tool radius at a height of 2mm from the end
         tool_r_at_3:
-          required: optional
+          required: required
           description: Tool radius at a height of 3mm from the end
         tool_r_at_4:
-          required: optional
+          required: required
           description: Tool radius at a height of 4mm from the end
         tool_r_at_5:
-          required: optional
+          required: required
           description: Tool radius at a height of 5mm from the end
         tool_r_at_6:
-          required: optional
+          required: required
           description: Tool radius at a height of 6mm from the end (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
-          required: optional
+          required: required
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
-          required: optional
+          required: required
           description: Picture of the first cutting edge (end)
       second_ce:
         second_peripheral_pictures:
-          required: optional
+          required: required
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
-          required: optional
+          required: required
           description: Picture of the second cutting edge (end)
       additional:
         comment:
           required: optional
           description: Additional comments - describe abnormal wear or other information
   twm2:
-    id: twm_cirp_tool2
+    id: cirp_twm_2
     name: CIRP TWM 2 (ae=10mm)
     pre:
       general:
@@ -491,10 +528,44 @@ profiles:
         machine:
           required: required
           description: Machine tool in which the measurement was conducted.
+        tool_id:
+          required: required
+          description: "Tool ID for the experiment; can be found on the tool shank and packaging. \r\n\r\nLooks like ABC-001"
+      initial_inspection:
+        tool_r_at_0:
+          required: required
+          description: Tool radius at the tip before any cut (initial inspection)
+        tool_r_at_1:
+          required: required
+          description: Tool radius at 1mm from the tip before any cut (initial inspection)
+        tool_r_at_2:
+          required: required
+          description: Tool radius at 2mm from the tip before any cut (initial inspection)
+        tool_r_at_3:
+          required: required
+          description: Tool radius at 3mm from the tip before any cut (initial inspection)
+        tool_r_at_4:
+          required: required
+          description: Tool radius at 4mm from the tip before any cut (initial inspection)
+        tool_r_at_5:
+          required: required
+          description: Tool radius at 5mm from the tip before any cut (initial inspection)
+        tool_r_at_6:
+          required: required
+          description: Tool radius at 6mm from the tip before any cut (initial inspection)
+      process:
         process:
           required: restricted
           default: Milling
-      process:
+        tool_diameter:
+          required: restricted
+          default: 10
+        tool_tooth_count:
+          required: restricted
+          default: 2
+        tool_material:
+          required: restricted
+          default: Carbide (P40)
         workpiece_material:
           required: restricted
           default: '1.2379'
@@ -509,16 +580,7 @@ profiles:
           default: 5
         doc_radial:
           required: restricted
-          default: 10
-        tool_diameter:
-          required: restricted
-          default: 10
-        tool_tooth_count:
-          required: restricted
           default: 2
-        tool_material:
-          required: restricted
-          default: Carbide (P40)
         coolant:
           required: restricted
           default: Dry
@@ -532,55 +594,56 @@ profiles:
           required: required
     post:
       results:
-        n_cuts:
-          required: optional
-          description: Total number of cuts performed by tool at this inspection.
-        n_measurement:
-          required: optional
-          description: Measurement number in experiment (0 for inital tool measurement; then start from 1)
+        n_cuts_in_file:
+          required: required
+          default: 8
+          description: Number of cuts captured in this measurement (*.hdf5) file
+        n_cuts_total:
+          required: required
+          description: Total number of cuts the tool has performed up to this measurement
         tool_breakage:
-          required: optional
+          required: required
           default: 'false'
           description: Has the tool failed during this run?
         abnormal_tool_wear:
-          required: optional
+          required: required
           default: 'false'
           description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
       wear:
         tool_r_at_0:
-          required: optional
+          required: required
           description: Tool radius at a height of 0mm from the end (at the cutter's end)
         tool_r_at_1:
-          required: optional
+          required: required
           description: Tool radius at a height of 1mm from the end
         tool_r_at_2:
-          required: optional
+          required: required
           description: Tool radius at a height of 2mm from the end
         tool_r_at_3:
-          required: optional
+          required: required
           description: Tool radius at a height of 3mm from the end
         tool_r_at_4:
-          required: optional
+          required: required
           description: Tool radius at a height of 4mm from the end
         tool_r_at_5:
-          required: optional
+          required: required
           description: Tool radius at a height of 5mm from the end
         tool_r_at_6:
-          required: optional
+          required: required
           description: Tool radius at a height of 6mm from the end (reference - not in cut)
       first_ce:
         first_peripheral_pictures:
-          required: optional
+          required: required
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
-          required: optional
+          required: required
           description: Picture of the first cutting edge (end)
       second_ce:
         second_peripheral_pictures:
-          required: optional
+          required: required
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
-          required: optional
+          required: required
           description: Picture of the second cutting edge (end)
       additional:
         comment:

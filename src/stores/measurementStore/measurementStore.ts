@@ -116,13 +116,13 @@ export const useMeasurementStore = defineStore('measurement', () => {
 
   const preMetaForm = ref<Metadata>({
     version: '',
-    profile: 'twm_cirp_tool1',
+    profile: 'cirp_twm_1',
     parameters: {}
   })
   const preMetaValid = ref<boolean>(false)
   const postMetaForm = ref<Metadata>({
     version: '',
-    profile: 'twm_cirp_tool1',
+    profile: 'cirp_twm_1',
     parameters: {}
   })
   const postMetaValid = ref<boolean>(false)
