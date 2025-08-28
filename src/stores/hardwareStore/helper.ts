@@ -1,5 +1,6 @@
-import { STHDeviceResponseModel } from '@/client';
+import {Sensor as RawSensor, STHDeviceResponseModel} from '@/client';
 import { STHDevice } from './classes/STHDevice.ts';
+import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
 
 /*
  * This function consumes new metadata, creates a new list of STHDevices, and
@@ -69,4 +70,16 @@ export function floatingAverage(arr: number[], window: number = 50): number[] {
     avg.push(sum(arr.slice(i, i + window)) / window);
   }
   return avg
+}
+
+export function parseSensorFromRaw(raw: RawSensor): Sensor {
+  return new Sensor(
+      raw.sensor_id,
+      raw.dimension,
+      raw.unit,
+      raw.phys_min,
+      raw.phys_max,
+      true,
+      raw.name
+  )
 }

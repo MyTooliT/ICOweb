@@ -21,6 +21,8 @@ import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue'
 import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/elements/buttons/DownloadButton.vue';
+import {Sensor, SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
+import {parseSensorFromRaw} from '@/stores/hardwareStore/helper.ts';
 
 const route = useRoute();
 const router = useRouter();
@@ -52,8 +54,8 @@ const routerWatcher = async () => {
     const reader = await fetchFileReader(fileName)
     parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
     if(parsedMetadata.value) {
-      datasetUnits.value = getDatasetUnits(parsedMetadata.value)
-      scales.value = computeChartScales(datasetUnits.value)
+      const sensors = getDatasetSensors(parsedMetadata.value)
+      scales.value = computeChartScales(sensors)
       if(parsedMetadata.value.sensors.length > 0) {
         parsedData.value.datasets.forEach((dataset, index) => {
           dataset.name = parsedMetadata.value?.sensors[index].name ?? dataset.name
@@ -76,21 +78,29 @@ function handleZoom(start: number, end: number): void {
 const scales = ref<Record<string, Chart.ChartYAxe>>({})
 const datasetUnits = ref<string[]>([])
 
-function getDatasetUnits(meta: ParsedMetadata): string[] {
-  return meta.sensors.map(s => s.unit)
+function getDatasetSensors(meta: ParsedMetadata): Sensor[] {
+  return meta.sensors.map(sensor_raw => parseSensorFromRaw(sensor_raw))
 }
 
-function computeChartScales(units: string[]): Record<string, Chart.ChartYAxe> {
-  const uniqueUnits = new Set(units)
+function computeChartScales(sensors: Sensor[]): Record<string, Chart.ChartYAxe> {
   const scales: Record<string, Chart.ChartYAxe> = {}
-
-  uniqueUnits.forEach(unit => {
-    scales[unit] = {
+  const uniqueDimensionChannels: Array<SensorType> = []
+  sensors.forEach(sensor => {
+    if(!sensor) return
+    if(!uniqueDimensionChannels.map(udc => udc.physicalDimension).includes(sensor?.sensorType.physicalDimension)) {
+      uniqueDimensionChannels.push(new SensorType(
+          sensor?.sensorType.physicalDimension,
+          sensor?.sensorType.physicalUnit
+      ))
+    }
+  })
+  uniqueDimensionChannels.forEach(udc => {
+    scales[udc.physicalUnit] = {
       position: 'left',
       type: 'linear',
       title: {
         display: true,
-        text: `${hwStore.sensorDimensionList.find((dim) => dim.physicalUnit === unit)?.physicalDimension} in ${unit}`,
+        text: `${udc.physicalDimension !== '' ? udc.physicalDimension + ' in ' : ''}${udc.physicalUnit}`,
       }
     }
   })

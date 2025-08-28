@@ -41,6 +41,7 @@ import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import {Parameter} from '@/types/metadata';
 import {assembleFormEntry} from '@/utils/metadataHelper.ts';
+import {SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
@@ -277,15 +278,23 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
   const sensorsForChannels = relevantChannelNumbers.map(channelNumber =>
       hwStore.activeHolder?.sensors.find(sensor => sensor.channel === channelNumber)
   )
-  const unitsForChannels = sensorsForChannels.map(s => s?.sensor.sensorType.physicalUnit).filter(u => u !== undefined)
-  const uniqueUnits = new Set(unitsForChannels)
-  uniqueUnits.forEach(unit => {
-    scl[unit] = {
+  const uniqueDimensionChannels: Array<SensorType> = []
+  sensorsForChannels.forEach(sensor => {
+    if(!sensor) return
+    if(!uniqueDimensionChannels.map(udc => udc.physicalDimension).includes(sensor?.sensor.sensorType.physicalDimension)) {
+      uniqueDimensionChannels.push(new SensorType(
+        sensor?.sensor.sensorType.physicalDimension,
+        sensor?.sensor.sensorType.physicalUnit
+      ))
+    }
+  })
+  uniqueDimensionChannels.forEach(udc => {
+    scl[udc.physicalUnit] = {
       position: 'left',
       type: 'linear',
       title: {
         display: true,
-        text: `${hwStore.sensorDimensionList.find((dim) => dim.physicalUnit === unit)?.physicalDimension} in ${unit}`,
+        text: `${udc.physicalDimension} in ${udc.physicalUnit}`,
       }
     }
   })

@@ -13,7 +13,7 @@ import {
 } from 'vue';
 import { Sensor } from './classes/Sensor.ts';
 import { STHDevice } from './classes/STHDevice.ts';
-import { consumeNewMetadata } from './helper.ts';
+import {consumeNewMetadata, parseSensorFromRaw} from './helper.ts';
 import {PCBSensorConfiguration, Sensor as RawSensor} from '@/client/types.gen.ts'
 
 export const useHardwareStore = defineStore('hardware', () => {
@@ -21,18 +21,6 @@ export const useHardwareStore = defineStore('hardware', () => {
 
   function clearSensorList() {
     sensorList.value.length = 0
-  }
-
-  function parseSensorFromRaw(raw: RawSensor): Sensor {
-    return new Sensor(
-        raw.sensor_id,
-        raw.dimension,
-        raw.unit,
-        raw.phys_min,
-        raw.phys_max,
-        true,
-        raw.name
-    )
   }
 
   function parseSensorList(sensors: Array<RawSensor>) {
