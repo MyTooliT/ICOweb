@@ -264,9 +264,12 @@ function generateConfig(excelPath) {
 }
 
 function main() {
-    const input      = path.resolve('metadata.xlsx');
-    const yamlOutput = path.resolve('public', 'config', 'metadata.yaml');
-    const tsOutput   = path.resolve('src', 'types', 'metadata.d.ts');
+    const input      = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve('metadata.xlsx');
+    const yamlOutput = process.argv[3] ? path.resolve(process.argv[3]) : path.resolve('public', 'config', 'metadata.yaml');
+    const tsOutput   = process.argv[4] ? path.resolve(process.argv[4]) : path.resolve('src', 'types', 'metadata.d.ts');
+    console.log('input:      ', input);
+    console.log('yamlOutput: ', yamlOutput);
+    console.log('tsOutput:   ', tsOutput);
     const cfg        = generateConfig(input);
 
     fs.writeFileSync(yamlOutput, yaml.dump(cfg, { noRefs: true, lineWidth: 120 }), 'utf8');
