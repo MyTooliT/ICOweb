@@ -27,7 +27,6 @@ export const useHardwareStore = defineStore('hardware', () => {
     sensors.forEach(sensor => {
       sensorList.value.push(parseSensorFromRaw(sensor))
     })
-    console.log(sensorList.value)
   }
 
   /*
@@ -147,7 +146,6 @@ export const useHardwareStore = defineStore('hardware', () => {
           channelList
       ))
     })
-    console.log(holderList.value)
   }
 
   return {

@@ -29,7 +29,6 @@ const profiles = computed<Profile[] | undefined>(() => {
   }
 })
 const profile = computed<Profile | undefined>(() => {
-  console.log(profiles.value, mStore.preMetaForm.profile)
   if (profiles.value && mStore.preMetaForm.profile) {
     return profiles.value.find(p => p.id === mStore.preMetaForm.profile)
   } else {
