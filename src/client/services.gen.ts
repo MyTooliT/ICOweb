@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, ResetSensorsToDefaultApiV1SensorresetPostResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse } from './types.gen';
 
 /**
  * Stu
@@ -409,20 +409,10 @@ export const downloadLogsZipApiV1LogsAllGet = (): CancelablePromise<DownloadLogs
 
 /**
  * Query Sensors
- * @returns Sensor Successful Response
+ * @returns AvailableSensorInformation Successful Response
  * @throws ApiError
  */
 export const querySensorsApiV1SensorGet = (): CancelablePromise<QuerySensorsApiV1SensorGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/api/v1/sensor'
-}); };
-
-/**
- * Reset Sensors To Default
- * @returns unknown Successful Response
- * @throws ApiError
- */
-export const resetSensorsToDefaultApiV1SensorresetPost = (): CancelablePromise<ResetSensorsToDefaultApiV1SensorresetPostResponse> => { return __request(OpenAPI, {
-    method: 'POST',
-    url: '/api/v1/sensorreset'
 }); };

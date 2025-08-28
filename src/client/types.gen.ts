@@ -7,6 +7,11 @@ export type ADCValues = {
     reference_voltage: number | null;
 };
 
+export type AvailableSensorInformation = {
+    sensors: Array<Sensor>;
+    configurations: Array<PCBSensorConfiguration>;
+};
+
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
     file: (Blob | File);
 };
@@ -137,6 +142,14 @@ export type Metadata = {
     };
 };
 
+export type PCBSensorConfiguration = {
+    configuration_id: string;
+    configuration_name: string;
+    channels: {
+        [key: string]: Sensor;
+    };
+};
+
 /**
  * Data model for parsed measurement for analyze tab
  */
@@ -195,6 +208,7 @@ export type Sensor = {
     sensor_type: string | null;
     sensor_id: string;
     unit: string;
+    dimension: string;
     phys_min: number;
     phys_max: number;
     volt_min: number;
@@ -336,9 +350,7 @@ export type DownloadLogFileApiV1LogsDownloadFileGetResponse = unknown;
 
 export type DownloadLogsZipApiV1LogsAllGetResponse = unknown;
 
-export type QuerySensorsApiV1SensorGetResponse = Array<Sensor>;
-
-export type ResetSensorsToDefaultApiV1SensorresetPostResponse = unknown;
+export type QuerySensorsApiV1SensorGetResponse = AvailableSensorInformation;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -774,17 +786,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: Array<Sensor>;
-            };
-        };
-    };
-    '/api/v1/sensorreset': {
-        post: {
-            res: {
-                /**
-                 * Successful Response
-                 */
-                200: unknown;
+                200: AvailableSensorInformation;
             };
         };
     };

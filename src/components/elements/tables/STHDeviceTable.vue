@@ -71,7 +71,7 @@ async function handleConnect(device: STHDevice) {
       <template #body="{ data }: { data: STHDevice }">
         <Select
           v-model="data.holderConfigId"
-          :options="[...hwStore.holderList, ...hwStore.defaultHolderList]"
+          :options="hwStore.holderList"
           :option-value="(holder: HolderConfig) => holder.id"
           :option-label="(holder: HolderConfig) => holder.name"
         />

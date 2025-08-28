@@ -10,7 +10,7 @@ import {
   MeasurementInstructions_Input,
   MeasurementStatus,
   SystemStateModel,
-  TridentBucketObject, LogListResponse, LogResponse, Metadata
+  TridentBucketObject, LogListResponse, LogResponse, Metadata, AvailableSensorInformation
 } from '@/client';
 import { useAPI } from './api.ts';
 
@@ -240,6 +240,14 @@ export async function sendMeasurementPostMeta(meta: Metadata): Promise<void> {
   return new Promise((resolve, reject) => {
     post<Metadata, undefined>('measurement/post_meta', meta)
         .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function getSensorInformation(): Promise<AvailableSensorInformation> {
+  return new Promise((resolve, reject) => {
+    get<AvailableSensorInformation>('sensor')
+        .then(data => resolve(data))
         .catch(reject)
   })
 }

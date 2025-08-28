@@ -52,6 +52,28 @@ export const $ADCValues = {
     title: 'ADCValues'
 } as const;
 
+export const $AvailableSensorInformation = {
+    properties: {
+        sensors: {
+            items: {
+                '$ref': '#/components/schemas/Sensor'
+            },
+            type: 'array',
+            title: 'Sensors'
+        },
+        configurations: {
+            items: {
+                '$ref': '#/components/schemas/PCBSensorConfiguration'
+            },
+            type: 'array',
+            title: 'Configurations'
+        }
+    },
+    type: 'object',
+    required: ['sensors', 'configurations'],
+    title: 'AvailableSensorInformation'
+} as const;
+
 export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
@@ -617,6 +639,29 @@ export const $Metadata = {
     title: 'Metadata'
 } as const;
 
+export const $PCBSensorConfiguration = {
+    properties: {
+        configuration_id: {
+            type: 'string',
+            title: 'Configuration Id'
+        },
+        configuration_name: {
+            type: 'string',
+            title: 'Configuration Name'
+        },
+        channels: {
+            additionalProperties: {
+                '$ref': '#/components/schemas/Sensor'
+            },
+            type: 'object',
+            title: 'Channels'
+        }
+    },
+    type: 'object',
+    required: ['configuration_id', 'configuration_name', 'channels'],
+    title: 'PCBSensorConfiguration'
+} as const;
+
 export const $ParsedMeasurement = {
     properties: {
         name: {
@@ -809,6 +854,10 @@ export const $Sensor = {
             type: 'string',
             title: 'Unit'
         },
+        dimension: {
+            type: 'string',
+            title: 'Dimension'
+        },
         phys_min: {
             type: 'number',
             title: 'Phys Min'
@@ -837,7 +886,7 @@ export const $Sensor = {
         }
     },
     type: 'object',
-    required: ['name', 'sensor_type', 'sensor_id', 'unit', 'phys_min', 'phys_max', 'volt_min', 'volt_max'],
+    required: ['name', 'sensor_type', 'sensor_id', 'unit', 'dimension', 'phys_min', 'phys_max', 'volt_min', 'volt_max'],
     title: 'Sensor'
 } as const;
 

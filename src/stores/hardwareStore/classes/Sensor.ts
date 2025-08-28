@@ -3,12 +3,14 @@ export type TPhysicalUnit = string;
 export type TBound = number;
 
 export class Sensor {
+  public id: string;
   public sensorType: SensorType
   public sensorRange: SensorRange;
   public expose: boolean
   public name: string
 
   constructor(
+    id: string,
     physicalDimension: TPhysicalDimension,
     physicalUnit: TPhysicalUnit,
     lowerBound: TBound,
@@ -16,6 +18,7 @@ export class Sensor {
     expose: boolean = true,
     name: string
   ) {
+    this.id = id
     this.sensorType = new SensorType(physicalDimension, physicalUnit);
     this.sensorRange = new SensorRange(physicalUnit, lowerBound, upperBound);
     this.expose = expose;

@@ -1,8 +1,6 @@
 // Import top-level views
 import Analyze from '@/pages/analyze.vue';
 import Config from '@/pages/config.vue';
-import Sensors from '@/pages/config/sensors.vue';
-import Tools from '@/pages/config/tools.vue';
 import Files from '@/pages/files.vue';
 import Help from '@/pages/help.vue';
 import Home from '@/pages/index.vue';
@@ -33,18 +31,6 @@ const routes = [
     path: '/config',
     name: 'Config',
     component: Config,
-    children: [
-      {
-        path: 'sensors',
-        name: 'Sensors',
-        component: Sensors,
-      },
-      {
-        path: 'tools',
-        name: 'Tools',
-        component: Tools,
-      },
-    ],
   },
   {
     path: '/files',
