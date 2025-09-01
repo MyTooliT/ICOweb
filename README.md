@@ -227,6 +227,12 @@ The ``metadata.yaml`` file is required for the metadata system to work. **Commit
 
 The typescript declaration is only for development.
 
+# Sensors and Configurations ("Holders")
+
+A layer of abstraction over simply using channels and needing to know which kind of data to expect has been implemented.
+
+The client will fetch the available sensors and configurations from the API, which holds the information in a ``sensors.yaml`` file.
+
 # Run
 
 To run the client locally, use:
@@ -236,20 +242,6 @@ To run the client locally, use:
 **Note**: The browser must have CORS disabled. When using Chrome, run with the flags
 
 ``--disable-web-security --user-data-dir="<Some Writable Folder>"`` to achieve this.
-
-# Known Issues
-A Running list of issues and who reported them. This will not track every single issue, but rather complete requests/complaints.
-
-### 2025-04-14 by TT 
-Per screen recording, on Firefox, using RevPi.
-
-- [x] STU & STH MAC do not autofill
-- [x] ADC drawer styling issues (Firefox?): Closing button overlaps inputs
-- [x] Streaming gets choppy after ~10s (might be recording issue)
-- [x] IFT Value is not shown after "stop" button was called
-- [x] Starting a new measurement does not clear the graph screen
-- [x] Starting a new measurement and connecting the stream shows two confused graphs
-- [x] Setting metadata values to 0 should be allowed
 
 # Planned Features
 
@@ -265,7 +257,7 @@ This is the list of features to be implemented.
     - [ ] Make "intelligent fill" (fills lost values with past values) create a new file
 - [x] **Performance**: Large file sizes?
     - [x] Loading indicator
-- [ ] **Scales**: Make the graph scales represent the holder's actual unit and range
+- [x] **Scales**: Make the graph scales represent the holder's actual unit and range
 
 Notes on crosshair and window selection: Both are enabled by the plugin [chartjs-plugin-crosshair](https://chartjs-plugin-crosshair.netlify.app/)
 and would be perfectly suitable. However, when using the plugin, upon zooming the datasets disappear. This seems to be connectect
@@ -303,7 +295,7 @@ This list is a loose collection of feedback given by people involved in the STH 
 ## Concerning Sensor Data
 
 - [ ] **Raw data option**: create the option to look at the raw data without any conversion to @g_0 or scaling to sensor range
-- [ ] **Reference Voltage**: Use first channel reference voltage for all channels
+- [x] **Reference Voltage**: Use first channel reference voltage for all channels
 - [ ] **Linear transformation**: Create option to assign a linear transformation per sensor to a holder
 
 ## Concerning General Features
