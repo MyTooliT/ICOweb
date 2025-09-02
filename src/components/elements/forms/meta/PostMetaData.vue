@@ -99,11 +99,11 @@ onMounted(async () => {
           <h4 class="font-semibold">
             {{ config?.categories[(category as Category)] }}
           </h4>
-          <div class="flex flex-row gap-3 justify-between">
+          <div class="flex flex-row gap-3 justify-between flex-wrap">
             <div
               v-for="[param_key, profile_param_data] in Object.entries(categoryParameters)"
               :key="param_key"
-              class="w-full"
+              class="flex-grow flex-shrink [flex-basis:20%]"
             >
               <MetaInput
                 :param-key="param_key as Parameter"
@@ -145,7 +145,3 @@ onMounted(async () => {
     </div>
   </form>
 </template>
-
-<style scoped>
-
-</style>
