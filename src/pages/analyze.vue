@@ -18,7 +18,6 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
-import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/elements/buttons/DownloadButton.vue';
 import {Sensor, SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
@@ -27,7 +26,6 @@ import {parseSensorFromRaw} from '@/stores/hardwareStore/helper.ts';
 const route = useRoute();
 const router = useRouter();
 const store = useGeneralStore();
-const hwStore = useHardwareStore();
 
 const chartData = ref<ChartData<'line'>>({
   datasets: [{
@@ -56,6 +54,7 @@ const routerWatcher = async () => {
     if(parsedMetadata.value) {
       const sensors = getDatasetSensors(parsedMetadata.value)
       scales.value = computeChartScales(sensors)
+      datasetUnits.value = Object.keys(scales.value)
       if(parsedMetadata.value.sensors.length > 0) {
         parsedData.value.datasets.forEach((dataset, index) => {
           dataset.name = parsedMetadata.value?.sensors[index].name ?? dataset.name
