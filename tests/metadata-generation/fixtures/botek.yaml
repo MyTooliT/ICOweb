@@ -1,0 +1,615 @@
+info:
+  version: 0.0.2
+  generated_at: '2025-09-03T11:07:52.353Z'
+profiles:
+  blindholedrilling:
+    id: botek_bhd
+    name: Blindhole Drilling
+    pre:
+      General:
+        person:
+          id: person
+          label: Person
+          datatype: text
+          type: default
+          required: required
+          description: Person responsible for conducting the measurement.
+        institution:
+          id: institution
+          label: Institution/Company
+          datatype: text
+          type: default
+          required: required
+          default: botek
+          description: Institution or company at which the measurement is captured.
+        machine:
+          id: machine
+          label: Machine
+          datatype: text
+          type: default
+          required: required
+          description: Machine in which the measurement was conducted.
+        experiment:
+          id: experiment
+          label: Experiment ID/Number
+          datatype: text
+          type: default
+          required: required
+          description: Experiment number or ID to identify the measurement.
+        process:
+          id: process
+          label: Process
+          datatype: dropdown
+          type: default
+          options:
+            - Drilling
+          required: required
+          default: Drilling
+          description: Measured process.
+      Tool:
+        tool_typ:
+          id: tool_typ
+          label: Tool Type
+          datatype: text
+          type: default
+          required: required
+        tool_id:
+          id: tool_id
+          label: Tool ID
+          datatype: text
+          type: default
+          required: required
+          description: ID to identify the tool.
+        tool_diameter:
+          id: tool_diameter
+          label: Tool Diameter
+          datatype: float
+          unit: mm
+          type: default
+          required: required
+        tool_length:
+          id: tool_length
+          label: Tool Length
+          datatype: float
+          unit: mm
+          type: default
+          required: required
+          description: Overall tool length.
+        tip_lentgh:
+          id: tip_lentgh
+          label: Drill Tip Lenght
+          datatype: float
+          unit: mm
+          type: default
+          required: optional
+          description: Measured from tip to tip.
+        peripheral_shape:
+          id: peripheral_shape
+          label: Peripheral Shape
+          datatype: dropdown
+          type: default
+          options:
+            - A
+            - C
+            - D
+            - EA
+            - EM
+            - G
+            - S
+          required: required
+        nose_grind_geometry:
+          id: nose_grind_geometry
+          label: Nose Grind Geometry
+          datatype: dropdown
+          type: default
+          options:
+            - SA-0001
+            - SA-0002
+            - SA-0003
+            - SA-0009
+          required: required
+        tool_material:
+          id: tool_material
+          label: Tool Material
+          datatype: text
+          type: default
+          required: optional
+        tool_coating:
+          id: tool_coating
+          label: Tool Coating
+          datatype: text
+          type: default
+          required: optional
+      Process:
+        workpiece_material:
+          id: workpiece_material
+          label: Workpiece Material
+          datatype: text
+          type: default
+          required: required
+        rotational_speed:
+          id: rotational_speed
+          label: Rotational Speed
+          datatype: float
+          unit: rev/min
+          type: range
+          required: required
+        cutting_speed:
+          id: cutting_speed
+          label: Cutting Speed
+          datatype: float
+          unit: m/min
+          type: range
+          required: optional
+        feed:
+          id: feed
+          label: Feed per Revolution
+          datatype: float
+          unit: mm/rev
+          type: range
+          required: required
+        feed_rate:
+          id: feed_rate
+          label: Feed Rate
+          datatype: float
+          unit: mm/min
+          type: range
+          required: optional
+        drilling_depth:
+          id: drilling_depth
+          label: Drilling Depth
+          datatype: float
+          unit: mm
+          type: range
+          required: required
+        boring_direction:
+          id: boring_direction
+          label: Boring Direction
+          datatype: dropdown
+          type: default
+          options:
+            - horizontal
+            - vertical
+          required: required
+        coolant:
+          id: coolant
+          label: Coolant
+          datatype: dropdown
+          type: default
+          options:
+            - Dry
+            - Cutting Fluid
+            - Flood
+            - Oil
+            - TSC
+          required: required
+        coolant_pressure:
+          id: coolant_pressure
+          label: Coolant Pressure
+          datatype: float
+          unit: bar
+          type: default
+          required: optional
+      Hardware:
+        sth_mac:
+          id: sth_mac
+          label: STH Mac Address
+          datatype: text
+          type: implementation
+          required: required
+        stu_mac:
+          id: stu_mac
+          label: STU Mac Address
+          datatype: text
+          type: implementation
+          required: required
+    post:
+      Additional:
+        pictures:
+          id: pictures
+          label: Picture of Tool Wear
+          datatype: file
+          type: default
+          required: optional
+          description: Pictures of the experiment; will be stored in the .hdf5 file.
+        comment:
+          id: comment
+          label: Comment
+          datatype: text_box
+          type: default
+          required: optional
+      Results:
+        n_holes_in_file:
+          id: n_holes_in_file
+          label: Number of holes captured in this file
+          datatype: int
+          type: default
+          required: required
+          description: Number of holes captured in this measurement (*.hdf5) file
+        n_measurement:
+          id: n_measurement
+          label: Measurement Number in Experiment
+          datatype: int
+          type: default
+          required: required
+          description: Number of Measurement in Experiment
+      Tool Wear:
+        tool_breakage:
+          id: tool_breakage
+          label: Tool Breakage in this cut
+          datatype: boolean
+          type: default
+          required: optional
+          default: 'false'
+          description: Has the tool failed during this run?
+        abnormal_tool_wear:
+          id: abnormal_tool_wear
+          label: Abnormal Tool Wear
+          datatype: boolean
+          type: default
+          required: optional
+          default: 'false'
+          description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
+        picture_cuttingedge:
+          id: picture_cuttingedge
+          label: 'Picture of Main Cutting Edge '
+          datatype: file
+          type: default
+          required: optional
+          description: Picture of the tool wear at the main cutting edge.
+        picture_secondcuttingedge:
+          id: picture_secondcuttingedge
+          label: Picture of Secondary Cutting Edge
+          datatype: file
+          type: default
+          required: optional
+          description: Picture of the tool wear at the secondary cutting edge.
+        max_wear_outer_cuttingedge:
+          id: max_wear_outer_cuttingedge
+          label: 'Max. Wear Outer Cutting Edge '
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the outer cutting edge.
+        max_wear_inner_cuttingedge:
+          id: max_wear_inner_cuttingedge
+          label: Max. Wear Inner Cutting Edge
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the inner cutting edge.
+        max_wear_secondcuttingedge:
+          id: max_wear_secondcuttingedge
+          label: Max. Wear Secondary Cutting Edge
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the secondary cutting edge.
+        max_wear_tip:
+          id: max_wear_tip
+          label: 'Max. Wear at Tool Tip '
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the tool tip.
+  crossholedrilling:
+    id: botek_chd
+    name: Crosshole Drilling
+    pre:
+      General:
+        person:
+          id: person
+          label: Person
+          datatype: text
+          type: default
+          required: required
+          description: Person responsible for conducting the measurement.
+        institution:
+          id: institution
+          label: Institution/Company
+          datatype: text
+          type: default
+          required: required
+          default: botek
+          description: Institution or company at which the measurement is captured.
+        machine:
+          id: machine
+          label: Machine
+          datatype: text
+          type: default
+          required: required
+          description: Machine in which the measurement was conducted.
+        experiment:
+          id: experiment
+          label: Experiment ID/Number
+          datatype: text
+          type: default
+          required: required
+          description: Experiment number or ID to identify the measurement.
+        process:
+          id: process
+          label: Process
+          datatype: dropdown
+          type: default
+          options:
+            - Drilling
+          required: required
+          default: Drilling
+          description: Measured process.
+      Tool:
+        tool_typ:
+          id: tool_typ
+          label: Tool Type
+          datatype: text
+          type: default
+          required: required
+        tool_id:
+          id: tool_id
+          label: Tool ID
+          datatype: text
+          type: default
+          required: required
+          description: ID to identify the tool.
+        tool_diameter:
+          id: tool_diameter
+          label: Tool Diameter
+          datatype: float
+          unit: mm
+          type: default
+          required: required
+        tool_length:
+          id: tool_length
+          label: Tool Length
+          datatype: float
+          unit: mm
+          type: default
+          required: required
+          description: Overall tool length.
+        tip_lentgh:
+          id: tip_lentgh
+          label: Drill Tip Lenght
+          datatype: float
+          unit: mm
+          type: default
+          required: optional
+          description: Measured from tip to tip.
+        peripheral_shape:
+          id: peripheral_shape
+          label: Peripheral Shape
+          datatype: dropdown
+          type: default
+          options:
+            - A
+            - C
+            - D
+            - EA
+            - EM
+            - G
+            - S
+          required: required
+        nose_grind_geometry:
+          id: nose_grind_geometry
+          label: Nose Grind Geometry
+          datatype: dropdown
+          type: default
+          options:
+            - SA-0001
+            - SA-0002
+            - SA-0003
+            - SA-0009
+          required: required
+        tool_material:
+          id: tool_material
+          label: Tool Material
+          datatype: text
+          type: default
+          required: optional
+        tool_coating:
+          id: tool_coating
+          label: Tool Coating
+          datatype: text
+          type: default
+          required: optional
+      Process:
+        workpiece_material:
+          id: workpiece_material
+          label: Workpiece Material
+          datatype: text
+          type: default
+          required: required
+        rotational_speed:
+          id: rotational_speed
+          label: Rotational Speed
+          datatype: float
+          unit: rev/min
+          type: range
+          required: required
+        cutting_speed:
+          id: cutting_speed
+          label: Cutting Speed
+          datatype: float
+          unit: m/min
+          type: range
+          required: optional
+        feed:
+          id: feed
+          label: Feed per Revolution
+          datatype: float
+          unit: mm/rev
+          type: range
+          required: required
+        feed_rate:
+          id: feed_rate
+          label: Feed Rate
+          datatype: float
+          unit: mm/min
+          type: range
+          required: optional
+        drilling_depth:
+          id: drilling_depth
+          label: Drilling Depth
+          datatype: float
+          unit: mm
+          type: range
+          required: required
+        boring_direction:
+          id: boring_direction
+          label: Boring Direction
+          datatype: dropdown
+          type: default
+          options:
+            - horizontal
+            - vertical
+          required: required
+        coolant:
+          id: coolant
+          label: Coolant
+          datatype: dropdown
+          type: default
+          options:
+            - Dry
+            - Cutting Fluid
+            - Flood
+            - Oil
+            - TSC
+          required: required
+        coolant_pressure:
+          id: coolant_pressure
+          label: Coolant Pressure
+          datatype: float
+          unit: bar
+          type: default
+          required: optional
+        distance_to_crosshole:
+          id: distance_to_crosshole
+          label: Distance to Crosshole Center
+          datatype: float
+          unit: mm
+          type: default
+          required: required
+          description: Distance measured from workspiece surface to center of crosshole.
+        crosshole_diameter:
+          id: crosshole_diameter
+          label: Crosshole Diameter
+          datatype: float
+          unit: mm
+          type: default
+          required: required
+        crosshole_overlap:
+          id: crosshole_overlap
+          label: Crosshole Overlap
+          datatype: int
+          unit: '%'
+          type: default
+          required: required
+          description: Overlap of the borehole with the crosshole.
+      Hardware:
+        sth_mac:
+          id: sth_mac
+          label: STH Mac Address
+          datatype: text
+          type: implementation
+          required: required
+        stu_mac:
+          id: stu_mac
+          label: STU Mac Address
+          datatype: text
+          type: implementation
+          required: required
+    post:
+      Additional:
+        pictures:
+          id: pictures
+          label: Picture of Tool Wear
+          datatype: file
+          type: default
+          required: optional
+          description: Pictures of the experiment; will be stored in the .hdf5 file.
+        comment:
+          id: comment
+          label: Comment
+          datatype: text_box
+          type: default
+          required: optional
+      Results:
+        n_holes_in_file:
+          id: n_holes_in_file
+          label: Number of holes captured in this file
+          datatype: int
+          type: default
+          required: required
+          description: Number of holes captured in this measurement (*.hdf5) file
+        n_measurement:
+          id: n_measurement
+          label: Measurement Number in Experiment
+          datatype: int
+          type: default
+          required: required
+          description: Number of Measurement in Experiment
+      Tool Wear:
+        tool_breakage:
+          id: tool_breakage
+          label: Tool Breakage in this cut
+          datatype: boolean
+          type: default
+          required: optional
+          default: 'false'
+          description: Has the tool failed during this run?
+        abnormal_tool_wear:
+          id: abnormal_tool_wear
+          label: Abnormal Tool Wear
+          datatype: boolean
+          type: default
+          required: optional
+          default: 'false'
+          description: Signs of abnormal wear (buildup, chipping) in this run - Comment!
+        picture_cuttingedge:
+          id: picture_cuttingedge
+          label: 'Picture of Main Cutting Edge '
+          datatype: file
+          type: default
+          required: optional
+          description: Picture of the tool wear at the main cutting edge.
+        picture_secondcuttingedge:
+          id: picture_secondcuttingedge
+          label: Picture of Secondary Cutting Edge
+          datatype: file
+          type: default
+          required: optional
+          description: Picture of the tool wear at the secondary cutting edge.
+        max_wear_outer_cuttingedge:
+          id: max_wear_outer_cuttingedge
+          label: 'Max. Wear Outer Cutting Edge '
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the outer cutting edge.
+        max_wear_inner_cuttingedge:
+          id: max_wear_inner_cuttingedge
+          label: Max. Wear Inner Cutting Edge
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the inner cutting edge.
+        max_wear_secondcuttingedge:
+          id: max_wear_secondcuttingedge
+          label: Max. Wear Secondary Cutting Edge
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the secondary cutting edge.
+        max_wear_tip:
+          id: max_wear_tip
+          label: 'Max. Wear at Tool Tip '
+          datatype: float
+          unit: µm
+          type: default
+          required: optional
+          description: Maximum wear mark width at the tool tip.
