@@ -5,13 +5,7 @@ import Select from 'primevue/select';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
-import {
-  Profile,
-  ParameterDefinition,
-  Parameters,
-  ProfileParamDefinition,
-  Parameter, Category
-} from '@/types/metadata';
+import {getRequiredParameterKeysForPhase, type ProfileDefinition} from '@/utils/metadataConfig.ts';
 import MetaInput from '@/components/elements/forms/meta/MetaInput.vue';
 const mStore = useMeasurementStore()
 const hwStore = useHardwareStore()
@@ -22,18 +16,15 @@ const props = defineProps<{
   phase: 'pre' | 'post'
 }>()
 
-const parameters = computed(() => {
-  return config.value?.parameters || undefined
-})
-
-const profiles = computed<Profile[] | undefined>(() => {
+const profiles = computed<ProfileDefinition[] | undefined>(() => {
   if (config.value?.profiles) {
     return Object.values(config.value?.profiles)
   } else {
     return undefined
   }
 })
-const profile = computed<Profile | undefined>(() => {
+
+const profile = computed<ProfileDefinition | undefined>(() => {
   if (profiles.value && mStore.preMetaForm.profile) {
     return profiles.value.find(p => p.id === mStore.preMetaForm.profile)
   } else {
@@ -42,40 +33,25 @@ const profile = computed<Profile | undefined>(() => {
 })
 
 
-function getFullParameter(parameters: Parameters, param_key: Parameter, profileParamDef: ProfileParamDefinition): ParameterDefinition & ProfileParamDefinition | undefined {
-  if (!parameters) return undefined
-  const base_param = parameters[param_key]
-  if (!base_param) return undefined
-  return {
-    ...base_param,
-    ...profileParamDef
-  }
-}
-
-
-function getProfileParamKeys(): Parameter[] {
-  const params: Parameter[] = []
-  const categories = Object.values(profile.value?.pre ?? {})
-  categories.forEach(category => {
-    Object.entries(category).forEach(([k, param]) => {
-      if(param.required === 'required') {
-        params.push(k as Parameter)
-      }
-    })
-  })
-  return params
-}
-
-
 function validate() {
   if(profile.value === undefined) {
     mStore.preMetaValid = false
     return
   }
-  const params = getProfileParamKeys()
+  const params = getRequiredParameterKeysForPhase(profile.value.pre)
   let valid = true
   params.forEach(param => {
-    valid = valid && (mStore.preMetaForm.parameters[param] !== null && mStore.preMetaForm.parameters[param] !== undefined && mStore.preMetaForm.parameters[param] !== '')
+    let formValue = mStore.preMetaForm.parameters[param]
+    if (formValue && typeof formValue === 'object' && 'value' in formValue) {
+      // Either a Quantity or a base64 encoded image list
+      if('value' in formValue) {
+        formValue = formValue.value
+      } else {
+        formValue = Object.values(formValue)[0]
+      }
+    }
+
+    valid = valid && (formValue !== null && formValue !== undefined && formValue !== '')
   })
   mStore.preMetaValid = valid
 }
@@ -127,7 +103,7 @@ onMounted(async () => {
         />
       </NamedInput>
       <form>
-        <div v-if="profile && parameters">
+        <div v-if="profile">
           <div v-if="profile.pre">
             <div
               v-for="[category, categoryParameters] in Object.entries(profile.pre)"
@@ -135,18 +111,18 @@ onMounted(async () => {
               class="mt-4 pt-3 border-t "
             >
               <h4 class="font-semibold">
-                {{ config?.categories[category as Category] }}
+                {{ category }}
               </h4>
               <div class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(30ch,1fr))]">
                 <div
-                  v-for="[param_key, profile_param_data] in Object.entries(categoryParameters)"
+                  v-for="[param_key, param_definition] in Object.entries(categoryParameters)"
                   :key="param_key"
                 >
                   <MetaInput
                     :disabled="disabled"
-                    :param-key="param_key as Parameter"
+                    :param-key="param_key"
                     :phase="phase"
-                    :definition="getFullParameter(parameters, param_key as Parameter, profile_param_data)"
+                    :definition="param_definition"
                     @update="update"
                   />
                 </div>
