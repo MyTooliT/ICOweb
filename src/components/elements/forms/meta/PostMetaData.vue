@@ -139,6 +139,5 @@ onMounted(async () => {
         />
       </NamedInput>
     </div>
-    {{ mStore.postMetaValid }}
   </form>
 </template>
