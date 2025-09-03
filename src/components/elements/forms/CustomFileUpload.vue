@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {ref, watch} from 'vue';
 import FileUpload from 'primevue/fileupload';
 
 interface Base64Map {
   [filename: string]: string;
 }
 
-defineProps<{
+const props = defineProps<{
   required: boolean,
+  modelValue?: Base64Map,
 }>()
 
 const emits = defineEmits<{
@@ -17,6 +18,7 @@ const base64Images = ref<Base64Map>({});
 
 function onFileSelect(event: { files: File[] }) {
   const files = event.files;
+  base64Images.value = {};
 
   files.forEach(file => {
     if (!file.type.startsWith('image/')) {
@@ -32,6 +34,16 @@ function onFileSelect(event: { files: File[] }) {
 
   emits('images', base64Images.value)
 }
+
+watch(props, (newVal) => {
+  if(newVal.modelValue) {
+    base64Images.value = newVal.modelValue;
+    emits('images', newVal.modelValue)
+  }
+}, {
+  immediate: true,
+  deep: true,
+})
 </script>
 
 <template>
@@ -49,19 +61,19 @@ function onFileSelect(event: { files: File[] }) {
 
     <div
       v-if="Object.keys(base64Images).length"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full"
+      class="flex [flex-basis:100%] flex-grow"
     >
       <div
-        v-for="(src, name) in base64Images"
-        :key="name"
+        v-for="[key, src] in Object.entries(base64Images)"
+        :key="key"
         class="flex flex-col items-center"
       >
         <img
           :src="src"
-          :alt="name ?? ''"
+          :alt="key"
           class="shadow-md w-full sm:w-64"
         >
-        <span class="mt-2 text-sm text-gray-600">{{ name }}</span>
+        <span class="mt-2 text-sm text-gray-600">{{ key }}</span>
       </div>
     </div>
   </div>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {Parameter, ParameterDefinition, ProfileParamDefinition} from '@/types/metadata';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import {AutoComplete, Textarea} from 'primevue';
@@ -10,18 +9,17 @@ import {computed, ref, onMounted, watch} from 'vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {Quantity} from '@/client';
 import CustomFileUpload from '@/components/elements/forms/CustomFileUpload.vue';
-import {assembleFormEntry} from '@/utils/metadataHelper.ts';
+import {MetadataParameterInformation, assembleFormEntry} from '@/utils/metadataConfig.ts';
 
 const props = defineProps<{
-  paramKey: Parameter,
-  definition: ParameterDefinition & ProfileParamDefinition | undefined;
+  definition: MetadataParameterInformation;
   disabled?: boolean,
   phase: 'pre' | 'post'
 }>()
 const emits = defineEmits(['update'])
 const mStore = useMeasurementStore()
 
-function getComponent(param: ParameterDefinition) {
+function getComponent(param: MetadataParameterInformation) {
   switch (param.datatype) {
     case 'text': return InputText
     case 'dropdown': return Select
@@ -47,15 +45,22 @@ const search = (event: any) => {
 
 const getModelValue = computed(() => {
   const relevantForm = props.phase === 'pre' ? mStore.preMetaForm : mStore.postMetaForm
-  if (props.definition?.unit && typeof relevantForm.parameters[props.paramKey] === 'object') {
-    return (relevantForm.parameters[props.paramKey] as Quantity).value
+  if (typeof relevantForm.parameters[props.definition.id] === 'object') {
+    // either image or quantity
+    if(props.definition?.unit) {
+      // quantity
+      return (relevantForm.parameters[props.definition.id] as Quantity).value
+    } else {
+      // image
+      return relevantForm.parameters[props.definition.id] ?? {}
+    }
   }
-  return relevantForm.parameters[props.paramKey]
+  return relevantForm.parameters[props.definition.id]
 })
 
 function update(event: any) {
   if(props.phase === 'pre') {
-    mStore.preMetaForm.parameters[props.paramKey] = assembleFormEntry(event, props.definition)
+    mStore.preMetaForm.parameters[props.definition.id] = assembleFormEntry(event, props.definition)
   } else {
     if(!mStore.postMetaForm) {
       mStore.postMetaForm = {
@@ -64,7 +69,7 @@ function update(event: any) {
         parameters: {}
       }
     }
-    mStore.postMetaForm.parameters[props.paramKey] = assembleFormEntry(event, props.definition)
+    mStore.postMetaForm.parameters[props.definition.id] = assembleFormEntry(event, props.definition)
   }
   emits('update')
 }
@@ -72,6 +77,10 @@ function update(event: any) {
 function setDefaults() {
   if(props.definition?.default !== undefined) {
     update(props.definition.default)
+  } else {
+    if(props.definition?.datatype === 'file') {
+      update({})
+    }
   }
 }
 
