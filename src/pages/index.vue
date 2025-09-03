@@ -7,7 +7,6 @@ import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { useToast } from 'primevue/usetoast';
 import {onMounted} from 'vue';
-import {getSensorInformation} from '@/api/icoapi.ts';
 
 const toast = useToast()
 const store = useHardwareStore()
@@ -48,11 +47,7 @@ async function STHClickHandler() {
 }
 
 onMounted(async () => {
-  const { sensors, configurations } = await getSensorInformation()
-  store.clearSensorList()
-  store.parseSensorList(sensors)
-  store.clearHolderList()
-  store.parseHolderList(configurations)
+  await store.refetchSensorsAndHolders()
 })
 </script>
 
