@@ -7,13 +7,15 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [vue()],
   test: {
-    includeSource: ['src/**/*.{js,ts,vue}'],
+    includeSource: ['tests/**/*.{js,ts,vue}'],
     environment: 'happy-dom',
-    watch: false
+    watch: false,
+    setupFiles: [path.resolve(__dirname, 'tests/setupTests.ts')],
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '!@': path.resolve(__dirname, './tests')
     },
   },
   define: {

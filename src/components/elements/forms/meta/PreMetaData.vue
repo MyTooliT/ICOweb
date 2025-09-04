@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {computed, onMounted} from 'vue';
+import {computed, onMounted, watch} from 'vue';
 import Select from 'primevue/select';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
@@ -42,7 +42,7 @@ function validate() {
   let valid = true
   params.forEach(param => {
     let formValue = mStore.preMetaForm.parameters[param]
-    if (formValue && typeof formValue === 'object' && 'value' in formValue) {
+    if (formValue && typeof formValue === 'object') {
       // Either a Quantity or a base64 encoded image list
       if('value' in formValue) {
         formValue = formValue.value
@@ -79,6 +79,8 @@ onMounted(async () => {
   await reload()
   update()
 })
+
+watch(mStore.preMetaForm.parameters, validate, {deep: true})
 </script>
 
 <template>

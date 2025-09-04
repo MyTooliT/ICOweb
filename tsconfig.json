@@ -33,7 +33,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "typed-router.d.ts",
-    "env.d.ts"
+    "env.d.ts",
+    "tests/**/*.ts",
+    "tests/**/*.vue"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
