@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-09-03T11:00:49.551Z'
+  generated_at: '2025-09-11T10:03:05.448Z'
 profiles:
   twm1:
     id: cirp_twm_1
@@ -59,7 +59,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -67,7 +67,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -75,7 +75,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -83,7 +83,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -91,7 +91,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -99,7 +99,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -107,7 +107,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -132,7 +132,7 @@ profiles:
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: restricted
@@ -170,7 +170,7 @@ profiles:
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: restricted
@@ -178,7 +178,7 @@ profiles:
         feed_per_tooth:
           id: feed_per_tooth
           label: Feed per Tooth
-          datatype: float
+          datatype: float_qty
           unit: mm/tooth
           type: range
           required: restricted
@@ -186,7 +186,7 @@ profiles:
         doc_axial:
           id: doc_axial
           label: Depth of Cut (axial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -194,7 +194,7 @@ profiles:
         doc_radial:
           id: doc_radial
           label: Depth of Cut (radial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -272,7 +272,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -280,7 +280,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -288,7 +288,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -296,7 +296,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -304,7 +304,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -312,7 +312,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -320,7 +320,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -329,14 +329,14 @@ profiles:
         first_peripheral_pictures:
           id: first_peripheral_pictures
           label: Pictures of First Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
           id: first_end_pictures
           label: Pictures of First End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the first cutting edge (end)
@@ -344,14 +344,14 @@ profiles:
         second_peripheral_pictures:
           id: second_peripheral_pictures
           label: Pictures of Second Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
           id: second_end_pictures
           label: Pictures of Second End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the second cutting edge (end)
@@ -420,7 +420,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -428,7 +428,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -436,7 +436,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -444,7 +444,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -452,7 +452,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -460,7 +460,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -468,7 +468,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -493,7 +493,7 @@ profiles:
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: restricted
@@ -531,7 +531,7 @@ profiles:
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: restricted
@@ -539,7 +539,7 @@ profiles:
         feed_per_tooth:
           id: feed_per_tooth
           label: Feed per Tooth
-          datatype: float
+          datatype: float_qty
           unit: mm/tooth
           type: range
           required: restricted
@@ -547,7 +547,7 @@ profiles:
         doc_axial:
           id: doc_axial
           label: Depth of Cut (axial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -555,7 +555,7 @@ profiles:
         doc_radial:
           id: doc_radial
           label: Depth of Cut (radial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -633,7 +633,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -641,7 +641,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -649,7 +649,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -657,7 +657,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -665,7 +665,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -673,7 +673,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -681,7 +681,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -690,14 +690,14 @@ profiles:
         first_peripheral_pictures:
           id: first_peripheral_pictures
           label: Pictures of First Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
           id: first_end_pictures
           label: Pictures of First End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the first cutting edge (end)
@@ -705,14 +705,14 @@ profiles:
         second_peripheral_pictures:
           id: second_peripheral_pictures
           label: Pictures of Second Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
           id: second_end_pictures
           label: Pictures of Second End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the second cutting edge (end)
@@ -808,35 +808,35 @@ profiles:
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: optional
         feed_per_tooth:
           id: feed_per_tooth
           label: Feed per Tooth
-          datatype: float
+          datatype: float_qty
           unit: mm/tooth
           type: range
           required: optional
         doc_axial:
           id: doc_axial
           label: Depth of Cut (axial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: optional
         doc_radial:
           id: doc_radial
           label: Depth of Cut (radial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: optional
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: optional
@@ -861,7 +861,7 @@ profiles:
         tool_offset:
           id: tool_offset
           label: Tool Offset
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: optional
@@ -907,7 +907,7 @@ profiles:
         pictures:
           id: pictures
           label: Pictures
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Pictures of the experiment; will be stored in the .hdf5 file.

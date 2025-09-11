@@ -49,6 +49,8 @@ describe('metadata-generation.xlsx → YAML generator', () => {
         const schema = JSON.parse(fs.readFileSync(SCHEMA_JSON, 'utf-8'));
         const validate = ajv.compile(schema);
 
+        console.log(schema)
+
         const doc = loadYaml(CANON_YAML);
         const valid = validate(doc);
 

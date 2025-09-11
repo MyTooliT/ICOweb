@@ -59,8 +59,8 @@ describe('generate-config.js – fixture parity', () => {
                 encoding: 'utf-8',
             });
 
-            const expected = stripGeneratedAt(loadYaml(c.yaml));
-            const actual = stripGeneratedAt(loadYaml(outPath));
+            const expected = stripGeneratedAt(loadYaml(c.yaml) as Record<string, any>);
+            const actual = stripGeneratedAt(loadYaml(outPath) as Record<string, any>);
             expect(actual).toEqual(expected);
 
             const schema = JSON.parse(fs.readFileSync(SCHEMA_JSON, 'utf-8'));

@@ -37,9 +37,11 @@
                     "enum": [
                       "boolean",
                       "dropdown",
-                      "file",
+                      "image",
                       "float",
                       "int",
+                      "float_qty",
+                      "int_qty",
                       "text",
                       "text_box",
                       "text_suggestions"
@@ -90,9 +92,11 @@
                     "enum": [
                       "boolean",
                       "dropdown",
-                      "file",
+                      "image",
                       "float",
                       "int",
+                      "float_qty",
+                      "int_qty",
                       "text",
                       "text_box",
                       "text_suggestions"

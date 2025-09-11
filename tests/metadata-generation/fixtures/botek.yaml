@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-09-03T11:07:52.353Z'
+  generated_at: '2025-09-11T10:03:12.172Z'
 profiles:
   blindholedrilling:
     id: botek_bhd
@@ -63,14 +63,14 @@ profiles:
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
         tool_length:
           id: tool_length
           label: Tool Length
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -78,7 +78,7 @@ profiles:
         tip_lentgh:
           id: tip_lentgh
           label: Drill Tip Lenght
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: optional
@@ -130,35 +130,35 @@ profiles:
         rotational_speed:
           id: rotational_speed
           label: Rotational Speed
-          datatype: float
+          datatype: float_qty
           unit: rev/min
           type: range
           required: required
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: optional
         feed:
           id: feed
           label: Feed per Revolution
-          datatype: float
+          datatype: float_qty
           unit: mm/rev
           type: range
           required: required
         feed_rate:
           id: feed_rate
           label: Feed Rate
-          datatype: float
+          datatype: float_qty
           unit: mm/min
           type: range
           required: optional
         drilling_depth:
           id: drilling_depth
           label: Drilling Depth
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: required
@@ -186,7 +186,7 @@ profiles:
         coolant_pressure:
           id: coolant_pressure
           label: Coolant Pressure
-          datatype: float
+          datatype: float_qty
           unit: bar
           type: default
           required: optional
@@ -208,7 +208,7 @@ profiles:
         pictures:
           id: pictures
           label: Picture of Tool Wear
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Pictures of the experiment; will be stored in the .hdf5 file.
@@ -253,21 +253,21 @@ profiles:
         picture_cuttingedge:
           id: picture_cuttingedge
           label: 'Picture of Main Cutting Edge '
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Picture of the tool wear at the main cutting edge.
         picture_secondcuttingedge:
           id: picture_secondcuttingedge
           label: Picture of Secondary Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Picture of the tool wear at the secondary cutting edge.
         max_wear_outer_cuttingedge:
           id: max_wear_outer_cuttingedge
           label: 'Max. Wear Outer Cutting Edge '
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -275,7 +275,7 @@ profiles:
         max_wear_inner_cuttingedge:
           id: max_wear_inner_cuttingedge
           label: Max. Wear Inner Cutting Edge
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -283,7 +283,7 @@ profiles:
         max_wear_secondcuttingedge:
           id: max_wear_secondcuttingedge
           label: Max. Wear Secondary Cutting Edge
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -291,7 +291,7 @@ profiles:
         max_wear_tip:
           id: max_wear_tip
           label: 'Max. Wear at Tool Tip '
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -357,14 +357,14 @@ profiles:
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
         tool_length:
           id: tool_length
           label: Tool Length
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -372,7 +372,7 @@ profiles:
         tip_lentgh:
           id: tip_lentgh
           label: Drill Tip Lenght
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: optional
@@ -424,35 +424,35 @@ profiles:
         rotational_speed:
           id: rotational_speed
           label: Rotational Speed
-          datatype: float
+          datatype: float_qty
           unit: rev/min
           type: range
           required: required
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: optional
         feed:
           id: feed
           label: Feed per Revolution
-          datatype: float
+          datatype: float_qty
           unit: mm/rev
           type: range
           required: required
         feed_rate:
           id: feed_rate
           label: Feed Rate
-          datatype: float
+          datatype: float_qty
           unit: mm/min
           type: range
           required: optional
         drilling_depth:
           id: drilling_depth
           label: Drilling Depth
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: required
@@ -480,14 +480,14 @@ profiles:
         coolant_pressure:
           id: coolant_pressure
           label: Coolant Pressure
-          datatype: float
+          datatype: float_qty
           unit: bar
           type: default
           required: optional
         distance_to_crosshole:
           id: distance_to_crosshole
           label: Distance to Crosshole Center
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -495,14 +495,14 @@ profiles:
         crosshole_diameter:
           id: crosshole_diameter
           label: Crosshole Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
         crosshole_overlap:
           id: crosshole_overlap
           label: Crosshole Overlap
-          datatype: int
+          datatype: int_qty
           unit: '%'
           type: default
           required: required
@@ -525,7 +525,7 @@ profiles:
         pictures:
           id: pictures
           label: Picture of Tool Wear
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Pictures of the experiment; will be stored in the .hdf5 file.
@@ -570,21 +570,21 @@ profiles:
         picture_cuttingedge:
           id: picture_cuttingedge
           label: 'Picture of Main Cutting Edge '
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Picture of the tool wear at the main cutting edge.
         picture_secondcuttingedge:
           id: picture_secondcuttingedge
           label: Picture of Secondary Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Picture of the tool wear at the secondary cutting edge.
         max_wear_outer_cuttingedge:
           id: max_wear_outer_cuttingedge
           label: 'Max. Wear Outer Cutting Edge '
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -592,7 +592,7 @@ profiles:
         max_wear_inner_cuttingedge:
           id: max_wear_inner_cuttingedge
           label: Max. Wear Inner Cutting Edge
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -600,7 +600,7 @@ profiles:
         max_wear_secondcuttingedge:
           id: max_wear_secondcuttingedge
           label: Max. Wear Secondary Cutting Edge
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
@@ -608,7 +608,7 @@ profiles:
         max_wear_tip:
           id: max_wear_tip
           label: 'Max. Wear at Tool Tip '
-          datatype: float
+          datatype: float_qty
           unit: µm
           type: default
           required: optional
