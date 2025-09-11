@@ -126,3 +126,53 @@ export function assembleFormEntry(value: any, definition: MetadataParameterInfor
     // we skip the case of 'file' because it is handled separately
     return value
 }
+
+export function assembleValue(parameter: AnyMetadataParameterDefinition, value: any): any {
+    switch(parameter.datatype) {
+        case 'float_qty':
+        case 'int_qty':
+            return {
+                unit: parameter.unit,
+                value: value
+            } as Quantity
+        default:
+            return value
+    }
+}
+
+export function getDefaultsObject(phase: ProfilePhase): Record<string, any> {
+    const retObj: Record<string, any> = {}
+    Object.values(phase).forEach(category => {
+        Object.entries(category).forEach(([key, value]: [string, AnyMetadataParameterDefinition]) => {
+            if(value.default) {
+                retObj[key] = assembleValue(value, value.default)
+            }
+        })
+    })
+    return retObj
+}
+
+export function computeValidity(stateObject: Record<string, any>, phase: ProfilePhase): boolean {
+    const requiredParams = getRequiredParameterKeysForPhase(phase)
+    for(const param of requiredParams) {
+        if(!stateObject[param]) {
+            // parameter is required but not set
+            return false
+        }
+        let formValue = stateObject[param]
+        if(formValue && typeof formValue === 'object') {
+            // either Quantity or files
+            if('value' in formValue && 'unit' in formValue) {
+                // Quantity
+                formValue = formValue.value
+            } else {
+                // files
+                formValue = Object.values(formValue)[0]
+            }
+        }
+        if(formValue === null || formValue === undefined || formValue === '') {
+            return false
+        }
+    }
+    return true
+}

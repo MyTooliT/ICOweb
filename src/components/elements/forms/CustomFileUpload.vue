@@ -2,7 +2,7 @@
 import {ref, watch} from 'vue';
 import FileUpload from 'primevue/fileupload';
 
-interface Base64Map {
+export interface Base64Map {
   [filename: string]: string;
 }
 
@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  images: [Base64Map],
+  'update:modelValue': [Base64Map],
 }>()
 const base64Images = ref<Base64Map>({});
 
@@ -32,13 +32,13 @@ function onFileSelect(event: { files: File[] }) {
     reader.readAsDataURL(file);
   });
 
-  emits('images', base64Images.value)
+  emits('update:modelValue', base64Images.value)
 }
 
 watch(props, (newVal) => {
   if(newVal.modelValue) {
     base64Images.value = newVal.modelValue;
-    emits('images', newVal.modelValue)
+    emits('update:modelValue', newVal.modelValue)
   }
 }, {
   immediate: true,
