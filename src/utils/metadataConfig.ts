@@ -22,6 +22,54 @@ export type MetadataParameterInformation = {
     options?: readonly string[];
 }
 
+export type MetadataParameterBase<T, U extends Datatype> = {
+    id: string;
+    label: string;
+    datatype: U;
+    type: MetadataType;
+    required: string;
+    default?: T;
+    description?: string;
+}
+
+export type Unit = {unit: string}
+
+export type MetadataParameterAutocomplete = MetadataParameterBase<string, 'text_suggestions'> & {
+    options: readonly string[];
+}
+export type MetadataParameterInt = MetadataParameterBase<number, 'int'>
+export type MetadataParameterFloat = MetadataParameterBase<number, 'float'>
+export type MetadataParameterFloatQty = MetadataParameterBase<Quantity, 'float_qty'> & Unit
+export type MetadataParameterIntQty = MetadataParameterBase<Quantity, 'int_qty'> & Unit
+export type MetadataParameterBool = MetadataParameterBase<boolean, 'boolean'>
+export type MetadataParameterImage = MetadataParameterBase<string, 'image'>
+export type MetadataParameterTextBox = MetadataParameterBase<string, 'text_box'>
+export type MetadataParameterText = MetadataParameterBase<string, 'text'>
+export type MetadataParameterDropdown = MetadataParameterBase<string, 'dropdown'> & { options: readonly string[] }
+
+
+export type AnyMetadataParameterDefinition =
+    MetadataParameterAutocomplete
+    | MetadataParameterInt
+    | MetadataParameterFloat
+    | MetadataParameterFloatQty
+    | MetadataParameterIntQty
+    | MetadataParameterBool
+    | MetadataParameterImage
+    | MetadataParameterTextBox
+    | MetadataParameterText
+    | MetadataParameterDropdown
+
+type WithUnit = Extract<AnyMetadataParameterDefinition, Unit>; // the union of definitions that include `unit`
+
+export function hasUnit(
+    def: AnyMetadataParameterDefinition
+): def is WithUnit {
+    return typeof (def as any).unit === 'string';
+}
+
+export type MetadataPhaseKey = 'pre' | 'post';
+
 export type ProfileDefinition = {
     id: string;
     name: string;
@@ -29,9 +77,9 @@ export type ProfileDefinition = {
     post?: ProfilePhase;
 }
 
-type ProfilePhase = Record<CategoryKey, MetadataParameterInformation>
+export type ProfilePhase = Record<CategoryKey, MetadataParameterInformation>
 
-type Datatype = 'text' | 'dropdown' | 'text_suggestions' | 'float' | 'int' | 'boolean' | 'file' | 'text_box';
+type Datatype = 'text' | 'dropdown' | 'text_suggestions' | 'float' | 'int' | 'float_qty' | 'int_qty' | 'boolean' | 'image' | 'text_box';
 type MetadataType = 'default' | 'implementation' | 'range'
 type ProfileKey = string;
 type CategoryKey = string;

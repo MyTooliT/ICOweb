@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-09-03T08:02:12.860Z'
+  generated_at: '2025-09-08T11:49:14.232Z'
 profiles:
   twm1:
     id: cirp_twm_1
@@ -41,25 +41,167 @@ profiles:
             - SECO
           required: required
           description: CIRP institution at which the measurement is captured.
-        machine:
-          id: machine
-          label: Machine
+        setup_pictures:
+          id: setup_pictures
+          label: Pictures of Complete Setup
+          datatype: image
+          type: default
+          required: required
+          description: Pictures of the complete setup in the machine for future reference.
+      Machine Tool Definition:
+        machine_manufacturer:
+          id: machine_manufacturer
+          label: Manufacturer of Machine Tool
           datatype: text
           type: default
           required: required
-          description: Machine tool in which the measurement was conducted.
+          description: Manufacturer of the machine tool.
+        machine_model:
+          id: machine_model
+          label: Model of Machine Tool
+          datatype: text
+          type: default
+          required: required
+          description: Exact model or model number of the machine tool.
+        machine_serial:
+          id: machine_serial
+          label: Serial Number of Machine Tool
+          datatype: text
+          type: default
+          required: optional
+          description: Serial number of the machine tool for identification.
+        machine_travel_x:
+          id: machine_travel_x
+          label: Machine Travel Range (X)
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: required
+          description: Travel range of the machine tool in the X direction.
+        machine_travel_y:
+          id: machine_travel_y
+          label: Machine Travel Range (Y)
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: required
+          description: Travel range of the machine tool in the Y direction.
+        machine_travel_z:
+          id: machine_travel_z
+          label: Machine Travel Range (Z)
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: required
+          description: Travel range of the machine tool in the Z direction.
+        machine_has_axis_a:
+          id: machine_has_axis_a
+          label: Machine has A Axis
+          datatype: boolean
+          type: default
+          required: required
+          default: 'false'
+          description: Check if the machine tool has an A axis.
+        machine_has_axis_c:
+          id: machine_has_axis_c
+          label: Machine has C Axis
+          datatype: boolean
+          type: default
+          required: required
+          default: 'false'
+          description: Check if the machine tool has a C axis.
+        machine_spindle_max_speed:
+          id: machine_spindle_max_speed
+          label: Max. Spindle Speed
+          datatype: float_qty
+          unit: RPM
+          type: default
+          required: required
+          description: The maximum spindle speed of the machine tool.
+        machine_spindle_max_torque:
+          id: machine_spindle_max_torque
+          label: Max. Spindle Torque
+          datatype: float_qty
+          unit: Nm
+          type: default
+          required: required
+          description: The maximum spindle torque of the machine tool.
+        machine_spindle_max_power:
+          id: machine_spindle_max_power
+          label: Max. Spindle Power
+          datatype: float_qty
+          unit: kW
+          type: default
+          required: required
+          description: The maximum spindle power of the machine tool.
+      Tool Definition:
         tool_id:
           id: tool_id
-          label: Tool ID
+          label: Tool Identification
           datatype: text
           type: default
           required: required
           description: "Tool ID for the experiment; can be found on the tool shank and packaging. \r\n\r\nLooks like ABC-001"
+        tool_stickout:
+          id: tool_stickout
+          label: Tool Stickout from Collet
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: restricted
+          default: 35
+          description: Stickout length of the tool measured from the collet nut.
+        tool_type:
+          id: tool_type
+          label: Tool Type
+          datatype: text
+          type: default
+          required: restricted
+          description: Manufacturer's tool type identification (e.g. article number, code, …)
+        tool_manufacturer:
+          id: tool_manufacturer
+          label: Tool Manufacturer
+          datatype: text
+          type: default
+          required: restricted
+          default: botek
+          description: Manufacturer of the tool.
+        tool_nominal_diameter:
+          id: tool_nominal_diameter
+          label: Nominal Tool Diameter
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: restricted
+          default: 10
+          description: Nominal Diameter of the tool.
+        tool_tooth_count:
+          id: tool_tooth_count
+          label: Tool Tooth Count
+          datatype: int
+          type: default
+          required: restricted
+          default: 2
+          description: Tool tooth count.
+        tool_material:
+          id: tool_material
+          label: Tool Material
+          datatype: text_suggestions
+          type: default
+          options:
+            - Carbide (P40)
+            - Carbide
+            - MCD
+            - Ceramic
+            - PCD
+          required: restricted
+          default: Carbide (P40)
+          description: Manufacturer specification of tool material.
       Initial Tool Inspection:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -67,7 +209,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -75,7 +217,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -83,7 +225,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -91,7 +233,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -99,7 +241,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -107,11 +249,79 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
           description: Tool radius at 6mm from the tip before any cut (initial inspection)
+      Workpiece Definition:
+        workpiece_id:
+          id: workpiece_id
+          label: Workpiece Identification
+          datatype: text
+          type: default
+          required: required
+          description: Identification number / code of the specific workpiece.
+        workpiece_length:
+          id: workpiece_length
+          label: Workpiece Length
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: restricted
+          default: 200
+          description: Length of the workpiece (longest side)
+        workpiece_height:
+          id: workpiece_height
+          label: Workpiece Height
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: restricted
+          default: 100
+          description: Height of the workpiece
+        workpiece_width:
+          id: workpiece_width
+          label: Workpiece Width
+          datatype: float_qty
+          unit: mm
+          type: default
+          required: restricted
+          default: 100
+          description: Width of the Workpiece
+        workpiece_material:
+          id: workpiece_material
+          label: Workpiece Material
+          datatype: text_suggestions
+          type: default
+          options:
+            - '1.2379'
+            - C45
+            - Steel
+          required: restricted
+          default: '1.2379'
+          description: Material code / name of the workpiece
+        workpiece_temper:
+          id: workpiece_temper
+          label: Workpiece Thermal Treatment
+          datatype: text_suggestions
+          type: default
+          options:
+            - Annealed
+            - Hardened + Tempered
+            - Hardened (w.o. tempering)
+            - Stress Relieved
+          required: restricted
+          default: Annealed
+          description: Tempering state of the workpiece
+        workpiece_hardness:
+          id: workpiece_hardness
+          label: Workpiece Hardness
+          datatype: float_qty
+          unit: HRC
+          type: default
+          required: optional
+          description: Hardness of the workpiece in HRC
       Process:
         process:
           id: process
@@ -129,48 +339,10 @@ profiles:
             - Thread Milling
           required: restricted
           default: Milling
-        tool_diameter:
-          id: tool_diameter
-          label: Tool Diameter
-          datatype: float
-          unit: mm
-          type: default
-          required: restricted
-          default: 10
-        tool_tooth_count:
-          id: tool_tooth_count
-          label: Tool Tooth Count
-          datatype: int
-          type: default
-          required: restricted
-          default: 2
-        tool_material:
-          id: tool_material
-          label: Tool Material
-          datatype: text_suggestions
-          type: default
-          options:
-            - Carbide (P40)
-            - Carbide
-            - MCD
-            - Ceramic
-            - PCD
-          required: restricted
-          default: Carbide (P40)
-        workpiece_material:
-          id: workpiece_material
-          label: Workpiece Material
-          datatype: text_suggestions
-          type: default
-          options:
-            - C45
-            - Steel
-          required: restricted
-          default: '1.2379'
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: restricted
@@ -178,7 +350,7 @@ profiles:
         feed_per_tooth:
           id: feed_per_tooth
           label: Feed per Tooth
-          datatype: float
+          datatype: float_qty
           unit: mm/tooth
           type: range
           required: restricted
@@ -186,7 +358,7 @@ profiles:
         doc_axial:
           id: doc_axial
           label: Depth of Cut (axial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -194,7 +366,7 @@ profiles:
         doc_radial:
           id: doc_radial
           label: Depth of Cut (radial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -210,6 +382,8 @@ profiles:
             - MMQ
             - Flood
             - Oil
+            - TSC
+            - TSC+Flood
           required: restricted
           default: Dry
         direction:
@@ -272,7 +446,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -280,7 +454,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -288,7 +462,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -296,7 +470,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -304,7 +478,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -312,7 +486,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -320,7 +494,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -329,31 +503,35 @@ profiles:
         first_peripheral_pictures:
           id: first_peripheral_pictures
           label: Pictures of First Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
+          default: 'null'
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
           id: first_end_pictures
           label: Pictures of First End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
+          default: 'null'
           description: Picture of the first cutting edge (end)
       Second Cutting Edge:
         second_peripheral_pictures:
           id: second_peripheral_pictures
           label: Pictures of Second Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
+          default: 'null'
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
           id: second_end_pictures
           label: Pictures of Second End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
+          default: 'null'
           description: Picture of the second cutting edge (end)
       Additional:
         comment:
@@ -411,7 +589,7 @@ profiles:
           description: Machine tool in which the measurement was conducted.
         tool_id:
           id: tool_id
-          label: Tool ID
+          label: Tool Identification
           datatype: text
           type: default
           required: required
@@ -420,7 +598,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -428,7 +606,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -436,7 +614,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -444,7 +622,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -452,7 +630,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -460,7 +638,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -468,7 +646,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -493,7 +671,7 @@ profiles:
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: restricted
@@ -524,6 +702,7 @@ profiles:
           datatype: text_suggestions
           type: default
           options:
+            - '1.2379'
             - C45
             - Steel
           required: restricted
@@ -531,7 +710,7 @@ profiles:
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: restricted
@@ -539,7 +718,7 @@ profiles:
         feed_per_tooth:
           id: feed_per_tooth
           label: Feed per Tooth
-          datatype: float
+          datatype: float_qty
           unit: mm/tooth
           type: range
           required: restricted
@@ -547,7 +726,7 @@ profiles:
         doc_axial:
           id: doc_axial
           label: Depth of Cut (axial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -555,7 +734,7 @@ profiles:
         doc_radial:
           id: doc_radial
           label: Depth of Cut (radial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: restricted
@@ -571,6 +750,8 @@ profiles:
             - MMQ
             - Flood
             - Oil
+            - TSC
+            - TSC+Flood
           required: restricted
           default: Dry
         direction:
@@ -633,7 +814,7 @@ profiles:
         tool_r_at_0:
           id: tool_r_at_0
           label: Tool Radius at 0mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -641,7 +822,7 @@ profiles:
         tool_r_at_1:
           id: tool_r_at_1
           label: Tool Radius at 1mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -649,7 +830,7 @@ profiles:
         tool_r_at_2:
           id: tool_r_at_2
           label: Tool Radius at 2mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -657,7 +838,7 @@ profiles:
         tool_r_at_3:
           id: tool_r_at_3
           label: Tool Radius at 3mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -665,7 +846,7 @@ profiles:
         tool_r_at_4:
           id: tool_r_at_4
           label: Tool Radius at 4mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -673,7 +854,7 @@ profiles:
         tool_r_at_5:
           id: tool_r_at_5
           label: Tool Radius at 5mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -681,7 +862,7 @@ profiles:
         tool_r_at_6:
           id: tool_r_at_6
           label: Tool Radius at 6mm
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: required
@@ -690,14 +871,14 @@ profiles:
         first_peripheral_pictures:
           id: first_peripheral_pictures
           label: Pictures of First Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
           id: first_end_pictures
           label: Pictures of First End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the first cutting edge (end)
@@ -705,14 +886,14 @@ profiles:
         second_peripheral_pictures:
           id: second_peripheral_pictures
           label: Pictures of Second Peripheral Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
           id: second_end_pictures
           label: Pictures of Second End Cutting Edge
-          datatype: file
+          datatype: image
           type: default
           required: required
           description: Picture of the second cutting edge (end)
@@ -801,6 +982,7 @@ profiles:
           datatype: text_suggestions
           type: default
           options:
+            - '1.2379'
             - C45
             - Steel
           required: optional
@@ -808,35 +990,35 @@ profiles:
         cutting_speed:
           id: cutting_speed
           label: Cutting Speed
-          datatype: float
+          datatype: float_qty
           unit: m/min
           type: range
           required: optional
         feed_per_tooth:
           id: feed_per_tooth
           label: Feed per Tooth
-          datatype: float
+          datatype: float_qty
           unit: mm/tooth
           type: range
           required: optional
         doc_axial:
           id: doc_axial
           label: Depth of Cut (axial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: optional
         doc_radial:
           id: doc_radial
           label: Depth of Cut (radial)
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: range
           required: optional
         tool_diameter:
           id: tool_diameter
           label: Tool Diameter
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: optional
@@ -861,7 +1043,7 @@ profiles:
         tool_offset:
           id: tool_offset
           label: Tool Offset
-          datatype: float
+          datatype: float_qty
           unit: mm
           type: default
           required: optional
@@ -877,6 +1059,8 @@ profiles:
             - MMQ
             - Flood
             - Oil
+            - TSC
+            - TSC+Flood
           required: optional
         direction:
           id: direction
@@ -907,7 +1091,7 @@ profiles:
         pictures:
           id: pictures
           label: Pictures
-          datatype: file
+          datatype: image
           type: default
           required: optional
           description: Pictures of the experiment; will be stored in the .hdf5 file.
