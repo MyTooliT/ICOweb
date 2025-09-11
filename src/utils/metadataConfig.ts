@@ -107,6 +107,19 @@ export function getRequiredParameterKeysForPhase(profilePhase: ProfilePhase): Pa
 }
 
 
+export function getAllParameterKeysForPhase(profilePhase: ProfilePhase): ParameterKey[] {
+    const params: ParameterKey[] = []
+    const categoriesInPhase = Object.values(profilePhase)
+    categoriesInPhase.forEach(category => {
+        Object.values(category).forEach(par => {
+            params.push(par.id)
+        })
+    })
+
+    return params
+}
+
+
 /**
  * Transforms a given value according to the provided metadata definition.
  *
@@ -140,12 +153,18 @@ export function assembleValue(parameter: AnyMetadataParameterDefinition, value: 
     }
 }
 
-export function getDefaultsObject(phase: ProfilePhase): Record<string, any> {
+export function getDefaultsObject(phase: ProfilePhase, restrictedOnly: boolean = false): Record<string, any> {
     const retObj: Record<string, any> = {}
     Object.values(phase).forEach(category => {
         Object.entries(category).forEach(([key, value]: [string, AnyMetadataParameterDefinition]) => {
             if(value.default) {
-                retObj[key] = assembleValue(value, value.default)
+                if(restrictedOnly) {
+                    if(value.required === 'restricted' || value.type === 'implementation') {
+                        retObj[key] = assembleValue(value, value.default)
+                    }
+                } else {
+                    retObj[key] = assembleValue(value, value.default)
+                }
             }
         })
     })
@@ -175,4 +194,29 @@ export function computeValidity(stateObject: Record<string, any>, phase: Profile
         }
     }
     return true
+}
+
+export function setRestrictedDefaults(stateObject: Record<string, any>, phase: ProfilePhase) {
+    const defaults = getDefaultsObject(phase, true)
+    Object.entries(defaults).forEach(([key, value]) => {
+        stateObject[key] = value
+    })
+}
+
+export function setDefaultsIfEmpty(stateObject: Record<string, any>, phase: ProfilePhase) {
+    const defaults = getDefaultsObject(phase)
+    Object.keys(defaults).forEach(key => {
+        if(stateObject[key] === undefined || stateObject[key]) {
+            stateObject[key] = defaults[key]
+        }
+    })
+}
+
+export function removeUnusedParams(stateObject: Record<string, any>, phase: ProfilePhase) {
+    const params = getAllParameterKeysForPhase(phase)
+    Object.keys(stateObject).forEach(param => {
+        if(!params.includes(param)) {
+            delete stateObject[param]
+        }
+    })
 }

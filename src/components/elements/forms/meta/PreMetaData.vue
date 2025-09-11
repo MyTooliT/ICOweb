@@ -2,18 +2,25 @@
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import {computed, onMounted, watch} from 'vue';
 import Select from 'primevue/select';
+import Button from 'primevue/button';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useHardwareStore} from '@/stores/hardwareStore/hardwareStore.ts';
-import {getRequiredParameterKeysForPhase, type ProfileDefinition} from '@/utils/metadataConfig.ts';
-import MetaInput from '@/components/elements/forms/meta/MetaInput.vue';
+import {
+  getDefaultsObject,
+  getRequiredParameterKeysForPhase,
+  setDefaultsIfEmpty,
+  setRestrictedDefaults,
+  computeValidity,
+  removeUnusedParams,
+  type ProfileDefinition
+} from '@/utils/metadataConfig.ts';
+import MetaForm from '@/components/elements/forms/meta/MetaForm.vue';
 const mStore = useMeasurementStore()
-const hwStore = useHardwareStore()
-const { config, error, reload } = useYamlConfig()
+const { config, reload } = useYamlConfig()
 
-const props = defineProps<{
+defineProps<{
   disabled: boolean,
-  phase: 'pre' | 'post'
 }>()
 
 const profiles = computed<ProfileDefinition[] | undefined>(() => {
@@ -32,111 +39,75 @@ const profile = computed<ProfileDefinition | undefined>(() => {
   }
 })
 
-
-function validate() {
-  if(profile.value === undefined) {
-    mStore.preMetaValid = false
-    return
+function setImplementations() {
+  if(!profile.value) return
+  const required_params = getRequiredParameterKeysForPhase(profile.value?.pre)
+  const hwStore = useHardwareStore()
+  if(required_params.includes('sth_mac')) {
+    mStore.preMetaForm.parameters.sth_mac = hwStore.activeSTH?.getMacAddress()
   }
-  const params = getRequiredParameterKeysForPhase(profile.value.pre)
-  let valid = true
-  params.forEach(param => {
-    let formValue = mStore.preMetaForm.parameters[param]
-    if (formValue && typeof formValue === 'object') {
-      // Either a Quantity or a base64 encoded image list
-      if('value' in formValue) {
-        formValue = formValue.value
-      } else {
-        formValue = Object.values(formValue)[0]
-      }
-    }
-
-    valid = valid && (formValue !== null && formValue !== undefined && formValue !== '')
-  })
-  mStore.preMetaValid = valid
+  if(required_params.includes('stu_mac')) {
+    mStore.preMetaForm.parameters.stu_mac = hwStore.activeSTU?.getMacAddress()
+  }
 }
 
-
-function update() {
-  if(props.disabled) return
-  if(!mStore.preMetaForm.parameters['sth_mac'])  {
-    mStore.preMetaForm.parameters['sth_mac'] = hwStore.activeSTH?.getMacAddress()
-  }
-
-  if(!mStore.preMetaForm.parameters['stu_mac'])  {
-    mStore.preMetaForm.parameters['stu_mac'] = hwStore.activeSTU?.getMacAddress()
-  }
-
-  if(!mStore.preMetaForm.version || mStore.preMetaForm.version === '')  {
-    mStore.preMetaForm.version = config.value?.info.version ?? ''
-  }
-
-  validate()
+function setAllDefaults() {
+  if(!profile.value) return
+  Object.assign(mStore.preMetaForm.parameters, getDefaultsObject(profile.value.pre))
 }
 
+function standardReset() {
+  if(!profile.value) return
+  setImplementations()
+  setRestrictedDefaults(mStore.preMetaForm.parameters, profile.value.pre)
+  setDefaultsIfEmpty(mStore.preMetaForm.parameters, profile.value.pre)
+  removeUnusedParams(mStore.preMetaForm.parameters, profile.value.pre)
+  mStore.preMetaValid = computeValidity(mStore.preMetaForm.parameters, profile.value.pre)
+}
 
-onMounted(async () => {
+onMounted(async() => {
   await reload()
-  update()
+  standardReset()
 })
 
-watch(mStore.preMetaForm.parameters, validate, {deep: true})
+watch(profile, standardReset)
 </script>
 
 <template>
   <div>
-    <div v-if="error">
-      {{ error }}
-    </div>
-    <div v-else>
-      <NamedInput title="Profile">
-        <template #header>
-          <h4 class="font-semibold">
-            Metadata Profile
-          </h4>
-        </template>
+    <NamedInput title="Profile">
+      <template #header>
+        <h4 class="font-semibold">
+          Metadata Profile
+          <i
+            v-tooltip="{ value: 'Changing the profile will set all parameters except those overwritten by the user to their default value (if present).\n\nTo reset all values, use the button to the right.' }"
+            class="pi pi-info-circle" />
+        </h4>
+      </template>
+      <div class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(30ch,1fr))]">
         <Select
           v-model="mStore.preMetaForm.profile"
           :disabled="disabled"
           :options="profiles ?? []"
           option-label="name"
           option-value="id"
-          @change="update"
+          class=""
         />
-      </NamedInput>
-      <form>
-        <div v-if="profile">
-          <div v-if="profile.pre">
-            <div
-              v-for="[category, categoryParameters] in Object.entries(profile.pre)"
-              :key="category"
-              class="mt-4 pt-3 border-t "
-            >
-              <h4 class="font-semibold">
-                {{ category }}
-              </h4>
-              <div class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(30ch,1fr))]">
-                <div
-                  v-for="[param_key, param_definition] in Object.entries(categoryParameters)"
-                  :key="param_key"
-                >
-                  <MetaInput
-                    :disabled="disabled"
-                    :param-key="param_key"
-                    :phase="phase"
-                    :definition="param_definition"
-                    @update="update"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+        <Button
+          v-tooltip="{ value: 'Resets all parameters to their default values (if present).' }"
+          label="Set Defaults"
+          severity="primary"
+          class="w-fit"
+          @click="setAllDefaults"
+        />
+      </div>
+    </NamedInput>
+    <MetaForm
+      v-if="profile"
+      v-model:state-object="mStore.preMetaForm.parameters"
+      v-model:state-validity="mStore.preMetaValid"
+      :phase="profile.pre"
+      :disabled="disabled"
+    />
   </div>
 </template>
-
-<style scoped>
-
-</style>

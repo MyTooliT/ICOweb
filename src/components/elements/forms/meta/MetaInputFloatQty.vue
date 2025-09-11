@@ -21,12 +21,14 @@ const emit = defineEmits<{
 
 watch(props, (newVal, oldVal) => {
   _unit.value = newVal.unit;
-  if(newVal.modelValue && newVal.modelValue.value !== oldVal?.modelValue?.value) {
+  if(newVal.modelValue) {
     _value.value = newVal.modelValue.value;
-    emit('update:modelValue', {
-      value: _value.value,
-      unit: _unit.value
-    })
+    if(newVal.modelValue.value !== oldVal?.modelValue?.value) {
+      emit('update:modelValue', {
+        value: _value.value,
+        unit: _unit.value
+      })
+    }
   }
 }, {
   immediate: true,
