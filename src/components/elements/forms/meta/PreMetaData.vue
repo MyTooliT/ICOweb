@@ -13,7 +13,7 @@ import {
   setRestrictedDefaults,
   computeValidity,
   removeUnusedParams,
-  type ProfileDefinition
+  type ProfileDefinition, clearEntries
 } from '@/utils/metadataConfig.ts';
 import MetaForm from '@/components/elements/forms/meta/MetaForm.vue';
 const mStore = useMeasurementStore()
@@ -53,6 +53,7 @@ function setImplementations() {
 
 function setAllDefaults() {
   if(!profile.value) return
+  clearEntries(mStore.preMetaForm.parameters)
   Object.assign(mStore.preMetaForm.parameters, getDefaultsObject(profile.value.pre))
 }
 
@@ -97,8 +98,8 @@ watch(profile, standardReset)
           class=""
         />
         <Button
-          v-tooltip="{ value: 'Resets all parameters to their default values (if present).' }"
-          label="Set Defaults"
+          v-tooltip="{ value: 'Resets all parameters to their default values (if present) or empties them.' }"
+          label="Clear Form"
           severity="primary"
           class="w-fit"
           @click="setAllDefaults"
