@@ -40,7 +40,6 @@ import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
 import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import {SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
-import {assembleFormEntry} from '@/utils/metadataConfig.ts';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
@@ -173,25 +172,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await sendMeasurementStopFlag()
-  await config.reload()
-  if(hasPostMeta.value) {
-    mStore.postMetaForm.version = mStore.preMetaForm.version
-    mStore.postMetaForm.profile = mStore.preMetaForm.profile
-    mStore.postMetaForm.parameters = {}
-    if(config.config.value?.profiles) {
-      Object.values(config.config.value?.profiles).forEach((profile) => {
-        if(profile.post) {
-          Object.values(profile.post).forEach(category => {
-            Object.entries(category).forEach(([param_key, param])  => {
-              if(param.default !== undefined) {
-                mStore.postMetaForm.parameters[param_key] = assembleFormEntry(param.default, param)
-              }
-            })
-          })
-        }
-      })
-    }
-  } else {
+  if(!hasPostMeta.value) {
+    // only clean up if no post meta is required
     await afterMeasurementCleanup()
   }
 })
