@@ -39,7 +39,10 @@ const profile = computed<ProfileDefinition | undefined>(() => {
 })
 
 function standardReset() {
-  if(!profile.value || !profile.value.post) return
+  if(!profile.value || !profile.value.post || !config.value) return
+  if(!mStore.postMetaForm.version || mStore.postMetaForm.version === '') {
+    mStore.postMetaForm.version = config.value.info.version
+  }
   clearEntries(mStore.postMetaForm.parameters)
   setRestrictedDefaults(mStore.postMetaForm.parameters, profile.value.post)
   setDefaultsIfEmpty(mStore.postMetaForm.parameters, profile.value.post)

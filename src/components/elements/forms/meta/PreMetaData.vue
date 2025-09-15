@@ -57,7 +57,10 @@ function setAllDefaults() {
 }
 
 function standardReset() {
-  if(!profile.value) return
+  if(!profile.value || !config.value) return
+  if(!mStore.preMetaForm.version || mStore.preMetaForm.version === '') {
+    mStore.preMetaForm.version = config.value.info.version
+  }
   setImplementations()
   setRestrictedDefaults(mStore.preMetaForm.parameters, profile.value.pre)
   setDefaultsIfEmpty(mStore.preMetaForm.parameters, profile.value.pre)
