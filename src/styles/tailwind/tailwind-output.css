@@ -662,6 +662,16 @@ video {
   margin-bottom: 1.5rem;
 }
 
+.mx-\[15\%\] {
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.mx-12 {
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -816,6 +826,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-3\/4 {
+  width: 75%;
 }
 
 .min-w-36 {
@@ -1081,6 +1095,14 @@ video {
   padding: 1rem;
 }
 
+.p-1 {
+  padding: 0.25rem;
+}
+
+.p-\[\.375rem\] {
+  padding: .375rem;
+}
+
 .\!px-5 {
   padding-left: 1.25rem !important;
   padding-right: 1.25rem !important;
@@ -1312,12 +1334,40 @@ video {
   width: stretch;
 }
 
+.\[flex-bais\:20\%\] {
+  flex-bais: 20%;
+}
+
+.\[flex-base\:20\%\] {
+  flex-base: 20%;
+}
+
 .\[flex-basis\:100\%\] {
   flex-basis: 100%;
 }
 
 .\[flex-basis\:20\%\] {
   flex-basis: 20%;
+}
+
+.\[flex-basis\:24\%\] {
+  flex-basis: 24%;
+}
+
+.\[flex-basis\:24\.7\%\] {
+  flex-basis: 24.7%;
+}
+
+.\[flex-basis\:24\.8\%\] {
+  flex-basis: 24.8%;
+}
+
+.\[flex-basis\:24\.9\%\] {
+  flex-basis: 24.9%;
+}
+
+.\[flex-basis\:25\%\] {
+  flex-basis: 25%;
 }
 
 .\[grid-template-columns\:repeat\(auto-fill\2c minmax\(30ch\2c 1fr\)\)\] {
@@ -1336,8 +1386,28 @@ video {
   min-width: 36ch;
 }
 
+.\[width\:100vw\] {
+  width: 100vw;
+}
+
 .\[width\:6ch\] {
   width: 6ch;
+}
+
+.\[width\:75dvh\] {
+  width: 75dvh;
+}
+
+.\[width\:75vw\] {
+  width: 75vw;
+}
+
+.\[width\:80vw\] {
+  width: 80vw;
+}
+
+.\[width\:90vw\] {
+  width: 90vw;
 }
 
 .\[width\:clamp\(10rem\2c 75\%\2c 60rem\)\] {

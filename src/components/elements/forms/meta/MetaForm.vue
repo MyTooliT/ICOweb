@@ -26,10 +26,11 @@ const emits = defineEmits<{
       <h4 class="font-semibold">
         {{ category }}
       </h4>
-      <div class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(30ch,1fr))]">
+      <div class="flex flex-row flex-wrap">
         <div
           v-for="([param_key, param_definition]) in Object.entries(categoryParameters)"
           :key="param_key"
+          class="flex-shrink [flex-basis:25%] p-[.375rem]"
         >
           <MetaInputProvider
             :model-value="stateObject[param_key]"
