@@ -55,6 +55,7 @@ function setAllDefaults() {
   if(!profile.value) return
   clearEntries(mStore.preMetaForm.parameters)
   Object.assign(mStore.preMetaForm.parameters, getDefaultsObject(profile.value.pre))
+  setImplementations()
 }
 
 function standardReset() {
