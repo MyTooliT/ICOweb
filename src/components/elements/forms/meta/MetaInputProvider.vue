@@ -7,7 +7,7 @@ import Checkbox from 'primevue/checkbox';
 import NamedInput from '@/components/elements/forms/NamedInput.vue';
 import {computed} from 'vue';
 import CustomFileUpload from '@/components/elements/forms/CustomFileUpload.vue';
-import {AnyMetadataParameterDefinition, hasUnit, MetadataPhaseKey} from '@/utils/metadataConfig.ts';
+import {AnyMetadataParameterDefinition, hasUnit} from '@/utils/metadataConfig.ts';
 import MetaTextSuggestable from '@/components/elements/forms/meta/MetaTextSuggestable.vue';
 import MetaInputIntQty from '@/components/elements/forms/meta/MetaInputIntQty.vue';
 import MetaInputFloatQty from '@/components/elements/forms/meta/MetaInputFloatQty.vue';
@@ -15,7 +15,6 @@ import MetaInputFloatQty from '@/components/elements/forms/meta/MetaInputFloatQt
 const props = defineProps<{
   definition: AnyMetadataParameterDefinition;
   disabled?: boolean,
-  phase: MetadataPhaseKey
   modelValue: any
 }>()
 

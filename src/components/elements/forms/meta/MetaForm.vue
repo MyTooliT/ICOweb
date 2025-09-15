@@ -33,7 +33,6 @@ const emits = defineEmits<{
         >
           <MetaInputProvider
             :model-value="stateObject[param_key]"
-            phase="pre"
             :definition="(param_definition as AnyMetadataParameterDefinition)"
             :disabled="(param_definition as AnyMetadataParameterDefinition).type === 'implementation' || (param_definition as AnyMetadataParameterDefinition).required === 'restricted' || disabled"
             @update:model-value="e => {
