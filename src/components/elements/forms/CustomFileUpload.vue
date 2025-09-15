@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
 import FileUpload from 'primevue/fileupload';
 
-export interface Base64Map {
+export type Base64Map = {
   [filename: string]: string;
 }
 
-const props = defineProps<{
+defineProps<{
   required: boolean,
   modelValue?: Base64Map,
 }>()
@@ -14,36 +13,30 @@ const props = defineProps<{
 const emits = defineEmits<{
   'update:modelValue': [Base64Map],
 }>()
-const base64Images = ref<Base64Map>({});
 
-function onFileSelect(event: { files: File[] }) {
-  const files = event.files;
-  base64Images.value = {};
-
-  files.forEach(file => {
-    if (!file.type.startsWith('image/')) {
-      return;
-    }
-
+function readAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      base64Images.value[file.name] = reader.result as string;
-    };
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error ?? new Error('FileReader failed'));
     reader.readAsDataURL(file);
   });
-
-  emits('update:modelValue', base64Images.value)
 }
 
-watch(props, (newVal) => {
-  if(newVal.modelValue) {
-    base64Images.value = newVal.modelValue;
-    emits('update:modelValue', newVal.modelValue)
-  }
-}, {
-  immediate: true,
-  deep: true,
-})
+async function onFileSelect(event: { files: File[] }) {
+  const imageFiles = event.files.filter(f => f.type.startsWith('image/'));
+
+  const entries = await Promise.all(
+      imageFiles.map(async (file) => {
+        const dataUrl = await readAsDataURL(file);
+        return [file.name, dataUrl] as const;
+      })
+  );
+
+  const base64Images: Base64Map = Object.fromEntries(entries);
+
+  emits('update:modelValue', base64Images);
+}
 </script>
 
 <template>
@@ -54,17 +47,16 @@ watch(props, (newVal) => {
       auto
       multiple
       accept="image/*"
-      :choose-button-props="{ severity: (required && Object.keys(base64Images).length === 0 ) ? 'danger' : 'primary' }"
+      :choose-button-props="{ severity: (required && Object.keys(modelValue?? {}).length === 0 ) ? 'danger' : 'primary' }"
       class="p-button-outlined"
       @select="onFileSelect"
     />
-
     <div
-      v-if="Object.keys(base64Images).length"
+      v-if="modelValue"
       class="flex [flex-basis:100%] flex-grow"
     >
       <div
-        v-for="[key, src] in Object.entries(base64Images)"
+        v-for="[key, src] in Object.entries(modelValue?? {})"
         :key="key"
         class="flex flex-col items-center"
       >
