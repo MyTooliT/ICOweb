@@ -220,3 +220,9 @@ export function removeUnusedParams(stateObject: Record<string, any>, phase: Prof
         }
     })
 }
+
+export function clearEntries(stateObject: Record<string, any>) {
+    Object.keys(stateObject).forEach(param => {
+        delete stateObject[param]
+    })
+}

@@ -19,7 +19,7 @@ defineProps<{
     :append-to="'body'"
     :block-scroll="true"
     header="Post-Measurement Metadata"
-    class="[width:clamp(10rem,75%,60rem)]"
+    class="[width:80vw]"
   >
     <PostMetaData
       :loading="loading"
