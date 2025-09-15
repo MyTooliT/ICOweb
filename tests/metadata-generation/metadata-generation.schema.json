@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/metadata.schema.json",
+  "title": "Metadata Config",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "info": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string" },
+        "generated_at": { "type": "string" }
+      },
+      "required": ["generated_at"]
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "pre": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": { "type": "string" },
+                  "label": { "type": "string" },
+                  "datatype": {
+                    "type": "string",
+                    "enum": [
+                      "boolean",
+                      "dropdown",
+                      "image",
+                      "float",
+                      "int",
+                      "float_qty",
+                      "int_qty",
+                      "text",
+                      "text_box",
+                      "text_suggestions"
+                    ]
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["default", "implementation", "range"]
+                  },
+                  "required": {
+                    "type": "string",
+                    "enum": ["optional", "required", "restricted"]
+                  },
+                  "description": { "type": "string" },
+                  "options": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "unit": { "type": "string" },
+                  "default": {}
+                },
+                "required": ["id", "label", "datatype", "type", "required"],
+                "allOf": [
+                  {
+                    "if": { "properties": { "datatype": { "const": "dropdown" } } },
+                    "then": { "required": ["options"] }
+                  },
+                  {
+                    "if": { "properties": { "datatype": { "const": "text_suggestions" } } },
+                    "then": { "required": ["options"] }
+                  }
+                ]
+              }
+            }
+          },
+          "post": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": { "type": "string" },
+                  "label": { "type": "string" },
+                  "datatype": {
+                    "type": "string",
+                    "enum": [
+                      "boolean",
+                      "dropdown",
+                      "image",
+                      "float",
+                      "int",
+                      "float_qty",
+                      "int_qty",
+                      "text",
+                      "text_box",
+                      "text_suggestions"
+                    ]
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["default", "implementation", "range"]
+                  },
+                  "required": {
+                    "type": "string",
+                    "enum": ["optional", "required", "restricted"]
+                  },
+                  "description": { "type": "string" },
+                  "options": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "unit": { "type": "string" },
+                  "default": {}
+                },
+                "required": ["id", "label", "datatype", "type", "required"],
+                "allOf": [
+                  {
+                    "if": { "properties": { "datatype": { "const": "dropdown" } } },
+                    "then": { "required": ["options"] }
+                  },
+                  {
+                    "if": { "properties": { "datatype": { "const": "text_suggestions" } } },
+                    "then": { "required": ["options"] }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "required": ["id", "name", "pre", "post"]
+      }
+    }
+  },
+  "required": ["info", "profiles"]
+}

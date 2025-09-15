@@ -881,10 +881,6 @@ video {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.grid-cols-1 {
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-}
-
 .flex-row {
   flex-direction: row;
 }
@@ -1083,6 +1079,10 @@ video {
 
 .p-4 {
   padding: 1rem;
+}
+
+.p-\[\.375rem\] {
+  padding: .375rem;
 }
 
 .\!px-5 {
@@ -1320,12 +1320,8 @@ video {
   flex-basis: 100%;
 }
 
-.\[flex-basis\:20\%\] {
-  flex-basis: 20%;
-}
-
-.\[grid-template-columns\:repeat\(auto-fill\2c minmax\(30ch\2c 1fr\)\)\] {
-  grid-template-columns: repeat(auto-fill,minmax(30ch,1fr));
+.\[flex-basis\:25\%\] {
+  flex-basis: 25%;
 }
 
 .\[height\:calc\(100\%-39px\)\] {
@@ -1340,12 +1336,24 @@ video {
   min-width: 36ch;
 }
 
+.\[padding-right\:\.375rem\;\] {
+  padding-right: .375rem;;
+}
+
+.\[padding-right\:\.375rem\] {
+  padding-right: .375rem;
+}
+
+.\[padding-right\:\.75rem\;\] {
+  padding-right: .75rem;;
+}
+
 .\[width\:6ch\] {
   width: 6ch;
 }
 
-.\[width\:clamp\(10rem\2c 75\%\2c 60rem\)\] {
-  width: clamp(10rem,75%,60rem);
+.\[width\:80vw\] {
+  width: 80vw;
 }
 
 .hover\:border-0:hover {
@@ -1643,16 +1651,6 @@ video {
 @media (min-width: 640px) {
   .sm\:w-64 {
     width: 16rem;
-  }
-
-  .sm\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

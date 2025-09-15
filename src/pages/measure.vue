@@ -39,8 +39,6 @@ import {useDisable} from '@/utils/useDisable.ts';
 import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
 import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {Parameter} from '@/types/metadata';
-import {assembleFormEntry} from '@/utils/metadataHelper.ts';
 import {SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
 /* eslint-enable max-len */
 
@@ -122,6 +120,7 @@ const currentMax = ref<number | undefined>(undefined)
 const config = useYamlConfig()
 
 const hasPostMeta = computed<boolean>(() => {
+  if(!featureEnabled('Meta')) return false
   if(config.config.value?.profiles) {
     const profiles = Object.values(config.config.value.profiles)
     const profile = profiles.find(p => p.id === mStore.preMetaForm.profile)
@@ -174,26 +173,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
 
 const { loading: stopLoading, call: stop } = useLoadingHandler(async () => {
   await sendMeasurementStopFlag()
-  await config.reload()
-  if(hasPostMeta.value) {
-    mStore.postMetaForm.version = mStore.preMetaForm.version
-    mStore.postMetaForm.profile = mStore.preMetaForm.profile
-    mStore.postMetaForm.parameters = {}
-    if(config.config.value?.profiles) {
-      Object.values(config.config.value?.profiles).forEach((profile) => {
-        if(profile.post) {
-          Object.values(profile.post).forEach(category => {
-            Object.entries(category).forEach(([param_key, param])  => {
-              if(param.default !== undefined) {
-                const definition = config.config.value?.parameters[param_key as Parameter]
-                mStore.postMetaForm.parameters[param_key] = assembleFormEntry(param.default, definition)
-              }
-            })
-          })
-        }
-      })
-    }
-  } else {
+  if(!hasPostMeta.value) {
+    // only clean up if no post meta is required
     await afterMeasurementCleanup()
   }
 })
@@ -292,6 +273,7 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
     scl[udc.physicalUnit] = {
       position: 'left',
       type: 'linear',
+      //@ts-ignore
       title: {
         display: true,
         text: `${udc.physicalDimension} in ${udc.physicalUnit}`,
@@ -301,7 +283,8 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
   return scl
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await hwStore.refetchSensorsAndHolders()
   if(hwStore.activeHolder) {
     if(hwStore.activeHolder.sensors.length < Object.values(mStore.activeChannels).filter(channel => channel).length) {
       mStore.activeChannels = {
@@ -316,6 +299,7 @@ onMounted(() => {
       }
     }
   }
+
 })
 watch(mStore.selectedChannels, () => scales.value = computeScales())
 watch(mStore.activeChannels, () => scales.value = computeScales())
@@ -325,7 +309,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
 <template>
   <div class="flex flex-row">
     <PostMetaModal
-      :closable="!gStore.systemState.running"
+      :closable="true"
       :loading="postMetaLoading"
       @send="submitPostMeta"
     />

@@ -1,4 +1,5 @@
 import {
+  getSensorInformation,
   getSTHDevicesMeta,
   getSTUDevices
 } from '@/api/icoapi.ts';
@@ -84,7 +85,6 @@ export const useHardwareStore = defineStore('hardware', () => {
     STUDeviceLoading.value = false
   }
   const activeSTU = computed<STUDevice>(() => {
-    // TODO: Implement more STU support
     return STUDeviceList.value[0]
   })
   const hasSTU = computed<boolean>(() => {
@@ -148,6 +148,14 @@ export const useHardwareStore = defineStore('hardware', () => {
     })
   }
 
+  async function refetchSensorsAndHolders() {
+    const { sensors, configurations } = await getSensorInformation()
+    clearSensorList()
+    parseSensorList(sensors)
+    clearHolderList()
+    parseHolderList(configurations)
+  }
+
   return {
     sensorList,
     clearSensorList,
@@ -170,7 +178,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     hasHolder,
     parseSensorList,
     clearHolderList,
-    parseHolderList
+    parseHolderList,
+    refetchSensorsAndHolders
   }
 }, {
   persist: {
