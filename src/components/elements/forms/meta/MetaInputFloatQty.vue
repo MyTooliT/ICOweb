@@ -29,6 +29,8 @@ watch(props, (newVal, oldVal) => {
         unit: _unit.value
       })
     }
+  } else {
+    _value.value = undefined;
   }
 }, {
   immediate: true,
