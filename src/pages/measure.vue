@@ -120,6 +120,7 @@ const currentMax = ref<number | undefined>(undefined)
 const config = useYamlConfig()
 
 const hasPostMeta = computed<boolean>(() => {
+  if(!featureEnabled('Meta')) return false
   if(config.config.value?.profiles) {
     const profiles = Object.values(config.config.value.profiles)
     const profile = profiles.find(p => p.id === mStore.preMetaForm.profile)
