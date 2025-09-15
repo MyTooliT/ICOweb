@@ -148,6 +148,8 @@ export function assembleValue(parameter: AnyMetadataParameterDefinition, value: 
                 unit: parameter.unit,
                 value: value
             } as Quantity
+        case 'boolean':
+            return typeof value === 'string' ? value === 'true' : false
         default:
             return value
     }
@@ -174,7 +176,7 @@ export function getDefaultsObject(phase: ProfilePhase, restrictedOnly: boolean =
 export function computeValidity(stateObject: Record<string, any>, phase: ProfilePhase): boolean {
     const requiredParams = getRequiredParameterKeysForPhase(phase)
     for(const param of requiredParams) {
-        if(!stateObject[param]) {
+        if(stateObject[param] === undefined || stateObject[param] === null) {
             // parameter is required but not set
             return false
         }
