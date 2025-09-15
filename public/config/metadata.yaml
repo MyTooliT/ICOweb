@@ -1,6 +1,6 @@
 info:
   version: 0.0.2
-  generated_at: '2025-09-11T12:04:59.448Z'
+  generated_at: '2025-09-15T06:33:38.686Z'
 profiles:
   twm1:
     id: cirp_twm_1
@@ -157,6 +157,7 @@ profiles:
           datatype: text
           type: default
           required: restricted
+          default: bokte_01
           description: Manufacturer's tool type identification (e.g. article number, code, …)
         tool_manufacturer:
           id: tool_manufacturer
@@ -506,7 +507,6 @@ profiles:
           datatype: image
           type: default
           required: required
-          default: 'null'
           description: Picture of the first cutting edge (peripheral)
         first_end_pictures:
           id: first_end_pictures
@@ -514,7 +514,6 @@ profiles:
           datatype: image
           type: default
           required: required
-          default: 'null'
           description: Picture of the first cutting edge (end)
       Second Cutting Edge:
         second_peripheral_pictures:
@@ -523,7 +522,6 @@ profiles:
           datatype: image
           type: default
           required: required
-          default: 'null'
           description: Picture of the second cutting edge (peripheral)
         second_end_pictures:
           id: second_end_pictures
@@ -531,7 +529,6 @@ profiles:
           datatype: image
           type: default
           required: required
-          default: 'null'
           description: Picture of the second cutting edge (end)
       Additional:
         comment:
