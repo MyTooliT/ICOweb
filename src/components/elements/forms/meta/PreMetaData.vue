@@ -88,15 +88,17 @@ watch(profile, standardReset)
             class="pi pi-info-circle" />
         </h4>
       </template>
-      <div class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(30ch,1fr))]">
-        <Select
-          v-model="mStore.preMetaForm.profile"
-          :disabled="disabled"
-          :options="profiles ?? []"
-          option-label="name"
-          option-value="id"
-          class=""
-        />
+      <div class="flex flex-row">
+        <div class="flex-shrink [flex-basis:25%] [padding-right:.75rem;]">
+          <Select
+            v-model="mStore.preMetaForm.profile"
+            :disabled="disabled"
+            :options="profiles ?? []"
+            option-label="name"
+            option-value="id"
+            class="w-full"
+          />
+        </div>
         <Button
           v-tooltip="{ value: 'Resets all parameters to their default values (if present) or empties them.' }"
           label="Clear Form"
