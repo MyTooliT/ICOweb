@@ -7,7 +7,6 @@ import mime from 'mime';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primevue';
 import {Metadata, ParsedMetadata} from '@/client';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
-import 'vue3-json-viewer/dist/vue3-json-viewer.css';
 import {capitalize, onMounted, Ref, ref, watch} from 'vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import MetaForm from '@/components/elements/forms/meta/MetaForm.vue';
