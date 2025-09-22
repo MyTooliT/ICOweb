@@ -7,6 +7,7 @@ export type Base64Map = {
 
 defineProps<{
   required: boolean,
+  disabled?: boolean
   modelValue?: Base64Map,
 }>()
 
@@ -48,6 +49,7 @@ async function onFileSelect(event: { files: File[] }) {
       multiple
       accept="image/*"
       :choose-button-props="{ severity: (required && Object.keys(modelValue?? {}).length === 0 ) ? 'danger' : 'primary' }"
+      :disabled="disabled"
       class="p-button-outlined"
       @select="onFileSelect"
     />
