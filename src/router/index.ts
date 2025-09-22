@@ -14,6 +14,7 @@ import {
   createWebHashHistory
 } from 'vue-router';
 import {useADCStore} from '@/stores/ADCStore/ADCStore.ts';
+import TestPage from '../../tests/TestPage.vue';
 
 // Define the routes
 const routes = [
@@ -52,6 +53,11 @@ const routes = [
     name: 'Logs',
     component: Logs,
   },
+  {
+    path: '/test',
+    name: 'Test',
+    component: TestPage
+  }
 ];
 
 

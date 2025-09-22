@@ -244,6 +244,30 @@ export async function sendMeasurementPostMeta(meta: Metadata): Promise<void> {
   })
 }
 
+export async function sendPreMetaOverride(name: string, meta: Metadata): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<Metadata, undefined>(`files/pre_meta/${name}`, meta)
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function sendPostMetaOverride(name: string, meta: Metadata): Promise<void> {
+  return new Promise((resolve, reject) => {
+    post<Metadata, undefined>(`files/post_meta/${name}`, meta)
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function getMetadata(name: string): Promise<Metadata> {
+  return new Promise((resolve, reject) => {
+    get<Metadata>(`files/meta/${name}`)
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
 export async function getSensorInformation(): Promise<AvailableSensorInformation> {
   return new Promise((resolve, reject) => {
     get<AvailableSensorInformation>('sensor')

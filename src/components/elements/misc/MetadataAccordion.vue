@@ -5,13 +5,19 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import mime from 'mime';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primevue';
-import {ParsedMetadata} from '@/client';
+import {Metadata, ParsedMetadata} from '@/client';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
-import {capitalize, onMounted, ref, watch} from 'vue';
+import {capitalize, onMounted, Ref, ref, watch} from 'vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import MetaForm from '@/components/elements/forms/meta/MetaForm.vue';
 import {computeValidity, ProfileDefinition} from '@/utils/metadataConfig.ts';
+import MetadataEditSection from '@/components/elements/forms/meta/MetadataEditSection.vue';
+import {getMetadata, sendPostMetaOverride, sendPreMetaOverride} from '@/api/icoapi.ts';
+import {useRoute} from 'vue-router';
+import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
+
+const route = useRoute()
 
 const props = defineProps<{
   parsedMetadata: ParsedMetadata
@@ -28,12 +34,37 @@ const sensorColumns = props.parsedMetadata.sensors[0]
 
 const { config, reload } = useYamlConfig()
 const metadataProfile = ref<ProfileDefinition|undefined>()
-const preMetadata = ref<Record<string,any>>({})
+const preMetadata = ref<Metadata|undefined>(undefined)
 const preMetadataValidity = ref<boolean>(false)
 const preMetadataEditable = ref<boolean>(false)
-const postMetadata = ref<Record<string,any>>({})
+const postMetadata = ref<Metadata|undefined>(undefined)
 const postMetadataValidity = ref<boolean>(false)
 const postMetadataEditable = ref<boolean>(false)
+
+function extractMetadata(stateObj: Ref<Metadata|undefined>, source: any) {
+  stateObj.value = JSON.parse(JSON.stringify(source))
+}
+function extractPreMetadata() {
+  extractMetadata(preMetadata, props.parsedMetadata.acceleration.attributes['pre_metadata'])
+}
+function extractPostMetadata() {
+  extractMetadata(postMetadata, props.parsedMetadata.acceleration.attributes['post_metadata'])
+}
+
+const { loading: preLoading, call: sendPre } = useLoadingHandler(async () => {
+  if(!route.query['file'] || !preMetadata.value) return
+  const filename = String(route.query['file'])
+  await sendPreMetaOverride(filename, preMetadata.value)
+  preMetadataEditable.value = false
+  preMetadata.value = await getMetadata(filename)
+})
+const { loading: postLoading, call: sendPost } = useLoadingHandler(async () => {
+  if(!route.query['file'] || !postMetadata.value) return
+  const filename = String(route.query['file'])
+  await sendPostMetaOverride(filename, postMetadata.value)
+  postMetadataEditable.value = false
+  postMetadata.value = await getMetadata(filename)
+})
 
 onMounted(async () => {
   await reload()
@@ -42,15 +73,21 @@ onMounted(async () => {
 watch(props, async () => {
   await reload()
   if(!config.value) return
-  preMetadata.value = props.parsedMetadata.acceleration.attributes['pre_metadata'] as Record<string,any>
-  metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === preMetadata.value['profile'])
+
+  extractPreMetadata()
+  if(preMetadata.value !== undefined) {
+    metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === preMetadata.value?.profile)
+  }
   if(metadataProfile.value) {
     preMetadataValidity.value = computeValidity(preMetadata, metadataProfile.value.pre)
   }
-  postMetadata.value = props.parsedMetadata.acceleration.attributes['post_metadata'] as Record<string,any>
-  metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === postMetadata.value['profile'])
-  if(metadataProfile.value) {
-    postMetadataValidity.value = computeValidity(postMetadata, metadataProfile.value.pre)
+
+  extractPostMetadata()
+  if(postMetadata.value !== undefined) {
+    metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === postMetadata.value?.profile)
+  }
+  if(metadataProfile.value && metadataProfile.value.post) {
+    postMetadataValidity.value = computeValidity(postMetadata, metadataProfile.value.post)
   }
 }, {
   deep: true,
@@ -61,42 +98,8 @@ watch(props, async () => {
 <template>
   <Accordion class="border rounded-md [margin-bottom:40px]">
     <AccordionPanel
-      v-if="preMetadata"
-      value="0">
-      <AccordionHeader class="data-[p-active=true]:!border-b">
-        Pre-Measurement Metadata
-      </AccordionHeader>
-      <AccordionContent>
-        <MetaForm
-          v-if="config && metadataProfile"
-          v-model:state-object="preMetadata['parameters']"
-          v-model:state-validity="preMetadataValidity"
-          :disabled="!preMetadataEditable"
-          :phase="metadataProfile.pre"
-          class="pt-3"
-        />
-      </AccordionContent>
-    </AccordionPanel>
-    <AccordionPanel
-      v-if="postMetadata && metadataProfile?.post"
-      value="1">
-      <AccordionHeader class="data-[p-active=true]:!border-b">
-        Post-Measurement Metadata
-      </AccordionHeader>
-      <AccordionContent>
-        <MetaForm
-          v-if="config && metadataProfile"
-          v-model:state-object="postMetadata['parameters']"
-          v-model:state-validity="postMetadataValidity"
-          :disabled="!postMetadataEditable"
-          :phase="metadataProfile.post"
-          class="pt-3"
-        />
-      </AccordionContent>
-    </AccordionPanel>
-    <AccordionPanel
       v-if="parsedMetadata?.pictures && Object.keys(parsedMetadata?.pictures).length > 0"
-      value="2"
+      value="0"
     >
       <AccordionHeader>
         Pictures
@@ -130,6 +133,67 @@ watch(props, async () => {
               </div>
             </div>
           </div>
+        </div>
+      </AccordionContent>
+    </AccordionPanel>
+    <AccordionPanel
+      v-if="preMetadata"
+      value="1">
+      <AccordionHeader class="data-[p-active=true]:!border-b">
+        Pre-Measurement Metadata
+      </AccordionHeader>
+      <AccordionContent>
+        <div class="bg-white gap-3 pt-3 flex flex-col">
+          <MetadataEditSection
+            :state="preMetadataEditable ? 'edit' : 'view'"
+            :loading="preLoading"
+            edit-btn-label="Edit Pre-Metadata"
+            info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
+            @edit="preMetadataEditable = true"
+            @cancel-edit="() => {
+              extractPreMetadata()
+              preMetadataEditable = false
+            }"
+            @save="sendPre"
+          />
+          <MetaForm
+            v-if="config && metadataProfile"
+            v-model:state-object="preMetadata.parameters"
+            v-model:state-validity="preMetadataValidity"
+            :disabled="!preMetadataEditable"
+            :phase="metadataProfile.pre"
+          />
+        </div>
+      </AccordionContent>
+    </AccordionPanel>
+    <AccordionPanel
+      v-if="postMetadata && metadataProfile?.post"
+      value="2">
+      <AccordionHeader class="data-[p-active=true]:!border-b">
+        Post-Measurement Metadata
+      </AccordionHeader>
+      <AccordionContent>
+        <div class="bg-white gap-3 pt-3 flex flex-col">
+          <MetadataEditSection
+            :state="postMetadataEditable ? 'edit' : 'view'"
+            :loading="postLoading"
+            edit-btn-label="Edit Post-Metadata"
+            info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
+            @edit="postMetadataEditable = true"
+            @cancel-edit="() => {
+              extractPostMetadata()
+              postMetadataEditable = false
+            }"
+            @save="sendPost"
+          />
+          <MetaForm
+            v-if="config && metadataProfile"
+            v-model:state-object="postMetadata.parameters"
+            v-model:state-validity="postMetadataValidity"
+            :disabled="!postMetadataEditable"
+            :phase="metadataProfile.post"
+            class="pt-3"
+          />
         </div>
       </AccordionContent>
     </AccordionPanel>

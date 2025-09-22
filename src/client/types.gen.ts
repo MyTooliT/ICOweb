@@ -12,6 +12,10 @@ export type AvailableSensorInformation = {
     configurations: Array<PCBSensorConfiguration>;
 };
 
+export type Body_overwrite_post_meta_api_v1_files_meta_post__name__post = {
+    metadata: Metadata;
+};
+
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
     file: (Blob | File);
 };
@@ -306,6 +310,13 @@ export type GetFileMetaApiV1FilesAnalyzeMetaNameGetData = {
 };
 
 export type GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse = ParsedMetadata;
+
+export type OverwritePostMetaApiV1FilesMetaPostNamePostData = {
+    name: string;
+    requestBody: Body_overwrite_post_meta_api_v1_files_meta_post__name__post;
+};
+
+export type OverwritePostMetaApiV1FilesMetaPostNamePostResponse = unknown;
 
 export type UploadFileApiV1CloudUploadPostData = {
     requestBody: Body_upload_file_api_v1_cloud_upload_post;
@@ -638,6 +649,28 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: ParsedMetadata;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/files/meta/post/{name}': {
+        post: {
+            req: OverwritePostMetaApiV1FilesMetaPostNamePostData;
+            res: {
+                /**
+                 * Metadata successfully overwritten
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
                  * Validation Error
                  */

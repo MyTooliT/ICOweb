@@ -74,6 +74,17 @@ export const $AvailableSensorInformation = {
     title: 'AvailableSensorInformation'
 } as const;
 
+export const $Body_overwrite_post_meta_api_v1_files_meta_post__name__post = {
+    properties: {
+        metadata: {
+            '$ref': '#/components/schemas/Metadata'
+        }
+    },
+    type: 'object',
+    required: ['metadata'],
+    title: 'Body_overwrite_post_meta_api_v1_files_meta_post__name__post'
+} as const;
+
 export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
