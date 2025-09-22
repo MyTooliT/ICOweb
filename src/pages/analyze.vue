@@ -54,7 +54,7 @@ const routerWatcher = async () => {
     if(parsedMetadata.value) {
       const sensors = getDatasetSensors(parsedMetadata.value)
       scales.value = computeChartScales(sensors)
-      datasetUnits.value = Object.keys(scales.value)
+      datasetUnits.value = sensors.map(sensor => sensor.sensorType.physicalUnit)
       if(parsedMetadata.value.sensors.length > 0) {
         parsedData.value.datasets.forEach((dataset, index) => {
           dataset.name = parsedMetadata.value?.sensors[index].name ?? dataset.name
