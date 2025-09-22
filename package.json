@@ -42,7 +42,6 @@
     "vue": "^3.4.31",
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.4.0",
-    "vue3-json-viewer": "^2.4.1",
     "xlsx": "^0.18.5",
     "yargs": "^17.7.2"
   },

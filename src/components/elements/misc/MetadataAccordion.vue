@@ -5,11 +5,13 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import mime from 'mime';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primevue';
-import {JsonViewer} from 'vue3-json-viewer';
 import {ParsedMetadata} from '@/client';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
-import {capitalize} from 'vue';
+import {capitalize, onMounted, ref, watch} from 'vue';
+import {useYamlConfig} from '@/utils/useYamlConfig.ts';
+import MetaForm from '@/components/elements/forms/meta/MetaForm.vue';
+import {computeValidity, ProfileDefinition} from '@/utils/metadataConfig.ts';
 
 const props = defineProps<{
   parsedMetadata: ParsedMetadata
@@ -23,29 +25,78 @@ const sensorColumns = props.parsedMetadata.sensors[0]
       }
     })
     : []
+
+const { config, reload } = useYamlConfig()
+const metadataProfile = ref<ProfileDefinition|undefined>()
+const preMetadata = ref<Record<string,any>>({})
+const preMetadataValidity = ref<boolean>(false)
+const preMetadataEditable = ref<boolean>(false)
+const postMetadata = ref<Record<string,any>>({})
+const postMetadataValidity = ref<boolean>(false)
+const postMetadataEditable = ref<boolean>(false)
+
+onMounted(async () => {
+  await reload()
+})
+
+watch(props, async () => {
+  await reload()
+  if(!config.value) return
+  preMetadata.value = props.parsedMetadata.acceleration.attributes['pre_metadata'] as Record<string,any>
+  metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === preMetadata.value['profile'])
+  if(metadataProfile.value) {
+    preMetadataValidity.value = computeValidity(preMetadata, metadataProfile.value.pre)
+  }
+  postMetadata.value = props.parsedMetadata.acceleration.attributes['post_metadata'] as Record<string,any>
+  metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === postMetadata.value['profile'])
+  if(metadataProfile.value) {
+    postMetadataValidity.value = computeValidity(postMetadata, metadataProfile.value.pre)
+  }
+}, {
+  deep: true,
+  immediate: true
+})
 </script>
 
 <template>
   <Accordion class="border rounded-md [margin-bottom:40px]">
     <AccordionPanel
-      v-if="parsedMetadata?.acceleration"
+      v-if="preMetadata"
       value="0">
-      <AccordionHeader>
-        Metadata
+      <AccordionHeader class="data-[p-active=true]:!border-b">
+        Pre-Measurement Metadata
       </AccordionHeader>
       <AccordionContent>
-        <JsonViewer
-          :value="parsedMetadata?.acceleration.attributes"
-          :expand-depth="10"
-          :preview-mode="true"
-          theme="light"
-         
+        <MetaForm
+          v-if="config && metadataProfile"
+          v-model:state-object="preMetadata['parameters']"
+          v-model:state-validity="preMetadataValidity"
+          :disabled="!preMetadataEditable"
+          :phase="metadataProfile.pre"
+          class="pt-3"
+        />
+      </AccordionContent>
+    </AccordionPanel>
+    <AccordionPanel
+      v-if="postMetadata && metadataProfile?.post"
+      value="1">
+      <AccordionHeader class="data-[p-active=true]:!border-b">
+        Post-Measurement Metadata
+      </AccordionHeader>
+      <AccordionContent>
+        <MetaForm
+          v-if="config && metadataProfile"
+          v-model:state-object="postMetadata['parameters']"
+          v-model:state-validity="postMetadataValidity"
+          :disabled="!postMetadataEditable"
+          :phase="metadataProfile.post"
+          class="pt-3"
         />
       </AccordionContent>
     </AccordionPanel>
     <AccordionPanel
       v-if="parsedMetadata?.pictures && Object.keys(parsedMetadata?.pictures).length > 0"
-      value="1"
+      value="2"
     >
       <AccordionHeader>
         Pictures
@@ -84,7 +135,7 @@ const sensorColumns = props.parsedMetadata.sensors[0]
     </AccordionPanel>
     <AccordionPanel
       v-if="parsedMetadata?.sensors && parsedMetadata.sensors.length > 0"
-      value="2"
+      value="3"
     >
       <AccordionHeader>
         Sensor Data
