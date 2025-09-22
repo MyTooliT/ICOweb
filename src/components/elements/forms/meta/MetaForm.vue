@@ -17,11 +17,11 @@ const emits = defineEmits<{
 </script>
 
 <template>
-  <form>
+  <form class="flex flex-col">
     <div
       v-for="[category, categoryParameters] in Object.entries(phase)"
       :key="category"
-      class="mt-4 pt-3 border-t "
+      class="border-b mb-4 pb-3 last:border-none last:mb-0 last:pb-0"
     >
       <h4 class="font-semibold">
         {{ category }}
