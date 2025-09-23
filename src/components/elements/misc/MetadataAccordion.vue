@@ -146,7 +146,7 @@ watch(props, async () => {
           <MetadataEditSection
             :state="preMetadataEditable ? 'edit' : 'view'"
             :loading="preLoading"
-            edit-btn-label="Edit Pre-Metadata"
+            edit-btn-label="Edit Pre-Measurement Metadata"
             info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
             @edit="preMetadataEditable = true"
             @cancel-edit="() => {
@@ -176,7 +176,7 @@ watch(props, async () => {
           <MetadataEditSection
             :state="postMetadataEditable ? 'edit' : 'view'"
             :loading="postLoading"
-            edit-btn-label="Edit Post-Metadata"
+            edit-btn-label="Edit Post-Measurement Metadata"
             info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
             @edit="postMetadataEditable = true"
             @cancel-edit="() => {
