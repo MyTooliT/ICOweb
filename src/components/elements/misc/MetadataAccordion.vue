@@ -109,7 +109,9 @@ watch(props, async () => {
             v-for="[picture_param, content] in Object.entries(parsedMetadata.pictures)"
             :key="picture_param"
             class="border rounded">
-            <h4 class="font-semibold m-3"> {{ picture_param.split('_').map(s => capitalize(s)).join(' ') }} </h4>
+            <h4 class="font-semibold m-3">
+              {{ picture_param.split('_').map(s => capitalize(s)).join(' ') }}
+            </h4>
             <div class="grid grid-cols-3 gap-3 p-3">
               <div
                 v-for="(picture, index) in content"
