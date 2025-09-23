@@ -24,7 +24,7 @@ defineEmits<{
             v-if="state === 'view'"
             :label="editBtnLabel"
             severity="primary"
-            class="shrink-0 grow h-fit my-auto"
+            class="shrink-0 h-fit my-auto"
             @click="$emit('edit')"
           />
           <div
