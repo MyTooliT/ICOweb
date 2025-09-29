@@ -1,23 +1,24 @@
+// Application imports
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-import 'primeicons/primeicons.css';
+import router from './router';
+import App from './App.vue';
+
+// Styles and theme import
 import './styles/style.css';
 import './styles/tailwind/tailwind-output.css';
 import './styles/material-theme/light.css';
-import './styles/material-theme/light-mc.css';
-import './styles/material-theme/light-hc.css';
 import './styles/material-theme/dark.css';
-import './styles/material-theme/dark-mc.css';
-import './styles/material-theme/dark-hc.css';
-import router from './router';
-import App from './App.vue';
-import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
-import { myPreset } from '../primevue.ts';
-import Ripple from 'primevue/ripple';
-import Tooltip from 'primevue/tooltip';
 
+// PrimeVue Library import
+import PrimeVue from 'primevue/config';
+import { Ripple, Tooltip, ToastService } from 'primevue'
+import { myPreset } from './styles/primevue.ts';
+import 'primeicons/primeicons.css';
+
+
+// Application Setup
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
