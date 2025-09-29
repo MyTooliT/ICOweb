@@ -1,14 +1,11 @@
 /// <reference types="chart.js" />
-
 import {
   ActiveChannels,
   MeasurementDataFrame
 } from '@/stores/measurementStore/measurementStore.ts';
 import { TPoint } from '@/utils/useMeasurementWebSocket.ts';
-import {
-  ChartData,
-  ChartDataSets
-} from 'chart.js';
+import {ChartData} from 'chart.js';
+import * as Chart from 'chart.js';
 import { Ref } from 'vue';
 
 /**
@@ -17,7 +14,6 @@ import { Ref } from 'vue';
 * @param rawData Array of measurement frames as provided by the WS
 * @param chartData Vue Ref<> of the chart.js chart data structure to be updated
 * @param activeChannels Which channels of the data stream are active (first, second, third)
-* @param startTime Start time of measurement since Milliseconds since UNIX epoch
 * @param drawIFT Indicates if the IFT value should be drawn
 * @param maxNumberOfPoints Maximum points per channel that should be drawn
 * @param iftValues Optional Vue Ref<> to the array of calculated IFT values
@@ -30,7 +26,7 @@ import { Ref } from 'vue';
 * */
 export function updateChartData(
   rawData: Array<MeasurementDataFrame>,
-  chartData: Ref<ChartData<'line'>>,
+  chartData: Ref<ChartData>,
   activeChannels: ActiveChannels,
   drawIFT: boolean = false,
   maxNumberOfPoints: number = 2000,
@@ -77,7 +73,7 @@ export function updateChartData(
     }
   }
 
-  // Total amount of values to be expected within the chart display range
+  // Total count of values to be expected within the chart display range
   // To calculate the interval in which the subset is to be drawn in
   const totalExpectedValues = sampleRate * drawTime
   const interval = Math.floor(totalExpectedValues / maxNumberOfPoints)
@@ -121,7 +117,7 @@ export function updateChartData(
     }
   }
 
-  const datasets: Array<ChartDataSets> = []
+  const datasets: Array<Chart.ChartDataset> = []
   datasets.push({
     label: channelNames.first ?? 'First Channel',
     data: firstChannelSubset,
@@ -154,7 +150,7 @@ export function updateChartData(
       backgroundColor: '#006599',
       borderColor: '#006599',
       pointRadius: 1,
-      showLines: true,
+      showLine: true,
       yAxisID: 'yIFT'
     })
   }
