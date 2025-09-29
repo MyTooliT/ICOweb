@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import TextBlock from '@/components/elements/misc/TextBlock.vue';
-import STHDeviceTable from '@/components/elements/tables/STHDeviceTable.vue';
-import STUDeviceTable from '@/components/elements/tables/STUDeviceTable.vue';
+import TextBlock from '@/components/misc/TextBlock.vue';
+import STHDeviceTable from '@/components/tables/STHDeviceTable.vue';
+import STUDeviceTable from '@/components/tables/STUDeviceTable.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';

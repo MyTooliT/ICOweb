@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // eslint-disable-next-line max-len
-import BottomBar from '@/components/elements/misc/BottomBar.vue';
-import ThemeProvider from '@/components/elements/misc/ThemeProvider.vue';
+import BottomBar from '@/components/misc/BottomBar.vue';
+import ThemeProvider from '@/components/misc/ThemeProvider.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import ProgressSpinner from 'primevue/progressspinner';
 import Toast from 'primevue/toast';
 // eslint-disable-next-line max-len
-import NavigationButtons from '@/components/elements/controls/NavigationButtons.vue';
-import NavigationExtras from '@/components/elements/controls/NavigationExtras.vue';
+import NavigationButtons from '@/components/controls/NavigationButtons.vue';
+import NavigationExtras from '@/components/controls/NavigationExtras.vue';
 
 const store = useGeneralStore()
 </script>

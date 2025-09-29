@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import Button from 'primevue/button';
-import TextBlock from '@/components/elements/misc/TextBlock.vue';
+import TextBlock from '@/components/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { LogListResponse } from '@/client';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {getAPILink, getLogs} from '@/api/icoapi.ts';
-import LogTable from '@/components/elements/tables/LogTable.vue';
+import LogTable from '@/components/tables/LogTable.vue';
 import {formatFileSize} from '../utils/helper.ts';
 
 const logs = ref<LogListResponse|undefined>()

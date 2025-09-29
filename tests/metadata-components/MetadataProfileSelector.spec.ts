@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { defineComponent, h, ref, nextTick } from 'vue'
 import Select from 'primevue/select'
 import { load } from 'js-yaml'
-import MetadataProfileSelector from '@/components/elements/forms/meta/MetadataProfileSelector.vue'
+import MetadataProfileSelector from '@/components/forms/MetadataProfileSelector.vue'
 import type { MetadataConfig } from '@/utils/metadataConfig.ts'
 import yamlFile from '!@/metadata.yaml?raw'
 

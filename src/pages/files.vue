@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
 import { getCloudFiles, refreshTridentAuth } from '@/api/icoapi.ts';
-import NamedInput from '@/components/elements/forms/NamedInput.vue';
-import TextBlock from '@/components/elements/misc/TextBlock.vue';
+import NamedInput from '@/components/inputs/NamedInput.vue';
+import TextBlock from '@/components/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
 import { MeterItem } from '@/utils/dataModels.ts';
@@ -13,7 +13,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import MeterGroup from 'primevue/metergroup';
 import { computed } from 'vue';
 import {useDisable} from '@/utils/useDisable.ts';
-import FileTable from '@/components/elements/tables/FileTable.vue';
+import FileTable from '@/components/tables/FileTable.vue';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import {useToast} from 'primevue/usetoast';
 

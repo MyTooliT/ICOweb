@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import StaticChart from '@/components/elements/charts/StaticChart.vue';
-import TextBlock from '@/components/elements/misc/TextBlock.vue';
-import FileSelectionModal from '@/components/elements/modals/FileSelectionModal.vue';
+import StaticChart from '@/components/charts/StaticChart.vue';
+import TextBlock from '@/components/misc/TextBlock.vue';
+import FileSelectionModal from '@/components/modals/FileSelectionModal.vue';
 import SplitLayout from '@/layouts/SplitLayout.vue';
 import { ProgressBar, Button, Divider } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
@@ -13,13 +13,13 @@ import {
   findNextClosestSmaller,
   fetchFileReader,
   consumeFileReader,
-} from '@/components/elements/charts/staticChartHelper.ts';
+} from '@/components/charts/staticChartHelper.ts';
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
-import MetadataAccordion from '@/components/elements/misc/MetadataAccordion.vue';
+import MetadataAccordion from '@/components/misc/MetadataAccordion.vue';
 import {getAPILink} from '@/api/icoapi.ts';
-import DownloadButton from '@/components/elements/buttons/DownloadButton.vue';
+import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import {Sensor, SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
 import {parseSensorFromRaw} from '@/stores/hardwareStore/helper.ts';
 

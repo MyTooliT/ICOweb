@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import {nextTick} from 'vue'
-import MetaInputIntQty from '@/components/elements/forms/meta/MetaInputFloatQty.vue'
+import MetaInputIntQty from '@/components/forms/meta/MetaInputFloatQty.vue'
 import {Quantity} from '@/client';
 import InputNumber from 'primevue/inputnumber';
 

@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, ref, nextTick } from 'vue'
 import AutoComplete from 'primevue/autocomplete'
-import MetaTextSuggestable from '@/components/elements/forms/meta/MetaTextSuggestable.vue'
+import MetaTextSuggestable from '@/components/forms/meta/MetaTextSuggestable.vue'
 
 const DEFAULT_OPTIONS = ['Apple', 'banana', 'Apricot', 'grape', 'Pineapple']
 

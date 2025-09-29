@@ -2,11 +2,11 @@
 import {sendMeasurementPostMeta, sendMeasurementStopFlag} from '@/api/icoapi.ts';
 import { startMeasurement } from '@/api/icoapi.ts';
 /* eslint-disable max-len */
-import StreamingChart from '@/components/elements/charts/StreamingChart.vue';
-import { updateChartData } from '@/components/elements/charts/streamingChartHelper.ts';
-import NamedInput from '@/components/elements/forms/NamedInput.vue';
-import ADCDrawer from '@/components/elements/misc/ADCDrawer.vue';
-import TextBlock from '@/components/elements/misc/TextBlock.vue';
+import StreamingChart from '@/components/charts/StreamingChart.vue';
+import { updateChartData } from '@/components/charts/streamingChartHelper.ts';
+import NamedInput from '@/components/inputs/NamedInput.vue';
+import ADCDrawer from '@/components/misc/ADCDrawer.vue';
+import TextBlock from '@/components/misc/TextBlock.vue';
 import SplitLayout from '@/layouts/SplitLayout.vue';
 import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
@@ -34,10 +34,10 @@ import {
 import { useRouter } from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
-import ChartStreamControls from '@/components/elements/inputs/ChartStreamControls.vue';
+import ChartStreamControls from '@/components/inputs/ChartStreamControls.vue';
 import {useDisable} from '@/utils/useDisable.ts';
-import PreMetaData from '@/components/elements/forms/meta/PreMetaData.vue';
-import PostMetaModal from '@/components/elements/modals/PostMetaModal.vue';
+import PreMetaData from '@/components/forms/PreMetaData.vue';
+import PostMetaModal from '@/components/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import {SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
 /* eslint-enable max-len */
