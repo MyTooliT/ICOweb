@@ -1,8 +1,9 @@
 import { ref } from 'vue'
 import { load } from 'js-yaml'
 import type { MetadataConfig } from '@/utils/metadataConfig.ts'
+import {getAPILink} from '@/api/icoapi.ts';
 
-const yamlUrl = './config/metadata.yaml'
+const yamlUrl = getAPILink() + '/config/meta'
 
 export function useYamlConfig() {
     const config = ref<MetadataConfig | null>(null)
