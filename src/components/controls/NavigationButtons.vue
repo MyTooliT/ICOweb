@@ -35,7 +35,7 @@ const menuItems = computed<Array<{
   text: 'Analyze'
 }, {
   name: 'Config',
-  to: '/config/sensors',
+  to: '/config',
   icon: 'cog',
   text: 'Config'
 }, {

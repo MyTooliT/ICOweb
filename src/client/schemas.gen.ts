@@ -74,17 +74,6 @@ export const $AvailableSensorInformation = {
     title: 'AvailableSensorInformation'
 } as const;
 
-export const $Body_overwrite_post_meta_api_v1_files_meta_post__name__post = {
-    properties: {
-        metadata: {
-            '$ref': '#/components/schemas/Metadata'
-        }
-    },
-    type: 'object',
-    required: ['metadata'],
-    title: 'Body_overwrite_post_meta_api_v1_files_meta_post__name__post'
-} as const;
-
 export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
@@ -110,6 +99,20 @@ export const $Body_sth_connect_api_v1_sth_connect_put = {
     title: 'Body_sth_connect_api_v1_sth_connect_put'
 } as const;
 
+export const $Body_upload_env_file_api_v1_config_env_post = {
+    properties: {
+        env_file: {
+            type: 'string',
+            format: 'binary',
+            title: 'Env File',
+            description: 'Environment variables file'
+        }
+    },
+    type: 'object',
+    required: ['env_file'],
+    title: 'Body_upload_env_file_api_v1_config_env_post'
+} as const;
+
 export const $Body_upload_file_api_v1_cloud_upload_post = {
     properties: {
         filename: {
@@ -120,6 +123,116 @@ export const $Body_upload_file_api_v1_cloud_upload_post = {
     type: 'object',
     required: ['filename'],
     title: 'Body_upload_file_api_v1_cloud_upload_post'
+} as const;
+
+export const $Body_upload_metadata_file_api_v1_config_meta_post = {
+    properties: {
+        metadata_file: {
+            type: 'string',
+            format: 'binary',
+            title: 'Metadata File',
+            description: 'YAML metadata configuration file'
+        }
+    },
+    type: 'object',
+    required: ['metadata_file'],
+    title: 'Body_upload_metadata_file_api_v1_config_meta_post'
+} as const;
+
+export const $Body_upload_sensors_file_api_v1_config_sensors_post = {
+    properties: {
+        sensors_file: {
+            type: 'string',
+            format: 'binary',
+            title: 'Sensors File',
+            description: 'YAML sensors configuration file'
+        }
+    },
+    type: 'object',
+    required: ['sensors_file'],
+    title: 'Body_upload_sensors_file_api_v1_config_sensors_post'
+} as const;
+
+export const $ConfigFile = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        filename: {
+            type: 'string',
+            title: 'Filename'
+        },
+        backup: {
+            items: {
+                '$ref': '#/components/schemas/ConfigFileBackup'
+            },
+            type: 'array',
+            title: 'Backup'
+        },
+        endpoint: {
+            type: 'string',
+            title: 'Endpoint'
+        },
+        timestamp: {
+            type: 'string',
+            title: 'Timestamp'
+        },
+        description: {
+            type: 'string',
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['name', 'filename', 'backup', 'endpoint', 'timestamp', 'description'],
+    title: 'ConfigFile'
+} as const;
+
+export const $ConfigFileBackup = {
+    properties: {
+        filename: {
+            type: 'string',
+            title: 'Filename'
+        },
+        timestamp: {
+            type: 'string',
+            title: 'Timestamp'
+        }
+    },
+    type: 'object',
+    required: ['filename', 'timestamp'],
+    title: 'ConfigFileBackup'
+} as const;
+
+export const $ConfigResponse = {
+    properties: {
+        files: {
+            items: {
+                '$ref': '#/components/schemas/ConfigFile'
+            },
+            type: 'array',
+            title: 'Files'
+        }
+    },
+    type: 'object',
+    required: ['files'],
+    title: 'ConfigResponse'
+} as const;
+
+export const $ConfigRestoreRequest = {
+    properties: {
+        filename: {
+            type: 'string',
+            title: 'Filename'
+        },
+        backup_filename: {
+            type: 'string',
+            title: 'Backup Filename'
+        }
+    },
+    type: 'object',
+    required: ['filename', 'backup_filename'],
+    title: 'ConfigRestoreRequest'
 } as const;
 
 export const $ControlResponse = {

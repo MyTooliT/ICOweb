@@ -10,7 +10,13 @@ import {
   MeasurementInstructions_Input,
   MeasurementStatus,
   SystemStateModel,
-  TridentBucketObject, LogListResponse, LogResponse, Metadata, AvailableSensorInformation
+  TridentBucketObject,
+  LogListResponse,
+  LogResponse,
+  Metadata,
+  AvailableSensorInformation,
+  ConfigResponse,
+  ConfigRestoreRequest
 } from '@/client';
 import { useAPI } from './api.ts';
 
@@ -271,6 +277,22 @@ export async function getMetadata(name: string): Promise<Metadata> {
 export async function getSensorInformation(): Promise<AvailableSensorInformation> {
   return new Promise((resolve, reject) => {
     get<AvailableSensorInformation>('sensor')
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function getConfigBackup(): Promise<ConfigResponse> {
+  return new Promise((resolve, reject) => {
+    get<ConfigResponse>('config/backup')
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+export async function restoreConfigBackup(config: ConfigRestoreRequest): Promise<void> {
+  return new Promise((resolve, reject) => {
+    put<ConfigRestoreRequest, void>('config/restore', config)
         .then(data => resolve(data))
         .catch(reject)
   })

@@ -12,10 +12,6 @@ export type AvailableSensorInformation = {
     configurations: Array<PCBSensorConfiguration>;
 };
 
-export type Body_overwrite_post_meta_api_v1_files_meta_post__name__post = {
-    metadata: Metadata;
-};
-
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
     file: (Blob | File);
 };
@@ -24,8 +20,52 @@ export type Body_sth_connect_api_v1_sth_connect_put = {
     mac_address: string;
 };
 
+export type Body_upload_env_file_api_v1_config_env_post = {
+    /**
+     * Environment variables file
+     */
+    env_file: (Blob | File);
+};
+
 export type Body_upload_file_api_v1_cloud_upload_post = {
     filename: string;
+};
+
+export type Body_upload_metadata_file_api_v1_config_meta_post = {
+    /**
+     * YAML metadata configuration file
+     */
+    metadata_file: (Blob | File);
+};
+
+export type Body_upload_sensors_file_api_v1_config_sensors_post = {
+    /**
+     * YAML sensors configuration file
+     */
+    sensors_file: (Blob | File);
+};
+
+export type ConfigFile = {
+    name: string;
+    filename: string;
+    backup: Array<ConfigFileBackup>;
+    endpoint: string;
+    timestamp: string;
+    description: string;
+};
+
+export type ConfigFileBackup = {
+    filename: string;
+    timestamp: string;
+};
+
+export type ConfigResponse = {
+    files: Array<ConfigFile>;
+};
+
+export type ConfigRestoreRequest = {
+    filename: string;
+    backup_filename: string;
 };
 
 export type ControlResponse = {
@@ -311,12 +351,19 @@ export type GetFileMetaApiV1FilesAnalyzeMetaNameGetData = {
 
 export type GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse = ParsedMetadata;
 
-export type OverwritePostMetaApiV1FilesMetaPostNamePostData = {
+export type OverwritePostMetaApiV1FilesPostMetaNamePostData = {
     name: string;
-    requestBody: Body_overwrite_post_meta_api_v1_files_meta_post__name__post;
+    requestBody: Metadata;
 };
 
-export type OverwritePostMetaApiV1FilesMetaPostNamePostResponse = unknown;
+export type OverwritePostMetaApiV1FilesPostMetaNamePostResponse = unknown;
+
+export type OverwritePreMetaApiV1FilesPreMetaNamePostData = {
+    name: string;
+    requestBody: Metadata;
+};
+
+export type OverwritePreMetaApiV1FilesPreMetaNamePostResponse = unknown;
 
 export type UploadFileApiV1CloudUploadPostData = {
     requestBody: Body_upload_file_api_v1_cloud_upload_post;
@@ -362,6 +409,38 @@ export type DownloadLogFileApiV1LogsDownloadFileGetResponse = unknown;
 export type DownloadLogsZipApiV1LogsAllGetResponse = unknown;
 
 export type QuerySensorsApiV1SensorGetResponse = AvailableSensorInformation;
+
+export type GetMetadataFileApiV1ConfigMetaGetResponse = unknown;
+
+export type UploadMetadataFileApiV1ConfigMetaPostData = {
+    formData: Body_upload_metadata_file_api_v1_config_meta_post;
+};
+
+export type UploadMetadataFileApiV1ConfigMetaPostResponse = unknown;
+
+export type GetSensorsFileApiV1ConfigSensorsGetResponse = unknown;
+
+export type UploadSensorsFileApiV1ConfigSensorsPostData = {
+    formData: Body_upload_sensors_file_api_v1_config_sensors_post;
+};
+
+export type UploadSensorsFileApiV1ConfigSensorsPostResponse = unknown;
+
+export type GetEnvFileApiV1ConfigEnvGetResponse = unknown;
+
+export type UploadEnvFileApiV1ConfigEnvPostData = {
+    formData: Body_upload_env_file_api_v1_config_env_post;
+};
+
+export type UploadEnvFileApiV1ConfigEnvPostResponse = unknown;
+
+export type GetConfigBackupsApiV1ConfigBackupGetResponse = ConfigResponse;
+
+export type RestoreConfigFileApiV1ConfigRestorePutData = {
+    requestBody: ConfigRestoreRequest;
+};
+
+export type RestoreConfigFileApiV1ConfigRestorePutResponse = unknown;
 
 export type $OpenApiTs = {
     '/api/v1/stu': {
@@ -656,9 +735,31 @@ export type $OpenApiTs = {
             };
         };
     };
-    '/api/v1/files/meta/post/{name}': {
+    '/api/v1/files/post_meta/{name}': {
         post: {
-            req: OverwritePostMetaApiV1FilesMetaPostNamePostData;
+            req: OverwritePostMetaApiV1FilesPostMetaNamePostData;
+            res: {
+                /**
+                 * Metadata successfully overwritten
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/files/pre_meta/{name}': {
+        post: {
+            req: OverwritePreMetaApiV1FilesPreMetaNamePostData;
             res: {
                 /**
                  * Metadata successfully overwritten
@@ -820,6 +921,211 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: AvailableSensorInformation;
+            };
+        };
+    };
+    '/api/v1/config/meta': {
+        get: {
+            res: {
+                /**
+                 * File was found and returned.
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+        post: {
+            req: UploadMetadataFileApiV1ConfigMetaPostData;
+            res: {
+                /**
+                 * Metadata configuration uploaded successfully.
+                 */
+                200: unknown;
+                /**
+                 * Failed to parse YAML payload.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Unsupported media type for configuration upload.
+                 */
+                415: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Provided YAML does not satisfy metadata schema.
+                 */
+                422: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Failed to store configuration file.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/config/sensors': {
+        get: {
+            res: {
+                /**
+                 * File was found and returned.
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+        post: {
+            req: UploadSensorsFileApiV1ConfigSensorsPostData;
+            res: {
+                /**
+                 * Sensor configuration uploaded successfully.
+                 */
+                200: unknown;
+                /**
+                 * Failed to parse YAML payload.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Unsupported media type for configuration upload.
+                 */
+                415: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Provided YAML does not satisfy sensors schema.
+                 */
+                422: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Failed to store configuration file.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/config/env': {
+        get: {
+            res: {
+                /**
+                 * File was found and returned.
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+        post: {
+            req: UploadEnvFileApiV1ConfigEnvPostData;
+            res: {
+                /**
+                 * Environment file uploaded successfully.
+                 */
+                200: unknown;
+                /**
+                 * Unsupported media type for configuration upload.
+                 */
+                415: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+                /**
+                 * Failed to store configuration file.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/config/backup': {
+        get: {
+            res: {
+                /**
+                 * Configuration backups returned successfully.
+                 */
+                200: ConfigResponse;
+                /**
+                 * Failed to list configuration backups.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/config/restore': {
+        put: {
+            req: RestoreConfigFileApiV1ConfigRestorePutData;
+            res: {
+                /**
+                 * Configuration restored successfully.
+                 */
+                200: unknown;
+                /**
+                 * Invalid configuration restore request.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Requested configuration backup not found.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+                /**
+                 * Failed to restore configuration file.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };

@@ -695,10 +695,6 @@ video {
   margin-left: auto;
 }
 
-.mr-3 {
-  margin-right: 0.75rem;
-}
-
 .mr-auto {
   margin-right: auto;
 }
@@ -1050,10 +1046,6 @@ video {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
-.bg-inherit {
-  background-color: inherit;
-}
-
 .bg-surface {
   background-color: var(--md-sys-color-surface);
 }
@@ -1135,9 +1127,9 @@ video {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-.\!text-xl {
-  font-size: 1.25rem !important;
-  line-height: 1.75rem !important;
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .text-4xl {
@@ -1163,6 +1155,11 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .font-bold {

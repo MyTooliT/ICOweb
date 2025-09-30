@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesMetaPostNamePostData, OverwritePostMetaApiV1FilesMetaPostNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, GetEnvFileApiV1ConfigEnvGetResponse, UploadEnvFileApiV1ConfigEnvPostData, UploadEnvFileApiV1ConfigEnvPostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
 
 /**
  * Stu
@@ -266,9 +266,31 @@ export const getFileMetaApiV1FilesAnalyzeMetaNameGet = (data: GetFileMetaApiV1Fi
  * @returns unknown Metadata successfully overwritten
  * @throws ApiError
  */
-export const overwritePostMetaApiV1FilesMetaPostNamePost = (data: OverwritePostMetaApiV1FilesMetaPostNamePostData): CancelablePromise<OverwritePostMetaApiV1FilesMetaPostNamePostResponse> => { return __request(OpenAPI, {
+export const overwritePostMetaApiV1FilesPostMetaNamePost = (data: OverwritePostMetaApiV1FilesPostMetaNamePostData): CancelablePromise<OverwritePostMetaApiV1FilesPostMetaNamePostResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/api/v1/files/meta/post/{name}',
+    url: '/api/v1/files/post_meta/{name}',
+    path: {
+        name: data.name
+    },
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        404: 'File not found. Check your measurement directory.',
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Overwrite Pre Meta
+ * @param data The data for the request.
+ * @param data.name
+ * @param data.requestBody
+ * @returns unknown Metadata successfully overwritten
+ * @throws ApiError
+ */
+export const overwritePreMetaApiV1FilesPreMetaNamePost = (data: OverwritePreMetaApiV1FilesPreMetaNamePostData): CancelablePromise<OverwritePreMetaApiV1FilesPreMetaNamePostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/files/pre_meta/{name}',
     path: {
         name: data.name
     },
@@ -437,4 +459,135 @@ export const downloadLogsZipApiV1LogsAllGet = (): CancelablePromise<DownloadLogs
 export const querySensorsApiV1SensorGet = (): CancelablePromise<QuerySensorsApiV1SensorGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
     url: '/api/v1/sensor'
+}); };
+
+/**
+ * Get Metadata File
+ * @returns unknown File was found and returned.
+ * @throws ApiError
+ */
+export const getMetadataFileApiV1ConfigMetaGet = (): CancelablePromise<GetMetadataFileApiV1ConfigMetaGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/config/meta',
+    errors: {
+        404: 'File not found. Check your measurement directory.'
+    }
+}); };
+
+/**
+ * Upload Metadata File
+ * @param data The data for the request.
+ * @param data.formData
+ * @returns unknown Metadata configuration uploaded successfully.
+ * @throws ApiError
+ */
+export const uploadMetadataFileApiV1ConfigMetaPost = (data: UploadMetadataFileApiV1ConfigMetaPostData): CancelablePromise<UploadMetadataFileApiV1ConfigMetaPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/config/meta',
+    formData: data.formData,
+    mediaType: 'multipart/form-data',
+    errors: {
+        400: 'Failed to parse YAML payload.',
+        415: 'Unsupported media type for configuration upload.',
+        422: 'Provided YAML does not satisfy metadata schema.',
+        500: 'Failed to store configuration file.'
+    }
+}); };
+
+/**
+ * Get Sensors File
+ * @returns unknown File was found and returned.
+ * @throws ApiError
+ */
+export const getSensorsFileApiV1ConfigSensorsGet = (): CancelablePromise<GetSensorsFileApiV1ConfigSensorsGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/config/sensors',
+    errors: {
+        404: 'File not found. Check your measurement directory.'
+    }
+}); };
+
+/**
+ * Upload Sensors File
+ * @param data The data for the request.
+ * @param data.formData
+ * @returns unknown Sensor configuration uploaded successfully.
+ * @throws ApiError
+ */
+export const uploadSensorsFileApiV1ConfigSensorsPost = (data: UploadSensorsFileApiV1ConfigSensorsPostData): CancelablePromise<UploadSensorsFileApiV1ConfigSensorsPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/config/sensors',
+    formData: data.formData,
+    mediaType: 'multipart/form-data',
+    errors: {
+        400: 'Failed to parse YAML payload.',
+        415: 'Unsupported media type for configuration upload.',
+        422: 'Provided YAML does not satisfy sensors schema.',
+        500: 'Failed to store configuration file.'
+    }
+}); };
+
+/**
+ * Get Env File
+ * @returns unknown File was found and returned.
+ * @throws ApiError
+ */
+export const getEnvFileApiV1ConfigEnvGet = (): CancelablePromise<GetEnvFileApiV1ConfigEnvGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/config/env',
+    errors: {
+        404: 'File not found. Check your measurement directory.'
+    }
+}); };
+
+/**
+ * Upload Env File
+ * @param data The data for the request.
+ * @param data.formData
+ * @returns unknown Environment file uploaded successfully.
+ * @throws ApiError
+ */
+export const uploadEnvFileApiV1ConfigEnvPost = (data: UploadEnvFileApiV1ConfigEnvPostData): CancelablePromise<UploadEnvFileApiV1ConfigEnvPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/config/env',
+    formData: data.formData,
+    mediaType: 'multipart/form-data',
+    errors: {
+        415: 'Unsupported media type for configuration upload.',
+        422: 'Validation Error',
+        500: 'Failed to store configuration file.'
+    }
+}); };
+
+/**
+ * Get Config Backups
+ * @returns ConfigResponse Configuration backups returned successfully.
+ * @throws ApiError
+ */
+export const getConfigBackupsApiV1ConfigBackupGet = (): CancelablePromise<GetConfigBackupsApiV1ConfigBackupGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/config/backup',
+    errors: {
+        500: 'Failed to list configuration backups.'
+    }
+}); };
+
+/**
+ * Restore Config File
+ * @param data The data for the request.
+ * @param data.requestBody
+ * @returns unknown Configuration restored successfully.
+ * @throws ApiError
+ */
+export const restoreConfigFileApiV1ConfigRestorePut = (data: RestoreConfigFileApiV1ConfigRestorePutData): CancelablePromise<RestoreConfigFileApiV1ConfigRestorePutResponse> => { return __request(OpenAPI, {
+    method: 'PUT',
+    url: '/api/v1/config/restore',
+    body: data.requestBody,
+    mediaType: 'application/json',
+    errors: {
+        400: 'Invalid configuration restore request.',
+        404: 'Requested configuration backup not found.',
+        422: 'Validation Error',
+        500: 'Failed to restore configuration file.'
+    }
 }); };
