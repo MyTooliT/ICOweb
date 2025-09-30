@@ -98,6 +98,7 @@ onMounted(async() => await getBackup())
                     <Button
                       label="Restore"
                       variant="outlined"
+                      rounded
                       :loading="restoreLoading"
                       @click="restore(configFile.filename, data.filename)"
                     />
