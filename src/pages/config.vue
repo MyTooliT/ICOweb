@@ -55,7 +55,7 @@ onMounted(async() => await getBackup())
               <span class="font-bold">Current File: </span>{{ format(new Date(configFile.timestamp), 'dd.MM.yyyy, HH:mm:ss') }}
             </p>
             <FileUpload
-              name="metadata_file"
+              name="file"
               choose-label="Select New File"
               :url="`${getAPILink()}/config/${configFile.endpoint}`"
               :max-file-size="1000000"
