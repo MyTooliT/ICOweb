@@ -139,7 +139,7 @@ This script expects the Excel file to be in the project root and places the pars
 
 The ``.yaml`` file will then be used by the client itself to generate the UI elements.
 
-The [metadata file](metadata.xlsx) has the following sheets:
+The metadata.xlsx has the following sheets:
 
 ### fields
 
@@ -214,7 +214,7 @@ in the modal that pops up after the measurement. Their structure is:
 
 ### Guide
 
-Edit the [metadata.xlsx](metadata.xlsx) and make all the required adjustments. Then run:
+Edit the metadata.xlsx and make all the required adjustments. Then run:
 
 ``npm run generate-config``
 
