@@ -110,6 +110,7 @@ export const useHardwareStore = defineStore('hardware', () => {
   */
 
   const holderList = ref<Array<HolderConfig>>([])
+  const defaultHolderID = ref<string>('')
 
   function clearHolderList() {
     holderList.value.length = 0
@@ -149,11 +150,16 @@ export const useHardwareStore = defineStore('hardware', () => {
   }
 
   async function refetchSensorsAndHolders() {
-    const { sensors, configurations } = await getSensorInformation()
+    const { sensors, configurations, default_configuration_id } = await getSensorInformation()
     clearSensorList()
     parseSensorList(sensors)
     clearHolderList()
     parseHolderList(configurations)
+    if(default_configuration_id !== '') {
+      defaultHolderID.value = default_configuration_id
+    } else {
+      defaultHolderID.value = configurations[0].configuration_id
+    }
   }
 
   return {
@@ -179,7 +185,8 @@ export const useHardwareStore = defineStore('hardware', () => {
     parseSensorList,
     clearHolderList,
     parseHolderList,
-    refetchSensorsAndHolders
+    refetchSensorsAndHolders,
+    defaultHolderID
   }
 }, {
   persist: {

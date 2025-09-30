@@ -67,10 +67,14 @@ export const $AvailableSensorInformation = {
             },
             type: 'array',
             title: 'Configurations'
+        },
+        default_configuration_id: {
+            type: 'string',
+            title: 'Default Configuration Id'
         }
     },
     type: 'object',
-    required: ['sensors', 'configurations'],
+    required: ['sensors', 'configurations', 'default_configuration_id'],
     title: 'AvailableSensorInformation'
 } as const;
 
@@ -101,15 +105,15 @@ export const $Body_sth_connect_api_v1_sth_connect_put = {
 
 export const $Body_upload_env_file_api_v1_config_env_post = {
     properties: {
-        env_file: {
+        file: {
             type: 'string',
             format: 'binary',
-            title: 'Env File',
+            title: 'File',
             description: 'Environment variables file'
         }
     },
     type: 'object',
-    required: ['env_file'],
+    required: ['file'],
     title: 'Body_upload_env_file_api_v1_config_env_post'
 } as const;
 
@@ -127,29 +131,29 @@ export const $Body_upload_file_api_v1_cloud_upload_post = {
 
 export const $Body_upload_metadata_file_api_v1_config_meta_post = {
     properties: {
-        metadata_file: {
+        file: {
             type: 'string',
             format: 'binary',
-            title: 'Metadata File',
+            title: 'File',
             description: 'YAML metadata configuration file'
         }
     },
     type: 'object',
-    required: ['metadata_file'],
+    required: ['file'],
     title: 'Body_upload_metadata_file_api_v1_config_meta_post'
 } as const;
 
 export const $Body_upload_sensors_file_api_v1_config_sensors_post = {
     properties: {
-        sensors_file: {
+        file: {
             type: 'string',
             format: 'binary',
-            title: 'Sensors File',
+            title: 'File',
             description: 'YAML sensors configuration file'
         }
     },
     type: 'object',
-    required: ['sensors_file'],
+    required: ['file'],
     title: 'Body_upload_sensors_file_api_v1_config_sensors_post'
 } as const;
 

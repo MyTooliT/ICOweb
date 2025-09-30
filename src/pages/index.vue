@@ -15,7 +15,7 @@ const { loading: STULoading, call: STUReload } = useLoadingHandler(
   store.updateSTUDeviceList
 )
 const { loading: STHLoading, call: STHReload } = useLoadingHandler(
-    () => store.updateSTHDeviceList(import.meta.env.VITE_APPLICATION_DEFAULT_HOLDER ?? 'default-sth')
+    () => store.updateSTHDeviceList(store.defaultHolderID)
 )
 
 async function STUClickHandler() {

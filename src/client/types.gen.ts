@@ -10,6 +10,7 @@ export type ADCValues = {
 export type AvailableSensorInformation = {
     sensors: Array<Sensor>;
     configurations: Array<PCBSensorConfiguration>;
+    default_configuration_id: string;
 };
 
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
@@ -24,7 +25,7 @@ export type Body_upload_env_file_api_v1_config_env_post = {
     /**
      * Environment variables file
      */
-    env_file: (Blob | File);
+    file: (Blob | File);
 };
 
 export type Body_upload_file_api_v1_cloud_upload_post = {
@@ -35,14 +36,14 @@ export type Body_upload_metadata_file_api_v1_config_meta_post = {
     /**
      * YAML metadata configuration file
      */
-    metadata_file: (Blob | File);
+    file: (Blob | File);
 };
 
 export type Body_upload_sensors_file_api_v1_config_sensors_post = {
     /**
      * YAML sensors configuration file
      */
-    sensors_file: (Blob | File);
+    file: (Blob | File);
 };
 
 export type ConfigFile = {

@@ -113,8 +113,6 @@ VITE_APPLICATION_PORT=8081
 
 ``VITE_APPLICATION_PORT`` defines on what port the client is served at.
 
-``VITE_APPLICATION_DEFAULT_HOLDER`` sets the default holder configuration.
-
 ## Type Generation
 
 This repository is based on typescript and relies heavily on the ``openapi-ts`` package to generate type declarations
