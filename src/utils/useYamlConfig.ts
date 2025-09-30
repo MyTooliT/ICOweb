@@ -21,9 +21,20 @@ export function useYamlConfig() {
         }
     }
 
+    async function isEnabled(): Promise<boolean> {
+        await reload()
+        return (config.value !== null
+            && error.value === null
+            && config.value.info.version !== ''
+            && config.value.info.version !== undefined
+            && config.value.info.version !== null)
+
+    }
+
     return {
         config,
         error,
-        reload
+        reload,
+        isEnabled,
     }
 }

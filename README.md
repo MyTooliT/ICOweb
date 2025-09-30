@@ -88,13 +88,12 @@ are shown and no features are enabled - the ``.env`` file can override that.
 
 ```
 VITE_APPLICATION_DISABLE_PAGES="Config,Analyze"
-VITE_APPLICATION_ENABLE_FEATURES="Cloud,Meta"
+VITE_APPLICATION_ENABLE_FEATURES="Meta,ADC"
 ```
 
 ``VITE_APPLICATION_DISABLE_PAGES`` takes the names of the pages to be disabled, which hides them from the menu.
 ``VITE_APPLICATION_ENABLE_FEATURES`` takes predefined tags to enable.
-- ``Cloud`` enables the usage of the Trident API data storage
-- ``Meta`` enables the addition of metadata for measurements
+- ``ADC`` enables changing the ADC settings
 
 ### Branding Settings
 
@@ -183,9 +182,19 @@ These options are rendered as-is (and not via a key-value lookup for e.g. locali
 
 ### info
 
-This sheet is for any arbitrary information relevant to the setup. Currently it only holds the version.
+This sheet is for any arbitrary information relevant to the setup. Currently it holds:
 
-**Increment this** whenever you change something as it will be used to provide the structure for analysis programs.
+`````yaml
+version: 0.0.2
+generated_at: <ISO>
+default_profile_id: <ID>
+`````
+
+The `version` should be incremented whenever you change something as it will be used to provide the structure for 
+analysis programs. Additionally, it can be left blank to disable the metadata system.
+
+The `default_profile_id` sets the default metadata profile.
+
 
 ### _pre__ and _post__
 

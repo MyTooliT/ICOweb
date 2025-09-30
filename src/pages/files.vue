@@ -12,18 +12,19 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import MeterGroup from 'primevue/metergroup';
 import { computed } from 'vue';
-import {useDisable} from '@/utils/useDisable.ts';
 import FileTable from '@/components/tables/FileTable.vue';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 import {useToast} from 'primevue/usetoast';
 
 const ts = useToast()
-const { featureEnabled } = useDisable()
 const mStore = useMeasurementStore()
 const gStore = useGeneralStore()
 
 const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
-const { loading: authLoading, call: refreshAuth, error: authError, errorMessage } = useLoadingHandler(refreshTridentAuth)
+const { loading: authLoading, call: refreshAuth, error: authError, errorMessage } = useLoadingHandler(async () => {
+  await refreshTridentAuth()
+  await gStore.systemState.checkState()
+})
 
 const meterItems = computed<MeterItem[]>(() => {
   if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
@@ -62,18 +63,18 @@ const meterItems = computed<MeterItem[]>(() => {
           </InputGroup>
         </NamedInput>
         <NamedInput
-          v-if="featureEnabled('Cloud')"
+          v-if="gStore.systemState.cloud.enabled"
           title="Data Space Connection"
           class="ml-auto"
         >
           <InputGroup>
             <InputGroupAddon>
-              <span :class="authError || !gStore.systemState.cloud_ready ? 'text-red-500' : ''">
-                {{ authError || !gStore.systemState.cloud_ready ? 'Disconnected' : 'Connected' }}
+              <span :class="authError || !gStore.systemState.cloud.healthy ? 'text-red-500' : ''">
+                {{ authError || !gStore.systemState.cloud.healthy ? 'Disconnected' : 'Connected' }}
               </span>
             </InputGroupAddon>
             <Button
-              :severity="authError || !gStore.systemState.cloud_ready ? 'danger' : 'primary'"
+              :severity="authError || !gStore.systemState.cloud.healthy ? 'danger' : 'primary'"
               label="Refresh"
               icon="pi pi-sync"
               outlined

@@ -103,6 +103,20 @@ export const $Body_sth_connect_api_v1_sth_connect_put = {
     title: 'Body_sth_connect_api_v1_sth_connect_put'
 } as const;
 
+export const $Body_upload_dataspace_file_api_v1_config_dataspace_post = {
+    properties: {
+        file: {
+            type: 'string',
+            format: 'binary',
+            title: 'File',
+            description: 'YAML sensors configuration file'
+        }
+    },
+    type: 'object',
+    required: ['file'],
+    title: 'Body_upload_dataspace_file_api_v1_config_dataspace_post'
+} as const;
+
 export const $Body_upload_env_file_api_v1_config_env_post = {
     properties: {
         file: {
@@ -301,6 +315,22 @@ export const $DiskCapacity = {
     type: 'object',
     required: ['total', 'available'],
     title: 'DiskCapacity'
+} as const;
+
+export const $Feature = {
+    properties: {
+        enabled: {
+            type: 'boolean',
+            title: 'Enabled'
+        },
+        healthy: {
+            type: 'boolean',
+            title: 'Healthy'
+        }
+    },
+    type: 'object',
+    required: ['enabled', 'healthy'],
+    title: 'Feature'
 } as const;
 
 export const $FileCloudDetails = {
@@ -1030,13 +1060,12 @@ export const $SystemStateModel = {
         measurement_status: {
             '$ref': '#/components/schemas/MeasurementStatus'
         },
-        cloud_status: {
-            type: 'boolean',
-            title: 'Cloud Status'
+        cloud: {
+            '$ref': '#/components/schemas/Feature'
         }
     },
     type: 'object',
-    required: ['can_ready', 'disk_capacity', 'measurement_status', 'cloud_status'],
+    required: ['can_ready', 'disk_capacity', 'measurement_status', 'cloud'],
     title: 'SystemStateModel',
     description: 'Data model for API state'
 } as const;

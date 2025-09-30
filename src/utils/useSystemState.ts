@@ -1,5 +1,5 @@
 import { getWSLink } from '@/api/icoapi.ts';
-import { MeasurementStatus } from '@/client';
+import {Feature, MeasurementStatus} from '@/client';
 import {computed, ref} from 'vue';
 
 export function useSystemState(
@@ -11,7 +11,10 @@ export function useSystemState(
   const canReady = ref(false);
   const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
-  const cloud_ready = ref(false);
+  const cloud = ref<Feature>({
+    enabled: false,
+    healthy: false
+  });
 
   let ws: WebSocket | null = null;
   let intervalID = 0;
@@ -57,7 +60,7 @@ export function useSystemState(
               canReady.value = parsed.data.can_ready;
               running.value = parsed.data.measurement_status.running;
               measurementStatus.value = parsed.data.measurement_status;
-              cloud_ready.value = parsed.data.cloud_status
+              cloud.value = parsed.data.cloud
               break;
 
             default:
@@ -80,7 +83,10 @@ export function useSystemState(
         reachable.value = false;
         canReady.value = false;
         running.value = false;
-        cloud_ready.value = false;
+        cloud.value = {
+          enabled: false,
+          healthy: false
+        };
 
         // Retry logic
         if (retries > 0) {
@@ -106,7 +112,10 @@ export function useSystemState(
       reachable.value = false;
       canReady.value = false;
       running.value = false;
-      cloud_ready.value = false;
+      cloud.value = {
+        enabled: false,
+        healthy: false
+      };
     }
   }
 
@@ -135,6 +144,6 @@ export function useSystemState(
     deregisterInterval,
     hasWS,
     connectWebSocket,
-    cloud_ready
+    cloud
   };
 }

@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, GetEnvFileApiV1ConfigEnvGetResponse, UploadEnvFileApiV1ConfigEnvPostData, UploadEnvFileApiV1ConfigEnvPostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetEnvFileApiV1ConfigEnvGetResponse, UploadEnvFileApiV1ConfigEnvPostData, UploadEnvFileApiV1ConfigEnvPostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
 
 /**
  * Stu
@@ -517,6 +517,26 @@ export const getSensorsFileApiV1ConfigSensorsGet = (): CancelablePromise<GetSens
 export const uploadSensorsFileApiV1ConfigSensorsPost = (data: UploadSensorsFileApiV1ConfigSensorsPostData): CancelablePromise<UploadSensorsFileApiV1ConfigSensorsPostResponse> => { return __request(OpenAPI, {
     method: 'POST',
     url: '/api/v1/config/sensors',
+    formData: data.formData,
+    mediaType: 'multipart/form-data',
+    errors: {
+        400: 'Failed to parse YAML payload.',
+        415: 'Unsupported media type for configuration upload.',
+        422: 'Provided YAML does not satisfy sensors schema.',
+        500: 'Failed to store configuration file.'
+    }
+}); };
+
+/**
+ * Upload Dataspace File
+ * @param data The data for the request.
+ * @param data.formData
+ * @returns unknown Dataspace configuration uploaded successfully.
+ * @throws ApiError
+ */
+export const uploadDataspaceFileApiV1ConfigDataspacePost = (data: UploadDataspaceFileApiV1ConfigDataspacePostData): CancelablePromise<UploadDataspaceFileApiV1ConfigDataspacePostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/config/dataspace',
     formData: data.formData,
     mediaType: 'multipart/form-data',
     errors: {

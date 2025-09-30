@@ -21,6 +21,13 @@ export type Body_sth_connect_api_v1_sth_connect_put = {
     mac_address: string;
 };
 
+export type Body_upload_dataspace_file_api_v1_config_dataspace_post = {
+    /**
+     * YAML sensors configuration file
+     */
+    file: (Blob | File);
+};
+
 export type Body_upload_env_file_api_v1_config_env_post = {
     /**
      * Environment variables file
@@ -82,6 +89,11 @@ export type Dataset = {
 export type DiskCapacity = {
     total: number | null;
     available: number | null;
+};
+
+export type Feature = {
+    enabled: boolean;
+    healthy: boolean;
 };
 
 export type FileCloudDetails = {
@@ -269,7 +281,7 @@ export type SystemStateModel = {
     can_ready: boolean;
     disk_capacity: DiskCapacity;
     measurement_status: MeasurementStatus;
-    cloud_status: boolean;
+    cloud: Feature;
 };
 
 export type TridentBucketObject = {
@@ -426,6 +438,12 @@ export type UploadSensorsFileApiV1ConfigSensorsPostData = {
 };
 
 export type UploadSensorsFileApiV1ConfigSensorsPostResponse = unknown;
+
+export type UploadDataspaceFileApiV1ConfigDataspacePostData = {
+    formData: Body_upload_dataspace_file_api_v1_config_dataspace_post;
+};
+
+export type UploadDataspaceFileApiV1ConfigDataspacePostResponse = unknown;
 
 export type GetEnvFileApiV1ConfigEnvGetResponse = unknown;
 
@@ -1000,6 +1018,45 @@ export type $OpenApiTs = {
             res: {
                 /**
                  * Sensor configuration uploaded successfully.
+                 */
+                200: unknown;
+                /**
+                 * Failed to parse YAML payload.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Unsupported media type for configuration upload.
+                 */
+                415: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Provided YAML does not satisfy sensors schema.
+                 */
+                422: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Failed to store configuration file.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/config/dataspace': {
+        post: {
+            req: UploadDataspaceFileApiV1ConfigDataspacePostData;
+            res: {
+                /**
+                 * Dataspace configuration uploaded successfully.
                  */
                 200: unknown;
                 /**

@@ -120,7 +120,7 @@ const currentMax = ref<number | undefined>(undefined)
 const config = useYamlConfig()
 
 const hasPostMeta = computed<boolean>(() => {
-  if(!featureEnabled('Meta')) return false
+  if(!metaEnabled.value) return false
   if(config.config.value?.profiles) {
     const profiles = Object.values(config.config.value.profiles)
     const profile = profiles.find(p => p.id === mStore.preMetaForm.profile)
@@ -141,7 +141,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   }
   await config.reload()
   await startMeasurement({
-    name: featureEnabled('Meta') ? assembledFilename.value : null,
+    name: metaEnabled.value ? assembledFilename.value : null,
     first: {
       channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
       sensor_id: mStore.activeChannels.first ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.first)?.sensor.id ?? null : null
@@ -160,8 +160,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_channel: mStore.IFTChannel,
     ift_window_width: mStore.windowWidth,
     adc: adcStore.values,
-    meta: featureEnabled('Meta') ? mStore.preMetaForm : null,
-    wait_for_post_meta: featureEnabled('Meta') && hasPostMeta.value,
+    meta: metaEnabled.value ? mStore.preMetaForm : null,
+    wait_for_post_meta: metaEnabled.value && hasPostMeta.value,
     disconnect_after_measurement: mStore.disconnectAfterMeasurement
   })
   //scales.value = computeScales()
@@ -243,7 +243,7 @@ const canMeasure = computed<boolean>(() => {
       hwStore.hasHolder &&
       (mStore.acquisitionTime > 0 || mStore.continuous) &&
       mStore.selectedChannels.first > 0 &&
-      (featureEnabled('Meta') ? mStore.preMetaValid : true)
+      (metaEnabled.value ? mStore.preMetaValid : true)
   )
 })
 
@@ -283,6 +283,8 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
   return scl
 }
 
+const metaEnabled = ref<boolean>(false)
+
 onMounted(async () => {
   await hwStore.refetchSensorsAndHolders()
   if(hwStore.activeHolder) {
@@ -299,7 +301,7 @@ onMounted(async () => {
       }
     }
   }
-
+  metaEnabled.value = await useYamlConfig().isEnabled()
 })
 watch(mStore.selectedChannels, () => scales.value = computeScales())
 watch(mStore.activeChannels, () => scales.value = computeScales())
@@ -415,7 +417,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
       </template>
       <template #bottom>
         <Accordion
-          v-if="featureEnabled('Meta')"
+          v-if="metaEnabled"
           class="border rounded-md mt-3"
         >
           <AccordionPanel value="0">
