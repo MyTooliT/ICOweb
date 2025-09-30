@@ -4,9 +4,10 @@ import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
 import {ConfigFileBackup, ConfigResponse} from '@/client';
-import {DataTable, Column, Card, FileUpload, Button, Panel} from 'primevue';
+import {DataTable, Column, Card, FileUpload, Button, Panel, Badge} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
+import {formatFileSize} from '../utils/helper.ts';
 
 const backup = ref<ConfigResponse|undefined>()
 const uploading = ref<boolean>(false)
@@ -56,13 +57,16 @@ onMounted(async() => await getBackup())
             </p>
             <FileUpload
               name="file"
+              :preview-width="0"
               choose-label="Select New File"
               :url="`${getAPILink()}/config/${configFile.endpoint}`"
               :max-file-size="1000000"
               @before-upload="uploading = true"
               @upload="uploading = false">
               <template #empty>
-                <span>Drag and drop files to here to upload.</span>
+                <div class="mt-4">
+                  <span>Drag and drop files to here to upload.</span>
+                </div>
               </template>
             </FileUpload>
             <Panel
