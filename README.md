@@ -113,7 +113,6 @@ VITE_APPLICATION_PORT=8081
 
 ``VITE_APPLICATION_PORT`` defines on what port the client is served at.
 
-``VITE_APPLICATION_DEFAULT_PROFILE`` sets the default metadata profile.
 ``VITE_APPLICATION_DEFAULT_HOLDER`` sets the default holder configuration.
 
 ## Type Generation

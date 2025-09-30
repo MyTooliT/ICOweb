@@ -59,10 +59,15 @@ function setAllDefaults() {
 }
 
 function standardReset() {
-  if(!profile.value || !config.value) return
+  if(!config.value) return
+  if(!mStore.preMetaForm.profile || mStore.preMetaForm.profile === '') {
+    console.log(`setting profile to ${config.value.info.default_profile_id} because it was not set before.`)
+    mStore.preMetaForm.profile = config.value.info.default_profile_id
+  }
   if(!mStore.preMetaForm.version || mStore.preMetaForm.version === '') {
     mStore.preMetaForm.version = config.value.info.version
   }
+  if(!profile.value) return
   setImplementations()
   setRestrictedDefaults(mStore.preMetaForm.parameters, profile.value.pre)
   setDefaultsIfEmpty(mStore.preMetaForm.parameters, profile.value.pre)

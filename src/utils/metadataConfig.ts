@@ -8,6 +8,7 @@ export type MetadataConfig = {
 type MetadataInfo = {
     version: string
     generated_at: string
+    default_profile_id: string
 }
 
 export type MetadataParameterInformation = {

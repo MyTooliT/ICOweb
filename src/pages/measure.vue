@@ -314,7 +314,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
       @send="submitPostMeta"
     />
     <SplitLayout
-      v-if="hwStore.hasSTU && hwStore.activeSTH"
+      v-if="true"
       class="w-stretch"
     >
       <TextBlock

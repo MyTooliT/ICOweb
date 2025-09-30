@@ -116,13 +116,13 @@ export const useMeasurementStore = defineStore('measurement', () => {
 
   const preMetaForm = ref<Metadata>({
     version: '',
-    profile: import.meta.env.VITE_APPLICATION_DEFAULT_PROFILE || '',
+    profile: '',
     parameters: {}
   })
   const preMetaValid = ref<boolean>(false)
   const postMetaForm = ref<Metadata>({
     version: '',
-    profile: import.meta.env.VITE_APPLICATION_DEFAULT_PROFILE || '',
+    profile: '',
     parameters: {}
   })
   const postMetaValid = ref<boolean>(false)
