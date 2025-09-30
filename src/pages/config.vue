@@ -4,10 +4,9 @@ import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
 import {ConfigFileBackup, ConfigResponse} from '@/client';
-import {DataTable, Column, Card, FileUpload, Button, Panel, Badge} from 'primevue';
+import {DataTable, Column, Card, FileUpload, Button, Panel} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
-import {formatFileSize} from '../utils/helper.ts';
 
 const backup = ref<ConfigResponse|undefined>()
 const uploading = ref<boolean>(false)
