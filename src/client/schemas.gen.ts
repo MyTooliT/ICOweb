@@ -199,10 +199,13 @@ export const $ConfigFile = {
         description: {
             type: 'string',
             title: 'Description'
+        },
+        info_header: {
+            '$ref': '#/components/schemas/ConfigFileInfoHeader'
         }
     },
     type: 'object',
-    required: ['name', 'filename', 'backup', 'endpoint', 'timestamp', 'description'],
+    required: ['name', 'filename', 'backup', 'endpoint', 'timestamp', 'description', 'info_header'],
     title: 'ConfigFile'
 } as const;
 
@@ -215,11 +218,38 @@ export const $ConfigFileBackup = {
         timestamp: {
             type: 'string',
             title: 'Timestamp'
+        },
+        info_header: {
+            '$ref': '#/components/schemas/ConfigFileInfoHeader'
         }
     },
     type: 'object',
-    required: ['filename', 'timestamp'],
+    required: ['filename', 'timestamp', 'info_header'],
     title: 'ConfigFileBackup'
+} as const;
+
+export const $ConfigFileInfoHeader = {
+    properties: {
+        schema_name: {
+            type: 'string',
+            title: 'Schema Name'
+        },
+        schema_version: {
+            type: 'string',
+            title: 'Schema Version'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        date: {
+            type: 'string',
+            title: 'Date'
+        }
+    },
+    type: 'object',
+    required: ['schema_name', 'schema_version', 'name', 'date'],
+    title: 'ConfigFileInfoHeader'
 } as const;
 
 export const $ConfigResponse = {

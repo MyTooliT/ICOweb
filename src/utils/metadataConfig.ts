@@ -2,13 +2,15 @@ import {Quantity} from '@/client';
 
 export type MetadataConfig = {
     info: MetadataInfo;
+    default_profile_id: ProfileKey;
     profiles: Record<ProfileKey, ProfileDefinition>;
 }
 
 type MetadataInfo = {
-    version: string
-    generated_at: string
-    default_profile_id: string
+    schema_name: string;
+    schema_version: string;
+    name: string;
+    date: string;
 }
 
 export type MetadataParameterInformation = {

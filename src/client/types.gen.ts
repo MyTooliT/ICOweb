@@ -60,11 +60,20 @@ export type ConfigFile = {
     endpoint: string;
     timestamp: string;
     description: string;
+    info_header: ConfigFileInfoHeader;
 };
 
 export type ConfigFileBackup = {
     filename: string;
     timestamp: string;
+    info_header: ConfigFileInfoHeader;
+};
+
+export type ConfigFileInfoHeader = {
+    schema_name: string;
+    schema_version: string;
+    name: string;
+    date: string;
 };
 
 export type ConfigResponse = {

@@ -4,7 +4,7 @@ import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
 import {ConfigFileBackup, ConfigResponse} from '@/client';
-import {DataTable, Column, Card, FileUpload, Button, Panel} from 'primevue';
+import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 
@@ -51,9 +51,39 @@ onMounted(async() => await getBackup())
         </template>
         <template #content>
           <div class="flex flex-col gap-3">
-            <p>
-              <span class="font-bold">Current File: </span>{{ format(new Date(configFile.timestamp), 'dd.MM.yyyy, HH:mm:ss') }}
-            </p>
+            <Fieldset legend="Currently Active Configuration">
+              <div
+                v-if="configFile.info_header"
+                class="flex flex-row gap-3 justify-between">
+                <div>
+                  <div>Schema Name:</div>
+                  <div class="font-bold">
+                    {{ configFile.info_header.schema_name }}
+                  </div>
+                </div>
+                <div>
+                  <div>Schema Version:</div>
+                  <div class="font-bold">
+                    {{ configFile.info_header.schema_version }}
+                  </div>
+                </div>
+                <div>
+                  <div>Configuration Name:</div>
+                  <div class="font-bold">
+                    {{ configFile.info_header.name }}
+                  </div>
+                </div>
+                <div>
+                  <div>Configuration Date:</div>
+                  <div class="font-bold">
+                    {{ format(new Date(configFile.info_header.date), 'dd.MM.yyyy, HH:mm:ss') }}
+                  </div>
+                </div>
+              </div>
+              <p v-else>
+                <span class="font-bold">Current File: </span>{{ format(new Date(configFile.timestamp), 'dd.MM.yyyy, HH:mm:ss') }}
+              </p>
+            </Fieldset>
             <FileUpload
               name="file"
               :preview-width="0"
