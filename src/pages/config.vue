@@ -3,7 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
-import {ConfigFileBackup, ConfigResponse} from '@/client';
+import {ConfigFileBackup, ConfigFileInfoHeader, ConfigResponse} from '@/client';
 import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset, Badge, useToast} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
@@ -23,6 +23,10 @@ const { loading: restoreLoading, call: restore } = useLoadingHandler(async (file
   })
   await getBackup()
 })
+
+function assembleConfigMessage(header: ConfigFileInfoHeader) {
+  return `${header.config_name} V${header.config_version} from date ${format(new Date(header.config_date), 'dd.MM.yyyy, HH:mm:ss')} activated successfully.`
+}
 
 onMounted(async() => await getBackup())
 </script>
@@ -107,7 +111,13 @@ onMounted(async() => await getBackup())
                 }"
                 @upload="e => {
                   uploading = false
-                  toast.add({ severity: 'success', summary: 'Configuration Uploaded', detail: JSON.parse(e.xhr.response).detail, life: 5000, group: 'default' })
+                  toast.add({
+                    severity: 'success',
+                    summary: 'Configuration Uploaded',
+                    life: 15000,
+                    group: 'default' ,
+                    detail: assembleConfigMessage((JSON.parse(e.xhr.response) as ConfigFileInfoHeader)),
+                  })
                 }">
                 <template #header="{ uploadCallback, chooseCallback, files, uploadedFiles }">
                   <div class="flex flex-row gap-3 w-full">
