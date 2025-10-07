@@ -78,7 +78,9 @@ export type ConfigFileInfoHeader = {
 };
 
 export type ConfigResponse = {
-    files: Array<ConfigFile>;
+    files: {
+        [key: string]: ConfigFile;
+    };
 };
 
 export type ConfigRestoreRequest = {

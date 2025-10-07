@@ -4,16 +4,17 @@ import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
 import {ConfigFileBackup, ConfigResponse} from '@/client';
-import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset} from 'primevue';
+import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset, Badge} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
+import AnnotatedDisplay from '@/components/displayable/AnnotatedDisplay.vue';
 
 const backup = ref<ConfigResponse|undefined>()
 const uploading = ref<boolean>(false)
 const { loading: backupLoading, call: getBackup } = useLoadingHandler(async () => {
   backup.value = await getConfigBackup()
 })
-
+const fileUpload = ref<any>()
 const { loading: restoreLoading, call: restore } = useLoadingHandler(async (filename: string, backup_filename: string) => {
   await restoreConfigBackup({
     filename: filename,
@@ -51,55 +52,98 @@ onMounted(async() => await getBackup())
         </template>
         <template #content>
           <div class="flex flex-col gap-3">
-            <Fieldset legend="Currently Active Configuration">
+            <Fieldset
+              legend="Currently Active Configuration"
+              :pt="{
+                root: {
+                  class: '!border-gray-400'
+                }
+              }">
               <div
                 v-if="configFile.info_header"
-                class="flex flex-row gap-3 justify-between">
-                <div>
-                  <div>Schema Name:</div>
-                  <div class="font-bold">
-                    {{ configFile.info_header.schema_name }}
-                  </div>
-                </div>
-                <div>
-                  <div>Schema Version:</div>
-                  <div class="font-bold">
-                    {{ configFile.info_header.schema_version }}
-                  </div>
-                </div>
-                <div>
-                  <div>Configuration Name:</div>
-                  <div class="font-bold">
-                    {{ configFile.info_header.config_name }}
-                  </div>
-                </div>
-                <div>
-                  <div>Configuration Date:</div>
-                  <div class="font-bold">
-                    {{ format(new Date(configFile.info_header.config_date), 'dd.MM.yyyy, HH:mm:ss') }}
-                  </div>
-                </div>
+                class="flex flex-row gap-3 justify-between p-3">
+                <AnnotatedDisplay
+                  :content="configFile.info_header.config_name"
+                  annotation="Configuration Name:" />
+                <AnnotatedDisplay
+                  :content="format(new Date(configFile.info_header.config_date), 'dd.MM.yyyy, HH:mm:ss')"
+                  annotation="Configuration Date:" />
+                <AnnotatedDisplay
+                  :content="configFile.info_header.config_version"
+                  annotation="Configuration Version:" />
+                <AnnotatedDisplay
+                  :content="`${configFile.info_header.schema_name} / ${configFile.info_header.schema_version}`"
+                  annotation="File Schema:" />
               </div>
               <p v-else>
                 <span class="font-bold">Current File: </span>{{ format(new Date(configFile.timestamp), 'dd.MM.yyyy, HH:mm:ss') }}
               </p>
             </Fieldset>
-            <FileUpload
-              name="file"
-              :preview-width="0"
-              choose-label="Select New File"
-              :url="`${getAPILink()}/config/${configFile.endpoint}`"
-              :max-file-size="1000000"
-              @before-upload="uploading = true"
-              @upload="uploading = false">
-              <template #empty>
-                <div class="mt-4">
-                  <span>Drag and drop files to here to upload.</span>
-                </div>
-              </template>
-            </FileUpload>
+            <Fieldset legend="Upload New Configuration">
+              <FileUpload
+                ref="fileUpload"
+                name="file"
+                :preview-width="0"
+                choose-label="Select New File"
+                :url="`${getAPILink()}/config/${configFile.endpoint}`"
+                :max-file-size="1000000"
+                :file-limit="1"
+                :pt="{
+                  content: {
+                    class: '!hidden'
+                  },
+                  root: {
+                    class: '!border-0'
+                  },
+                  header: {
+                    class: '!p-3'
+                  }
+                }"
+                class="border-0"
+                @before-upload="uploading = true"
+                @upload="uploading = false">
+                <template #header="{ uploadCallback, chooseCallback, files, uploadedFiles }">
+                  <div class="flex flex-row gap-3 w-full">
+                    <Button
+                      label="Select File"
+                      icon="pi pi-plus"
+                      @click="chooseCallback"
+                    />
+                    <div
+                      v-if="uploadedFiles.length < files.length"
+                      class="flex flex-col justify-center">
+                      <div
+                        v-for="file in files"
+                        :key="file.name">
+                        Selected File: <span class="font-bold">{{ file.name }}</span>
+                        <Badge
+                          value="Awaiting Upload"
+                          severity="warn"
+                          class="ml-1" />
+                      </div>
+                    </div>
+                    <Button
+                      label="Upload"
+                      icon="pi pi-upload"
+                      :disabled="!files || files.length === 0"
+                      @click="uploadCallback"
+                    />
+                  </div>
+                </template>
+                <template #content="{ messages }">
+                  <div v-if="messages && messages.length > 0">
+                    <p
+                      v-for="message in messages"
+                      :key="message">
+                      {{ message }}
+                    </p>
+                  </div>
+                  <div v-else />
+                </template>
+              </FileUpload>
+            </Fieldset>
             <Panel
-              header="Backup Files"
+              header="Configuration File Backups"
               toggleable
               collapsed
             >
