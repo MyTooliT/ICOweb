@@ -4,17 +4,18 @@ import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
 import {ConfigFileBackup, ConfigResponse} from '@/client';
-import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset, Badge} from 'primevue';
+import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset, Badge, useToast} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import AnnotatedDisplay from '@/components/displayable/AnnotatedDisplay.vue';
+
+const toast = useToast()
 
 const backup = ref<ConfigResponse|undefined>()
 const uploading = ref<boolean>(false)
 const { loading: backupLoading, call: getBackup } = useLoadingHandler(async () => {
   backup.value = await getConfigBackup()
 })
-const fileUpload = ref<any>()
 const { loading: restoreLoading, call: restore } = useLoadingHandler(async (filename: string, backup_filename: string) => {
   await restoreConfigBackup({
     filename: filename,
@@ -81,7 +82,6 @@ onMounted(async() => await getBackup())
             </Fieldset>
             <Fieldset legend="Upload New Configuration">
               <FileUpload
-                ref="fileUpload"
                 name="file"
                 :preview-width="0"
                 choose-label="Select New File"
@@ -101,7 +101,14 @@ onMounted(async() => await getBackup())
                 }"
                 class="border-0"
                 @before-upload="uploading = true"
-                @upload="uploading = false">
+                @error="e => {
+                  uploading = false;
+                  toast.add({ severity: 'error', summary: 'Upload Error', detail: JSON.parse(e.xhr.response).detail, life: 15000, group: 'default' })
+                }"
+                @upload="e => {
+                  uploading = false
+                  toast.add({ severity: 'success', summary: 'Configuration Uploaded', detail: JSON.parse(e.xhr.response).detail, life: 5000, group: 'default' })
+                }">
                 <template #header="{ uploadCallback, chooseCallback, files, uploadedFiles }">
                   <div class="flex flex-row gap-3 w-full">
                     <Button
