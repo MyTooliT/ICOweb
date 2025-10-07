@@ -72,8 +72,9 @@ export type ConfigFileBackup = {
 export type ConfigFileInfoHeader = {
     schema_name: string;
     schema_version: string;
-    name: string;
-    date: string;
+    config_name: string;
+    config_version: string;
+    config_date: string;
 };
 
 export type ConfigResponse = {

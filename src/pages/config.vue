@@ -70,13 +70,13 @@ onMounted(async() => await getBackup())
                 <div>
                   <div>Configuration Name:</div>
                   <div class="font-bold">
-                    {{ configFile.info_header.name }}
+                    {{ configFile.info_header.config_name }}
                   </div>
                 </div>
                 <div>
                   <div>Configuration Date:</div>
                   <div class="font-bold">
-                    {{ format(new Date(configFile.info_header.date), 'dd.MM.yyyy, HH:mm:ss') }}
+                    {{ format(new Date(configFile.info_header.config_date), 'dd.MM.yyyy, HH:mm:ss') }}
                   </div>
                 </div>
               </div>
@@ -109,15 +109,30 @@ onMounted(async() => await getBackup())
                 :rows="5"
               >
                 <Column
-                  field="filename"
-                  header="Filename"
+                  header="Configuration Name"
+                  field="info_header.config_name"
                 />
                 <Column
-                  field="timestamp"
-                  header="Timestamp"
+                  header="Configuration Date"
                 >
                   <template #body="{ data }: { data: ConfigFileBackup }">
-                    {{ format(new Date(data.timestamp), 'dd.MM.yyyy, HH:mm:ss') }}
+                    {{ data.info_header
+                      ? format(new Date(data.info_header.config_date), 'dd.MM.yyyy, HH:mm:ss')
+                      : format(new Date(data.timestamp), 'dd.MM.yyyy, HH:mm:ss')
+                    }}
+                  </template>
+                </Column>
+                <Column
+                  header="Configuration Version"
+                  field="info_header.config_version"
+                />
+                <Column
+                  header="File Schema"
+                >
+                  <template #body="{ data }: { data: ConfigFileBackup }">
+                    <span v-if="data.info_header">
+                      {{ data.info_header.schema_name }} <br>{{ data.info_header.schema_version }}
+                    </span>
                   </template>
                 </Column>
                 <Column

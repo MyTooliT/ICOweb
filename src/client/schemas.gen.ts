@@ -238,17 +238,21 @@ export const $ConfigFileInfoHeader = {
             type: 'string',
             title: 'Schema Version'
         },
-        name: {
+        config_name: {
             type: 'string',
-            title: 'Name'
+            title: 'Config Name'
         },
-        date: {
+        config_version: {
             type: 'string',
-            title: 'Date'
+            title: 'Config Version'
+        },
+        config_date: {
+            type: 'string',
+            title: 'Config Date'
         }
     },
     type: 'object',
-    required: ['schema_name', 'schema_version', 'name', 'date'],
+    required: ['schema_name', 'schema_version', 'config_name', 'config_version', 'config_date'],
     title: 'ConfigFileInfoHeader'
 } as const;
 
