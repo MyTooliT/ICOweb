@@ -93,14 +93,14 @@ onMounted(async() => await getBackup())
                 :max-file-size="1000000"
                 :file-limit="1"
                 :pt="{
-                  content: {
-                    class: '!hidden'
-                  },
                   root: {
                     class: '!border-0'
                   },
                   header: {
                     class: '!p-3'
+                  },
+                  content: {
+                    class: '!border !rounded-md !border-gray-400 !p-3 !mx-3 !border-dashed'
                   }
                 }"
                 class="border-0"
@@ -128,7 +128,7 @@ onMounted(async() => await getBackup())
                     />
                     <div
                       v-if="uploadedFiles.length < files.length"
-                      class="flex flex-col justify-center">
+                      class="flex flex-col justify-center mx-auto">
                       <div
                         v-for="file in files"
                         :key="file.name">
@@ -139,11 +139,21 @@ onMounted(async() => await getBackup())
                           class="ml-1" />
                       </div>
                     </div>
+                    <div
+                      v-else
+                      class="mx-auto flex justify-center items-center">
+                      <p>
+                        No file selected.
+                      </p>
+                    </div>
                     <Button
                       label="Upload"
                       icon="pi pi-upload"
                       :disabled="!files || files.length === 0"
-                      @click="uploadCallback"
+                      @click="() => {
+                        uploadCallback()
+                        files.length = 0
+                      }"
                     />
                   </div>
                 </template>
@@ -155,7 +165,11 @@ onMounted(async() => await getBackup())
                       {{ message }}
                     </p>
                   </div>
-                  <div v-else />
+                  <p
+                    v-else
+                    class="text-center">
+                    Drag your file here to upload it.
+                  </p>
                 </template>
               </FileUpload>
             </Fieldset>
