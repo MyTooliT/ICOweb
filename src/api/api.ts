@@ -1,9 +1,9 @@
-export function useAPI(apiBase: string) {
+export function useAPI(apiBase: string, onError: (error: any) => void = () => {}) {
 
   // eslint-disable-next-line max-len
   async function get<ResponseType>(endpoint: string): Promise<ResponseType> {
     return new Promise((resolve, reject) => {
-      sendRequest<ResponseType>(apiBase, endpoint, 'GET', undefined)
+      sendRequest<ResponseType>(apiBase, endpoint, 'GET', undefined, onError)
           .then(resolve)
           .catch(reject);
     });
@@ -12,7 +12,7 @@ export function useAPI(apiBase: string) {
   // eslint-disable-next-line max-len
   async function post<BodyType, ResponseType>(endpoint: string, body: BodyType): Promise<ResponseType> {
     return new Promise((resolve, reject) => {
-      sendRequest<ResponseType>(apiBase, endpoint, 'POST', body)
+      sendRequest<ResponseType>(apiBase, endpoint, 'POST', body, onError)
           .then(resolve)
           .catch(reject);
     });
@@ -21,7 +21,7 @@ export function useAPI(apiBase: string) {
   // eslint-disable-next-line max-len
   async function put<BodyType, ResponseType>(endpoint: string, body: BodyType): Promise<ResponseType> {
     return new Promise((resolve, reject) => {
-      sendRequest<ResponseType>(apiBase, endpoint, 'PUT', body)
+      sendRequest<ResponseType>(apiBase, endpoint, 'PUT', body, onError)
           .then(resolve)
           .catch(reject);
     });
@@ -31,7 +31,7 @@ export function useAPI(apiBase: string) {
   async function del<BodyType, ResponseType>(endpoint: string, body: BodyType):
       Promise<ResponseType> {
     return new Promise((resolve, reject) => {
-      sendRequest<ResponseType>(apiBase, endpoint, 'DELETE', body)
+      sendRequest<ResponseType>(apiBase, endpoint, 'DELETE', body, onError)
           .then(resolve)
           .catch(reject);
     });
@@ -46,7 +46,7 @@ export function useAPI(apiBase: string) {
 }
 
 async function sendRequest<ResponseType>(
-  apiBase: string, endpoint: string, method: string, body: any
+  apiBase: string, endpoint: string, method: string, body: any, onError: (error: any) => void
 ): Promise<ResponseType> {
   return new Promise((resolve, reject) => {
     const requestOptions= {
@@ -70,6 +70,14 @@ async function sendRequest<ResponseType>(
             resolve(undefined as ResponseType)
           }
         } else {
+          try {
+            const json = await response.json()
+            onError(json['detail'])
+          } catch(e) {
+            const text = await response.text()
+            onError(text)
+            console.error(e)
+          }
           reject(
               {
                 error: true,

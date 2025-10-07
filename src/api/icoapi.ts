@@ -19,6 +19,7 @@ import {
   ConfigRestoreRequest
 } from '@/client';
 import { useAPI } from './api.ts';
+import ToastEventBus from 'primevue/toasteventbus';
 
 export function getAPILink(): string {
   const protocol = import.meta.env.VITE_API_PROTOCOL;
@@ -43,7 +44,15 @@ const {
   get,
   post,
   put
-} = useAPI(getAPILink())
+} = useAPI(getAPILink(), (error) => {
+  ToastEventBus.emit('add', {
+    severity: 'error',
+    summary: 'Error',
+    detail: error,
+    life: 5000,
+    group: 'default'
+  })
+})
 
 export async function delay(): Promise<any> {
   return new Promise((resolve, reject) => {
