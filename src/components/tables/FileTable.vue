@@ -12,16 +12,17 @@ import {defineEmits, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
+import {Feature, MeasurementFileDetails} from '@/client';
 const mStore = useMeasurementStore()
 const router = useRouter()
-const { pageEnabled, featureEnabled } = useDisable()
+const { pageEnabled } = useDisable()
 const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteMeasurementFile)
 const { loading: uploadLoading, call: upload } = useLoadingHandler(uploadFile)
 const uploadedFile = ref<string>('')
 
 const disableTooltip = ref<boolean>(false)
 defineProps<{
-  authError: boolean
+  cloud: Feature
 }>()
 const emits = defineEmits<{
   (event: 'needs-refresh'): void,
@@ -66,7 +67,7 @@ const emits = defineEmits<{
       <template #body="{ data }: { data: MeasurementFileDetails }">
         <div class="flex flex-row gap-2">
           <Button
-            v-if="featureEnabled('Cloud') && !authError"
+            v-if="cloud.enabled && cloud.healthy"
             v-tooltip.top="{
               value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to Data space'
             }"
@@ -123,7 +124,3 @@ const emits = defineEmits<{
     </Column>
   </DataTable>
 </template>
-
-<style scoped>
-
-</style>

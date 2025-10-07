@@ -98,7 +98,7 @@ const meterItems = computed<MeterItem[]>(() => {
         </NamedInput>
       </div>
       <FileTable
-        :auth-error="authError || !gStore.systemState.cloud_ready"
+        :cloud="gStore.systemState.cloud"
         @needs-refresh="loadFiles"
       />
     </div>
