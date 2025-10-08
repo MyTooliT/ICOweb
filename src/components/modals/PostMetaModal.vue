@@ -20,8 +20,7 @@ defineProps<{
     :block-scroll="true"
     header="Post-Measurement Metadata"
     class="[width:80vw]"
-    @close="emits('send')"
-  >
+    @after-hide="emits('send')">
     <PostMetaData
       :loading="loading"
       @send="emits('send')"
