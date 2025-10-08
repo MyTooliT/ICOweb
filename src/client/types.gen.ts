@@ -78,9 +78,7 @@ export type ConfigFileInfoHeader = {
 };
 
 export type ConfigResponse = {
-    files: {
-        [key: string]: ConfigFile;
-    };
+    files: Array<ConfigFile>;
 };
 
 export type ConfigRestoreRequest = {
@@ -441,7 +439,7 @@ export type UploadMetadataFileApiV1ConfigMetaPostData = {
     formData: Body_upload_metadata_file_api_v1_config_meta_post;
 };
 
-export type UploadMetadataFileApiV1ConfigMetaPostResponse = unknown;
+export type UploadMetadataFileApiV1ConfigMetaPostResponse = ConfigFileInfoHeader;
 
 export type GetSensorsFileApiV1ConfigSensorsGetResponse = unknown;
 
@@ -449,13 +447,13 @@ export type UploadSensorsFileApiV1ConfigSensorsPostData = {
     formData: Body_upload_sensors_file_api_v1_config_sensors_post;
 };
 
-export type UploadSensorsFileApiV1ConfigSensorsPostResponse = unknown;
+export type UploadSensorsFileApiV1ConfigSensorsPostResponse = ConfigFileInfoHeader;
 
 export type UploadDataspaceFileApiV1ConfigDataspacePostData = {
     formData: Body_upload_dataspace_file_api_v1_config_dataspace_post;
 };
 
-export type UploadDataspaceFileApiV1ConfigDataspacePostResponse = unknown;
+export type UploadDataspaceFileApiV1ConfigDataspacePostResponse = ConfigFileInfoHeader;
 
 export type GetEnvFileApiV1ConfigEnvGetResponse = unknown;
 
@@ -977,7 +975,7 @@ export type $OpenApiTs = {
                 /**
                  * Metadata configuration uploaded successfully.
                  */
-                200: unknown;
+                200: ConfigFileInfoHeader;
                 /**
                  * Failed to parse YAML payload.
                  */
@@ -1031,7 +1029,7 @@ export type $OpenApiTs = {
                 /**
                  * Sensor configuration uploaded successfully.
                  */
-                200: unknown;
+                200: ConfigFileInfoHeader;
                 /**
                  * Failed to parse YAML payload.
                  */
@@ -1070,7 +1068,7 @@ export type $OpenApiTs = {
                 /**
                  * Dataspace configuration uploaded successfully.
                  */
-                200: unknown;
+                200: ConfigFileInfoHeader;
                 /**
                  * Failed to parse YAML payload.
                  */

@@ -61,11 +61,10 @@ function setAllDefaults() {
 function standardReset() {
   if(!config.value) return
   if(!mStore.preMetaForm.profile || mStore.preMetaForm.profile === '') {
-    console.log(`setting profile to ${config.value.info.default_profile_id} because it was not set before.`)
-    mStore.preMetaForm.profile = config.value.info.default_profile_id
+    mStore.preMetaForm.profile = config.value.default_profile_id
   }
   if(!mStore.preMetaForm.version || mStore.preMetaForm.version === '') {
-    mStore.preMetaForm.version = config.value.info.version
+    mStore.preMetaForm.version = config.value.info.schema_version
   }
   if(!profile.value) return
   setImplementations()

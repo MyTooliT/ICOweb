@@ -1,16 +1,9 @@
-import {Quantity} from '@/client';
+import {ConfigFileInfoHeader, Quantity} from '@/client';
 
 export type MetadataConfig = {
-    info: MetadataInfo;
+    info: ConfigFileInfoHeader;
     default_profile_id: ProfileKey;
     profiles: Record<ProfileKey, ProfileDefinition>;
-}
-
-type MetadataInfo = {
-    schema_name: string;
-    schema_version: string;
-    name: string;
-    date: string;
 }
 
 export type MetadataParameterInformation = {

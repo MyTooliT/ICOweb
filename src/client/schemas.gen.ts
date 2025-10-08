@@ -259,10 +259,10 @@ export const $ConfigFileInfoHeader = {
 export const $ConfigResponse = {
     properties: {
         files: {
-            additionalProperties: {
+            items: {
                 '$ref': '#/components/schemas/ConfigFile'
             },
-            type: 'object',
+            type: 'array',
             title: 'Files'
         }
     },

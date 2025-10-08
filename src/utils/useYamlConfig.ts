@@ -25,9 +25,9 @@ export function useYamlConfig() {
         await reload()
         return (config.value !== null
             && error.value === null
-            && config.value.info.version !== ''
-            && config.value.info.version !== undefined
-            && config.value.info.version !== null)
+            && config.value.info.config_version !== ''
+            && config.value.info.config_version !== undefined
+            && config.value.info.config_version !== null)
 
     }
 

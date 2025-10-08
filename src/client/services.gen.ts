@@ -478,7 +478,7 @@ export const getMetadataFileApiV1ConfigMetaGet = (): CancelablePromise<GetMetada
  * Upload Metadata File
  * @param data The data for the request.
  * @param data.formData
- * @returns unknown Metadata configuration uploaded successfully.
+ * @returns ConfigFileInfoHeader Metadata configuration uploaded successfully.
  * @throws ApiError
  */
 export const uploadMetadataFileApiV1ConfigMetaPost = (data: UploadMetadataFileApiV1ConfigMetaPostData): CancelablePromise<UploadMetadataFileApiV1ConfigMetaPostResponse> => { return __request(OpenAPI, {
@@ -511,7 +511,7 @@ export const getSensorsFileApiV1ConfigSensorsGet = (): CancelablePromise<GetSens
  * Upload Sensors File
  * @param data The data for the request.
  * @param data.formData
- * @returns unknown Sensor configuration uploaded successfully.
+ * @returns ConfigFileInfoHeader Sensor configuration uploaded successfully.
  * @throws ApiError
  */
 export const uploadSensorsFileApiV1ConfigSensorsPost = (data: UploadSensorsFileApiV1ConfigSensorsPostData): CancelablePromise<UploadSensorsFileApiV1ConfigSensorsPostResponse> => { return __request(OpenAPI, {
@@ -531,7 +531,7 @@ export const uploadSensorsFileApiV1ConfigSensorsPost = (data: UploadSensorsFileA
  * Upload Dataspace File
  * @param data The data for the request.
  * @param data.formData
- * @returns unknown Dataspace configuration uploaded successfully.
+ * @returns ConfigFileInfoHeader Dataspace configuration uploaded successfully.
  * @throws ApiError
  */
 export const uploadDataspaceFileApiV1ConfigDataspacePost = (data: UploadDataspaceFileApiV1ConfigDataspacePostData): CancelablePromise<UploadDataspaceFileApiV1ConfigDataspacePostResponse> => { return __request(OpenAPI, {
