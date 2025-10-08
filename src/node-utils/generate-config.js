@@ -144,8 +144,8 @@ function generateConfig(excelPath) {
             param.options = lists[paramId] || [];
         }
     });
-    if (!config.info.generated_at) {
-        config.info.generated_at = new Date().toISOString();
+    if (!config.info.config_date) {
+        config.info.config_date = new Date().toISOString();
     }
 
     config.profiles = parseProfiles(wb, parameters, categories);
