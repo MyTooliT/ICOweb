@@ -64,6 +64,21 @@ function parseInfo(sheet) {
     return info;
 }
 
+function parseDefaultSheet(sheet) {
+    const data = xlsx.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    const defaults = {}
+    console.log(data)
+    data.forEach(row => {
+        const key = row[0];
+        const value = row[1];
+        console.log(key, value)
+        if (key && value !== undefined && value !== '') {
+            defaults[normalizeKey(key)] = value;
+        }
+    })
+    return defaults;
+}
+
 function parseCategories(sheet) {
     const rows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
     const categories = {};
@@ -130,7 +145,7 @@ function parseProfiles(wb, parameters, categories) {
 
 function generateConfig(excelPath) {
     const wb = loadWorkbook(excelPath);
-    const config = { info: {}, profiles: {} };
+    const config = { info: {}, profiles: {}, default_profile_id: '' };
     let parameters = {}
     let lists = {}
     let categories = {}
@@ -138,6 +153,7 @@ function generateConfig(excelPath) {
     if (wb.Sheets['lists']) { lists = parseLists(wb.Sheets['lists']) }
     if (wb.Sheets['categories']) { categories = parseCategories(wb.Sheets['categories']) }
     if (wb.Sheets['info']) { config.info = parseInfo(wb.Sheets['info']) }
+    if (wb.Sheets['default']) { Object.assign(config, parseDefaultSheet(wb.Sheets['default'])); }
 
     Object.entries(parameters).forEach(([paramId, param]) => {
         if (param.datatype && ['dropdown', 'text_suggestions'].includes(param.datatype)) {
