@@ -21,8 +21,8 @@ import { Ref } from 'vue';
 * @param channelUnits Units for the to-be-drawn datasets
 * @param sampleRate Acquisition sample rate of the ADC
 * @param drawTime Timeframe for the chart to display
-* @param minRef Vue Ref<> to the chart's minimum for setting
-* @param maxRef Vue Ref<> to the chart's maximum for setting
+* @param minRefPerUnit Vue Ref<> to the chart's minimum for setting
+* @param maxRefPerUnit Vue Ref<> to the chart's maximum for setting
 * */
 export function updateChartData(
   rawData: Array<MeasurementDataFrame>,
@@ -44,8 +44,8 @@ export function updateChartData(
   },
   sampleRate: number = 3175,
   drawTime: number = 10,
-  minRef: Ref<number | undefined>,
-  maxRef: Ref<number | undefined>
+  minRefPerUnit: Ref<{[key: string] : number}>,
+  maxRefPerUnit: Ref<{[key: string] : number}>
 ): void {
   // Arrays to hold the visible subset of each dataset and timeset
   const x_values_visible: number[] = []
@@ -59,17 +59,6 @@ export function updateChartData(
     const interval = Math.floor(iftValues.value.length / maxNumberOfPoints)
     for(let i = 0; i < iftValues.value.length; i+=interval) {
       iftChannelSubset.push(iftValues.value[i])
-    }
-    const iftYValues: number[] = iftChannelSubset.map(ift => ift.y)
-    if(minRef.value) {
-      minRef.value = Math.min(...iftYValues, minRef.value)
-    } else {
-      minRef.value = Math.min(...iftYValues)
-    }
-    if(maxRef.value) {
-      maxRef.value = Math.max(...iftYValues, maxRef.value)
-    } else {
-      maxRef.value = Math.max(...iftYValues)
     }
   }
 
@@ -89,31 +78,21 @@ export function updateChartData(
   // at the calculated startIndex
   for(let i = startIndex; i < rawData.length; i += interval) {
     x_values_visible.push(rawData[i].timestamp)
-    const values: number[] = []
 
     if(rawData[i].first) {
       firstChannelSubset.push(<number>rawData[i].first)
-      values.push(<number>rawData[i].first)
+      minRefPerUnit.value[channelUnits.first] = Math.min(...firstChannelSubset, minRefPerUnit.value[channelUnits.first] ?? Number.MAX_SAFE_INTEGER)
+      maxRefPerUnit.value[channelUnits.first] = Math.max(...firstChannelSubset, maxRefPerUnit.value[channelUnits.first] ?? Number.MIN_SAFE_INTEGER)
     }
     if(rawData[i].second) {
       secondChannelSubset.push(<number>rawData[i].second)
-      values.push(<number>rawData[i].second)
+      minRefPerUnit.value[channelUnits.second] = Math.min(...secondChannelSubset, minRefPerUnit.value[channelUnits.second] ?? Number.MAX_SAFE_INTEGER)
+      maxRefPerUnit.value[channelUnits.second] = Math.max(...secondChannelSubset, maxRefPerUnit.value[channelUnits.second] ?? Number.MIN_SAFE_INTEGER)
     }
     if(rawData[i].third) {
       thirdChannelSubset.push(<number>rawData[i].third)
-      values.push(<number>rawData[i].third)
-    }
-
-    // Set the chart's max and min value references if needed
-    if(minRef.value) {
-      minRef.value = Math.min(...values, minRef.value)
-    } else {
-      minRef.value = Math.min(...values)
-    }
-    if(maxRef.value) {
-      maxRef.value = Math.max(...values, maxRef.value)
-    } else {
-      maxRef.value = Math.max(...values)
+      minRefPerUnit.value[channelUnits.third] = Math.min(...thirdChannelSubset, minRefPerUnit.value[channelUnits.third] ?? Number.MAX_SAFE_INTEGER)
+      maxRefPerUnit.value[channelUnits.third] = Math.max(...thirdChannelSubset, maxRefPerUnit.value[channelUnits.third] ?? Number.MIN_SAFE_INTEGER)
     }
   }
 

@@ -81,15 +81,11 @@ function wrapUpdate() {
       third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)) ?? 'Third Channel',
       ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
     },
-    {
-      first: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)?.sensor.sensorType.physicalUnit ?? 'g',
-      second: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)?.sensor.sensorType.physicalUnit ?? 'g',
-      third: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)?.sensor.sensorType.physicalUnit ?? 'g',
-    },
+    channelUnits.value,
     3175,
     mStore.chartMaximumDisplayedTime,
-    currentMin,
-    currentMax
+    chartYMinPerUnit,
+    chartYMaxPerUnit
   )
 
   if(storage.value.length === 0) { return }
@@ -105,18 +101,24 @@ function wrapUpdate() {
     mStore.updateChartStartTime(streamStartStamp)
     mStore.updateChartEndTime(streamStartStamp + 10)
   }
-
-
-  if(currentMin.value) {
-    mStore.updateChartYMin(currentMin.value)
-  }
-  if(currentMax.value) {
-    mStore.updateChartYMax(currentMax.value)
+  if(scales.value) {
+    Object.keys(scales.value).forEach(key => {
+      // @ts-ignore
+      scales.value[key].min = chartYMinPerUnit.value[key]
+      // @ts-ignore
+      scales.value[key].max = chartYMaxPerUnit.value[key]
+    })
   }
 }
-
-const currentMin = ref<number | undefined>(undefined)
-const currentMax = ref<number | undefined>(undefined)
+const chartYMinPerUnit = ref<{[key: string] : number}>({})
+const chartYMaxPerUnit = ref<{[key: string] : number}>({})
+const channelUnits = computed(() => {
+  return {
+    first: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)?.sensor.sensorType.physicalUnit ?? '',
+    second: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)?.sensor.sensorType.physicalUnit ?? '',
+    third: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)?.sensor.sensorType.physicalUnit ?? '',
+  }
+})
 const config = useYamlConfig()
 
 const hasPostMeta = computed<boolean>(() => {
@@ -167,6 +169,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   //scales.value = computeScales()
   if(mStore.autostream) {
     show()
+    chartYMinPerUnit.value = {}
+    chartYMaxPerUnit.value = {}
   }
   await gStore.systemState.checkState()
 })
@@ -277,7 +281,9 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
       title: {
         display: true,
         text: `${udc.physicalDimension} in ${udc.physicalUnit}`,
-      }
+      },
+      min: chartYMinPerUnit.value[udc.physicalUnit] ?? -10,
+      max: chartYMaxPerUnit.value[udc.physicalUnit] ?? 10,
     }
   })
   return scl
@@ -302,6 +308,7 @@ onMounted(async () => {
     }
   }
   metaEnabled.value = await useYamlConfig().isEnabled()
+  scales.value = computeScales()
 })
 watch(mStore.selectedChannels, () => scales.value = computeScales())
 watch(mStore.activeChannels, () => scales.value = computeScales())
