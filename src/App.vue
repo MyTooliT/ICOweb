@@ -28,7 +28,7 @@ const store = useGeneralStore()
           <ProgressSpinner />
           <h4> {{ store.getLoaderInfoMessage }} </h4>
         </div>
-        <div class="w-full h-full overflow-auto ">
+        <div class="w-full min-h-full overflow-y-scroll overflow-x-auto">
           <router-view />
         </div>
         <BottomBar />

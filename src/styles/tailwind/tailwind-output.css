@@ -790,6 +790,10 @@ video {
   max-height: 20rem;
 }
 
+.min-h-full {
+  min-height: 100%;
+}
+
 .\!w-min {
   width: -moz-min-content !important;
   width: min-content !important;
@@ -957,6 +961,18 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .\!rounded-md {
