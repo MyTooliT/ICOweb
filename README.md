@@ -95,17 +95,6 @@ VITE_APPLICATION_ENABLE_FEATURES="Meta,ADC"
 ``VITE_APPLICATION_ENABLE_FEATURES`` takes predefined tags to enable.
 - ``ADC`` enables changing the ADC settings
 
-### Branding Settings
-
-To add branding to the client, a logo with corresponding ALT text can be set.
-
-```
-VITE_APPLICATION_EXTRA_LOGO="cirp.png"
-VITE_APPLICATION_EXTRA_LOGO_ALT="CIRP"
-```
-
-The logo file must be placed in the ``public/extra`` folder and will be displayed above the IFT logo in the menu.
-
 ```
 VITE_APPLICATION_PORT=8081
 ```
@@ -232,6 +221,29 @@ to parse the file into ``public/config/metadata.yaml`` and ``types/metadata.d.ts
 The ``metadata.yaml`` file is required for the metadata system to work. **Commit it.**
 
 The typescript declaration is only for development.
+
+# Branding
+
+The possibility to customize the client to your brand is currently implemented only via the extra logo settings.
+
+## Logos
+
+You can customize two separate logos which will be displayed in the main menu (left sidebar, on the bottom).
+
+### Main Logo
+
+The main logo will be one placed in the bottom left corner. It needs to be named ``logo.png`` and placed in the 
+``public/logo`` folder.
+
+### Extra Logo
+
+The logo file must be placed in the ``public/logo`` folder and have the name `extra.png`. It will be displayed above the
+main logo in the menu.
+
+## HTML Title
+
+The HTML tab title can be set in the [#]
+
 
 # Sensors and Configurations ("Holders")
 

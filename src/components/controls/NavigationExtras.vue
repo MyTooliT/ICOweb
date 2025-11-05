@@ -1,22 +1,33 @@
 <script setup lang="ts">
-import logo from '@/assets/img/ift_logo.jpg';
-import {ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import RouterLinkButton from '@/components/buttons/RouterLinkButton.vue';
 
-const extraLogo = ref<string|undefined>(import.meta.env.VITE_APPLICATION_EXTRA_LOGO);
-const alt = ref<string|undefined>(import.meta.env.VITE_APPLICATION_EXTRA_LOGO_ALT);
+const hasExtraLogo = ref<boolean>(false);
+const fetchExtraLogo = async () => {
+  try {
+    const res = await fetch('./logo/extra.png')
+    return !!res.headers.get('content-type')?.includes('image');
+  }
+  catch(e) {
+    return false
+  }
+}
+
+onMounted(async () => {
+  hasExtraLogo.value = await fetchExtraLogo()
+})
 </script>
 
 <template>
   <div class="mt-auto">
     <RouterLinkButton
-      v-if="extraLogo"
+      v-if="hasExtraLogo"
       name="Help"
       to="/help"
     >
       <img
-        :src="`./extra/${extraLogo}`"
-        :alt="alt"
+        src="/logo/extra.png"
+        alt="Extra Logo for ICOweb client"
         class="w-full max-w-16 mx-auto"
       >
     </RouterLinkButton>
@@ -25,8 +36,8 @@ const alt = ref<string|undefined>(import.meta.env.VITE_APPLICATION_EXTRA_LOGO_AL
       to="/help"
     >
       <img
-        :src="logo"
-        alt="IFT Logo"
+        src="/logo/logo.png"
+        alt="Logo"
         class="w-full max-w-16 mx-auto"
       >
     </RouterLinkButton>
