@@ -88,7 +88,7 @@ are shown and no features are enabled - the ``.env`` file can override that.
 
 ```
 VITE_APPLICATION_DISABLE_PAGES="Config,Analyze"
-VITE_APPLICATION_ENABLE_FEATURES="Meta,ADC"
+VITE_APPLICATION_ENABLE_FEATURES="ADC"
 ```
 
 ``VITE_APPLICATION_DISABLE_PAGES`` takes the names of the pages to be disabled, which hides them from the menu.

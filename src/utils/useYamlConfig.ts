@@ -27,7 +27,9 @@ export function useYamlConfig() {
             && error.value === null
             && config.value.info.config_version !== ''
             && config.value.info.config_version !== undefined
-            && config.value.info.config_version !== null)
+            && config.value.info.config_version !== null
+            && config.value.info.config_version !== 'disabled'
+        )
 
     }
 
