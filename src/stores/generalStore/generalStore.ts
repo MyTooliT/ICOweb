@@ -8,12 +8,11 @@ import {
 } from 'vue';
 
 export enum ThemeStyle {
-    Light = 'light',
-    Dark = 'dark',
+    Blue = 'blue'
 }
 
 export const useGeneralStore = defineStore('general', () => {
-    const _activeTheme: Ref<ThemeStyle> = ref<ThemeStyle>(ThemeStyle.Light);
+    const _activeTheme: Ref<ThemeStyle> = ref<ThemeStyle>(ThemeStyle.Blue);
     const getActiveTheme: ComputedRef<ThemeStyle> = computed(() => _activeTheme.value)
     function setActiveTheme(newTheme: ThemeStyle): Boolean {
         if(newTheme !== _activeTheme.value) {

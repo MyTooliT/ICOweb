@@ -8,8 +8,7 @@ import App from './App.vue';
 // Styles and theme import
 import './styles/style.css';
 import './styles/tailwind/tailwind-output.css';
-import './styles/material-theme/light.css';
-import './styles/material-theme/dark.css';
+import '@/styles/themes/blue.css';
 
 // PrimeVue Library import
 import PrimeVue from 'primevue/config';
