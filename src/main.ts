@@ -13,7 +13,7 @@ import '@/styles/themes/blue.css';
 // PrimeVue Library import
 import PrimeVue from 'primevue/config';
 import { Ripple, Tooltip, ToastService } from 'primevue'
-import { myPreset } from './styles/primevue.ts';
+import { bluePreset } from './styles/primevue.ts';
 import 'primeicons/primeicons.css';
 
 
@@ -27,7 +27,7 @@ app.directive('ripple', Ripple);
 app.directive('tooltip', Tooltip);
 app.use(PrimeVue, {
   theme: {
-    preset: myPreset,
+    preset: bluePreset,
     options: {
       darkModeSelector: '.app-dark'
     }
