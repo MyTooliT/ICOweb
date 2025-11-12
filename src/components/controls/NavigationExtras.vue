@@ -3,18 +3,9 @@ import { onMounted, ref } from 'vue'
 import RouterLinkButton from '@/components/buttons/RouterLinkButton.vue';
 
 const hasExtraLogo = ref<boolean>(false);
-const fetchExtraLogo = async () => {
-  try {
-    const res = await fetch('./logo/extra.png')
-    return !!res.headers.get('content-type')?.includes('image');
-  }
-  catch(e) {
-    return false
-  }
-}
 
 onMounted(async () => {
-  hasExtraLogo.value = await fetchExtraLogo()
+  hasExtraLogo.value = import.meta.env.VITE_APPLICATION_THEME_EXTRALOGO === 'true'
 })
 </script>
 
@@ -26,7 +17,7 @@ onMounted(async () => {
       to="/help"
     >
       <img
-        src="/logo/extra.png"
+        src="@/theme/extra.png"
         alt="Extra Logo for ICOweb client"
         class="w-full max-w-16 mx-auto"
       >
@@ -36,7 +27,7 @@ onMounted(async () => {
       to="/help"
     >
       <img
-        src="/logo/logo.png"
+        src="@/theme/logo.png"
         alt="Logo"
         class="w-full max-w-16 mx-auto"
       >

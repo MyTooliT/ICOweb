@@ -32,19 +32,19 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
         bg-error-container text-on-error-container
         data-[api~=false]:bg-error-container
         data-[api~=false]:text-on-error-container
-        data-[api~=true]:data-[can~=false]:bg-yellow-300
-        data-[api~=true]:data-[can~=false]:text-on-error-container
+        data-[api~=true]:data-[can~=false]:bg-primary
+        data-[api~=true]:data-[can~=false]:text-on-primary
         data-[can~=true]:bg-primary-container
         data-[can~=true]:text-on-primary-container
-        data-[running~=true]:bg-green-600
-        data-[running~=true]:text-on-primary"
+        data-[running~=true]:bg-secondary
+        data-[running~=true]:text-on-secondary"
     >
-      <div>
+      <div class="bg-inherit text-inherit">
         <Button
           label="Clear Cache"
           size="small"
           link
-          :class="store.systemState.running ? '!text-on-primary' : ''"
+          class="!text-inherit"
           @click="clearCache()" />
         <Button
           v-if="!store.systemState.running"
@@ -53,6 +53,7 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
           link
           :loading="loading"
           :disabled="loading"
+          class="!text-inherit"
           @click="resetHandle" />
       </div>
       <div
@@ -60,14 +61,10 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
         class="text-sm h-min flex self-center">
         Ongoing Measurement
       </div>
-      <div class="text-sm h-min flex self-center">
+      <div class="text-sm h-min flex self-center text-inherit">
         API {{ store.systemState.reachable ? 'reachable' : 'disconnected' }} |
         CAN {{ store.systemState.canReady ? 'established' : 'disconnected' }}
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

@@ -8,12 +8,12 @@ import App from './App.vue';
 // Styles and theme import
 import './styles/style.css';
 import './styles/tailwind/tailwind-output.css';
-import '@/styles/themes/blue.css';
+import '@/theme/theme.css';
 
 // PrimeVue Library import
 import PrimeVue from 'primevue/config';
 import { Ripple, Tooltip, ToastService } from 'primevue'
-import { bluePreset } from './styles/primevue.ts';
+import { themePreset } from './styles/primevue.ts';
 import 'primeicons/primeicons.css';
 
 
@@ -27,7 +27,7 @@ app.directive('ripple', Ripple);
 app.directive('tooltip', Tooltip);
 app.use(PrimeVue, {
   theme: {
-    preset: bluePreset,
+    preset: themePreset,
     options: {
       darkModeSelector: '.app-dark'
     }

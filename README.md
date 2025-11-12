@@ -101,6 +101,15 @@ VITE_APPLICATION_PORT=8081
 
 ``VITE_APPLICATION_PORT`` defines on what port the client is served at.
 
+```
+VITE_APPLICATION_THEME="blue"
+VITE_APPLICATION_THEME_EXTRALOGO="false"
+```
+
+``VITE_APPLICATION_THEME`` sets the theme of the application at build-time. 
+
+``VITE_APPLICATION_THEME_EXTRALOGO`` controls whether a second log is present
+
 ## Type Generation
 
 This repository is based on typescript and relies heavily on the ``openapi-ts`` package to generate type declarations

@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.18 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -1084,6 +1084,10 @@ video {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
+.bg-inherit {
+  background-color: inherit;
+}
+
 .bg-surface {
   background-color: var(--md-sys-color-surface);
 }
@@ -1219,8 +1223,8 @@ video {
   color: rgb(0 0 0 / var(--tw-text-opacity, 1)) !important;
 }
 
-.\!text-on-primary {
-  color: var(--md-sys-color-on-primary) !important;
+.\!text-inherit {
+  color: inherit !important;
 }
 
 .\!text-on-primary-container {
@@ -1245,6 +1249,10 @@ video {
 .text-green-200 {
   --tw-text-opacity: 1;
   color: rgb(187 247 208 / var(--tw-text-opacity, 1));
+}
+
+.text-inherit {
+  color: inherit;
 }
 
 .text-on-error-container {
@@ -1622,18 +1630,16 @@ video {
   background-color: var(--md-sys-color-error-container);
 }
 
-.data-\[api\~\=true\]\:data-\[can\~\=false\]\:bg-yellow-300[data-can~="false"][data-api~="true"] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 224 71 / var(--tw-bg-opacity, 1));
+.data-\[api\~\=true\]\:data-\[can\~\=false\]\:bg-primary[data-can~="false"][data-api~="true"] {
+  background-color: var(--md-sys-color-primary);
 }
 
 .data-\[can\~\=true\]\:bg-primary-container[data-can~="true"] {
   background-color: var(--md-sys-color-primary-container);
 }
 
-.data-\[running\~\=true\]\:bg-green-600[data-running~="true"] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
+.data-\[running\~\=true\]\:bg-secondary[data-running~="true"] {
+  background-color: var(--md-sys-color-secondary);
 }
 
 .data-\[state\=readyToEdit\]\:bg-inherit[data-state="readyToEdit"] {
@@ -1648,16 +1654,16 @@ video {
   color: var(--md-sys-color-on-error-container);
 }
 
-.data-\[api\~\=true\]\:data-\[can\~\=false\]\:text-on-error-container[data-can~="false"][data-api~="true"] {
-  color: var(--md-sys-color-on-error-container);
+.data-\[api\~\=true\]\:data-\[can\~\=false\]\:text-on-primary[data-can~="false"][data-api~="true"] {
+  color: var(--md-sys-color-on-primary);
 }
 
 .data-\[can\~\=true\]\:text-on-primary-container[data-can~="true"] {
   color: var(--md-sys-color-on-primary-container);
 }
 
-.data-\[running\~\=true\]\:text-on-primary[data-running~="true"] {
-  color: var(--md-sys-color-on-primary);
+.data-\[running\~\=true\]\:text-on-secondary[data-running~="true"] {
+  color: var(--md-sys-color-on-secondary);
 }
 
 .data-\[disabled\=true\]\:opacity-60[data-disabled="true"] {
