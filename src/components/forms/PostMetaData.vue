@@ -17,7 +17,7 @@ import MetaForm from '@/components/forms/MetaForm.vue';
 const mStore = useMeasurementStore()
 const { config, reload } = useYamlConfig();
 
-const emits = defineEmits(['send'])
+const emits = defineEmits(['send', 'canceled'])
 defineProps<{
   loading: boolean
 }>()
@@ -65,9 +65,15 @@ onMounted(async () => {
       v-model:state-validity="mStore.postMetaValid"
       :phase="profile.post" />
     <div class="mt-4 pt-3 border-t">
-      <div class="w-full flex justify-center">
+      <div class="w-full flex justify-between">
         <Button
-          label="Finish Measurement"
+          label="Finish Without Post-Metadata"
+          variant="outlined"
+          :loading="loading"
+          @click="emits('canceled')"
+        />
+        <Button
+          label="Send & Finish Measurement"
           :disabled="!mStore.postMetaValid"
           :loading="loading"
           @click="emits('send')"

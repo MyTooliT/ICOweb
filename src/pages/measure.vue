@@ -318,9 +318,12 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
 <template>
   <div class="flex flex-row">
     <PostMetaModal
-      :closable="true"
       :loading="postMetaLoading"
       @send="submitPostMeta"
+      @canceled="()=> {
+        submitPostMeta();
+        gStore.postMetaModalVisible = false;
+      }"
     />
     <SplitLayout
       v-if="hwStore.hasSTU && hwStore.activeSTH"

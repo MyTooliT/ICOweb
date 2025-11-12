@@ -4,9 +4,8 @@ import PostMetaData from '@/components/forms/PostMetaData.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 
 const gStore = useGeneralStore();
-const emits = defineEmits(['send'])
+const emits = defineEmits(['send', 'canceled'])
 defineProps<{
-  closable: boolean,
   loading: boolean,
 }>()
 </script>
@@ -15,15 +14,15 @@ defineProps<{
   <Dialog
     v-model:visible="gStore.postMetaModalVisible"
     modal
-    :closable="closable"
+    :closable="false"
     :append-to="'body'"
     :block-scroll="true"
     header="Post-Measurement Metadata"
-    class="[width:80vw]"
-    @after-hide="emits('send')">
+    class="[width:80vw]">
     <PostMetaData
       :loading="loading"
       @send="emits('send')"
+      @canceled="emits('canceled')"
     />
   </Dialog>
 </template>
