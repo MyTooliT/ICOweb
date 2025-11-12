@@ -8,7 +8,7 @@ import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts
 import {useDisable} from '@/utils/useDisable.ts';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {deleteMeasurementFile, uploadFile} from '@/api/icoapi.ts';
-import {defineEmits, ref} from 'vue';
+import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';

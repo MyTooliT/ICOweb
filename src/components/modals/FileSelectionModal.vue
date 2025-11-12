@@ -5,7 +5,7 @@ import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import FileUpload from 'primevue/fileupload';
 import ProgressBar from 'primevue/progressbar';
-import {defineEmits, ref} from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const store = useGeneralStore();
