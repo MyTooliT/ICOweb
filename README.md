@@ -119,146 +119,22 @@ in ``src/client`` from the backend directly. To update the type declarations, **
 npm run generate-client
 ```
 
-## Metadata
-
-To support the usage of arbitrary metadata when creating measurements, a configuration system has been set up. This
-system starts as an Excel file in which all metadata fields are defined. This file is then parsed into a YAML file, from
-which it can be used further.
-
-This repository holds the ``metadata.xlsx`` master file and the script to generate the ``.yaml`` file and the typescript type 
-declarations from it. Run the parser with:
-
-``
-npm run generate-config
-``
-
-This script expects the Excel file to be in the project root and places the parsed YAML file into ``public/config``.
-
-The ``.yaml`` file will then be used by the client itself to generate the UI elements.
-
-The metadata.xlsx has the following sheets:
-
-### fields
-
-This is where all available fields need to be entered, no matter in which profile they appear or not.
-
-- id: must be unique
-- label: displayed name of the field
-- datatype: determines the UI element for the field
-  - text: simple text input
-  - dropdown: select/dropdown **not editable** --> see **lists sheet**
-  - text_suggestions: text input, but with on-type suggestions --> see **lists sheet**
-  - float: number input with 4 decimal places (komma, not dot notation!)
-  - int: integer number input
-  - boolean: renders a checkbox
-  - file: currently only renders the CustomFileUpload component which is only for images
-  - text_box: renders a resizable textbox
-- unit: is displayed next to the field label and stored alongside the entered value
-  - see the Quantity Datatype in the [generate types](src/client/types.gen.ts)
-- type: determines how the field is handled
-  - default: empty (or prefilled if default values are given) field
-  - implementation: suggests that this field will be computed, but **that computation must be handled manually**
-  - range: currently not respected; intended for fields which get set as a range between bounds (e.g. for cutting along a sloped line)
-
-### categories
-
-These are the categories that split the fields into different sections when rendered in the client. They only consist of:
-
-- id: unique identifier
-- display_name: displayed name as a section heading
-
-### lists
-
-This is the **lists sheet** mentioned for _dropdown_ and _text_suggestion_ fields.
-
-Every column has an ID from a field which's type is dropdown or text_suggestions as a header in the first row (case 
-sensitive) and then lists available options.
-
-These options are rendered as-is (and not via a key-value lookup for e.g. localization) and can be any text. 
-
-> Example: the column with the header _workpiece_material_ contains options rendered for the text-suggestion field with the title _Workpiece Material_ **whereever** it is used.
-
-### info
-
-This sheet is for any arbitrary information relevant to the setup. Currently it holds:
-
-`````yaml
-version: 0.0.2
-generated_at: <ISO>
-default_profile_id: <ID>
-`````
-
-The `version` should be incremented whenever you change something as it will be used to provide the structure for 
-analysis programs. Additionally, it can be left blank to disable the metadata system.
-
-The `default_profile_id` sets the default metadata profile.
-
-
-### _pre__ and _post__
-
-All other sheets will contain the prefixes _pre__ and _post__ with the rest of the sheet name **equal for any pair**.
-
-This controls the profiles that can be selected in the application.
-
-Everything in the _pre__ sheet will be displayed on the measurement page while everything in the _post__ sheet will be 
-in the modal that pops up after the measurement. Their structure is:
-
-- id: unique identifier --> **needs to be equal between the _pre__ and _post__ sheet**
-- display_name: how the profile is displayed --> **needs to be equal between the _pre__ and _post__ sheet**
-- field_id: ID from the ``fields`` sheet
-  - determines which fields are displayed in the profile
-  - needs to match the field's ID exactly
-- required: Whether the field is required or optional
-  - required: marked with a * in the field label, also blocks measurement if not filled
-  - optional: displayed, but not validated beyond basic type validation (text, integer, etc.)
-  - hidden: same as not including it in the profile
-- category: under what section the field is displayed
-  - the script aggregates the fields per category - no need to enter them in the correct order
-  - needs to match an ID from the ``categories`` sheet
-- default: default value for the field if required
-  - for dropdown/text_suggestion: needs to match an option from the relevant ``lists`` column
-- description: currently unused; could be used for a popover/tooltip easily
-
-### Guide
-
-Edit the metadata.xlsx and make all the required adjustments. Then run:
-
-``npm run generate-config``
-
-to parse the file into ``public/config/metadata.yaml`` and ``types/metadata.d.ts``. 
-
-The ``metadata.yaml`` file is required for the metadata system to work. **Commit it.**
-
-The typescript declaration is only for development.
-
 # Branding
 
-The possibility to customize the client to your brand is currently implemented only via the extra logo settings.
+The possibility to customize the client to your brand is currently implemented via ``theme`` folder. It holds:
+- ``logo.png`` as the main logo in the bottom left corner (default: IFT TU Wien logo)
+- ``extra.png`` being the secondary logo on top of the main logo (default: transparent)
+- ``theme.css`` holding the Material Design CSS variables
+- ``theme.ts`` configuring PrimeVue for specific colors
 
-## Logos
+## Theming
 
-You can customize two separate logos which will be displayed in the main menu (left sidebar, on the bottom).
+To customize the branding, you can replace these files on build-time and set the proper environment variables:
 
-### Main Logo
+``VITE_APPLICATION_THEME="<your-theme-name>"`` and ``VITE_APPLICATION_THEME_EXTRALOGO="true"``
 
-The main logo will be one placed in the bottom left corner. It needs to be named ``logo.png`` and placed in the 
-``public/logo`` folder.
-
-### Extra Logo
-
-The logo file must be placed in the ``public/logo`` folder and have the name `extra.png`. It will be displayed above the
-main logo in the menu.
-
-## HTML Title
-
-The HTML tab title can be set in the [#]
-
-
-# Sensors and Configurations ("Holders")
-
-A layer of abstraction over simply using channels and needing to know which kind of data to expect has been implemented.
-
-The client will fetch the available sensors and configurations from the API, which holds the information in a ``sensors.yaml`` file.
+``<your-theme-name>`` must be the CSS class name you set in `theme.css` and the object key for the PrimeVue colors in
+`theme.ts`.
 
 # Run
 
