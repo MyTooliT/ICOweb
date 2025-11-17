@@ -30,13 +30,13 @@ const meterItems = computed<MeterItem[]>(() => {
   if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
   return [
     {
-      label: `Available: ${mStore.driveCapacity.available.toFixed(2)} GB`,
+      label: `Available: ${mStore.driveCapacity.available.toFixed(2)} GiB`,
       value: (mStore.driveCapacity.available / mStore.driveCapacity.total) * 100,
       color: 'green',
       icon: ''
     },
     {
-      label: `Used: ${(mStore.driveCapacity.total - mStore.driveCapacity.available).toFixed(2)} GB`,
+      label: `Used: ${(mStore.driveCapacity.total - mStore.driveCapacity.available).toFixed(2)} GiB`,
       value: ((mStore.driveCapacity.total - mStore.driveCapacity.available) / mStore.driveCapacity.total * 100),
       color: 'red',
       icon: ''
