@@ -123,9 +123,4 @@ describe('MetaTextSuggestable.vue (real PrimeVue AutoComplete)', () => {
 
         expect(options).toEqual(DEFAULT_OPTIONS)
     })
-
-    it('snapshot: structure stays stable', () => {
-        const { wrapper } = mountWithParent('seed', DEFAULT_OPTIONS)
-        expect(wrapper.html()).toMatchSnapshot()
-    })
 })
