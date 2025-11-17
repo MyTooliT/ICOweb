@@ -5,7 +5,7 @@ It is designed to be run in any form of modern browser.
 
 **Design / Wireframes**: [Miro Board](https://miro.com/app/board/uXjVK7Kb3lE=/?share_link_id=832192510379)
 
-**Languages**: [Vue](https://vuejs.org/), [TypeScript](https://www.typescriptlang.org/), (HTML/CSS)
+**Languages**: [Vue](https://vuejs.org/), [TypeScript](https://www.typescriptlang.org/)
 
 **Design Framework**: [PrimeVue](https://primevue.org/), [TailwindCSS](https://tailwindcss.com/)
 
@@ -146,71 +146,39 @@ To run the client locally, use:
 
 ``--disable-web-security --user-data-dir="<Some Writable Folder>"`` to achieve this.
 
-# Planned Features
+# Feature Requests
 
-This is the list of features to be implemented.
+This is the list of requested features, in no particular order.
+
+> This should be converted into issues.
 
 ## Concerning "Analyze" Tab
 
-- [x] **Create Analyze Tab**: Separate tab where files can be loaded in and analyzed
-- [x] **Graph: Window selection**: Make a window selection for zooming in
 - [ ] **Graph: Better crosshair for point inspection**
-- [ ] **Graph: FFT**: Make FFT available for dataset
 - [ ] **Dataloss**: Display dataloss in analyze tab
     - [ ] Make "intelligent fill" (fills lost values with past values) create a new file
-- [x] **Performance**: Large file sizes?
-    - [x] Loading indicator
-- [x] **Scales**: Make the graph scales represent the holder's actual unit and range
 
 Notes on crosshair and window selection: Both are enabled by the plugin [chartjs-plugin-crosshair](https://chartjs-plugin-crosshair.netlify.app/)
 and would be perfectly suitable. However, when using the plugin, upon zooming the datasets disappear. This seems to be connected
 to the ``type: linear`` property in the chart options, as without this, it works - but with an unformated scale.
 
-## Concerning "Measure" Tab
-
-- [x] **Graph: Zoom only X**
-- [x] ~~**Graph**: Fixed time shows whole timeframe at once with fixed number of points~~ Keep the scrolling behavior
-- [x] **Acquisition Time**: Determine best way to set acquisition time
-    - Note: according to JG, just seconds input is fine.
-- [x] **Performance**: Maximum length of acquisition?
-    - Note: a single axis measurement of 400MB was possible, so no worries there.
-- [x] **Scales**: Make the graph scales represent the holder's actual unit and range
-
-
-## Concerning General Features
-
-- [x] **Dataloss**: make dataloss visible in measurement tab
-- [x] **Renaming**: For security reasons, make ``rename`` into prompt (no accidental renames of other STHs)
-- [x] **Export/Import config**: Put all relevant settings into config file and make it importable/exportable
-- [x] **Storage**: Check storage capacity and warn accordingly
-
 ## Concerning "Config" Tab
 
-- [x] **Tool Holder**: Split into default and custom holder templates
-    - [x] Make default holders hardcoded 
+- [ ] **Tool Holder**: Split into default and custom holder templates
     - [ ] Make default holders with picture
     - [ ] **Sketches**: Create and show informational sketches
 
-# Feature Request List
-
-This list is a loose collection of feedback given by people involved in the STH project.
-
 ## Concerning Sensor Data
 
-- [ ] **Raw data option**: create the option to look at the raw data without any conversion to @g_0 or scaling to sensor range
-- [x] **Reference Voltage**: Use first channel reference voltage for all channels
-- [ ] **Linear transformation**: Create option to assign a linear transformation per sensor to a holder
+- [ ] **Raw data option**: create the option to look at the raw data without any conversion
 
 ## Concerning General Features
 
 - [ ] **Hardware**: Firmware update of STH / STU via GUI
-- [x] **Metadata**: Add ability to add metadata to STU / STH.
-    - e.g. Machine, part, machine data, trial number, ...
-    - make this available in the measurement tab
 - [ ] **MQTT**: Provide interface so a certain MQTT topic can be subscribed to and added to the measurement stream data
+- [ ] Show battery charge on STH list refresh
+- [ ] **KPIs**: Add support for more KPIs in Analyze and Measure
 
 ## Concerning "Measure" Tab
 
-- [ ] **KPIs**: Add support for more KPIs (IFT value is considered a KPI)
-- [ ] **Rule Engine**: Create rule engine rules in GUI and export them
 - [ ] **Threshold**: Add ability to set threshold and get 0/1 if passed
