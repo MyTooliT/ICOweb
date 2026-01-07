@@ -668,6 +668,11 @@ video {
   margin-bottom: auto;
 }
 
+.my-\[20\%\] {
+  margin-top: 20%;
+  margin-bottom: 20%;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }

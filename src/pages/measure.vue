@@ -325,16 +325,14 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
         gStore.postMetaModalVisible = false;
       }"
     />
-    <SplitLayout
-      v-if="hwStore.hasSTU && hwStore.activeSTH"
-      class="w-stretch"
-    >
+    <SplitLayout class="w-stretch">
       <TextBlock
         v-if="hwStore.hasSTU && hwStore.activeSTH"
         heading="Measure "
         subheading="Capture a measurement from the connected tool"
         :button="false" />
       <StreamingChart
+        v-if="hwStore.hasSTU && hwStore.activeSTH"
         class="flex flex-col flex-grow"
         :data="chartData"
         :boundaries="{
@@ -345,8 +343,32 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
         }"
         :scales="scales"
       />
-      <template #aside>
-        <div class="flex flex-col gap-3">
+      <div
+        v-else
+        class="text-center h-stretch flex justify-center w-full"
+      >
+        <div class="flex flex-col gap-4 w-fit my-[20%]">
+          <h2 class="text-lg">
+            Nothing to Measure
+          </h2>
+          <h4>
+            There is no running stream. Connect a device to start measuring.
+          </h4>
+          <Button
+            label="Connect a Device"
+            severity="primary"
+            outlined
+            @click="router.push('/')"
+          />
+        </div>
+      </div>
+      <template
+        v-if="hwStore.hasSTU && hwStore.activeSTH"
+        #aside
+      >
+        <div
+          class="flex flex-col gap-3"
+        >
           <NamedInput title="Devices">
             <InputGroup>
               <InputGroupAddon class="flex-grow !text-black">
@@ -452,25 +474,6 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
         </Accordion>
       </template>
     </SplitLayout>
-    <div
-      v-else
-      class="text-center h-stretch flex justify-center w-full"
-    >
-      <div class="flex flex-col gap-4 w-fit mt-[20%]">
-        <h2 class="text-lg">
-          Nothing to Measure
-        </h2>
-        <h4>
-          There is no running stream. Connect a device to start measuring.
-        </h4>
-        <Button
-          label="Connect a Device"
-          severity="primary"
-          outlined
-          @click="router.push('/')"
-        />
-      </div>
-    </div>
     <ADCDrawer v-if="featureEnabled('ADC')" />
     <button
       v-if="hwStore.activeSTH && featureEnabled('ADC')"
