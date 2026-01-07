@@ -27,7 +27,7 @@ export function getSubsetOfMeasurement(
     startIndex: number = 0,
     endIndex: number|undefined = undefined,
     maxPointsPerSet: number = 5000,
-    chartColors: string[] = ['red', 'green', 'blue', 'yellow', 'purple']
+    chartColors: string[] = ['black', 'red', 'green', 'blue', 'yellow', 'purple']
 ): Chart.ChartDataSets[] {
     const length = endIndex ? endIndex - startIndex : data.timestamp.length
     const interval = length >= maxPointsPerSet
