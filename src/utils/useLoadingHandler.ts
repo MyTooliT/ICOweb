@@ -5,14 +5,14 @@ import {
 
 export function useLoadingHandler<T = any>(fn: (...args: any[]) => Promise<T>): {
   loading: Ref<boolean>,
-  call: (...args: any[]) => Promise<T>,
+  call: (...args: any[]) => Promise<T | undefined>,
   error: Ref<boolean>,
   errorMessage: Ref<string>
 } {
   const loading = ref<boolean>(false)
   const error = ref<boolean>(false)
   const msg = ref<string>('')
-  async function call(...args: any[]): Promise<T> {
+  async function call(...args: any[]): Promise<T | undefined> {
     loading.value = true
     try {
       const result = await fn(...args)
@@ -32,8 +32,9 @@ export function useLoadingHandler<T = any>(fn: (...args: any[]) => Promise<T>): 
         } catch {
           msg.value = e.message
         }
+      } else {
+        msg.value = e.toString()
       }
-      throw new Error(...e)
     }
   }
 
