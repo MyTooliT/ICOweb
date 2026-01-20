@@ -12,7 +12,7 @@ RUN npm ci
 
 # Copy source code
 COPY . .
-COPY example.env .env
+COPY docker.env .env
 
 # Build the app
 RUN npm run build
