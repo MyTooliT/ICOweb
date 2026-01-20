@@ -8,12 +8,12 @@ import {
 
 export const acquisitionTimeOptions = [
   1, 2, 3, 4, 8, 16, 32, 64, 128, 256
-] as const
+]
 export type TAcquisitionTime = typeof acquisitionTimeOptions[number]
 
 export const oversamplingRateOptions = [
   1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
-] as const
+]
 export type TOversamplingRate = typeof oversamplingRateOptions[number]
 
 export const referenceVoltageOptions = [
@@ -27,7 +27,7 @@ export const referenceVoltageOptions = [
   'VDD',
   '5V',
   '6V6',
-] as const
+]
 export type TReferenceOptions = typeof referenceVoltageOptions[number];
 
 export const referenceVoltagesMap: { [Key in TReferenceOptions]: number } = {
