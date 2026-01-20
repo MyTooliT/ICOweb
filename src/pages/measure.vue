@@ -146,15 +146,15 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     name: metaEnabled.value ? assembledFilename.value : null,
     first: {
       channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
-      sensor_id: mStore.activeChannels.first ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.first)?.sensor.id ?? null : null
+      sensor_id: mStore.activeChannels.first ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.first)?.sensor.sensor_id ?? null : null
     },
     second: {
       channel_number: mStore.activeChannels.second ? mStore.selectedChannels.second : 0,
-      sensor_id: mStore.activeChannels.second ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.second)?.sensor.id ?? null : null
+      sensor_id: mStore.activeChannels.second ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.second)?.sensor.sensor_id ?? null : null
     },
     third: {
       channel_number: mStore.activeChannels.third ? mStore.selectedChannels.third : 0,
-      sensor_id: mStore.activeChannels.third ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.third)?.sensor.id ?? null : null
+      sensor_id: mStore.activeChannels.third ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.third)?.sensor.sensor_id ?? null : null
     },
     mac_address: hwStore.activeSTH?.getMacAddress(),
     time: mStore.continuous ? null : mStore.acquisitionTime,
