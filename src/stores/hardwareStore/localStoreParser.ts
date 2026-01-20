@@ -47,6 +47,7 @@ function parseItem(item: any): any {
 
       case 'Sensor':
         return new Sensor(
+          item.sensor_id,
           item.physicalDimension,
           item.physicalUnit,
           item.lowerBound,
@@ -77,6 +78,7 @@ function parseItem(item: any): any {
             return {
               channel: entry.channel,
               sensor: new Sensor(
+                entry.sensor.sensor_id,
                 entry.sensor.physicalDimension,
                 entry.sensor.physicalUnit,
                 entry.sensor.lowerBound,
