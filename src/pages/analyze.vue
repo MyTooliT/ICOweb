@@ -97,6 +97,7 @@ function computeChartScales(sensors: Sensor[]): Record<string, Chart.ChartYAxe> 
     scales[udc.physicalUnit] = {
       position: 'left',
       type: 'linear',
+      // @ts-ignore
       title: {
         display: true,
         text: `${udc.physicalDimension !== '' ? udc.physicalDimension + ' in ' : ''}${udc.physicalUnit}`,

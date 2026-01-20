@@ -35,6 +35,7 @@ const props = defineProps<{
   scales: Record<string, Chart.ChartYAxe>
 }>()
 
+// @ts-ignore
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
     animation: false,

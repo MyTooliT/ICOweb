@@ -16,6 +16,7 @@ import {
   TimeScale
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
+// @ts-ignore
 import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair'
 import Annotation from 'chartjs-plugin-annotation';
 import {computed} from 'vue';
@@ -36,6 +37,7 @@ Chart.register(
   Annotation
 );
 
+// @ts-ignore
 Interaction.modes.interpolate = Interpolate;
 
 // eslint-disable-next-line max-len
@@ -65,7 +67,7 @@ const emits = defineEmits<{
   (event: 'zoom', start: number, end: number): void,
 }>()
 
-
+// @ts-ignore
 const chartOptions = computed<ChartOptions<'line'>>(() => {
   return {
     animation: false,
