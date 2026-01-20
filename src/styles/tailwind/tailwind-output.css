@@ -663,14 +663,14 @@ video {
   margin-bottom: 1.5rem;
 }
 
-.my-auto {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
 .my-\[20\%\] {
   margin-top: 20%;
   margin-bottom: 20%;
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .mb-1 {
@@ -727,10 +727,6 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
-}
-
-.mt-\[20\%\] {
-  margin-top: 20%;
 }
 
 .mt-auto {
