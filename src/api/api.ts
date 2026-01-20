@@ -56,10 +56,7 @@ async function sendRequest<ResponseType>(
         'Content-Type': 'application/json'
       }
     };
-    fetch(
-      `${apiBase}/${endpoint}`,
-      requestOptions,
-    )
+    fetch(joinUrl(apiBase, endpoint), requestOptions)
       .then(async (response) => {
         if ([200, 201, 202, 203, 204].includes(response.status)) {
           try {
@@ -94,5 +91,9 @@ async function sendRequest<ResponseType>(
         });
       });
   });
+}
+
+function joinUrl(base: string, path: string): string {
+  return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
 }
 
