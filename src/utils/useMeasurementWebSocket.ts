@@ -6,6 +6,7 @@ import {
   ref,
   Ref
 } from 'vue';
+import { getWSLink } from '@/api/icoapi.ts';
 
 export type TPoint = {
   x: number,
@@ -34,13 +35,10 @@ export function useMeasurementWebsocket(
 
   function open(): void {
     state.value = 'connecting'
-    const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
-    const hostname = import.meta.env.VITE_API_HOSTNAME;
-    const port = import.meta.env.VITE_API_PORT;
-    const version = import.meta.env.VITE_API_VERSION;
+    const ws_base = getWSLink()
 
     ws.value = new WebSocket(
-      `${protocol}://${hostname}:${port}/api/${version}/measurement/stream`
+      `${ws_base}/measurement/stream`
     )
 
     ws.value.onopen = () => {

@@ -22,22 +22,43 @@ import { useAPI } from './api.ts';
 import ToastEventBus from 'primevue/toasteventbus';
 
 export function getAPILink(): string {
-  const protocol = import.meta.env.VITE_API_PROTOCOL;
-  const hostname = import.meta.env.VITE_API_HOSTNAME;
-  const port = import.meta.env.VITE_API_PORT;
-  const version = import.meta.env.VITE_API_VERSION;
+  const version = import.meta.env.VITE_API_VERSION || 'v1';
 
-  return `${protocol}://${hostname}:${port}/api/${version}`
+  // If VITE_API_HOSTNAME is set, treat env as an explicit override
+  const envHost = import.meta.env.VITE_API_HOSTNAME;
+  const envPort = import.meta.env.VITE_API_PORT;
+  const envProto = import.meta.env.VITE_API_PROTOCOL;
+
+  if (envHost && envHost.trim().length > 0) {
+    const protocol = envProto || 'http';
+    const portPart = envPort && envPort.toString().trim().length > 0 ? `:${envPort}` : '';
+    return `${protocol}://${envHost}${portPart}/api/${version}`;
+  }
+
+  // Default: same-origin
+  const { origin } = window.location;
+  return `${origin}/api/${version}`;
 }
 
 export function getWSLink(): string {
-  const protocol = import.meta.env.VITE_API_WS_PROTOCOL;
-  const hostname = import.meta.env.VITE_API_HOSTNAME;
-  const port = import.meta.env.VITE_API_PORT;
-  const version = import.meta.env.VITE_API_VERSION;
+  const version = import.meta.env.VITE_API_VERSION || 'v1';
 
-  return `${protocol}://${hostname}:${port}/api/${version}`
+  const envHost = import.meta.env.VITE_API_HOSTNAME;
+  const envPort = import.meta.env.VITE_API_PORT;
+  const envWsProto = import.meta.env.VITE_API_WS_PROTOCOL;
+
+  if (envHost && envHost.trim().length > 0) {
+    const protocol = envWsProto || 'ws';
+    const portPart = envPort && envPort.toString().trim().length > 0 ? `:${envPort}` : '';
+    return `${protocol}://${envHost}${portPart}/api/${version}`;
+  }
+
+  // Default: same-origin
+  const { protocol, host } = window.location;
+  const wsProtocol = protocol === 'https:' ? 'wss' : 'ws';
+  return `${wsProtocol}://${host}/api/${version}`;
 }
+
 
 const {
   del,
