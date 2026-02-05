@@ -7,7 +7,7 @@ import { updateChartData } from '@/components/charts/streamingChartHelper.ts';
 import NamedInput from '@/components/inputs/NamedInput.vue';
 import ADCDrawer from '@/components/misc/ADCDrawer.vue';
 import TextBlock from '@/components/misc/TextBlock.vue';
-import SplitLayout from '@/layouts/SplitLayout.vue';
+import SplitLayout from '@/ICOClientBase/layout/SplitLayout.vue';
 import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';

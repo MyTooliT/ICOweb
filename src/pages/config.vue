@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DefaultLayout from '@/ICOClientBase/layout/DefaultLayout.vue';
 import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';

@@ -3,7 +3,7 @@
 import { getCloudFiles, refreshTridentAuth } from '@/api/icoapi.ts';
 import NamedInput from '@/components/inputs/NamedInput.vue';
 import TextBlock from '@/components/misc/TextBlock.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DefaultLayout from '@/ICOClientBase/layout/DefaultLayout.vue';
 import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
 import { MeterItem } from '@/utils/dataModels.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';

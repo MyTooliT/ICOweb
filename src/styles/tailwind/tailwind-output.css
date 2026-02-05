@@ -677,20 +677,12 @@ video {
   margin-bottom: 0.25rem;
 }
 
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-
 .mb-3 {
   margin-bottom: 0.75rem;
 }
 
 .mb-4 {
   margin-bottom: 1rem;
-}
-
-.mb-8 {
-  margin-bottom: 2rem;
 }
 
 .ml-1 {
@@ -757,6 +749,10 @@ video {
   aspect-ratio: 1 / 1;
 }
 
+.h-20 {
+  height: 5rem;
+}
+
 .h-4 {
   height: 1rem;
 }
@@ -804,8 +800,8 @@ video {
   width: 3rem;
 }
 
-.w-16 {
-  width: 4rem;
+.w-20 {
+  width: 5rem;
 }
 
 .w-24 {
@@ -849,20 +845,12 @@ video {
   max-width: 15rem;
 }
 
-.flex-1 {
-  flex: 1 1 0%;
-}
-
 .flex-auto {
   flex: 1 1 auto;
 }
 
 .flex-shrink {
   flex-shrink: 1;
-}
-
-.flex-shrink-0 {
-  flex-shrink: 0;
 }
 
 .shrink-0 {
@@ -1018,6 +1006,10 @@ video {
   border-width: 2px;
 }
 
+.border-4 {
+  border-width: 4px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -1062,6 +1054,11 @@ video {
   border-color: color-mix(in srgb, var(--p-surface-300) calc(100% * var(--tw-border-opacity, 1)), transparent);
 }
 
+.border-t-blue-500 {
+  --tw-border-opacity: 1;
+  border-top-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
+}
+
 .\!bg-primary-container {
   background-color: var(--md-sys-color-primary-container) !important;
 }
@@ -1087,6 +1084,14 @@ video {
 
 .bg-inherit {
   background-color: inherit;
+}
+
+.bg-primary-container {
+  background-color: var(--md-sys-color-primary-container);
+}
+
+.bg-secondary {
+  background-color: var(--md-sys-color-secondary);
 }
 
 .bg-surface {
@@ -1179,6 +1184,11 @@ video {
   line-height: 2.5rem;
 }
 
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -1207,10 +1217,6 @@ video {
   font-weight: 500;
 }
 
-.font-normal {
-  font-weight: 400;
-}
-
 .font-semibold {
   font-weight: 600;
 }
@@ -1237,11 +1243,6 @@ video {
   color: rgb(245 158 11 / var(--tw-text-opacity, 1));
 }
 
-.text-gray-400 {
-  --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity, 1));
-}
-
 .text-gray-600 {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity, 1));
@@ -1258,6 +1259,14 @@ video {
 
 .text-on-error-container {
   color: var(--md-sys-color-on-error-container);
+}
+
+.text-on-primary-container {
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.text-on-secondary {
+  color: var(--md-sys-color-on-secondary);
 }
 
 .text-primary {
@@ -1282,23 +1291,20 @@ video {
   text-underline-offset: 2px;
 }
 
-.opacity-0 {
-  opacity: 0;
-}
-
-.opacity-100 {
-  opacity: 1;
-}
-
 .shadow-md {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.blur {
-  --tw-blur: blur(8px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.outline {
+  outline-style: solid;
 }
 
 .filter {
@@ -1367,12 +1373,47 @@ video {
   padding-right: .75rem;;
 }
 
-.\[width\:6ch\] {
-  width: 6ch;
-}
-
 .\[width\:80vw\] {
   width: 80vw;
+}
+
+.before\:absolute::before {
+  content: var(--tw-content);
+  position: absolute;
+}
+
+.before\:left-0::before {
+  content: var(--tw-content);
+  left: 0px;
+}
+
+.before\:top-0::before {
+  content: var(--tw-content);
+  top: 0px;
+}
+
+.before\:block::before {
+  content: var(--tw-content);
+  display: block;
+}
+
+.before\:w-full::before {
+  content: var(--tw-content);
+  width: 100%;
+}
+
+.before\:\[border-top\:1px_solid_\#e2e8f0\]::before {
+  content: var(--tw-content);
+  border-top: 1px solid #e2e8f0;
+}
+
+.before\:\[border\:1px_solid_\#e2e8f0\]::before {
+  content: var(--tw-content);
+  border: 1px solid #e2e8f0;
+}
+
+.before\:\[content\:\'\'\]::before {
+  content: '';
 }
 
 .last\:mb-0:last-child {
@@ -1641,10 +1682,6 @@ video {
 
 .data-\[running\~\=true\]\:bg-secondary[data-running~="true"] {
   background-color: var(--md-sys-color-secondary);
-}
-
-.data-\[state\=readyToEdit\]\:bg-inherit[data-state="readyToEdit"] {
-  background-color: inherit;
 }
 
 .data-\[active\=true\]\:text-primary[data-active="true"] {

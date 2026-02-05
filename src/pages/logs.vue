@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import Button from 'primevue/button';
 import TextBlock from '@/components/misc/TextBlock.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DefaultLayout from '@/ICOClientBase/layout/DefaultLayout.vue';
 import { LogListResponse } from '@/client';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {getAPILink, getLogs} from '@/api/icoapi.ts';

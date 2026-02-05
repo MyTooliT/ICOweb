@@ -2,7 +2,7 @@
 import TextBlock from '@/components/misc/TextBlock.vue';
 import STHDeviceTable from '@/components/tables/STHDeviceTable.vue';
 import STUDeviceTable from '@/components/tables/STUDeviceTable.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DefaultLayout from '@/ICOClientBase/layout/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { useToast } from 'primevue/usetoast';
