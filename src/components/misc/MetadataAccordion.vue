@@ -55,14 +55,12 @@ const { loading: preLoading, call: sendPre } = useLoadingHandler(async () => {
   const filename = String(route.query['file'])
   await sendPreMetaOverride(filename, preMetadata.value)
   preMetadataEditable.value = false
-  preMetadata.value = await getMetadata(filename)
 })
 const { loading: postLoading, call: sendPost } = useLoadingHandler(async () => {
   if(!route.query['file'] || !postMetadata.value) return
   const filename = String(route.query['file'])
   await sendPostMetaOverride(filename, postMetadata.value)
   postMetadataEditable.value = false
-  postMetadata.value = await getMetadata(filename)
 })
 
 onMounted(async () => {
