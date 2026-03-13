@@ -179,7 +179,7 @@ watch(props, async () => {
             :state="postMetadataEditable ? 'edit' : 'view'"
             :loading="postLoading"
             edit-btn-label="Edit Post-Measurement Metadata"
-            info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
+            info-text="Warning: This edits and overrides the complete post-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
             @edit="postMetadataEditable = true"
             @cancel-edit="() => {
               extractPostMetadata()
