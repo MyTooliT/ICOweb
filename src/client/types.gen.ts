@@ -23,14 +23,7 @@ export type Body_sth_connect_api_v1_sth_connect_put = {
 
 export type Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     /**
-     * YAML sensors configuration file
-     */
-    file: (Blob | File);
-};
-
-export type Body_upload_env_file_api_v1_config_env_post = {
-    /**
-     * Environment variables file
+     * YAML dataspace configuration file
      */
     file: (Blob | File);
 };
@@ -81,6 +74,9 @@ export type ConfigResponse = {
     files: Array<ConfigFile>;
 };
 
+/**
+ * Data for request to restore configuration file from backup
+ */
 export type ConfigRestoreRequest = {
     filename: string;
     backup_filename: string;
@@ -91,6 +87,9 @@ export type ControlResponse = {
     data: MeasurementStatus;
 };
 
+/**
+ * Measurement data
+ */
 export type Dataset = {
     data: Array<(number)>;
     name: string;
@@ -104,6 +103,7 @@ export type DiskCapacity = {
 export type Feature = {
     enabled: boolean;
     healthy: boolean;
+    manage_url?: string | null;
 };
 
 export type FileCloudDetails = {
@@ -117,6 +117,9 @@ export type FileListResponseModel = {
     directory: string;
 };
 
+/**
+ * Information about HDF5 data file
+ */
 export type HDF5NodeInfo = {
     name: string;
     type: string;
@@ -227,6 +230,9 @@ export type ParsedMeasurement = {
     datasets: Array<Dataset>;
 };
 
+/**
+ * HDF5 metadata
+ */
 export type ParsedMetadata = {
     acceleration: HDF5NodeInfo;
     pictures: {
@@ -240,6 +246,31 @@ export type Quantity = {
     unit: string;
 };
 
+export type RemoteObjectDetails = {
+    id: number;
+    bucket: string;
+    objectname: string;
+    name: string;
+    description: string | null;
+    metadata: {
+        [key: string]: unknown;
+    };
+    created_at: string;
+    s3_lastmodified: string;
+    s3_size: number;
+    origin: string;
+    author: string;
+    type: string;
+    last_status: string;
+    last_status_time: string;
+    secrets_count: number;
+    access_total_count: number;
+    access_week_count: number;
+    last_access_time: string | null;
+    active_offerings_count: number;
+    virtual_group: unknown | null;
+};
+
 /**
  * Wrapper for STH Device class implementing Pydantic features
  */
@@ -250,6 +281,9 @@ export type STHDeviceResponseModel = {
     rssi: number;
 };
 
+/**
+ * Data model for renaming sensor nodes
+ */
 export type STHRenameRequestModel = {
     mac_address: string;
     new_name: string;
@@ -270,6 +304,9 @@ export type STUDeviceResponseModel = {
     mac_address: string;
 };
 
+/**
+ * Sensor attributes
+ */
 export type Sensor = {
     name: string;
     sensor_type: string | null;
@@ -292,14 +329,6 @@ export type SystemStateModel = {
     disk_capacity: DiskCapacity;
     measurement_status: MeasurementStatus;
     cloud: Feature;
-};
-
-export type TridentBucketObject = {
-    Key: string;
-    LastModified: string;
-    ETag: string;
-    Size: number;
-    StorageClass: string;
 };
 
 export type ValidationError = {
@@ -396,7 +425,7 @@ export type UploadFileApiV1CloudUploadPostResponse = unknown;
 
 export type AuthenticateApiV1CloudAuthenticatePostResponse = unknown;
 
-export type GetCloudFilesApiV1CloudGetResponse = Array<TridentBucketObject>;
+export type GetCloudFilesApiV1CloudGetResponse = Array<RemoteObjectDetails>;
 
 export type StartMeasurementApiV1MeasurementStartPostData = {
     requestBody: MeasurementInstructions_Input;
@@ -455,14 +484,6 @@ export type UploadDataspaceFileApiV1ConfigDataspacePostData = {
 
 export type UploadDataspaceFileApiV1ConfigDataspacePostResponse = ConfigFileInfoHeader;
 
-export type GetEnvFileApiV1ConfigEnvGetResponse = unknown;
-
-export type UploadEnvFileApiV1ConfigEnvPostData = {
-    formData: Body_upload_env_file_api_v1_config_env_post;
-};
-
-export type UploadEnvFileApiV1ConfigEnvPostResponse = unknown;
-
 export type GetConfigBackupsApiV1ConfigBackupGetResponse = ConfigResponse;
 
 export type RestoreConfigFileApiV1ConfigRestorePutData = {
@@ -489,6 +510,13 @@ export type $OpenApiTs = {
                  * Indicates the STU has been reset.
                  */
                 200: unknown;
+                /**
+                 * Incorrect request for current ICOtronic system state.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
                  * The CAN network did not respond to the request.
                  */
@@ -542,6 +570,13 @@ export type $OpenApiTs = {
                  */
                 200: unknown;
                 /**
+                 * Incorrect request for current ICOtronic system state.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
                  * STH could not be connected and must be out of reach or discharged.
                  */
                 404: {
@@ -570,6 +605,13 @@ export type $OpenApiTs = {
                  */
                 200: unknown;
                 /**
+                 * Incorrect request for current ICOtronic system state.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
                  * The CAN network did not respond to the request.
                  */
                 502: {
@@ -587,6 +629,13 @@ export type $OpenApiTs = {
                  * Connection was successful.
                  */
                 200: STHRenameResponseModel;
+                /**
+                 * Incorrect request for current ICOtronic system state.
+                 */
+                400: {
+                    detail: string;
+                    status_code: number;
+                };
                 /**
                  * STH could not be connected and must be out of reach or discharged.
                  */
@@ -839,7 +888,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: Array<TridentBucketObject>;
+                200: Array<RemoteObjectDetails>;
             };
         };
     };
@@ -862,9 +911,16 @@ export type $OpenApiTs = {
         post: {
             res: {
                 /**
-                 * Successful Response
+                 * Measurement stopped successfully.
                  */
                 200: unknown;
+                /**
+                 * Failed to stop measurement within timeout.
+                 */
+                504: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };
@@ -1090,50 +1146,6 @@ export type $OpenApiTs = {
                     detail: string;
                     status_code: number;
                 };
-                /**
-                 * Failed to store configuration file.
-                 */
-                500: {
-                    detail: string;
-                    status_code: number;
-                };
-            };
-        };
-    };
-    '/api/v1/config/env': {
-        get: {
-            res: {
-                /**
-                 * File was found and returned.
-                 */
-                200: unknown;
-                /**
-                 * File not found. Check your measurement directory.
-                 */
-                404: {
-                    detail: string;
-                    status_code: number;
-                };
-            };
-        };
-        post: {
-            req: UploadEnvFileApiV1ConfigEnvPostData;
-            res: {
-                /**
-                 * Environment file uploaded successfully.
-                 */
-                200: unknown;
-                /**
-                 * Unsupported media type for configuration upload.
-                 */
-                415: {
-                    detail: string;
-                    status_code: number;
-                };
-                /**
-                 * Validation Error
-                 */
-                422: HTTPValidationError;
                 /**
                  * Failed to store configuration file.
                  */

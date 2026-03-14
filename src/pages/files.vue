@@ -94,6 +94,17 @@ const meterItems = computed<MeterItem[]>(() => {
                 }
               }"
             />
+            <Button
+              v-if="gStore.systemState.cloud.manage_url"
+              label="Manage Assets"
+              icon="pi pi-external-link"
+              icon-pos="right"
+              severity="primary"
+              as="a"
+              :href="gStore.systemState.cloud.manage_url"
+              target="_blank"
+              rel="noopener norefferer"
+            />
           </InputGroup>
         </NamedInput>
       </div>
