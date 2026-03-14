@@ -64,7 +64,7 @@ const meterItems = computed<MeterItem[]>(() => {
         </NamedInput>
         <NamedInput
           v-if="gStore.systemState.cloud.enabled"
-          title="Data Space Connection"
+          title="Dataspace Connection"
           class="ml-auto"
         >
           <InputGroup>

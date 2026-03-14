@@ -69,7 +69,7 @@ const emits = defineEmits<{
           <Button
             v-if="cloud.enabled && cloud.healthy"
             v-tooltip.top="{
-              value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to Data space'
+              value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to Dataspace'
             }"
             class="min-w-[15ch]"
             :disabled="data.cloud.is_uploaded"
