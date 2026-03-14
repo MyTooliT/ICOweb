@@ -3,10 +3,11 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetEnvFileApiV1ConfigEnvGetResponse, UploadEnvFileApiV1ConfigEnvPostData, UploadEnvFileApiV1ConfigEnvPostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
 
 /**
  * Stu
+ * Get available STU
  * @returns STUDeviceResponseModel Successful Response
  * @throws ApiError
  */
@@ -17,6 +18,7 @@ export const stuApiV1StuGet = (): CancelablePromise<StuApiV1StuGetResponse> => {
 
 /**
  * Stu Reset
+ * Reset STU
  * @returns unknown Indicates the STU has been reset.
  * @throws ApiError
  */
@@ -24,12 +26,14 @@ export const stuResetApiV1StuResetPut = (): CancelablePromise<StuResetApiV1StuRe
     method: 'PUT',
     url: '/api/v1/stu/reset',
     errors: {
+        400: 'Incorrect request for current ICOtronic system state.',
         502: 'The CAN network did not respond to the request.'
     }
 }); };
 
 /**
  * Stu Connected
+ * Check if the STU is connected to a sensor device
  * @returns boolean Returns true if the STU is connected, false otherwise.
  * @throws ApiError
  */
@@ -57,6 +61,7 @@ export const sthApiV1SthGet = (): CancelablePromise<SthApiV1SthGetResponse> => {
 
 /**
  * Sth Connect
+ * Connect to sensor node
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown Connection was successful.
@@ -68,6 +73,7 @@ export const sthConnectApiV1SthConnectPut = (data: SthConnectApiV1SthConnectPutD
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
+        400: 'Incorrect request for current ICOtronic system state.',
         404: 'STH could not be connected and must be out of reach or discharged.',
         422: 'Validation Error',
         502: 'The CAN network did not respond to the request.'
@@ -76,6 +82,7 @@ export const sthConnectApiV1SthConnectPut = (data: SthConnectApiV1SthConnectPutD
 
 /**
  * Sth Disconnect
+ * Disconnect from sensor node
  * @returns unknown Disconnect was successful.
  * @throws ApiError
  */
@@ -83,12 +90,14 @@ export const sthDisconnectApiV1SthDisconnectPut = (): CancelablePromise<SthDisco
     method: 'PUT',
     url: '/api/v1/sth/disconnect',
     errors: {
+        400: 'Incorrect request for current ICOtronic system state.',
         502: 'The CAN network did not respond to the request.'
     }
 }); };
 
 /**
  * Sth Rename
+ * Rename sensor node
  * @param data The data for the request.
  * @param data.requestBody
  * @returns STHRenameResponseModel Connection was successful.
@@ -100,6 +109,7 @@ export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData)
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
+        400: 'Incorrect request for current ICOtronic system state.',
         404: 'STH could not be connected and must be out of reach or discharged.',
         422: 'Validation Error',
         502: 'The CAN network did not respond to the request.'
@@ -108,6 +118,7 @@ export const sthRenameApiV1SthRenamePut = (data: SthRenameApiV1SthRenamePutData)
 
 /**
  * Read Adc
+ * Read ADC configuration
  * @returns ADCValues Connection was successful.
  * @throws ApiError
  */
@@ -122,6 +133,7 @@ export const readAdcApiV1SthReadAdcGet = (): CancelablePromise<ReadAdcApiV1SthRe
 
 /**
  * Write Adc
+ * Write ADC configuration
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown ADC configuration written successfully.
@@ -141,6 +153,7 @@ export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutDat
 
 /**
  * State
+ * Get system state
  * @returns SystemStateModel Successful Response
  * @throws ApiError
  */
@@ -151,6 +164,7 @@ export const stateApiV1StateGet = (): CancelablePromise<StateApiV1StateGetRespon
 
 /**
  * Reset Can
+ * Reset CAN connection
  * @returns unknown Successful Response
  * @throws ApiError
  */
@@ -161,6 +175,7 @@ export const resetCanApiV1ResetCanPut = (): CancelablePromise<ResetCanApiV1Reset
 
 /**
  * List Files And Capacity
+ * Get file list and storage capacity information
  * @returns FileListResponseModel Successful Response
  * @throws ApiError
  */
@@ -171,6 +186,7 @@ export const listFilesAndCapacityApiV1FilesGet = (): CancelablePromise<ListFiles
 
 /**
  * Download File
+ * Download measurement files
  * @param data The data for the request.
  * @param data.name
  * @returns unknown Successful Response
@@ -189,6 +205,7 @@ export const downloadFileApiV1FilesNameGet = (data: DownloadFileApiV1FilesNameGe
 
 /**
  * Delete File
+ * Delete measurement file
  * @param data The data for the request.
  * @param data.name
  * @returns unknown Successful Response
@@ -207,6 +224,7 @@ export const deleteFileApiV1FilesNameDelete = (data: DeleteFileApiV1FilesNameDel
 
 /**
  * Get Analyzed File
+ * Analyze measurement file
  * @param data The data for the request.
  * @param data.name
  * @returns ParsedMeasurement Successful Response
@@ -225,6 +243,7 @@ export const getAnalyzedFileApiV1FilesAnalyzeNameGet = (data: GetAnalyzedFileApi
 
 /**
  * Post Analyzed File
+ * Upload file for analysis
  * @param data The data for the request.
  * @param data.formData
  * @returns unknown Successful Response
@@ -242,6 +261,7 @@ export const postAnalyzedFileApiV1FilesAnalyzePost = (data: PostAnalyzedFileApiV
 
 /**
  * Get File Meta
+ * Get measurement file metadata
  * @param data The data for the request.
  * @param data.name
  * @returns ParsedMetadata Successful Response
@@ -260,6 +280,7 @@ export const getFileMetaApiV1FilesAnalyzeMetaNameGet = (data: GetFileMetaApiV1Fi
 
 /**
  * Overwrite Post Meta
+ * Update post metadata in measurement file
  * @param data The data for the request.
  * @param data.name
  * @param data.requestBody
@@ -282,6 +303,7 @@ export const overwritePostMetaApiV1FilesPostMetaNamePost = (data: OverwritePostM
 
 /**
  * Overwrite Pre Meta
+ * Update pre metadata in measurement file
  * @param data The data for the request.
  * @param data.name
  * @param data.requestBody
@@ -304,6 +326,7 @@ export const overwritePreMetaApiV1FilesPreMetaNamePost = (data: OverwritePreMeta
 
 /**
  * Upload File
+ * Upload file to cloud storage
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown Successful Response
@@ -321,6 +344,7 @@ export const uploadFileApiV1CloudUploadPost = (data: UploadFileApiV1CloudUploadP
 
 /**
  * Authenticate
+ * Authenticate to cloud storage
  * @returns unknown Successful Response
  * @throws ApiError
  */
@@ -331,7 +355,8 @@ export const authenticateApiV1CloudAuthenticatePost = (): CancelablePromise<Auth
 
 /**
  * Get Cloud Files
- * @returns TridentBucketObject Successful Response
+ * Get files from cloud
+ * @returns RemoteObjectDetails Successful Response
  * @throws ApiError
  */
 export const getCloudFilesApiV1CloudGet = (): CancelablePromise<GetCloudFilesApiV1CloudGetResponse> => { return __request(OpenAPI, {
@@ -341,6 +366,7 @@ export const getCloudFilesApiV1CloudGet = (): CancelablePromise<GetCloudFilesApi
 
 /**
  * Start Measurement
+ * Start measurement
  * @param data The data for the request.
  * @param data.requestBody
  * @returns ControlResponse Successful Response
@@ -358,16 +384,21 @@ export const startMeasurementApiV1MeasurementStartPost = (data: StartMeasurement
 
 /**
  * Stop Measurement
- * @returns unknown Successful Response
+ * Stop measurement
+ * @returns unknown Measurement stopped successfully.
  * @throws ApiError
  */
 export const stopMeasurementApiV1MeasurementStopPost = (): CancelablePromise<StopMeasurementApiV1MeasurementStopPostResponse> => { return __request(OpenAPI, {
     method: 'POST',
-    url: '/api/v1/measurement/stop'
+    url: '/api/v1/measurement/stop',
+    errors: {
+        504: 'Failed to stop measurement within timeout.'
+    }
 }); };
 
 /**
  * Post Meta
+ * Set post-measurement metadata
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown Successful Response
@@ -385,6 +416,7 @@ export const postMetaApiV1MeasurementPostMetaPost = (data: PostMetaApiV1Measurem
 
 /**
  * Measurement Status
+ * Get measurement status
  * @returns MeasurementStatus Successful Response
  * @throws ApiError
  */
@@ -395,6 +427,7 @@ export const measurementStatusApiV1MeasurementGet = (): CancelablePromise<Measur
 
 /**
  * List Logs
+ * List log files
  * @returns LogListResponse Successful Response
  * @throws ApiError
  */
@@ -405,6 +438,7 @@ export const listLogsApiV1LogsGet = (): CancelablePromise<ListLogsApiV1LogsGetRe
 
 /**
  * View Log File
+ * View log file
  * @param data The data for the request.
  * @param data.file
  * @param data.limit
@@ -425,6 +459,7 @@ export const viewLogFileApiV1LogsViewGet = (data: ViewLogFileApiV1LogsViewGetDat
 
 /**
  * Download Log File
+ * Download log file
  * @param data The data for the request.
  * @param data.file
  * @returns unknown Successful Response
@@ -443,6 +478,7 @@ export const downloadLogFileApiV1LogsDownloadFileGet = (data: DownloadLogFileApi
 
 /**
  * Download Logs Zip
+ * Download log files as zipped file
  * @returns unknown Successful Response
  * @throws ApiError
  */
@@ -453,6 +489,7 @@ export const downloadLogsZipApiV1LogsAllGet = (): CancelablePromise<DownloadLogs
 
 /**
  * Query Sensors
+ * Get available sensors
  * @returns AvailableSensorInformation Successful Response
  * @throws ApiError
  */
@@ -463,6 +500,7 @@ export const querySensorsApiV1SensorGet = (): CancelablePromise<QuerySensorsApiV
 
 /**
  * Get Metadata File
+ * Get metadata file information
  * @returns unknown File was found and returned.
  * @throws ApiError
  */
@@ -476,6 +514,7 @@ export const getMetadataFileApiV1ConfigMetaGet = (): CancelablePromise<GetMetada
 
 /**
  * Upload Metadata File
+ * Upload YAML metadata file
  * @param data The data for the request.
  * @param data.formData
  * @returns ConfigFileInfoHeader Metadata configuration uploaded successfully.
@@ -496,6 +535,7 @@ export const uploadMetadataFileApiV1ConfigMetaPost = (data: UploadMetadataFileAp
 
 /**
  * Get Sensors File
+ * Get sensor configuration file information
  * @returns unknown File was found and returned.
  * @throws ApiError
  */
@@ -509,6 +549,7 @@ export const getSensorsFileApiV1ConfigSensorsGet = (): CancelablePromise<GetSens
 
 /**
  * Upload Sensors File
+ * Upload sensor configuration file
  * @param data The data for the request.
  * @param data.formData
  * @returns ConfigFileInfoHeader Sensor configuration uploaded successfully.
@@ -529,6 +570,7 @@ export const uploadSensorsFileApiV1ConfigSensorsPost = (data: UploadSensorsFileA
 
 /**
  * Upload Dataspace File
+ * Upload dataspace configuration file
  * @param data The data for the request.
  * @param data.formData
  * @returns ConfigFileInfoHeader Dataspace configuration uploaded successfully.
@@ -548,39 +590,8 @@ export const uploadDataspaceFileApiV1ConfigDataspacePost = (data: UploadDataspac
 }); };
 
 /**
- * Get Env File
- * @returns unknown File was found and returned.
- * @throws ApiError
- */
-export const getEnvFileApiV1ConfigEnvGet = (): CancelablePromise<GetEnvFileApiV1ConfigEnvGetResponse> => { return __request(OpenAPI, {
-    method: 'GET',
-    url: '/api/v1/config/env',
-    errors: {
-        404: 'File not found. Check your measurement directory.'
-    }
-}); };
-
-/**
- * Upload Env File
- * @param data The data for the request.
- * @param data.formData
- * @returns unknown Environment file uploaded successfully.
- * @throws ApiError
- */
-export const uploadEnvFileApiV1ConfigEnvPost = (data: UploadEnvFileApiV1ConfigEnvPostData): CancelablePromise<UploadEnvFileApiV1ConfigEnvPostResponse> => { return __request(OpenAPI, {
-    method: 'POST',
-    url: '/api/v1/config/env',
-    formData: data.formData,
-    mediaType: 'multipart/form-data',
-    errors: {
-        415: 'Unsupported media type for configuration upload.',
-        422: 'Validation Error',
-        500: 'Failed to store configuration file.'
-    }
-}); };
-
-/**
  * Get Config Backups
+ * Get configuration backup files
  * @returns ConfigResponse Configuration backups returned successfully.
  * @throws ApiError
  */
@@ -594,6 +605,7 @@ export const getConfigBackupsApiV1ConfigBackupGet = (): CancelablePromise<GetCon
 
 /**
  * Restore Config File
+ * Restore configuration file from backup
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown Configuration restored successfully.

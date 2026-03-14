@@ -109,26 +109,12 @@ export const $Body_upload_dataspace_file_api_v1_config_dataspace_post = {
             type: 'string',
             format: 'binary',
             title: 'File',
-            description: 'YAML sensors configuration file'
+            description: 'YAML dataspace configuration file'
         }
     },
     type: 'object',
     required: ['file'],
     title: 'Body_upload_dataspace_file_api_v1_config_dataspace_post'
-} as const;
-
-export const $Body_upload_env_file_api_v1_config_env_post = {
-    properties: {
-        file: {
-            type: 'string',
-            format: 'binary',
-            title: 'File',
-            description: 'Environment variables file'
-        }
-    },
-    type: 'object',
-    required: ['file'],
-    title: 'Body_upload_env_file_api_v1_config_env_post'
 } as const;
 
 export const $Body_upload_file_api_v1_cloud_upload_post = {
@@ -284,7 +270,8 @@ export const $ConfigRestoreRequest = {
     },
     type: 'object',
     required: ['filename', 'backup_filename'],
-    title: 'ConfigRestoreRequest'
+    title: 'ConfigRestoreRequest',
+    description: 'Data for request to restore configuration file from backup'
 } as const;
 
 export const $ControlResponse = {
@@ -318,7 +305,8 @@ export const $Dataset = {
     },
     type: 'object',
     required: ['data', 'name'],
-    title: 'Dataset'
+    title: 'Dataset',
+    description: 'Measurement data'
 } as const;
 
 export const $DiskCapacity = {
@@ -360,6 +348,17 @@ export const $Feature = {
         healthy: {
             type: 'boolean',
             title: 'Healthy'
+        },
+        manage_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Manage Url'
         }
     },
     type: 'object',
@@ -434,7 +433,8 @@ export const $HDF5NodeInfo = {
     },
     type: 'object',
     required: ['name', 'type', 'path', 'attributes'],
-    title: 'HDF5NodeInfo'
+    title: 'HDF5NodeInfo',
+    description: 'Information about HDF5 data file'
 } as const;
 
 export const $HTTPValidationError = {
@@ -913,7 +913,8 @@ export const $ParsedMetadata = {
     },
     type: 'object',
     required: ['acceleration', 'pictures', 'sensors'],
-    title: 'ParsedMetadata'
+    title: 'ParsedMetadata',
+    description: 'HDF5 metadata'
 } as const;
 
 export const $Quantity = {
@@ -937,6 +938,114 @@ export const $Quantity = {
     type: 'object',
     required: ['value', 'unit'],
     title: 'Quantity'
+} as const;
+
+export const $RemoteObjectDetails = {
+    properties: {
+        id: {
+            type: 'integer',
+            title: 'Id'
+        },
+        bucket: {
+            type: 'string',
+            title: 'Bucket'
+        },
+        objectname: {
+            type: 'string',
+            title: 'Objectname'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        metadata: {
+            additionalProperties: true,
+            type: 'object',
+            title: 'Metadata'
+        },
+        created_at: {
+            type: 'string',
+            title: 'Created At'
+        },
+        s3_lastmodified: {
+            type: 'string',
+            title: 'S3 Lastmodified'
+        },
+        s3_size: {
+            type: 'integer',
+            title: 'S3 Size'
+        },
+        origin: {
+            type: 'string',
+            title: 'Origin'
+        },
+        author: {
+            type: 'string',
+            title: 'Author'
+        },
+        type: {
+            type: 'string',
+            title: 'Type'
+        },
+        last_status: {
+            type: 'string',
+            title: 'Last Status'
+        },
+        last_status_time: {
+            type: 'string',
+            title: 'Last Status Time'
+        },
+        secrets_count: {
+            type: 'integer',
+            title: 'Secrets Count'
+        },
+        access_total_count: {
+            type: 'integer',
+            title: 'Access Total Count'
+        },
+        access_week_count: {
+            type: 'integer',
+            title: 'Access Week Count'
+        },
+        last_access_time: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Access Time'
+        },
+        active_offerings_count: {
+            type: 'integer',
+            title: 'Active Offerings Count'
+        },
+        virtual_group: {
+            anyOf: [
+                {},
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Virtual Group'
+        }
+    },
+    type: 'object',
+    required: ['id', 'bucket', 'objectname', 'name', 'description', 'metadata', 'created_at', 's3_lastmodified', 's3_size', 'origin', 'author', 'type', 'last_status', 'last_status_time', 'secrets_count', 'access_total_count', 'access_week_count', 'last_access_time', 'active_offerings_count', 'virtual_group'],
+    title: 'RemoteObjectDetails'
 } as const;
 
 export const $STHDeviceResponseModel = {
@@ -977,7 +1086,8 @@ export const $STHRenameRequestModel = {
     },
     type: 'object',
     required: ['mac_address', 'new_name'],
-    title: 'STHRenameRequestModel'
+    title: 'STHRenameRequestModel',
+    description: 'Data model for renaming sensor nodes'
 } as const;
 
 export const $STHRenameResponseModel = {
@@ -1079,7 +1189,8 @@ export const $Sensor = {
     },
     type: 'object',
     required: ['name', 'sensor_type', 'sensor_id', 'unit', 'dimension', 'phys_min', 'phys_max', 'volt_min', 'volt_max'],
-    title: 'Sensor'
+    title: 'Sensor',
+    description: 'Sensor attributes'
 } as const;
 
 export const $SystemStateModel = {
@@ -1102,34 +1213,6 @@ export const $SystemStateModel = {
     required: ['can_ready', 'disk_capacity', 'measurement_status', 'cloud'],
     title: 'SystemStateModel',
     description: 'Data model for API state'
-} as const;
-
-export const $TridentBucketObject = {
-    properties: {
-        Key: {
-            type: 'string',
-            title: 'Key'
-        },
-        LastModified: {
-            type: 'string',
-            title: 'Lastmodified'
-        },
-        ETag: {
-            type: 'string',
-            title: 'Etag'
-        },
-        Size: {
-            type: 'integer',
-            title: 'Size'
-        },
-        StorageClass: {
-            type: 'string',
-            title: 'Storageclass'
-        }
-    },
-    type: 'object',
-    required: ['Key', 'LastModified', 'ETag', 'Size', 'StorageClass'],
-    title: 'TridentBucketObject'
 } as const;
 
 export const $ValidationError = {

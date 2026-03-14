@@ -13,7 +13,8 @@ export function useSystemState(
   const measurementStatus = ref<MeasurementStatus | null>(null);
   const cloud = ref<Feature>({
     enabled: false,
-    healthy: false
+    healthy: false,
+    manage_url: null
   });
 
   let ws: WebSocket | null = null;
