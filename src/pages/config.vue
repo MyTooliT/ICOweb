@@ -4,15 +4,24 @@ import TextBlock from '@/components/misc/TextBlock.vue';
 import {getAPILink, getConfigBackup, restoreConfigBackup} from '@/api/icoapi.ts';
 import {onMounted, ref} from 'vue';
 import {ConfigFileBackup, ConfigFileInfoHeader, ConfigResponse} from '@/client';
-import {DataTable, Column, Card, FileUpload, Button, Panel, Fieldset, Badge, useToast} from 'primevue';
+import {
+  DataTable,
+  Column,
+  Card,
+  Button,
+  Panel,
+  Fieldset,
+  useToast,
+  FileUploadUploadEvent, FileUploadErrorEvent
+} from 'primevue';
 import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import AnnotatedDisplay from '@/components/displayable/AnnotatedDisplay.vue';
+import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
 
 const toast = useToast()
 
 const backup = ref<ConfigResponse|undefined>()
-const uploading = ref<boolean>(false)
 const { loading: backupLoading, call: getBackup } = useLoadingHandler(async () => {
   backup.value = await getConfigBackup()
 })
@@ -85,93 +94,25 @@ onMounted(async() => await getBackup())
               </p>
             </Fieldset>
             <Fieldset legend="Upload New Configuration">
-              <FileUpload
-                name="file"
-                :preview-width="0"
-                choose-label="Select New File"
+              <CustomFileUpload 
                 :url="`${getAPILink()}/config/${configFile.endpoint}`"
                 :max-file-size="1000000"
                 :file-limit="1"
-                :pt="{
-                  root: {
-                    class: '!border-0'
-                  },
-                  header: {
-                    class: '!p-3'
-                  },
-                  content: {
-                    class: '!border !rounded-md !border-gray-400 !p-3 !mx-3 !border-dashed'
-                  }
-                }"
-                class="border-0"
-                @before-upload="uploading = true"
-                @error="e => {
-                  uploading = false;
-                  toast.add({ severity: 'error', summary: 'Upload Error', detail: JSON.parse(e.xhr.response).detail, life: 15000, group: 'default' })
-                }"
-                @upload="e => {
-                  uploading = false
-                  toast.add({
-                    severity: 'success',
-                    summary: 'Configuration Uploaded',
-                    life: 15000,
-                    group: 'default' ,
-                    detail: assembleConfigMessage((JSON.parse(e.xhr.response) as ConfigFileInfoHeader)),
-                  })
-                }">
-                <template #header="{ uploadCallback, chooseCallback, files, uploadedFiles }">
-                  <div class="flex flex-row gap-3 w-full">
-                    <Button
-                      label="Select File"
-                      icon="pi pi-plus"
-                      @click="chooseCallback"
-                    />
-                    <div
-                      v-if="uploadedFiles.length < files.length"
-                      class="flex flex-col justify-center mx-auto">
-                      <div
-                        v-for="file in files"
-                        :key="file.name">
-                        Selected File: <span class="font-bold">{{ file.name }}</span>
-                        <Badge
-                          value="Awaiting Upload"
-                          severity="warn"
-                          class="ml-1" />
-                      </div>
-                    </div>
-                    <div
-                      v-else
-                      class="mx-auto flex justify-center items-center">
-                      <p>
-                        No file selected.
-                      </p>
-                    </div>
-                    <Button
-                      label="Upload"
-                      icon="pi pi-upload"
-                      :disabled="!files || files.length === 0"
-                      @click="() => {
-                        uploadCallback()
-                        files.length = 0
-                      }"
-                    />
-                  </div>
-                </template>
-                <template #content="{ messages }">
-                  <div v-if="messages && messages.length > 0">
-                    <p
-                      v-for="message in messages"
-                      :key="message">
-                      {{ message }}
-                    </p>
-                  </div>
-                  <p
-                    v-else
-                    class="text-center">
-                    Drag your file here to upload it.
-                  </p>
-                </template>
-              </FileUpload>
+                @success="(e: FileUploadUploadEvent) => toast.add({
+                  severity: 'success',
+                  summary: 'Configuration Uploaded',
+                  life: 15000,
+                  group: 'default' ,
+                  detail: assembleConfigMessage((JSON.parse(e.xhr.response) as ConfigFileInfoHeader)),
+                })"
+                @error="(e: FileUploadErrorEvent) => toast.add({
+                  severity: 'error',
+                  summary: 'Upload Error',
+                  detail: JSON.parse(e.xhr.response).detail,
+                  life: 15000,
+                  group: 'default'
+                })"
+              />
             </Fieldset>
             <Panel
               header="Configuration File Backups"

@@ -5,18 +5,25 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import mime from 'mime';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primevue';
-import {Metadata, ParsedMetadata} from '@/client';
+import {EmbeddedFileInfo, Metadata, ParsedMetadata} from '@/client';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
 import {capitalize, onMounted, Ref, ref, watch} from 'vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import MetaForm from '@/components/forms/MetaForm.vue';
 import {computeValidity, ProfileDefinition} from '@/utils/metadataConfig.ts';
 import MetadataEditSection from '@/components/forms/MetadataEditSection.vue';
-import {getMetadata, sendPostMetaOverride, sendPreMetaOverride} from '@/api/icoapi.ts';
+import {deleteFileFromHDF5, getAPILink, sendPostMetaOverride, sendPreMetaOverride} from '@/api/icoapi.ts';
 import {useRoute} from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
+import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
+import {formatFileSize} from '@/utils/helper.ts';
+import DownloadButton from '@/components/buttons/DownloadButton.vue';
+import DeleteButton from '@/components/buttons/DeleteButton.vue';
+import {useToast} from 'primevue/usetoast';
+import Fieldset from 'primevue/fieldset';
 
 const route = useRoute()
+const toast = useToast()
 
 const props = defineProps<{
   parsedMetadata: ParsedMetadata
@@ -62,6 +69,21 @@ const { loading: postLoading, call: sendPost } = useLoadingHandler(async () => {
   await sendPostMetaOverride(filename, postMetadata.value)
   postMetadataEditable.value = false
 })
+
+function joinPath(...parts: string[]): string {
+  return parts.map(part => encodeURIComponent(part)).join('/');
+}
+
+function buildEmbeddedFileUrl(
+    hdf5Name: string,
+    apiBase: string = getAPILink(),
+): string {
+  const url = new URL('/api/v1/', apiBase);
+  url.pathname += `files/${joinPath(hdf5Name, 'embedded')}`;
+  return url.toString();
+}
+
+const deletedFiles = ref<string[]>([])
 
 onMounted(async () => {
   await reload()
@@ -220,6 +242,82 @@ watch(props, async () => {
             </template>
           </Column>
         </DataTable>
+      </AccordionContent>
+    </AccordionPanel>
+    <AccordionPanel
+      v-if="parsedMetadata?.embedded_files"
+      value="4"
+    >
+      <AccordionHeader>
+        Embedded Files
+      </AccordionHeader>
+      <AccordionContent>
+        <DataTable :value="parsedMetadata.embedded_files.filter(f => !deletedFiles.includes(f.dataset_name))">
+          <Column
+            header="Filename"
+            field="original_name"
+          />
+          <Column
+            header="Dataset Name"
+            field="dataset_name"
+          />
+          <Column
+            header="Size"
+          >
+            <template #body="{ data }: { data: EmbeddedFileInfo }">
+              {{ formatFileSize(data.size) }}
+            </template>
+          </Column>
+          <Column header="Actions">
+            <template #body="{ data }: { data: EmbeddedFileInfo }">
+              <div class="flex gap-3">
+                <DownloadButton
+                  :compact="true"
+                  :link="`${getAPILink()}/${data.download_path}`"
+                />
+                <DeleteButton
+                  tooltip="Remove from HDF5 file"
+                  @click="deleteFileFromHDF5(
+                    route.query['file'] as string,
+                    data.dataset_name
+                  ).then(() => {
+                    deletedFiles.push(data.dataset_name)
+                    toast.add({
+                      severity: 'success',
+                      life: 3000,
+                      summary: 'Deletion Successful',
+                      group: 'default'
+                    })
+                  })"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+        <Fieldset
+          legend="Embed New Files"
+        >
+          <CustomFileUpload
+            :url="buildEmbeddedFileUrl(route.query['file'] as string)"
+            :max-file-size="1000000"
+            :multiple="true"
+            field-name="files"
+            @success="() => toast.add({
+              severity: 'success',
+              life: 3000,
+              summary: 'Upload Successful',
+              detail: 'Reload page to see changes',
+              group: 'default'
+            })"
+            @error="e => toast.add({
+              severity: 'error',
+              life: 3000,
+              summary: 'Upload Unsuccessful',
+              detail: e.xhr.response?.message || e.xhr.response?.error || 'Unknown Error',
+              group: 'default'
+            })"
+          />
+        </Fieldset>
       </AccordionContent>
     </AccordionPanel>
   </Accordion>

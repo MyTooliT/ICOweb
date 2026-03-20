@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadEmbeddedFileApiV1FilesNameEmbeddedPostData, UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
 
 /**
  * Stu
@@ -256,6 +256,73 @@ export const postAnalyzedFileApiV1FilesAnalyzePost = (data: PostAnalyzedFileApiV
     mediaType: 'multipart/form-data',
     errors: {
         422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Upload Embedded File
+ * Append uploaded files below the embedded_files group
+ * @param data The data for the request.
+ * @param data.name
+ * @param data.formData
+ * @returns EmbeddedFileUploadResponse Successful Response
+ * @throws ApiError
+ */
+export const uploadEmbeddedFileApiV1FilesNameEmbeddedPost = (data: UploadEmbeddedFileApiV1FilesNameEmbeddedPostData): CancelablePromise<UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse> => { return __request(OpenAPI, {
+    method: 'POST',
+    url: '/api/v1/files/{name}/embedded',
+    path: {
+        name: data.name
+    },
+    formData: data.formData,
+    mediaType: 'multipart/form-data',
+    errors: {
+        404: 'File not found. Check your measurement directory.',
+        422: 'Target file is not a valid HDF5 file.'
+    }
+}); };
+
+/**
+ * Download Embedded File
+ * Download an embedded file from an HDF5 file
+ * @param data The data for the request.
+ * @param data.name
+ * @param data.datasetName
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const downloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGet = (data: DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData): CancelablePromise<DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/files/{name}/embedded/{dataset_name}',
+    path: {
+        name: data.name,
+        dataset_name: data.datasetName
+    },
+    errors: {
+        404: 'File not found. Check your measurement directory.',
+        422: 'Target file is not a valid HDF5 file.'
+    }
+}); };
+
+/**
+ * Delete Embedded File
+ * Delete an embedded file from an HDF5 file
+ * @param data The data for the request.
+ * @param data.name
+ * @param data.datasetName
+ * @returns unknown Embedded file deleted successfully.
+ * @throws ApiError
+ */
+export const deleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDelete = (data: DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData): CancelablePromise<DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse> => { return __request(OpenAPI, {
+    method: 'DELETE',
+    url: '/api/v1/files/{name}/embedded/{dataset_name}',
+    path: {
+        name: data.name,
+        dataset_name: data.datasetName
+    },
+    errors: {
+        404: 'File not found. Check your measurement directory.',
+        422: 'Target file is not a valid HDF5 file.'
     }
 }); };
 

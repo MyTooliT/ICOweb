@@ -10,13 +10,13 @@ import {
   MeasurementInstructions_Input,
   MeasurementStatus,
   SystemStateModel,
-  TridentBucketObject,
+  RemoteObjectDetails,
   LogListResponse,
   LogResponse,
   Metadata,
   AvailableSensorInformation,
   ConfigResponse,
-  ConfigRestoreRequest
+  ConfigRestoreRequest, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData
 } from '@/client';
 import { useAPI } from './api.ts';
 import ToastEventBus from 'primevue/toasteventbus';
@@ -240,9 +240,9 @@ export async function refreshTridentAuth(): Promise<void> {
   })
 }
 
-export async function getCloudFiles(): Promise<Array<TridentBucketObject>> {
+export async function getCloudFiles(): Promise<Array<RemoteObjectDetails>> {
   return new Promise((resolve, reject) => {
-    get<Array<TridentBucketObject>>('cloud')
+    get<Array<RemoteObjectDetails>>('cloud')
         .then(data => resolve(data))
         .catch(reject)
   })
@@ -325,5 +325,13 @@ export async function restoreConfigBackup(config: ConfigRestoreRequest): Promise
     put<ConfigRestoreRequest, void>('config/restore', config)
         .then(data => resolve(data))
         .catch(reject)
+  })
+}
+
+export async function deleteFileFromHDF5(filename: string, embedded_file_name: string): Promise<DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData> {
+  return new Promise((resolve, reject) => {
+    del<void, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData>(
+        `files/${encodeURIComponent(filename)}/embedded/${encodeURIComponent(embedded_file_name)}`, undefined
+    ).then(data => resolve(data)).catch(reject)
   })
 }
