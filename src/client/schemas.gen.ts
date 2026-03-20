@@ -117,6 +117,23 @@ export const $Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     title: 'Body_upload_dataspace_file_api_v1_config_dataspace_post'
 } as const;
 
+export const $Body_upload_embedded_file_api_v1_files__name__embedded_post = {
+    properties: {
+        files: {
+            items: {
+                type: 'string',
+                format: 'binary'
+            },
+            type: 'array',
+            title: 'Files',
+            description: 'Files to store in HDF5'
+        }
+    },
+    type: 'object',
+    required: ['files'],
+    title: 'Body_upload_embedded_file_api_v1_files__name__embedded_post'
+} as const;
+
 export const $Body_upload_file_api_v1_cloud_upload_post = {
     properties: {
         filename: {
@@ -337,6 +354,59 @@ export const $DiskCapacity = {
     type: 'object',
     required: ['total', 'available'],
     title: 'DiskCapacity'
+} as const;
+
+export const $EmbeddedFileInfo = {
+    properties: {
+        dataset_name: {
+            type: 'string',
+            title: 'Dataset Name'
+        },
+        original_name: {
+            type: 'string',
+            title: 'Original Name'
+        },
+        mime: {
+            type: 'string',
+            title: 'Mime'
+        },
+        size: {
+            type: 'integer',
+            title: 'Size'
+        },
+        download_path: {
+            type: 'string',
+            title: 'Download Path'
+        }
+    },
+    type: 'object',
+    required: ['dataset_name', 'original_name', 'mime', 'size', 'download_path'],
+    title: 'EmbeddedFileInfo',
+    description: 'Embedded file information for clients'
+} as const;
+
+export const $EmbeddedFileUploadResponse = {
+    properties: {
+        dataset_name: {
+            type: 'string',
+            title: 'Dataset Name'
+        },
+        original_name: {
+            type: 'string',
+            title: 'Original Name'
+        },
+        mime: {
+            type: 'string',
+            title: 'Mime'
+        },
+        size: {
+            type: 'integer',
+            title: 'Size'
+        }
+    },
+    type: 'object',
+    required: ['dataset_name', 'original_name', 'mime', 'size'],
+    title: 'EmbeddedFileUploadResponse'
 } as const;
 
 export const $Feature = {
@@ -909,10 +979,17 @@ export const $ParsedMetadata = {
             },
             type: 'array',
             title: 'Sensors'
+        },
+        embedded_files: {
+            items: {
+                '$ref': '#/components/schemas/EmbeddedFileInfo'
+            },
+            type: 'array',
+            title: 'Embedded Files'
         }
     },
     type: 'object',
-    required: ['acceleration', 'pictures', 'sensors'],
+    required: ['acceleration', 'pictures', 'sensors', 'embedded_files'],
     title: 'ParsedMetadata',
     description: 'HDF5 metadata'
 } as const;

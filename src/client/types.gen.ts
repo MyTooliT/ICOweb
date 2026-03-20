@@ -28,6 +28,13 @@ export type Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     file: (Blob | File);
 };
 
+export type Body_upload_embedded_file_api_v1_files__name__embedded_post = {
+    /**
+     * Files to store in HDF5
+     */
+    files: Array<((Blob | File))>;
+};
+
 export type Body_upload_file_api_v1_cloud_upload_post = {
     filename: string;
 };
@@ -98,6 +105,24 @@ export type Dataset = {
 export type DiskCapacity = {
     total: number | null;
     available: number | null;
+};
+
+/**
+ * Embedded file information for clients
+ */
+export type EmbeddedFileInfo = {
+    dataset_name: string;
+    original_name: string;
+    mime: string;
+    size: number;
+    download_path: string;
+};
+
+export type EmbeddedFileUploadResponse = {
+    dataset_name: string;
+    original_name: string;
+    mime: string;
+    size: number;
 };
 
 export type Feature = {
@@ -239,6 +264,7 @@ export type ParsedMetadata = {
         [key: string]: Array<(string)>;
     };
     sensors: Array<Sensor>;
+    embedded_files: Array<EmbeddedFileInfo>;
 };
 
 export type Quantity = {
@@ -396,6 +422,27 @@ export type PostAnalyzedFileApiV1FilesAnalyzePostData = {
 };
 
 export type PostAnalyzedFileApiV1FilesAnalyzePostResponse = unknown;
+
+export type UploadEmbeddedFileApiV1FilesNameEmbeddedPostData = {
+    formData: Body_upload_embedded_file_api_v1_files__name__embedded_post;
+    name: string;
+};
+
+export type UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse = Array<EmbeddedFileUploadResponse>;
+
+export type DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData = {
+    datasetName: string;
+    name: string;
+};
+
+export type DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse = unknown;
+
+export type DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData = {
+    datasetName: string;
+    name: string;
+};
+
+export type DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse = unknown;
 
 export type GetFileMetaApiV1FilesAnalyzeMetaNameGetData = {
     name: string;
@@ -795,6 +842,79 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/files/{name}/embedded': {
+        post: {
+            req: UploadEmbeddedFileApiV1FilesNameEmbeddedPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: Array<EmbeddedFileUploadResponse>;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Target file is not a valid HDF5 file.
+                 */
+                422: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/files/{name}/embedded/{dataset_name}': {
+        get: {
+            req: DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Target file is not a valid HDF5 file.
+                 */
+                422: {
+                    detail: string;
+                    status_code: number;
+                };
+            };
+        };
+        delete: {
+            req: DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData;
+            res: {
+                /**
+                 * Embedded file deleted successfully.
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Target file is not a valid HDF5 file.
+                 */
+                422: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };

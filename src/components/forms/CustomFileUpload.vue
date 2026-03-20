@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import {Badge, Button, FileUpload, FileUploadErrorEvent, FileUploadUploadEvent} from 'primevue';
+import {Badge, Button, FileUpload, FileUploadErrorEvent, FileUploadSelectEvent, FileUploadUploadEvent} from 'primevue';
 import {ref} from 'vue';
 
-defineProps<{
+withDefaults(defineProps<{
   url: string,
   maxFileSize: number,
-  fileLimit: number,
-}>()
+  fileLimit?: number|undefined,
+  fieldName?: string
+  multiple?: boolean
+}>(), {
+  fieldName: 'file',
+  fileLimit: undefined,
+  multiple: false
+})
 
 defineEmits<{
   (event: 'success', data: FileUploadUploadEvent): void,
   (event: 'error', data: FileUploadErrorEvent): void,
+  (event: 'select', data: FileUploadSelectEvent): void
 }>()
 
 const uploading = ref(false)
@@ -18,12 +25,13 @@ const uploading = ref(false)
 
 <template>
   <FileUpload
-    name="file"
+    :name="fieldName"
     :preview-width="0"
     choose-label="Select New File"
     :url="url"
     :max-file-size="maxFileSize"
     :file-limit="fileLimit"
+    :multiple="multiple"
     :pt="{
       root: {
         class: '!border-0'
@@ -36,7 +44,13 @@ const uploading = ref(false)
       }
     }"
     class="border-0"
-    @before-upload="uploading = true"
+    @select="(e) => {
+      $emit('select', e)
+    }"
+    @before-upload="(e) => {
+      uploading = true
+      console.log(e)
+    }"
     @error="e => {
       uploading = false;
       $emit('error', e)
