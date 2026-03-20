@@ -19,6 +19,7 @@ import {useToast} from 'primevue/usetoast';
 const ts = useToast()
 const mStore = useMeasurementStore()
 const gStore = useGeneralStore()
+const toast = useToast()
 
 const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
 const { loading: authLoading, call: refreshAuth, error: authError, errorMessage } = useLoadingHandler(async () => {
@@ -43,6 +44,28 @@ const meterItems = computed<MeterItem[]>(() => {
     }
   ]
 })
+
+function copyLinkToClipboard(link: string): void {
+  if (!window.navigator.clipboard) {
+    toast.add({
+      summary: 'Clipboard not supported',
+      detail: link,
+      severity: 'error',
+      life: 5000,
+      group: 'default'
+    })
+
+    return
+  }
+
+  window.navigator.clipboard.writeText(link);
+  toast.add({
+    summary: 'Copied to clipboard!',
+    severity: 'success',
+    life: 3000,
+    group: 'default'
+  })
+}
 </script>
 
 <template>
@@ -104,6 +127,16 @@ const meterItems = computed<MeterItem[]>(() => {
               :href="gStore.systemState.cloud.manage_url"
               target="_blank"
               rel="noopener norefferer"
+            />
+            <Button
+              v-if="gStore.systemState.cloud.manage_url"
+              v-tooltip.top="{
+                value: 'Copy the asset management URL to clipboard'
+              }"
+              icon="pi pi-copy"
+              severity="primary"
+              outlined
+              @click="copyLinkToClipboard(gStore.systemState.cloud.manage_url)"
             />
           </InputGroup>
         </NamedInput>
