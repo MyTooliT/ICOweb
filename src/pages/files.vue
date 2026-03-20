@@ -124,6 +124,7 @@ function copyLinkToClipboard(link: string): void {
               icon-pos="right"
               severity="primary"
               as="a"
+              outlined
               :href="gStore.systemState.cloud.manage_url"
               target="_blank"
               rel="noopener norefferer"
