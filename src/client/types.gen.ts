@@ -14,25 +14,30 @@ export type AvailableSensorInformation = {
 };
 
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
-    file: (Blob | File);
+    file: string;
 };
 
 export type Body_sth_connect_api_v1_sth_connect_put = {
     mac_address: string;
 };
 
+export type Body_update_file_api_v1_cloud_update_post = {
+    file_id: number | null;
+    filename: string;
+};
+
 export type Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     /**
      * YAML dataspace configuration file
      */
-    file: (Blob | File);
+    file: string;
 };
 
 export type Body_upload_embedded_file_api_v1_files__name__embedded_post = {
     /**
      * Files to store in HDF5
      */
-    files: Array<((Blob | File))>;
+    files: Array<(string)>;
 };
 
 export type Body_upload_file_api_v1_cloud_upload_post = {
@@ -43,14 +48,14 @@ export type Body_upload_metadata_file_api_v1_config_meta_post = {
     /**
      * YAML metadata configuration file
      */
-    file: (Blob | File);
+    file: string;
 };
 
 export type Body_upload_sensors_file_api_v1_config_sensors_post = {
     /**
      * YAML sensors configuration file
      */
-    file: (Blob | File);
+    file: string;
 };
 
 export type ConfigFile = {
@@ -108,6 +113,14 @@ export type DiskCapacity = {
 };
 
 /**
+ * Response for embedded file deletion
+ */
+export type EmbeddedFileDeleteResponse = {
+    file_name: string;
+    dataset_name: string;
+};
+
+/**
  * Embedded file information for clients
  */
 export type EmbeddedFileInfo = {
@@ -132,9 +145,15 @@ export type Feature = {
 };
 
 export type FileCloudDetails = {
-    is_uploaded: boolean;
+    status: FileCloudStatus;
+    id: number | null;
     upload_timestamp: string | null;
 };
+
+/**
+ * Sync status of a local measurement file relative to cloud
+ */
+export type FileCloudStatus = 'not_uploaded' | 'outdated' | 'up_to_date';
 
 export type FileListResponseModel = {
     capacity: DiskCapacity;
@@ -282,7 +301,7 @@ export type RemoteObjectDetails = {
         [key: string]: unknown;
     };
     created_at: string;
-    s3_lastmodified: string;
+    s3_lastmodified: string | null;
     s3_size: number;
     origin: string;
     author: string;
@@ -361,6 +380,10 @@ export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
+    input?: unknown;
+    ctx?: {
+        [key: string]: unknown;
+    };
 };
 
 export type StuApiV1StuGetResponse = Array<STUDeviceResponseModel>;
@@ -442,7 +465,7 @@ export type DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData = {
     name: string;
 };
 
-export type DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse = unknown;
+export type DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse = EmbeddedFileDeleteResponse;
 
 export type GetFileMetaApiV1FilesAnalyzeMetaNameGetData = {
     name: string;
@@ -469,6 +492,12 @@ export type UploadFileApiV1CloudUploadPostData = {
 };
 
 export type UploadFileApiV1CloudUploadPostResponse = unknown;
+
+export type UpdateFileApiV1CloudUpdatePostData = {
+    requestBody: Body_update_file_api_v1_cloud_update_post;
+};
+
+export type UpdateFileApiV1CloudUpdatePostResponse = FileCloudDetails;
 
 export type AuthenticateApiV1CloudAuthenticatePostResponse = unknown;
 
@@ -900,7 +929,7 @@ export type $OpenApiTs = {
                 /**
                  * Embedded file deleted successfully.
                  */
-                200: unknown;
+                200: EmbeddedFileDeleteResponse;
                 /**
                  * File not found. Check your measurement directory.
                  */
@@ -985,6 +1014,21 @@ export type $OpenApiTs = {
                  * Successful Response
                  */
                 200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/cloud/update': {
+        post: {
+            req: UpdateFileApiV1CloudUpdatePostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: FileCloudDetails;
                 /**
                  * Validation Error
                  */

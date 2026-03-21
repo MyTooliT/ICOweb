@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useDisable} from '@/utils/useDisable.ts';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
-import {deleteMeasurementFile, uploadFile} from '@/api/icoapi.ts';
+import {deleteMeasurementFile, updateFile, uploadFile} from '@/api/icoapi.ts';
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
@@ -139,7 +139,40 @@ function getSeverity(status: FileCloudStatus): string {
             :loading="uploadLoading && uploadedFile === data.name"
             @click="async () => {
               uploadedFile = data.name
-              await upload(data.name)
+              switch (data.cloud.status) {
+              case 'not_uploaded':
+                await upload(data.name);
+                $toast.add({
+                  severity: 'success',
+                  summary: 'Uploaded File',
+                  detail: data.name,
+                  life: 1500,
+                  group: 'default'
+                })
+                break;
+              case 'outdated':
+                await updateFile(
+                  data.name,
+                  data.cloud.id
+                )
+                $toast.add({
+                  severity: 'success',
+                  summary: 'Updated File',
+                  detail: data.name,
+                  life: 1500,
+                  group: 'default'
+                })
+                break;
+              default:
+                $toast.add({
+                  severity: 'error',
+                  summary: 'Tried updating an up-to-date file',
+                  detail: data.name,
+                  life: 1500,
+                  group: 'default'
+                })
+                break;
+              }
               emits('needs-refresh')
               uploadedFile = ''
             }"

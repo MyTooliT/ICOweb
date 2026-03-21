@@ -82,7 +82,7 @@ export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
             type: 'string',
-            format: 'binary',
+            contentMediaType: 'application/octet-stream',
             title: 'File'
         }
     },
@@ -103,11 +103,34 @@ export const $Body_sth_connect_api_v1_sth_connect_put = {
     title: 'Body_sth_connect_api_v1_sth_connect_put'
 } as const;
 
+export const $Body_update_file_api_v1_cloud_update_post = {
+    properties: {
+        file_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'File Id'
+        },
+        filename: {
+            type: 'string',
+            title: 'Filename'
+        }
+    },
+    type: 'object',
+    required: ['file_id', 'filename'],
+    title: 'Body_update_file_api_v1_cloud_update_post'
+} as const;
+
 export const $Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     properties: {
         file: {
             type: 'string',
-            format: 'binary',
+            contentMediaType: 'application/octet-stream',
             title: 'File',
             description: 'YAML dataspace configuration file'
         }
@@ -122,7 +145,7 @@ export const $Body_upload_embedded_file_api_v1_files__name__embedded_post = {
         files: {
             items: {
                 type: 'string',
-                format: 'binary'
+                contentMediaType: 'application/octet-stream'
             },
             type: 'array',
             title: 'Files',
@@ -150,7 +173,7 @@ export const $Body_upload_metadata_file_api_v1_config_meta_post = {
     properties: {
         file: {
             type: 'string',
-            format: 'binary',
+            contentMediaType: 'application/octet-stream',
             title: 'File',
             description: 'YAML metadata configuration file'
         }
@@ -164,7 +187,7 @@ export const $Body_upload_sensors_file_api_v1_config_sensors_post = {
     properties: {
         file: {
             type: 'string',
-            format: 'binary',
+            contentMediaType: 'application/octet-stream',
             title: 'File',
             description: 'YAML sensors configuration file'
         }
@@ -356,6 +379,23 @@ export const $DiskCapacity = {
     title: 'DiskCapacity'
 } as const;
 
+export const $EmbeddedFileDeleteResponse = {
+    properties: {
+        file_name: {
+            type: 'string',
+            title: 'File Name'
+        },
+        dataset_name: {
+            type: 'string',
+            title: 'Dataset Name'
+        }
+    },
+    type: 'object',
+    required: ['file_name', 'dataset_name'],
+    title: 'EmbeddedFileDeleteResponse',
+    description: 'Response for embedded file deletion'
+} as const;
+
 export const $EmbeddedFileInfo = {
     properties: {
         dataset_name: {
@@ -438,9 +478,19 @@ export const $Feature = {
 
 export const $FileCloudDetails = {
     properties: {
-        is_uploaded: {
-            type: 'boolean',
-            title: 'Is Uploaded'
+        status: {
+            '$ref': '#/components/schemas/FileCloudStatus'
+        },
+        id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Id'
         },
         upload_timestamp: {
             anyOf: [
@@ -455,8 +505,15 @@ export const $FileCloudDetails = {
         }
     },
     type: 'object',
-    required: ['is_uploaded', 'upload_timestamp'],
+    required: ['status', 'id', 'upload_timestamp'],
     title: 'FileCloudDetails'
+} as const;
+
+export const $FileCloudStatus = {
+    type: 'string',
+    enum: ['not_uploaded', 'outdated', 'up_to_date'],
+    title: 'FileCloudStatus',
+    description: 'Sync status of a local measurement file relative to cloud'
 } as const;
 
 export const $FileListResponseModel = {
@@ -1056,7 +1113,14 @@ export const $RemoteObjectDetails = {
             title: 'Created At'
         },
         s3_lastmodified: {
-            type: 'string',
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
             title: 'S3 Lastmodified'
         },
         s3_size: {
@@ -1315,6 +1379,13 @@ export const $ValidationError = {
         type: {
             type: 'string',
             title: 'Error Type'
+        },
+        input: {
+            title: 'Input'
+        },
+        ctx: {
+            type: 'object',
+            title: 'Context'
         }
     },
     type: 'object',

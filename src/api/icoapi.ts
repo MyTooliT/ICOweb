@@ -16,7 +16,10 @@ import {
   Metadata,
   AvailableSensorInformation,
   ConfigResponse,
-  ConfigRestoreRequest, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData
+  ConfigRestoreRequest,
+  FileCloudDetails,
+  DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData,
+  Body_update_file_api_v1_cloud_update_post
 } from '@/client';
 import { useAPI } from './api.ts';
 import ToastEventBus from 'primevue/toasteventbus';
@@ -333,5 +336,16 @@ export async function deleteFileFromHDF5(filename: string, embedded_file_name: s
     del<void, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData>(
         `files/${encodeURIComponent(filename)}/embedded/${encodeURIComponent(embedded_file_name)}`, undefined
     ).then(data => resolve(data)).catch(reject)
+  })
+}
+
+export async function updateFile(name: string, id: number|null): Promise<FileCloudDetails> {
+  return new Promise((resolve, reject) => {
+    const body: Body_update_file_api_v1_cloud_update_post = {
+      filename: name, file_id: id
+    }
+    post<Body_update_file_api_v1_cloud_update_post, FileCloudDetails>('cloud/update', body)
+        .then(resolve)
+        .catch(reject)
   })
 }
