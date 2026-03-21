@@ -12,7 +12,7 @@ import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
-import {Feature, MeasurementFileDetails} from '@/client';
+import {Feature, FileCloudDetails, FileCloudStatus, MeasurementFileDetails} from '@/client';
 const mStore = useMeasurementStore()
 const router = useRouter()
 const { pageEnabled } = useDisable()
@@ -27,6 +27,64 @@ defineProps<{
 const emits = defineEmits<{
   (event: 'needs-refresh'): void,
 }>()
+
+function isDisabled(status: FileCloudStatus): boolean {
+  return status === 'up_to_date';
+}
+
+function getLabel(status: FileCloudStatus): string {
+  switch (status) {
+    case 'up_to_date':
+      return 'Uploaded'
+    case 'not_uploaded':
+      return 'Upload'
+    case 'outdated':
+      return 'Update'
+    default:
+      return 'Upload'
+  }
+}
+
+function getIcon(status: FileCloudStatus): string {
+  switch (status) {
+    case 'up_to_date':
+      return 'pi pi-check'
+    case 'not_uploaded':
+      return 'pi pi-cloud-upload'
+    case 'outdated':
+      return 'pi pi-sync'
+    default:
+      return 'Upload'
+  }
+}
+
+function getTooltip(details: FileCloudDetails): string {
+  switch (details.status) {
+    case 'up_to_date':
+      if(!details.upload_timestamp) return 'Uploaded'
+      return `Up-to-date version from ${format(new Date(details.upload_timestamp), 'dd.MM.yyyy, HH:mm')}.`
+    case 'not_uploaded':
+      return 'Upload file to Dataspace'
+    case 'outdated':
+      if(!details.upload_timestamp) return 'Out of date. Upload to Dataspace to update.'
+      return `Out-of-date Dataspace version: \n${format(new Date(details.upload_timestamp), 'dd.MM.yyyy, HH:mm')}. \n\nYou have made changes to the file. Upload to Dataspace to update.`
+    default:
+      return 'Upload'
+  }
+}
+
+function getSeverity(status: FileCloudStatus): string {
+  switch (status) {
+    case 'up_to_date':
+      return 'primary'
+    case 'not_uploaded':
+      return 'secondary'
+    case 'outdated':
+      return 'warn'
+    default:
+      return 'primary'
+  }
+}
 </script>
 
 <template>
@@ -69,15 +127,15 @@ const emits = defineEmits<{
           <Button
             v-if="cloud.enabled && cloud.healthy"
             v-tooltip.top="{
-              value: data.cloud.upload_timestamp ? `Uploaded on: \n ${format(new Date(data.cloud.upload_timestamp), 'dd.MM.yyyy, HH:mm')}` : 'Upload to Dataspace'
+              value: getTooltip(data.cloud)
             }"
             class="min-w-[15ch]"
-            :disabled="data.cloud.is_uploaded"
-            :label="data.cloud.is_uploaded? 'Uploaded' : 'Upload'"
-            :icon="data.cloud.is_uploaded ? 'pi pi-check' : 'pi pi-cloud-upload'"
+            :disabled="isDisabled(data.cloud.status)"
+            :label="getLabel(data.cloud.status)"
+            :icon="getIcon(data.cloud.status)"
+            :severity="getSeverity(data.cloud.status)"
             size="small"
             rounded
-            aria-label="Upload to Cloud"
             :loading="uploadLoading && uploadedFile === data.name"
             @click="async () => {
               uploadedFile = data.name
