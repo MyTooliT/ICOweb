@@ -105,7 +105,7 @@ function copyLinkToClipboard(link: string): void {
               @click="async () => {
                 try {
                   await refreshAuth()
-                  await getCloudFiles()
+                  await loadFiles()
                 } catch(e: any) {
                   ts.add({
                     severity: 'error',

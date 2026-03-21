@@ -82,7 +82,7 @@ export const $Body_post_analyzed_file_api_v1_files_analyze_post = {
     properties: {
         file: {
             type: 'string',
-            contentMediaType: 'application/octet-stream',
+            format: 'binary',
             title: 'File'
         }
     },
@@ -130,7 +130,7 @@ export const $Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     properties: {
         file: {
             type: 'string',
-            contentMediaType: 'application/octet-stream',
+            format: 'binary',
             title: 'File',
             description: 'YAML dataspace configuration file'
         }
@@ -145,7 +145,7 @@ export const $Body_upload_embedded_file_api_v1_files__name__embedded_post = {
         files: {
             items: {
                 type: 'string',
-                contentMediaType: 'application/octet-stream'
+                format: 'binary'
             },
             type: 'array',
             title: 'Files',
@@ -173,7 +173,7 @@ export const $Body_upload_metadata_file_api_v1_config_meta_post = {
     properties: {
         file: {
             type: 'string',
-            contentMediaType: 'application/octet-stream',
+            format: 'binary',
             title: 'File',
             description: 'YAML metadata configuration file'
         }
@@ -187,7 +187,7 @@ export const $Body_upload_sensors_file_api_v1_config_sensors_post = {
     properties: {
         file: {
             type: 'string',
-            contentMediaType: 'application/octet-stream',
+            format: 'binary',
             title: 'File',
             description: 'YAML sensors configuration file'
         }
@@ -1379,13 +1379,6 @@ export const $ValidationError = {
         type: {
             type: 'string',
             title: 'Error Type'
-        },
-        input: {
-            title: 'Input'
-        },
-        ctx: {
-            type: 'object',
-            title: 'Context'
         }
     },
     type: 'object',

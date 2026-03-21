@@ -78,7 +78,7 @@ function getSeverity(status: FileCloudStatus): string {
     case 'up_to_date':
       return 'primary'
     case 'not_uploaded':
-      return 'secondary'
+      return 'primary'
     case 'outdated':
       return 'warn'
     default:

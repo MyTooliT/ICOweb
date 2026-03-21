@@ -14,7 +14,7 @@ export type AvailableSensorInformation = {
 };
 
 export type Body_post_analyzed_file_api_v1_files_analyze_post = {
-    file: string;
+    file: (Blob | File);
 };
 
 export type Body_sth_connect_api_v1_sth_connect_put = {
@@ -30,14 +30,14 @@ export type Body_upload_dataspace_file_api_v1_config_dataspace_post = {
     /**
      * YAML dataspace configuration file
      */
-    file: string;
+    file: (Blob | File);
 };
 
 export type Body_upload_embedded_file_api_v1_files__name__embedded_post = {
     /**
      * Files to store in HDF5
      */
-    files: Array<(string)>;
+    files: Array<((Blob | File))>;
 };
 
 export type Body_upload_file_api_v1_cloud_upload_post = {
@@ -48,14 +48,14 @@ export type Body_upload_metadata_file_api_v1_config_meta_post = {
     /**
      * YAML metadata configuration file
      */
-    file: string;
+    file: (Blob | File);
 };
 
 export type Body_upload_sensors_file_api_v1_config_sensors_post = {
     /**
      * YAML sensors configuration file
      */
-    file: string;
+    file: (Blob | File);
 };
 
 export type ConfigFile = {
@@ -380,10 +380,6 @@ export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
-    input?: unknown;
-    ctx?: {
-        [key: string]: unknown;
-    };
 };
 
 export type StuApiV1StuGetResponse = Array<STUDeviceResponseModel>;
