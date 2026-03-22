@@ -26,6 +26,7 @@ async function STUClickHandler() {
 }
 
 async function STHClickHandler() {
+  await store.refetchSensorsAndHolders()
   STHReload().then(() => {
     if(store.STHDeviceList.length === 0) {
       m.error('No STH Tool Found', 'Make sure the device you want to connect to is charged and in range.')
