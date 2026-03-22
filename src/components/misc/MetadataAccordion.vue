@@ -19,11 +19,11 @@ import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
 import {formatFileSize} from '@/utils/helper.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import DeleteButton from '@/components/buttons/DeleteButton.vue';
-import {useToast} from 'primevue/usetoast';
 import Fieldset from 'primevue/fieldset';
+import {useMessageBus} from '@/message';
 
 const route = useRoute()
-const toast = useToast()
+const m = useMessageBus()
 
 const props = defineProps<{
   parsedMetadata: ParsedMetadata
@@ -282,12 +282,7 @@ watch(props, async () => {
                     data.dataset_name
                   ).then(() => {
                     deletedFiles.push(data.dataset_name)
-                    toast.add({
-                      severity: 'success',
-                      life: 3000,
-                      summary: 'Deletion Successful',
-                      group: 'default'
-                    })
+                    m.success('Embedded File Removed ', `${data.original_name} was removed from the HDF5 file.`)
                   })"
                 />
               </div>
@@ -302,20 +297,14 @@ watch(props, async () => {
             :max-file-size="1000000"
             :multiple="true"
             field-name="files"
-            @success="() => toast.add({
-              severity: 'success',
-              life: 3000,
-              summary: 'Upload Successful',
-              detail: 'Reload page to see changes',
-              group: 'default'
-            })"
-            @error="e => toast.add({
-              severity: 'error',
-              life: 3000,
-              summary: 'Upload Unsuccessful',
-              detail: e.xhr.response?.message || e.xhr.response?.error || 'Unknown Error',
-              group: 'default'
-            })"
+            @success="() => m.success(
+              'Embedding Successful',
+              `${route.query['file']} was added to the HDF5 file.\n\nReload the page to see the new files.`
+            )"
+            @error="e => m.error(
+              'Embedding Failed',
+              e.xhr.response?.message || e.xhr.response?.error || 'Unknown Error'
+            )"
           />
         </Fieldset>
       </AccordionContent>

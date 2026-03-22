@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
-import { getCloudFiles, refreshTridentAuth } from '@/api/icoapi.ts';
+import { refreshTridentAuth } from '@/api/icoapi.ts';
 import NamedInput from '@/components/inputs/NamedInput.vue';
 import TextBlock from '@/components/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
@@ -14,12 +14,11 @@ import MeterGroup from 'primevue/metergroup';
 import { computed } from 'vue';
 import FileTable from '@/components/tables/FileTable.vue';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
-import {useToast} from 'primevue/usetoast';
+import {useMessageBus} from '@/message';
 
-const ts = useToast()
+const m = useMessageBus()
 const mStore = useMeasurementStore()
 const gStore = useGeneralStore()
-const toast = useToast()
 
 const { loading: filesLoading, call: loadFiles } = useLoadingHandler(mStore.getFiles)
 const { loading: authLoading, call: refreshAuth, error: authError, errorMessage } = useLoadingHandler(async () => {
@@ -47,24 +46,12 @@ const meterItems = computed<MeterItem[]>(() => {
 
 function copyLinkToClipboard(link: string): void {
   if (!window.navigator.clipboard) {
-    toast.add({
-      summary: 'Clipboard not supported',
-      detail: link,
-      severity: 'error',
-      life: 5000,
-      group: 'default'
-    })
-
+    m.error('Clipboard not supported', 'Your browser does not support clipboard operations.')
     return
   }
 
   window.navigator.clipboard.writeText(link);
-  toast.add({
-    summary: 'Copied to clipboard!',
-    severity: 'success',
-    life: 3000,
-    group: 'default'
-  })
+  m.info('Copied to clipboard', 'The Dataspace asset management URL has been copied to your clipboard.')
 }
 </script>
 
@@ -110,13 +97,7 @@ function copyLinkToClipboard(link: string): void {
                   await refreshAuth()
                   await loadFiles()
                 } catch(e: any) {
-                  ts.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: errorMessage,
-                    life: 5000,
-                    group: 'default'
-                  })
+                  m.error('Error refreshing Dataspace connection', errorMessage || e.message)
                 }
               }"
             />

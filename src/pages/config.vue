@@ -11,7 +11,6 @@ import {
   Button,
   Panel,
   Fieldset,
-  useToast,
   FileUploadUploadEvent, FileUploadErrorEvent
 } from 'primevue';
 import {format} from 'date-fns';
@@ -20,7 +19,6 @@ import AnnotatedDisplay from '@/components/displayable/AnnotatedDisplay.vue';
 import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
 import {useMessageBus} from '@/message';
 
-const toast = useToast()
 const m = useMessageBus()
 
 const backup = ref<ConfigResponse|undefined>()
@@ -100,20 +98,14 @@ onMounted(async() => await getBackup())
                 :url="`${getAPILink()}/config/${configFile.endpoint}`"
                 :max-file-size="1000000"
                 :file-limit="1"
-                @success="(e: FileUploadUploadEvent) => toast.add({
-                  severity: 'success',
-                  summary: 'Configuration Uploaded',
-                  life: 15000,
-                  group: 'default' ,
-                  detail: assembleConfigMessage((JSON.parse(e.xhr.response) as ConfigFileInfoHeader)),
-                })"
-                @error="(e: FileUploadErrorEvent) => toast.add({
-                  severity: 'error',
-                  summary: 'Upload Error',
-                  detail: JSON.parse(e.xhr.response).detail,
-                  life: 15000,
-                  group: 'default'
-                })"
+                @success="(e: FileUploadUploadEvent) => m.success(
+                  'Configuration Uploaded',
+                  assembleConfigMessage((JSON.parse(e.xhr.response) as ConfigFileInfoHeader))
+                )"
+                @error="(e: FileUploadErrorEvent) => m.error(
+                  'Configuration Upload Failed',
+                  JSON.parse(e.xhr.response).detail
+                )"
               />
             </Fieldset>
             <Panel
