@@ -13,17 +13,22 @@ import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import {Feature, FileCloudDetails, FileCloudStatus, MeasurementFileDetails} from '@/client';
+import {useToast} from 'primevue/usetoast';
+
+const toast = useToast()
 const mStore = useMeasurementStore()
 const router = useRouter()
 const { pageEnabled } = useDisable()
 const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteMeasurementFile)
 const { loading: uploadLoading, call: upload } = useLoadingHandler(uploadFile)
-const uploadedFile = ref<string>('')
 
+const uploadedFile = ref<string>('')
 const disableTooltip = ref<boolean>(false)
+
 defineProps<{
   cloud: Feature
 }>()
+
 const emits = defineEmits<{
   (event: 'needs-refresh'): void,
 }>()
@@ -154,7 +159,7 @@ function getSeverity(status: FileCloudStatus): string {
               switch (data.cloud.status) {
               case 'not_uploaded':
                 await upload(data.name);
-                $toast.add({
+                toast.add({
                   severity: 'success',
                   summary: 'Uploaded File',
                   detail: data.name,
@@ -167,7 +172,7 @@ function getSeverity(status: FileCloudStatus): string {
                   data.name,
                   data.cloud.id
                 )
-                $toast.add({
+                toast.add({
                   severity: 'success',
                   summary: 'Updated File',
                   detail: data.name,
@@ -176,7 +181,7 @@ function getSeverity(status: FileCloudStatus): string {
                 })
                 break;
               default:
-                $toast.add({
+                toast.add({
                   severity: 'error',
                   summary: 'Tried updating an up-to-date file',
                   detail: data.name,
