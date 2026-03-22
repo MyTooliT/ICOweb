@@ -5,11 +5,11 @@ import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { useToast } from 'primevue/usetoast';
 import {useDisable} from '@/utils/useDisable.ts';
+import {useMessageBus} from '@/message';
 
 const store = useHardwareStore()
-const toast = useToast()
+const m = useMessageBus()
 
 const { featureEnabled } = useDisable()
 
@@ -56,13 +56,9 @@ const {
           label="Reset"
           icon="pi pi-sync"
           :loading="resetLoading"
-          @click="resetReload(data).catch((e: Error) => toast.add({
-            severity: 'error',
-            summary: e.name,
-            detail: e.message,
-            life: 3000,
-            group: 'default'
-          }))"
+          @click="resetReload(data)
+            .then(() => m.info('Reset Successful'))
+            .catch((e: Error) => m.error(e.name, e.message))"
         />
         <Button
           v-if="featureEnabled('OTA')"
@@ -73,13 +69,9 @@ const {
           icon="pi pi-sync"
           :loading="enableLoading"
           :disabled="['enabled', 'disabling'].includes(data.getOTAState())"
-          @click="enableReload(data).catch((e: Error) => toast.add({
-            severity: 'error',
-            summary: e.name,
-            detail: e.message,
-            life: 3000,
-            group: 'default'
-          }))"
+          @click="enableReload(data)
+            .then(() => m.info('OTA Enabled'))
+            .catch((e: Error) => m.error(e.name, e.message))"
         />
         <Button
           v-if="featureEnabled('OTA')"
@@ -89,19 +81,11 @@ const {
           icon="pi pi-sync"
           :loading="disableLoading"
           :disabled="['disabled', 'enabling'].includes(data.getOTAState())"
-          @click="disableReload(data).catch((e: Error) => toast.add({
-            severity: 'error',
-            summary: e.name,
-            detail: e.message,
-            life: 3000,
-            group: 'default'
-          }))"
+          @click="disableReload(data)
+            .then(() => m.info('OTA Disabled'))
+            .catch((e: Error) => m.error(e.name, e.message))"
         />
       </template>
     </Column>
   </DataTable>
 </template>
-
-<style scoped>
-
-</style>

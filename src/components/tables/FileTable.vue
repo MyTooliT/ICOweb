@@ -7,15 +7,15 @@ import { format } from 'date-fns';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useDisable} from '@/utils/useDisable.ts';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
-import {deleteMeasurementFile, updateFile, uploadFile} from '@/api/icoapi.ts';
+import {deleteMeasurementFile, getCloudFiles, updateFile, uploadFile} from '@/api/icoapi.ts';
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import {Feature, FileCloudDetails, FileCloudStatus, MeasurementFileDetails} from '@/client';
-import {useToast} from 'primevue/usetoast';
+import {useMessageBus} from '@/message';
 
-const toast = useToast()
+const m = useMessageBus()
 const mStore = useMeasurementStore()
 const router = useRouter()
 const { pageEnabled } = useDisable()
@@ -158,36 +158,22 @@ function getSeverity(status: FileCloudStatus): string {
               uploadedFile = data.name
               switch (data.cloud.status) {
               case 'not_uploaded':
-                await upload(data.name);
-                toast.add({
-                  severity: 'success',
-                  summary: 'Uploaded File',
-                  detail: data.name,
-                  life: 1500,
-                  group: 'default'
-                })
+                upload(data.name)
+                  .then(async () => {
+                    await getCloudFiles()
+                    m.success('File Uploaded', data.name)
+                  })
+                  .catch((e: Error) => m.error(e.name, e.message))
                 break;
               case 'outdated':
-                await updateFile(
-                  data.name,
-                  data.cloud.id
-                )
-                toast.add({
-                  severity: 'success',
-                  summary: 'Updated File',
-                  detail: data.name,
-                  life: 1500,
-                  group: 'default'
-                })
+                updateFile(data.name, data.cloud.id)
+                  .then(async () => {
+                    await getCloudFiles()
+                    m.success('File Update Sent', data.name)
+                  })
+                  .catch((e: Error) => m.error(e.name, e.message))
                 break;
               default:
-                toast.add({
-                  severity: 'error',
-                  summary: 'Tried updating an up-to-date file',
-                  detail: data.name,
-                  life: 1500,
-                  group: 'default'
-                })
                 break;
               }
               emits('needs-refresh')

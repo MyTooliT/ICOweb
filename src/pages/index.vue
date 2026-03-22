@@ -5,10 +5,10 @@ import STUDeviceTable from '@/components/tables/STUDeviceTable.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
-import { useToast } from 'primevue/usetoast';
+import {useMessageBus} from '@/message';
 
-const toast = useToast()
 const store = useHardwareStore()
+const m = useMessageBus()
 
 const { loading: STULoading, call: STUReload } = useLoadingHandler(
   store.updateSTUDeviceList
@@ -20,13 +20,7 @@ const { loading: STHLoading, call: STHReload } = useLoadingHandler(
 async function STUClickHandler() {
   STUReload().then(() => {
     if(store.STUDeviceList.length === 0) {
-      toast.add({
-        summary: 'No STU connected',
-        detail: 'Check your CAN adapter',
-        severity: 'error',
-        life: 3000,
-        group: 'default'
-      })
+      m.error('No STU found', 'This can happen if the CAN bus is busy or if the STU is not connected.')
     }
   })
 }
@@ -34,13 +28,7 @@ async function STUClickHandler() {
 async function STHClickHandler() {
   STHReload().then(() => {
     if(store.STHDeviceList.length === 0) {
-      toast.add({
-        summary: 'No STH found',
-        detail: 'Check battery',
-        severity: 'error',
-        life: 3000,
-        group: 'default'
-      })
+      m.error('No STH Tool Found', 'Make sure the device you want to connect to is charged and in range.')
     }
   })
 }

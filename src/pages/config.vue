@@ -18,8 +18,10 @@ import {format} from 'date-fns';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import AnnotatedDisplay from '@/components/displayable/AnnotatedDisplay.vue';
 import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
+import {useMessageBus} from '@/message';
 
 const toast = useToast()
+const m = useMessageBus()
 
 const backup = ref<ConfigResponse|undefined>()
 const { loading: backupLoading, call: getBackup } = useLoadingHandler(async () => {

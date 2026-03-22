@@ -85,30 +85,31 @@ function isValidHolderID(id: string | undefined): boolean {
     </Column>
     <Column header="Actions">
       <template #body="{ data }: { data: STHDevice }">
-        <Button
-          rounded
-          size="small"
-          label="Rename"
-          icon="pi pi-pencil"
-          @click="() => {
-            device = data
-            store.renameSTHModalVisible = true
-          }"
-        />
-        <ConnectionButton
-          class="mx-3"
-          :device="data"
-          @connect="() => handleConnect(data)"
-          @disconnect="() => data.disconnect()"
-        />
-        <Button
-          rounded
-          size="small"
-          label="Measure"
-          icon="pi pi-chart-bar"
-          :disabled="!data.isConnected()"
-          @click="$router.push('/measure')"
-        />
+        <div class="flex flex-wrap gap-3">
+          <Button
+            rounded
+            size="small"
+            label="Rename"
+            icon="pi pi-pencil"
+            @click="() => {
+              device = data
+              store.renameSTHModalVisible = true
+            }"
+          />
+          <ConnectionButton
+            :device="data"
+            @connect="() => handleConnect(data)"
+            @disconnect="() => data.disconnect()"
+          />
+          <Button
+            rounded
+            size="small"
+            label="Measure"
+            icon="pi pi-chart-bar"
+            :disabled="!data.isConnected()"
+            @click="$router.push('/measure')"
+          />
+        </div>
       </template>
     </Column>
     <RenameSTHModal
