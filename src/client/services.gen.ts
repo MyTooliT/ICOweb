@@ -411,6 +411,7 @@ export const uploadFileApiV1CloudUploadPost = (data: UploadFileApiV1CloudUploadP
 
 /**
  * Update File
+ * Update file in cloud storage
  * @param data The data for the request.
  * @param data.requestBody
  * @returns FileCloudDetails Successful Response

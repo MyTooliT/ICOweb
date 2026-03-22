@@ -29,7 +29,7 @@ const emits = defineEmits<{
 }>()
 
 function isDisabled(status: FileCloudStatus): boolean {
-  return status === 'up_to_date';
+  return status === 'up_to_date' || status === 'updating';
 }
 
 function getLabel(status: FileCloudStatus): string {
@@ -40,6 +40,8 @@ function getLabel(status: FileCloudStatus): string {
       return 'Upload'
     case 'outdated':
       return 'Update'
+    case 'updating':
+      return 'Updating'
     default:
       return 'Upload'
   }
@@ -53,6 +55,8 @@ function getIcon(status: FileCloudStatus): string {
       return 'pi pi-cloud-upload'
     case 'outdated':
       return 'pi pi-sync'
+    case 'updating':
+      return 'pi pi-spinner pi-spin'
     default:
       return 'Upload'
   }
@@ -68,6 +72,10 @@ function getTooltip(details: FileCloudDetails): string {
     case 'outdated':
       if(!details.upload_timestamp) return 'Out of date. Upload to Dataspace to update.'
       return `Out-of-date Dataspace version: \n${format(new Date(details.upload_timestamp), 'dd.MM.yyyy, HH:mm')}. \n\nYou have made changes to the file. Upload to Dataspace to update.`
+    case 'updating':
+      return 'The update was uploaded to the Dataspace and is currently being processed.\n\nYou may close this page and come back later to check the status.'
+    case 'error':
+      return 'The file has multiple matched entries on the Dataspace. This is not allowed.\n\nPlease check your Dataspace or contact support.'
     default:
       return 'Upload'
   }
@@ -81,6 +89,10 @@ function getSeverity(status: FileCloudStatus): string {
       return 'primary'
     case 'outdated':
       return 'warn'
+    case 'updating':
+      return 'primary'
+    case 'error':
+      return 'danger'
     default:
       return 'primary'
   }

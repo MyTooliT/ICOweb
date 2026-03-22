@@ -511,7 +511,7 @@ export const $FileCloudDetails = {
 
 export const $FileCloudStatus = {
     type: 'string',
-    enum: ['not_uploaded', 'outdated', 'up_to_date'],
+    enum: ['not_uploaded', 'outdated', 'updating', 'up_to_date', 'error'],
     title: 'FileCloudStatus',
     description: 'Sync status of a local measurement file relative to cloud'
 } as const;
@@ -1139,6 +1139,17 @@ export const $RemoteObjectDetails = {
             type: 'string',
             title: 'Type'
         },
+        etag: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Etag'
+        },
         last_status: {
             type: 'string',
             title: 'Last Status'
@@ -1185,7 +1196,7 @@ export const $RemoteObjectDetails = {
         }
     },
     type: 'object',
-    required: ['id', 'bucket', 'objectname', 'name', 'description', 'metadata', 'created_at', 's3_lastmodified', 's3_size', 'origin', 'author', 'type', 'last_status', 'last_status_time', 'secrets_count', 'access_total_count', 'access_week_count', 'last_access_time', 'active_offerings_count', 'virtual_group'],
+    required: ['id', 'bucket', 'objectname', 'name', 'description', 'metadata', 'created_at', 's3_lastmodified', 's3_size', 'origin', 'author', 'type', 'etag', 'last_status', 'last_status_time', 'secrets_count', 'access_total_count', 'access_week_count', 'last_access_time', 'active_offerings_count', 'virtual_group'],
     title: 'RemoteObjectDetails'
 } as const;
 

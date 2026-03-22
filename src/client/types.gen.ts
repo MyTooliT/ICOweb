@@ -153,7 +153,7 @@ export type FileCloudDetails = {
 /**
  * Sync status of a local measurement file relative to cloud
  */
-export type FileCloudStatus = 'not_uploaded' | 'outdated' | 'up_to_date';
+export type FileCloudStatus = 'not_uploaded' | 'outdated' | 'updating' | 'up_to_date' | 'error';
 
 export type FileListResponseModel = {
     capacity: DiskCapacity;
@@ -306,6 +306,7 @@ export type RemoteObjectDetails = {
     origin: string;
     author: string;
     type: string;
+    etag: string | null;
     last_status: string;
     last_status_time: string;
     secrets_count: number;
