@@ -34,7 +34,12 @@ const emits = defineEmits<{
 }>()
 
 function isDisabled(status: FileCloudStatus): boolean {
-  return status === 'up_to_date' || status === 'updating';
+  return [
+    'updating',
+    'up_to_date',
+    'error',
+    'created'
+  ].includes(status)
 }
 
 function getLabel(status: FileCloudStatus): string {
@@ -47,6 +52,10 @@ function getLabel(status: FileCloudStatus): string {
       return 'Update'
     case 'updating':
       return 'Updating'
+    case 'error':
+      return 'Error'
+    case 'created':
+      return 'Created'
     default:
       return 'Upload'
   }
@@ -61,6 +70,10 @@ function getIcon(status: FileCloudStatus): string {
     case 'outdated':
       return 'pi pi-sync'
     case 'updating':
+      return 'pi pi-spinner pi-spin'
+    case 'error':
+      return 'pi pi-exclamation-triangle'
+    case 'created':
       return 'pi pi-spinner pi-spin'
     default:
       return 'Upload'
@@ -81,6 +94,8 @@ function getTooltip(details: FileCloudDetails): string {
       return 'The update was uploaded to the Dataspace and is currently being processed.\n\nYou may close this page and come back later to check the status.'
     case 'error':
       return 'The file has multiple matched entries on the Dataspace. This is not allowed.\n\nPlease check your Dataspace or contact support.'
+    case 'created':
+      return 'The file has been created on the Dataspace and is currently being processed.\n\nYou may close this page and come back later to check the status.'
     default:
       return 'Upload'
   }
@@ -98,6 +113,8 @@ function getSeverity(status: FileCloudStatus): string {
       return 'primary'
     case 'error':
       return 'danger'
+    case 'created':
+      return 'primary'
     default:
       return 'primary'
   }
@@ -160,7 +177,7 @@ function getSeverity(status: FileCloudStatus): string {
               case 'not_uploaded':
                 upload(data.name)
                   .then(async () => {
-                    await getCloudFiles()
+                    await mStore.getFiles()
                     m.success('File Uploaded', data.name)
                   })
                   .catch((e: Error) => m.error(e.name, e.message))
@@ -168,7 +185,7 @@ function getSeverity(status: FileCloudStatus): string {
               case 'outdated':
                 updateFile(data.name, data.cloud.id)
                   .then(async () => {
-                    await getCloudFiles()
+                    await mStore.getFiles()
                     m.success('File Update Sent', data.name)
                   })
                   .catch((e: Error) => m.error(e.name, e.message))

@@ -511,7 +511,7 @@ export const $FileCloudDetails = {
 
 export const $FileCloudStatus = {
     type: 'string',
-    enum: ['not_uploaded', 'outdated', 'updating', 'up_to_date', 'error'],
+    enum: ['not_uploaded', 'outdated', 'updating', 'up_to_date', 'error', 'created'],
     title: 'FileCloudStatus',
     description: 'Sync status of a local measurement file relative to cloud'
 } as const;

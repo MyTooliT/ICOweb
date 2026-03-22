@@ -153,7 +153,7 @@ export type FileCloudDetails = {
 /**
  * Sync status of a local measurement file relative to cloud
  */
-export type FileCloudStatus = 'not_uploaded' | 'outdated' | 'updating' | 'up_to_date' | 'error';
+export type FileCloudStatus = 'not_uploaded' | 'outdated' | 'updating' | 'up_to_date' | 'error' | 'created';
 
 export type FileListResponseModel = {
     capacity: DiskCapacity;
@@ -1015,6 +1015,13 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+                /**
+                 * Could not upload to dataspace. Most likely, this results from a duplicate entry.
+                 */
+                500: {
+                    detail: string;
+                    status_code: number;
+                };
             };
         };
     };

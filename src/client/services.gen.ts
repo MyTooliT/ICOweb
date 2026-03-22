@@ -405,7 +405,8 @@ export const uploadFileApiV1CloudUploadPost = (data: UploadFileApiV1CloudUploadP
     body: data.requestBody,
     mediaType: 'application/json',
     errors: {
-        422: 'Validation Error'
+        422: 'Validation Error',
+        500: 'Could not upload to dataspace. Most likely, this results from a duplicate entry.'
     }
 }); };
 
