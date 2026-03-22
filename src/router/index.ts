@@ -91,6 +91,13 @@ router.afterEach(async (_to, _from, _failure) => {
           store.setGlobalLoader(false)
           store.setLoaderInfoMessage('')
         }
+        store.setLoaderInfoMessage('Checking Holder Configs...')
+        try {
+          await hwStore.refetchSensorsAndHolders()
+        } catch(e) {
+          store.setGlobalLoader(false)
+          store.setLoaderInfoMessage('')
+        }
         store.setLoaderInfoMessage('Checking STH devices...')
         try {
           await hwStore.updateSTHDeviceList()

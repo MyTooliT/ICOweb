@@ -6,7 +6,6 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import { useToast } from 'primevue/usetoast';
-import {onMounted} from 'vue';
 
 const toast = useToast()
 const store = useHardwareStore()
@@ -45,10 +44,6 @@ async function STHClickHandler() {
     }
   })
 }
-
-onMounted(async () => {
-  await store.refetchSensorsAndHolders()
-})
 </script>
 
 <template>
@@ -79,7 +74,3 @@ onMounted(async () => {
     </div>
   </DefaultLayout>
 </template>
-
-<style scoped>
-
-</style>

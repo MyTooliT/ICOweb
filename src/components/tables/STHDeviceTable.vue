@@ -36,6 +36,11 @@ async function handleConnect(device: STHDevice) {
   }
   await device.connect()
 }
+
+function isValidHolderID(id: string | undefined): boolean {
+  if(!id) return false
+  return hwStore.holderList.map(holder => holder.id).includes(id)
+}
 </script>
 
 <template>
@@ -74,6 +79,7 @@ async function handleConnect(device: STHDevice) {
           :options="hwStore.holderList"
           :option-value="(holder: HolderConfig) => holder.id"
           :option-label="(holder: HolderConfig) => holder.name"
+          :invalid="!isValidHolderID(data.holderConfigId)"
         />
       </template>
     </Column>
@@ -115,7 +121,3 @@ async function handleConnect(device: STHDevice) {
     />
   </DataTable>
 </template>
-
-<style scoped>
-
-</style>

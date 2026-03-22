@@ -1,6 +1,7 @@
 import {Sensor as RawSensor, STHDeviceResponseModel} from '@/client';
 import { STHDevice } from './classes/STHDevice.ts';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
+import {HolderConfig} from '@/stores/hardwareStore/classes/HolderConfig.ts';
 
 /*
  * This function consumes new metadata, creates a new list of STHDevices, and
@@ -15,7 +16,8 @@ import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
 export function consumeNewMetadata(
   list: Array<STHDevice>,
   newList: Array<STHDeviceResponseModel>,
-  defaultHolderId: string
+  defaultHolderId: string,
+  holderList: Array<HolderConfig>
 ): Array<STHDevice> {
   const assembledList: Array<STHDevice> = [];
   list.forEach(item => {
@@ -26,6 +28,9 @@ export function consumeNewMetadata(
       assembledList.push(item)
       const index = newList.indexOf(matching)
       newList.splice(index, 1)
+    }
+    if(holderList.find(holder => holder.id === item.holderConfigId) === undefined) {
+      item.holderConfigId = defaultHolderId
     }
   })
   if(newList.length > 0) {

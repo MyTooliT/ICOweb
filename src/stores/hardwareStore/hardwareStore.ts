@@ -38,11 +38,16 @@ export const useHardwareStore = defineStore('hardware', () => {
 
   const STHDeviceList = ref<STHDevice[]>([])
   const STHDevicesLoading: Ref<boolean> = ref(false)
-  async function updateSTHDeviceList(defaultHolder: string = 'default-sth'): Promise<void> {
+  async function updateSTHDeviceList(defaultHolder: string | undefined = undefined): Promise<void> {
     STHDevicesLoading.value = true
     const meta = await getSTHDevicesMeta()
     // Note: Why do we have to typecast the STHDevice array here?
-    STHDeviceList.value = consumeNewMetadata(STHDeviceList.value as STHDevice[], meta, defaultHolder)
+    STHDeviceList.value = consumeNewMetadata(
+        STHDeviceList.value as STHDevice[],
+        meta,
+        defaultHolder ?? defaultHolderID.value,
+        holderList.value
+    )
     STHDevicesLoading.value = false
   }
   function clearSTHDeviceList(): void {
