@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useDisable} from '@/utils/useDisable.ts';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
-import {deleteMeasurementFile, getCloudFiles, updateFile, uploadFile} from '@/api/icoapi.ts';
+import {deleteMeasurementFile, updateFile, uploadFile} from '@/api/icoapi.ts';
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
@@ -210,7 +210,11 @@ function getSeverity(status: FileCloudStatus): string {
           />
           <DownloadButton
             :link="`${getAPILink()}/files/${data.name}`"
-            compact />
+            compact
+            tooltip="Download
+
+            Download the local file from the measurement folder to a different location."
+          />
           <Button
             v-tooltip.top="{
               value: 'Delete Locally\n\nThis will not delete the file on the Dataspace. To do so, use the asset management platform.',

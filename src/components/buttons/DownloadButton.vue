@@ -3,14 +3,17 @@ import Button from 'primevue/button';
 
 defineProps<{
   label?: string,
-  link: string
-  compact?: boolean
+  link: string,
+  compact?: boolean,
+  tooltip?: string
 }>()
 </script>
 
 <template>
   <Button
-    v-tooltip.top="compact ? 'Download' : ''"
+    v-tooltip.top="{
+      value: tooltip ?? (compact ? 'Download' : '')
+    }"
     icon="pi pi-download"
     as="a"
     download
