@@ -196,7 +196,7 @@ function getSeverity(status: FileCloudStatus): string {
           />
           <Button
             v-if="pageEnabled('Analyze')"
-            v-tooltip.top="'Analyze'"
+            v-tooltip.top="'Analyze\n\nAnalyze the file and edit metadata and embedded elements.'"
             icon="pi pi-search-plus"
             as="a"
             size="small"
@@ -210,14 +210,14 @@ function getSeverity(status: FileCloudStatus): string {
             compact />
           <Button
             v-tooltip.top="{
-              value: 'Delete Locally',
+              value: 'Delete Locally\n\nThis will not delete the file on the Dataspace. To do so, use the asset management platform.',
               disabled: disableTooltip
             }"
             icon="pi pi-times"
             severity="danger"
             size="small"
             rounded
-            aria-label="Download"
+            aria-label="Delete"
             outlined
             :loading="deletionLoading"
             @click="async () => {

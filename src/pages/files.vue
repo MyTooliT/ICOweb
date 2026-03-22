@@ -97,6 +97,9 @@ function copyLinkToClipboard(link: string): void {
               </span>
             </InputGroupAddon>
             <Button
+              v-tooltip.top="{
+                value: 'Refresh the Dataspace connection'
+              }"
               :severity="authError || !gStore.systemState.cloud.healthy ? 'danger' : 'primary'"
               label="Refresh"
               icon="pi pi-sync"
@@ -119,6 +122,9 @@ function copyLinkToClipboard(link: string): void {
             />
             <Button
               v-if="gStore.systemState.cloud.manage_url"
+              v-tooltip.top="{
+                value: 'Open the Dataspace asset management platform'
+              }"
               label="Manage Assets"
               icon="pi pi-external-link"
               icon-pos="right"
