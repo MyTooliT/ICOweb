@@ -62,15 +62,13 @@ export function useMeasurementWebsocket(
       try {
         const parsed = JSON.parse(event.data) as Array<MeasurementDataFrame>
         parsed.forEach((entry: MeasurementDataFrame) => {
-          if(entry.dataloss) {
+          if(entry.dataloss !== null) {
             dataloss.value = entry.dataloss
           }
-          else if(entry.ift) {
+          if(entry.ift) {
             ift_storage.value = [...entry.ift]
           }
-          else {
-            storage.value.push(entry)
-          }
+          storage.value.push(entry)
         })
       } catch (e) {
         console.log(e)
