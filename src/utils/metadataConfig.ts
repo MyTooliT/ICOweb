@@ -204,7 +204,7 @@ export function setRestrictedDefaults(stateObject: Record<string, any>, phase: P
 export function setDefaultsIfEmpty(stateObject: Record<string, any>, phase: ProfilePhase) {
     const defaults = getDefaultsObject(phase)
     Object.keys(defaults).forEach(key => {
-        if(stateObject[key] === undefined || stateObject[key]) {
+        if(stateObject[key] === undefined) {
             stateObject[key] = defaults[key]
         }
     })
