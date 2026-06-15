@@ -42,7 +42,8 @@ function parseItem(item: any): any {
           item.mac_address,
           item.rssi,
           item.holderConfigId,
-          item.status
+          item.status,
+          item.supplyVoltage
         )
 
       case 'Sensor':

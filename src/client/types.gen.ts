@@ -395,7 +395,7 @@ export type SthConnectApiV1SthConnectPutData = {
     requestBody: Body_sth_connect_api_v1_sth_connect_put;
 };
 
-export type SthConnectApiV1SthConnectPutResponse = unknown;
+export type SthConnectApiV1SthConnectPutResponse = number | null;
 
 export type SthDisconnectApiV1SthDisconnectPutResponse = unknown;
 
@@ -641,7 +641,7 @@ export type $OpenApiTs = {
                 /**
                  * Connection was successful.
                  */
-                200: unknown;
+                200: number | null;
                 /**
                  * Incorrect request for current ICOtronic system state.
                  */

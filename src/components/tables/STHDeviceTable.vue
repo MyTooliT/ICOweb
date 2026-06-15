@@ -72,6 +72,12 @@ function isValidHolderID(id: string | undefined): boolean {
       </template>
     </Column>
     <Column
+      header="Battery">
+      <template #body="{ data }: { data: STHDevice }">
+        {{ data.getSupplyVoltageRepr() }}
+      </template>
+    </Column>
+    <Column
       header="Holder Template">
       <template #body="{ data }: { data: STHDevice }">
         <Select

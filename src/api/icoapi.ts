@@ -19,7 +19,7 @@ import {
   ConfigRestoreRequest,
   FileCloudDetails,
   DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData,
-  Body_update_file_api_v1_cloud_update_post
+  Body_update_file_api_v1_cloud_update_post, SthConnectApiV1SthConnectPutResponse
 } from '@/client';
 import { useAPI } from './api.ts';
 import ToastEventBus from 'primevue/toasteventbus';
@@ -98,9 +98,9 @@ export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   })
 }
 
-export async function connectSTHDevice(mac_address: string): Promise<void> {
+export async function connectSTHDevice(mac_address: string): Promise<SthConnectApiV1SthConnectPutResponse> {
   return new Promise((resolve, reject) => {
-    put<{ mac_address: string }, void>('sth/connect', {mac_address: mac_address})
+    put<{ mac_address: string }, SthConnectApiV1SthConnectPutResponse>('sth/connect', {mac_address: mac_address})
       .then(data => resolve(data))
       .catch(reject)
   })

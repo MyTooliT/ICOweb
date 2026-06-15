@@ -61,7 +61,7 @@ export const sthApiV1SthGet = (): CancelablePromise<SthApiV1SthGetResponse> => {
 
 /**
  * Sth Connect
- * Connect to sensor node
+ * Connect to sensor node and return the supply voltage
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown Connection was successful.

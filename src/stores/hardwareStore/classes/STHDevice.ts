@@ -16,6 +16,7 @@ export type TRssi = number;
 export class STHDevice extends Device {
   public static readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
+  public supplyVoltage: number | null = null;
   public holderConfigId: string | undefined = undefined;
 
   constructor(
@@ -25,14 +26,22 @@ export class STHDevice extends Device {
     rssi: number,
     holderConfigId: string,
     status: TDeviceConnectionStatus = 'disconnected',
+    supplyVoltage: number | null = null
   ) {
     super(device_number, name, mac_address, status)
     this.rssi = rssi
     this.holderConfigId = holderConfigId
+    this.supplyVoltage = supplyVoltage
   }
 
   public getRssiRepr(): string {
     return `${this.rssi}dB`;
+  }
+
+  public getSupplyVoltageRepr(): string {
+    return this.supplyVoltage
+        ? `${this.supplyVoltage?.toFixed(2)}V`
+        : 'N/A'
   }
 
   public async setName(name: string): Promise<void> {
@@ -64,7 +73,7 @@ export class STHDevice extends Device {
   public async connect(): Promise<void> {
     this.connection_status = 'connecting'
     try {
-      await connectSTHDevice(this.mac_address)
+      this.supplyVoltage = await connectSTHDevice(this.mac_address)
       this.connection_status = 'connected';
     } catch(e) {
       this.connection_status = 'disconnected';
@@ -76,6 +85,7 @@ export class STHDevice extends Device {
     try {
       await disconnectSTHDevice()
       this.connection_status = 'disconnected';
+      this.supplyVoltage = null
     } catch(e) {
       this.connection_status = 'connected';
       throw e
@@ -99,6 +109,7 @@ export class STHDevice extends Device {
       rssi: this.rssi,
       holderConfigId: this.holderConfigId,
       status: this.connection_status,
+      supplyVoltage: this.supplyVoltage,
       classtype: 'STH'
     }
   }
