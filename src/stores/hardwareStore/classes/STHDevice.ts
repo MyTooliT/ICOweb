@@ -1,6 +1,6 @@
 import {
   connectSTHDevice,
-  disconnectSTHDevice,
+  disconnectSTHDevice, getSupplyVoltage,
   renameSTHDevice
 } from '@/api/icoapi.ts';
 import {
@@ -10,12 +10,14 @@ import {
   TMac,
   TName
 } from './Device.ts';
+import {SupplyVoltageResponseModel} from '@/client';
 
 export type TRssi = number;
 
 export class STHDevice extends Device {
   public static readonly regex = new RegExp('^[\x20-\x7E]{1,8}[^\\s]$')
   private rssi: number = 0;
+  public supplyVoltage: SupplyVoltageResponseModel | null = null;
   public holderConfigId: string | undefined = undefined;
 
   constructor(
@@ -25,14 +27,22 @@ export class STHDevice extends Device {
     rssi: number,
     holderConfigId: string,
     status: TDeviceConnectionStatus = 'disconnected',
+    supplyVoltage: SupplyVoltageResponseModel | null = null
   ) {
     super(device_number, name, mac_address, status)
     this.rssi = rssi
     this.holderConfigId = holderConfigId
+    this.supplyVoltage = supplyVoltage
   }
 
   public getRssiRepr(): string {
     return `${this.rssi}dB`;
+  }
+
+  public getSupplyVoltageRepr(): string {
+    return this.supplyVoltage
+        ? `${this.supplyVoltage?.supply_voltage.toFixed(2)}${this.supplyVoltage.unit}`
+        : 'N/A'
   }
 
   public async setName(name: string): Promise<void> {
@@ -65,6 +75,7 @@ export class STHDevice extends Device {
     this.connection_status = 'connecting'
     try {
       await connectSTHDevice(this.mac_address)
+      await this.requestSupplyVoltage()
       this.connection_status = 'connected';
     } catch(e) {
       this.connection_status = 'disconnected';
@@ -91,6 +102,10 @@ export class STHDevice extends Device {
     return this.connection_status;
   }
 
+  public async requestSupplyVoltage(): Promise<void> {
+    this.supplyVoltage = await getSupplyVoltage()
+  }
+
   public toJSON() {
     return {
       device_number: this.device_number,
@@ -99,6 +114,7 @@ export class STHDevice extends Device {
       rssi: this.rssi,
       holderConfigId: this.holderConfigId,
       status: this.connection_status,
+      supplyVoltage: this.supplyVoltage,
       classtype: 'STH'
     }
   }

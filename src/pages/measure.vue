@@ -377,9 +377,11 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               <InputGroupAddon class="flex-grow !text-black">
                 {{ hwStore.activeSTH?.getName() }}
               </InputGroupAddon>
+              <InputGroupAddon class="flex-grow !text-black">
+                {{ hwStore.activeSTH?.getSupplyVoltageRepr() }}
+              </InputGroupAddon>
               <Button
                 :disabled="gStore.systemState.running"
-                label="Change"
                 icon="pi pi-cog"
                 outlined
                 @click="router.push('/')"

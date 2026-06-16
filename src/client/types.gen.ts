@@ -367,6 +367,13 @@ export type Sensor = {
     offset?: number;
 };
 
+export type SupplyVoltageResponseModel = {
+    supply_voltage: number;
+    unit: string;
+    indication: string | null;
+    timestamp_utc_iso: string;
+};
+
 /**
  * Data model for API state
  */
@@ -412,6 +419,8 @@ export type WriteAdcApiV1SthWriteAdcPutData = {
 };
 
 export type WriteAdcApiV1SthWriteAdcPutResponse = unknown;
+
+export type GetSupplyVoltageApiV1SthSupplyVoltageGetResponse = SupplyVoltageResponseModel;
 
 export type StateApiV1StateGetResponse = SystemStateModel;
 
@@ -779,6 +788,23 @@ export type $OpenApiTs = {
                 502: {
                     detail: string;
                     status_code: number;
+                };
+            };
+        };
+    };
+    '/api/v1/sth/supply-voltage': {
+        get: {
+            res: {
+                /**
+                 * Supply voltage of connected STH.
+                 */
+                200: SupplyVoltageResponseModel;
+                /**
+                 * Failed to read supply voltage.
+                 */
+                500: {
+                    detail?: string;
+                    status_code?: number;
                 };
             };
         };

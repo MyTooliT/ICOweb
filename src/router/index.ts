@@ -123,6 +123,12 @@ router.afterEach(async (_to, _from, _failure) => {
           store.setLoaderInfoMessage('Checking ADC settings...')
           await adcStore.fetchADCValues()
         } catch (e) { console.log(e) }
+        try {
+          store.setLoaderInfoMessage('Checking Supply Voltage...')
+          await hwStore.activeSTH.requestSupplyVoltage()
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
   }
