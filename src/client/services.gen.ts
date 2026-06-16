@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadEmbeddedFileApiV1FilesNameEmbeddedPostData, UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, UpdateFileApiV1CloudUpdatePostData, UpdateFileApiV1CloudUpdatePostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, GetSupplyVoltageApiV1SthSupplyVoltageGetResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadEmbeddedFileApiV1FilesNameEmbeddedPostData, UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, UpdateFileApiV1CloudUpdatePostData, UpdateFileApiV1CloudUpdatePostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
 
 /**
  * Stu
@@ -61,7 +61,7 @@ export const sthApiV1SthGet = (): CancelablePromise<SthApiV1SthGetResponse> => {
 
 /**
  * Sth Connect
- * Connect to sensor node and return the supply voltage
+ * Connect to sensor node
  * @param data The data for the request.
  * @param data.requestBody
  * @returns unknown Connection was successful.
@@ -148,6 +148,20 @@ export const writeAdcApiV1SthWriteAdcPut = (data: WriteAdcApiV1SthWriteAdcPutDat
         404: 'STH could not be connected and must be out of reach or discharged.',
         422: 'Validation Error',
         502: 'The CAN network did not respond to the request.'
+    }
+}); };
+
+/**
+ * Get Supply Voltage
+ * Get supply voltage of connected STH.
+ * @returns SupplyVoltageResponseModel Supply voltage of connected STH.
+ * @throws ApiError
+ */
+export const getSupplyVoltageApiV1SthSupplyVoltageGet = (): CancelablePromise<GetSupplyVoltageApiV1SthSupplyVoltageGetResponse> => { return __request(OpenAPI, {
+    method: 'GET',
+    url: '/api/v1/sth/supply-voltage',
+    errors: {
+        500: 'Failed to read supply voltage.'
     }
 }); };
 

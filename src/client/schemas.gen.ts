@@ -1345,6 +1345,38 @@ export const $Sensor = {
     description: 'Sensor attributes'
 } as const;
 
+export const $SupplyVoltageResponseModel = {
+    properties: {
+        supply_voltage: {
+            type: 'number',
+            title: 'Supply Voltage'
+        },
+        unit: {
+            type: 'string',
+            title: 'Unit',
+            default: 'V'
+        },
+        indication: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Indication'
+        },
+        timestamp_utc_iso: {
+            type: 'string',
+            title: 'Timestamp Utc Iso'
+        }
+    },
+    type: 'object',
+    required: ['supply_voltage', 'unit', 'indication', 'timestamp_utc_iso'],
+    title: 'SupplyVoltageResponseModel'
+} as const;
+
 export const $SystemStateModel = {
     properties: {
         can_ready: {

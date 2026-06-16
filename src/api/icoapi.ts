@@ -19,7 +19,8 @@ import {
   ConfigRestoreRequest,
   FileCloudDetails,
   DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData,
-  Body_update_file_api_v1_cloud_update_post, SthConnectApiV1SthConnectPutResponse
+  Body_update_file_api_v1_cloud_update_post,
+  SupplyVoltageResponseModel
 } from '@/client';
 import { useAPI } from './api.ts';
 import ToastEventBus from 'primevue/toasteventbus';
@@ -98,9 +99,9 @@ export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
   })
 }
 
-export async function connectSTHDevice(mac_address: string): Promise<SthConnectApiV1SthConnectPutResponse> {
+export async function connectSTHDevice(mac_address: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ mac_address: string }, SthConnectApiV1SthConnectPutResponse>('sth/connect', {mac_address: mac_address})
+    put<{ mac_address: string }, void>('sth/connect', { mac_address: mac_address })
       .then(data => resolve(data))
       .catch(reject)
   })
@@ -152,6 +153,14 @@ export async function writeADCValues(values: ADCValues): Promise<void> {
       ('sth/write-adc', { config: values })
       .then(data => resolve(data))
       .catch(reject)
+  })
+}
+
+export async function getSupplyVoltage(): Promise<SupplyVoltageResponseModel> {
+  return new Promise((resolve, reject) => {
+    get<SupplyVoltageResponseModel>('sth/supply-voltage')
+        .then(data => resolve(data))
+        .catch(reject)
   })
 }
 

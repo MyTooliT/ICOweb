@@ -900,6 +900,10 @@ video {
   flex-wrap: wrap;
 }
 
+.content-center {
+  align-content: center;
+}
+
 .items-start {
   align-items: flex-start;
 }
@@ -1036,6 +1040,14 @@ video {
 
 .\!border-dashed {
   border-style: dashed !important;
+}
+
+.border-none {
+  border-style: none;
+}
+
+.\!border-none {
+  border-style: none !important;
 }
 
 .\!border-gray-400 {
@@ -1177,6 +1189,10 @@ video {
 
 .text-right {
   text-align: right;
+}
+
+.align-middle {
+  vertical-align: middle;
 }
 
 .font-mono {
@@ -1425,6 +1441,14 @@ video {
 
 .hover\:border-0:hover {
   border-width: 0px;
+}
+
+.hover\:border:hover {
+  border-width: 1px;
+}
+
+.hover\:border-primary:hover {
+  border-color: var(--md-sys-color-primary);
 }
 
 .hover\:bg-surface-variant:hover {

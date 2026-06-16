@@ -12,6 +12,7 @@ import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { ref } from 'vue';
 import Select from 'primevue/select';
+import { format } from 'date-fns';
 
 const hwStore = useHardwareStore()
 const store = useGeneralStore()
@@ -41,6 +42,13 @@ function isValidHolderID(id: string | undefined): boolean {
   if(!id) return false
   return hwStore.holderList.map(holder => holder.id).includes(id)
 }
+
+const {
+  loading: supplyVoltageLoading, call: updateSupplyVoltage
+} = useLoadingHandler(async () => {
+  if(!hwStore.activeSTH) return
+  await hwStore.activeSTH.requestSupplyVoltage()
+})
 </script>
 
 <template>
@@ -71,10 +79,36 @@ function isValidHolderID(id: string | undefined): boolean {
         {{ data.getRssiRepr() }}
       </template>
     </Column>
-    <Column
-      header="Battery">
+    <Column>
+      <template #header>
+        <span class="font-semibold">Battery</span>
+        <i
+          v-tooltip.top="'Battery (supply) voltage is checked upon connection. \n\nThe battery voltage is not updated automatically.'"
+          class="pi pi-info-circle" />
+      </template>
       <template #body="{ data }: { data: STHDevice }">
-        {{ data.getSupplyVoltageRepr() }}
+        <div
+          v-if="data.supplyVoltage"
+          class="flex w-fit justify-between content-center">
+          <span
+            v-tooltip.top="`Checked at ${format(new Date(data.supplyVoltage.timestamp_utc_iso), 'dd.MM.yyyy, HH:mm:ss')}`"
+            class="block my-auto underline">
+            {{ data.getSupplyVoltageRepr() }}
+          </span>
+          <Button
+            v-if="hwStore.activeSTH"
+            class="my-auto ml-2 !border-none"
+            icon="pi pi-sync"
+            outlined
+            rounded
+            size="small"
+            :loading="supplyVoltageLoading"
+            @click="updateSupplyVoltage"
+          />
+        </div>
+        <div v-else>
+          <span class="block my-auto">{{ data.getSupplyVoltageRepr() }}</span>
+        </div>
       </template>
     </Column>
     <Column
