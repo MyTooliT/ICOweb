@@ -48,7 +48,9 @@ const postMetadataValidity = ref<boolean>(false)
 const postMetadataEditable = ref<boolean>(false)
 
 function extractMetadata(stateObj: Ref<Metadata|undefined>, source: any) {
-  stateObj.value = JSON.parse(JSON.stringify(source))
+  stateObj.value = source === undefined || source === null
+      ? undefined
+      : JSON.parse(JSON.stringify(source))
 }
 function extractPreMetadata() {
   extractMetadata(preMetadata, props.parsedMetadata.acceleration.attributes['pre_metadata'])
