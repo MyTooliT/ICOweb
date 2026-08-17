@@ -308,6 +308,22 @@ export async function sendPostMetaOverride(name: string, meta: Metadata): Promis
   })
 }
 
+export async function deletePreMeta(name: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    del<void, undefined>(`files/pre_meta/${name}`, undefined)
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
+export async function deletePostMeta(name: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    del<void, undefined>(`files/post_meta/${name}`, undefined)
+        .then(resolve)
+        .catch(reject)
+  })
+}
+
 export async function getMetadata(name: string): Promise<Metadata> {
   return new Promise((resolve, reject) => {
     get<Metadata>(`files/meta/${name}`)

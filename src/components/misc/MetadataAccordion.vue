@@ -7,12 +7,27 @@ import mime from 'mime';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primevue';
 import {EmbeddedFileInfo, Metadata, ParsedMetadata} from '@/client';
 import {Sensor} from '@/stores/hardwareStore/classes/Sensor.ts';
-import {capitalize, onMounted, Ref, ref, watch} from 'vue';
+import {capitalize, computed, onMounted, ref, watch} from 'vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
 import MetaForm from '@/components/forms/MetaForm.vue';
-import {computeValidity, ProfileDefinition} from '@/utils/metadataConfig.ts';
+import MetadataProfileSelector from '@/components/forms/MetadataProfileSelector.vue';
+import {
+  computeValidity,
+  MetadataConfig,
+  ProfilePhase,
+  removeUnusedParams,
+  setDefaultsIfEmpty,
+  setRestrictedDefaults,
+} from '@/utils/metadataConfig.ts';
 import MetadataEditSection from '@/components/forms/MetadataEditSection.vue';
-import {deleteFileFromHDF5, getAPILink, sendPostMetaOverride, sendPreMetaOverride} from '@/api/icoapi.ts';
+import {
+  deleteFileFromHDF5,
+  deletePostMeta,
+  deletePreMeta,
+  getAPILink,
+  sendPostMetaOverride,
+  sendPreMetaOverride,
+} from '@/api/icoapi.ts';
 import {useRoute} from 'vue-router';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
@@ -39,38 +54,136 @@ const sensorColumns = props.parsedMetadata.sensors[0]
     : []
 
 const { config, reload } = useYamlConfig()
-const metadataProfile = ref<ProfileDefinition|undefined>()
-const preMetadata = ref<Metadata|undefined>(undefined)
-const preMetadataValidity = ref<boolean>(false)
-const preMetadataEditable = ref<boolean>(false)
-const postMetadata = ref<Metadata|undefined>(undefined)
-const postMetadataValidity = ref<boolean>(false)
-const postMetadataEditable = ref<boolean>(false)
 
-function extractMetadata(stateObj: Ref<Metadata|undefined>, source: any) {
-  stateObj.value = source === undefined || source === null
-      ? undefined
-      : JSON.parse(JSON.stringify(source))
-}
-function extractPreMetadata() {
-  extractMetadata(preMetadata, props.parsedMetadata.acceleration.attributes['pre_metadata'])
-}
-function extractPostMetadata() {
-  extractMetadata(postMetadata, props.parsedMetadata.acceleration.attributes['post_metadata'])
+/**
+ * Manages the pre- or post-measurement metadata section of an already
+ * recorded file: viewing the saved value, editing/saving it in place,
+ * adding it to a file that has none yet, changing its profile, and
+ * deleting it entirely.
+ */
+function createPhaseEditor(phaseKind: 'pre' | 'post') {
+  const saved = ref<Metadata | undefined>(undefined)
+  const editing = ref(false)
+  const draft = ref<Metadata>(emptyMetadata())
+  const draftValid = ref(false)
+
+  function phaseOf(profileId: string | undefined): ProfilePhase | undefined {
+    if (!config.value || !profileId) return undefined
+    const profile = Object.values(config.value.profiles).find(p => p.id === profileId)
+    if (!profile) return undefined
+    return phaseKind === 'pre' ? profile.pre : profile.post
+  }
+
+  const draftPhase = computed(() => phaseOf(draft.value.profile))
+  const savedPhase = computed(() => phaseOf(saved.value?.profile))
+  const savedValid = computed(() => (
+    savedPhase.value ? computeValidity(saved.value?.parameters ?? {}, savedPhase.value) : true
+  ))
+
+  // Post-measurement metadata can only use a profile that defines post fields.
+  const selectorConfig = computed<MetadataConfig | undefined>(() => {
+    if (!config.value) return undefined
+    if (phaseKind === 'pre') return config.value
+    return {
+      ...config.value,
+      profiles: Object.fromEntries(
+          Object.entries(config.value.profiles).filter(([, profile]) => !!profile.post)
+      ),
+    }
+  })
+
+  function extract(source: any) {
+    saved.value = source === undefined || source === null
+        ? undefined
+        : JSON.parse(JSON.stringify(source))
+  }
+
+  function applyGentleDefaults() {
+    const phase = draftPhase.value
+    if (!phase) return
+    setRestrictedDefaults(draft.value.parameters, phase)
+    setDefaultsIfEmpty(draft.value.parameters, phase)
+    removeUnusedParams(draft.value.parameters, phase)
+    draftValid.value = computeValidity(draft.value.parameters, phase)
+  }
+
+  watch(() => draft.value.profile, () => {
+    if (editing.value) applyGentleDefaults()
+  })
+
+  function startAdd() {
+    draft.value = emptyMetadata()
+    editing.value = true
+    const candidates = selectorConfig.value ? Object.values(selectorConfig.value.profiles) : []
+    if (candidates.length && !candidates.some(profile => profile.id === draft.value.profile)) {
+      draft.value.profile = candidates[0].id
+    }
+    applyGentleDefaults()
+  }
+
+  function startEdit() {
+    draft.value = saved.value
+        ? JSON.parse(JSON.stringify(saved.value))
+        : emptyMetadata()
+    editing.value = true
+    applyGentleDefaults()
+  }
+
+  function cancelEdit() {
+    editing.value = false
+  }
+
+  const overrideFn = phaseKind === 'pre' ? sendPreMetaOverride : sendPostMetaOverride
+  const deleteFn = phaseKind === 'pre' ? deletePreMeta : deletePostMeta
+  const label = phaseKind === 'pre' ? 'Pre-Measurement Metadata' : 'Post-Measurement Metadata'
+
+  const { loading: saving, call: save } = useLoadingHandler(async () => {
+    if (!route.query['file']) return
+    const filename = String(route.query['file'])
+    await overrideFn(filename, draft.value)
+    saved.value = JSON.parse(JSON.stringify(draft.value))
+    editing.value = false
+    m.success(`${label} Saved`, 'The metadata was written to the file.')
+  })
+
+  const { loading: deleting, call: remove } = useLoadingHandler(async () => {
+    if (!route.query['file']) return
+    if (!window.confirm(`Delete all ${label.toLowerCase()} for this file? This cannot be undone.`)) return
+    const filename = String(route.query['file'])
+    await deleteFn(filename)
+    saved.value = undefined
+    m.success(`${label} Deleted`, 'The metadata was removed from the file.')
+  })
+
+  return {
+    saved, editing, draft, draftValid, draftPhase, savedPhase, savedValid, selectorConfig,
+    extract, startAdd, startEdit, cancelEdit, saving, save, deleting, remove,
+  }
 }
 
-const { loading: preLoading, call: sendPre } = useLoadingHandler(async () => {
-  if(!route.query['file'] || !preMetadata.value) return
-  const filename = String(route.query['file'])
-  await sendPreMetaOverride(filename, preMetadata.value)
-  preMetadataEditable.value = false
-})
-const { loading: postLoading, call: sendPost } = useLoadingHandler(async () => {
-  if(!route.query['file'] || !postMetadata.value) return
-  const filename = String(route.query['file'])
-  await sendPostMetaOverride(filename, postMetadata.value)
-  postMetadataEditable.value = false
-})
+function emptyMetadata(): Metadata {
+  return {
+    version: config.value?.info.schema_version ?? '',
+    profile: config.value?.default_profile_id ?? '',
+    parameters: {},
+  }
+}
+
+const {
+  saved: preSaved, editing: preEditing, draft: preDraft, draftValid: preDraftValid,
+  draftPhase: preDraftPhase, savedPhase: preSavedPhase, savedValid: preSavedValid,
+  selectorConfig: preSelectorConfig, extract: extractPre, startAdd: preStartAdd,
+  startEdit: preStartEdit, cancelEdit: preCancelEdit, saving: preSaving, save: preSave,
+  deleting: preDeleting, remove: preRemove,
+} = createPhaseEditor('pre')
+
+const {
+  saved: postSaved, editing: postEditing, draft: postDraft, draftValid: postDraftValid,
+  draftPhase: postDraftPhase, savedPhase: postSavedPhase, savedValid: postSavedValid,
+  selectorConfig: postSelectorConfig, extract: extractPost, startAdd: postStartAdd,
+  startEdit: postStartEdit, cancelEdit: postCancelEdit, saving: postSaving, save: postSave,
+  deleting: postDeleting, remove: postRemove,
+} = createPhaseEditor('post')
 
 function joinPath(...parts: string[]): string {
   return parts.map(part => encodeURIComponent(part)).join('/');
@@ -93,23 +206,8 @@ onMounted(async () => {
 
 watch(props, async () => {
   await reload()
-  if(!config.value) return
-
-  extractPreMetadata()
-  if(preMetadata.value !== undefined) {
-    metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === preMetadata.value?.profile)
-  }
-  if(metadataProfile.value) {
-    preMetadataValidity.value = computeValidity(preMetadata, metadataProfile.value.pre)
-  }
-
-  extractPostMetadata()
-  if(postMetadata.value !== undefined) {
-    metadataProfile.value = Object.values(config.value.profiles).find((p: ProfileDefinition) => p.id === postMetadata.value?.profile)
-  }
-  if(metadataProfile.value && metadataProfile.value.post) {
-    postMetadataValidity.value = computeValidity(postMetadata, metadataProfile.value.post)
-  }
+  extractPre(props.parsedMetadata.acceleration.attributes['pre_metadata'])
+  extractPost(props.parsedMetadata.acceleration.attributes['post_metadata'])
 }, {
   deep: true,
   immediate: true
@@ -159,64 +257,114 @@ watch(props, async () => {
         </div>
       </AccordionContent>
     </AccordionPanel>
-    <AccordionPanel
-      v-if="preMetadata"
-      value="1">
+    <AccordionPanel value="1">
       <AccordionHeader class="data-[p-active=true]:!border-b">
         Pre-Measurement Metadata
       </AccordionHeader>
       <AccordionContent>
-        <div class="bg-white gap-3 pt-3 flex flex-col">
+        <div
+          v-if="config"
+          class="bg-white gap-3 pt-3 flex flex-col"
+        >
           <MetadataEditSection
-            :state="preMetadataEditable ? 'edit' : 'view'"
-            :loading="preLoading"
+            :state="preEditing ? 'edit' : (preSaved ? 'view' : 'empty')"
+            :loading="preSaving"
+            :delete-loading="preDeleting"
             edit-btn-label="Edit Pre-Measurement Metadata"
-            info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
-            @edit="preMetadataEditable = true"
-            @cancel-edit="() => {
-              extractPreMetadata()
-              preMetadataEditable = false
-            }"
-            @save="sendPre"
+            add-btn-label="Add Pre-Measurement Metadata"
+            info-text="Warning: This edits and overrides the complete pre-measurement metadata section. Changes take effect as soon as they are saved."
+            @edit="preStartEdit"
+            @add="preStartAdd"
+            @cancel-edit="preCancelEdit"
+            @save="preSave"
+            @delete="preRemove"
+          />
+          <MetadataProfileSelector
+            v-if="preEditing && preSelectorConfig"
+            v-model="preDraft.profile"
+            :disabled="false"
+            :config="preSelectorConfig"
           />
           <MetaForm
-            v-if="config && metadataProfile"
-            v-model:state-object="preMetadata.parameters"
-            v-model:state-validity="preMetadataValidity"
-            :disabled="!preMetadataEditable"
-            :phase="metadataProfile.pre"
+            v-if="preEditing && preDraftPhase"
+            v-model:state-object="preDraft.parameters"
+            v-model:state-validity="preDraftValid"
+            :phase="preDraftPhase"
           />
+          <MetaForm
+            v-if="!preEditing && preSaved && preSavedPhase"
+            :state-object="preSaved.parameters"
+            :state-validity="preSavedValid"
+            disabled
+            :phase="preSavedPhase"
+          />
+          <p
+            v-if="!preEditing && preSaved && !preSavedPhase"
+            class="text-sm text-surface-500"
+          >
+            This file's metadata profile ("{{ preSaved.profile }}") is no longer defined in the
+            current metadata configuration. Edit to assign a current profile.
+          </p>
         </div>
       </AccordionContent>
     </AccordionPanel>
-    <AccordionPanel
-      v-if="postMetadata && metadataProfile?.post"
-      value="2">
+    <AccordionPanel value="2">
       <AccordionHeader class="data-[p-active=true]:!border-b">
         Post-Measurement Metadata
       </AccordionHeader>
       <AccordionContent>
-        <div class="bg-white gap-3 pt-3 flex flex-col">
+        <div
+          v-if="config"
+          class="bg-white gap-3 pt-3 flex flex-col"
+        >
           <MetadataEditSection
-            :state="postMetadataEditable ? 'edit' : 'view'"
-            :loading="postLoading"
+            :state="postEditing ? 'edit' : (postSaved ? 'view' : 'empty')"
+            :loading="postSaving"
+            :delete-loading="postDeleting"
             edit-btn-label="Edit Post-Measurement Metadata"
-            info-text="Warning: This edits and overrides the complete post-measurement metadata section. Changes only reflect after clicking 'Save Metadata' and reloading this page."
-            @edit="postMetadataEditable = true"
-            @cancel-edit="() => {
-              extractPostMetadata()
-              postMetadataEditable = false
-            }"
-            @save="sendPost"
+            add-btn-label="Add Post-Measurement Metadata"
+            info-text="Warning: This edits and overrides the complete post-measurement metadata section. Changes take effect as soon as they are saved."
+            @edit="postStartEdit"
+            @add="postStartAdd"
+            @cancel-edit="postCancelEdit"
+            @save="postSave"
+            @delete="postRemove"
+          />
+          <MetadataProfileSelector
+            v-if="postEditing && postSelectorConfig"
+            v-model="postDraft.profile"
+            :disabled="false"
+            :config="postSelectorConfig"
           />
           <MetaForm
-            v-if="config && metadataProfile"
-            v-model:state-object="postMetadata.parameters"
-            v-model:state-validity="postMetadataValidity"
-            :disabled="!postMetadataEditable"
-            :phase="metadataProfile.post"
+            v-if="postEditing && postDraftPhase"
+            v-model:state-object="postDraft.parameters"
+            v-model:state-validity="postDraftValid"
+            :phase="postDraftPhase"
             class="pt-3"
           />
+          <p
+            v-if="postEditing && !postDraftPhase"
+            class="text-sm text-surface-500"
+          >
+            No profile with post-measurement fields is available.
+          </p>
+          <MetaForm
+            v-if="!postEditing && postSaved && postSavedPhase"
+            :state-object="postSaved.parameters"
+            :state-validity="postSavedValid"
+            disabled
+            :phase="postSavedPhase"
+            class="pt-3"
+          />
+          <p
+            v-if="!postEditing && postSaved && !postSavedPhase"
+            class="text-sm text-surface-500"
+          >
+            This file's metadata profile ("{{ postSaved.profile }}") is no longer defined, or no
+            longer has post-measurement fields, in the current metadata configuration. Edit to
+            assign a current profile.
+          </p>
         </div>
       </AccordionContent>
     </AccordionPanel>
