@@ -25,3 +25,10 @@ export function formatFileSize(bytes: number): string {
   // Return formatted size with 1 decimal place
   return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
+
+export function formatSupplyVoltage(value: unknown): string | null {
+  if (value === undefined || value === null) return null
+  const num = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(num)) return null
+  return `${num.toFixed(2)} V`
+}

@@ -36,6 +36,7 @@ import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import DeleteButton from '@/components/buttons/DeleteButton.vue';
 import Fieldset from 'primevue/fieldset';
 import {useMessageBus} from '@/message';
+import {formatSupplyVoltage} from '@/utils/helper.ts';
 
 const route = useRoute()
 const m = useMessageBus()
@@ -43,6 +44,10 @@ const m = useMessageBus()
 const props = defineProps<{
   parsedMetadata: ParsedMetadata
 }>()
+
+const startSupplyVoltage = computed(() => formatSupplyVoltage(
+  props.parsedMetadata.acceleration.attributes['start_supply_voltage']
+))
 
 const sensorColumns = props.parsedMetadata.sensors[0]
     ? Object.keys(props.parsedMetadata.sensors[0]).map((key: string) => {
@@ -215,7 +220,23 @@ watch(props, async () => {
 </script>
 
 <template>
-  <Accordion class="border rounded-md [margin-bottom:40px]">
+  <Accordion
+    value="information"
+    class="border rounded-md [margin-bottom:40px]"
+  >
+    <AccordionPanel
+      v-if="startSupplyVoltage"
+      value="information"
+    >
+      <AccordionHeader>
+        Information
+      </AccordionHeader>
+      <AccordionContent>
+        <p class="text-sm text-surface-600">
+          <span class="font-semibold">Supply Voltage at Start:</span> {{ startSupplyVoltage }}
+        </p>
+      </AccordionContent>
+    </AccordionPanel>
     <AccordionPanel
       v-if="parsedMetadata?.pictures && Object.keys(parsedMetadata?.pictures).length > 0"
       value="0"
