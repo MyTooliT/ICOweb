@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import Button from 'primevue/button';
+import ToggleSwitch from 'primevue/toggleswitch';
 import TextBlock from '@/components/misc/TextBlock.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { LogListResponse } from '@/client';
@@ -11,6 +12,11 @@ import {formatFileSize} from '../utils/helper.ts';
 
 const logs = ref<LogListResponse|undefined>()
 const { loading, call } = useLoadingHandler(getLogs)
+const includeSystemInfo = ref(true)
+
+const downloadLogsLink = computed(
+  () => `${getAPILink()}/logs/all?include_system_info=${includeSystemInfo.value}`
+)
 
 onMounted(async() => {
   logs.value = await call()
@@ -46,11 +52,24 @@ onMounted(async() => {
         <span>{{ logs.backup_count }}</span>
       </p>
     </div>
+    <div class="flex flex-row items-center mb-3">
+      <ToggleSwitch
+        v-model="includeSystemInfo"
+        input-id="include-system-info" />
+      <label
+        for="include-system-info"
+        class="ml-3">Include System Information</label>
+      <i
+        v-tooltip.top="{
+          value: 'Adds a system_info.json file to the download with your OS version, CPU/memory/disk stats, hostname, and the installed versions of ICOdaq\'s components.\n\nThis helps us reproduce environment-specific bugs (e.g. issues tied to a particular Windows version or low disk space). It is only collected when you download logs, never stored or tracked automatically.'
+        }"
+        class="pi pi-info-circle ml-2" />
+    </div>
     <div>
       <Button
         label="Download All"
         as="a"
-        :href="`${getAPILink()}/logs/all`"
+        :href="downloadLogsLink"
       />
     </div>
   </DefaultLayout>
