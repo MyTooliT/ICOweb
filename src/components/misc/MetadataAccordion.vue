@@ -36,7 +36,7 @@ import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import DeleteButton from '@/components/buttons/DeleteButton.vue';
 import Fieldset from 'primevue/fieldset';
 import {useMessageBus} from '@/message';
-import {formatSupplyVoltage} from '@/utils/helper.ts';
+import {formatAttributeLabel, formatAttributeValue} from '@/utils/helper.ts';
 
 const route = useRoute()
 const m = useMessageBus()
@@ -45,9 +45,19 @@ const props = defineProps<{
   parsedMetadata: ParsedMetadata
 }>()
 
-const startSupplyVoltage = computed(() => formatSupplyVoltage(
-  props.parsedMetadata.acceleration.attributes['start_supply_voltage']
-))
+// Structured sub-keys with their own dedicated UI elsewhere (the pre-/post-
+// measurement metadata sections below)
+const NON_DISPLAY_ATTRIBUTE_KEYS = new Set(['pre_metadata', 'post_metadata'])
+
+const infoAttributes = computed(() => Object.entries(
+    props.parsedMetadata.acceleration.attributes
+).filter(([key]) => !NON_DISPLAY_ATTRIBUTE_KEYS.has(key))
+    .map(([key, value]) => ({
+      key,
+      label: formatAttributeLabel(key),
+      value: formatAttributeValue(key, value),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label)))
 
 const sensorColumns = props.parsedMetadata.sensors[0]
     ? Object.keys(props.parsedMetadata.sensors[0]).map((key: string) => {
@@ -225,15 +235,19 @@ watch(props, async () => {
     class="border rounded-md [margin-bottom:40px]"
   >
     <AccordionPanel
-      v-if="startSupplyVoltage"
+      v-if="infoAttributes.length > 0"
       value="information"
     >
       <AccordionHeader>
         Information
       </AccordionHeader>
       <AccordionContent>
-        <p class="text-sm text-surface-600">
-          <span class="font-semibold">Supply Voltage at Start:</span> {{ startSupplyVoltage }}
+        <p
+          v-for="attr in infoAttributes"
+          :key="attr.key"
+          class="text-sm text-surface-600"
+        >
+          <span class="font-semibold">{{ attr.label }}:</span> {{ attr.value }}
         </p>
       </AccordionContent>
     </AccordionPanel>
