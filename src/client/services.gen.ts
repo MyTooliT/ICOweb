@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, GetSupplyVoltageApiV1SthSupplyVoltageGetResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadEmbeddedFileApiV1FilesNameEmbeddedPostData, UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, UpdateFileApiV1CloudUpdatePostData, UpdateFileApiV1CloudUpdatePostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
+import type { StuApiV1StuGetResponse, StuResetApiV1StuResetPutResponse, StuConnectedApiV1StuConnectedGetResponse, SthApiV1SthGetResponse, SthConnectApiV1SthConnectPutData, SthConnectApiV1SthConnectPutResponse, SthDisconnectApiV1SthDisconnectPutResponse, SthRenameApiV1SthRenamePutData, SthRenameApiV1SthRenamePutResponse, ReadAdcApiV1SthReadAdcGetResponse, WriteAdcApiV1SthWriteAdcPutData, WriteAdcApiV1SthWriteAdcPutResponse, GetSupplyVoltageApiV1SthSupplyVoltageGetResponse, StateApiV1StateGetResponse, ResetCanApiV1ResetCanPutResponse, ListFilesAndCapacityApiV1FilesGetResponse, DownloadFileApiV1FilesNameGetData, DownloadFileApiV1FilesNameGetResponse, DeleteFileApiV1FilesNameDeleteData, DeleteFileApiV1FilesNameDeleteResponse, GetAnalyzedFileApiV1FilesAnalyzeNameGetData, GetAnalyzedFileApiV1FilesAnalyzeNameGetResponse, PostAnalyzedFileApiV1FilesAnalyzePostData, PostAnalyzedFileApiV1FilesAnalyzePostResponse, UploadEmbeddedFileApiV1FilesNameEmbeddedPostData, UploadEmbeddedFileApiV1FilesNameEmbeddedPostResponse, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetData, DownloadEmbeddedFileApiV1FilesNameEmbeddedDatasetNameGetResponse, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData, DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteResponse, GetFileMetaApiV1FilesAnalyzeMetaNameGetData, GetFileMetaApiV1FilesAnalyzeMetaNameGetResponse, OverwritePostMetaApiV1FilesPostMetaNamePostData, OverwritePostMetaApiV1FilesPostMetaNamePostResponse, DeletePostMetaApiV1FilesPostMetaNameDeleteData, DeletePostMetaApiV1FilesPostMetaNameDeleteResponse, OverwritePreMetaApiV1FilesPreMetaNamePostData, OverwritePreMetaApiV1FilesPreMetaNamePostResponse, DeletePreMetaApiV1FilesPreMetaNameDeleteData, DeletePreMetaApiV1FilesPreMetaNameDeleteResponse, UploadFileApiV1CloudUploadPostData, UploadFileApiV1CloudUploadPostResponse, UpdateFileApiV1CloudUpdatePostData, UpdateFileApiV1CloudUpdatePostResponse, AuthenticateApiV1CloudAuthenticatePostResponse, GetCloudFilesApiV1CloudGetResponse, StartMeasurementApiV1MeasurementStartPostData, StartMeasurementApiV1MeasurementStartPostResponse, StopMeasurementApiV1MeasurementStopPostResponse, PostMetaApiV1MeasurementPostMetaPostData, PostMetaApiV1MeasurementPostMetaPostResponse, MeasurementStatusApiV1MeasurementGetResponse, ListLogsApiV1LogsGetResponse, ViewLogFileApiV1LogsViewGetData, ViewLogFileApiV1LogsViewGetResponse, DownloadLogFileApiV1LogsDownloadFileGetData, DownloadLogFileApiV1LogsDownloadFileGetResponse, DownloadLogsZipApiV1LogsAllGetData, DownloadLogsZipApiV1LogsAllGetResponse, QuerySensorsApiV1SensorGetResponse, GetMetadataFileApiV1ConfigMetaGetResponse, UploadMetadataFileApiV1ConfigMetaPostData, UploadMetadataFileApiV1ConfigMetaPostResponse, GetSensorsFileApiV1ConfigSensorsGetResponse, UploadSensorsFileApiV1ConfigSensorsPostData, UploadSensorsFileApiV1ConfigSensorsPostResponse, UploadDataspaceFileApiV1ConfigDataspacePostData, UploadDataspaceFileApiV1ConfigDataspacePostResponse, GetConfigBackupsApiV1ConfigBackupGetResponse, RestoreConfigFileApiV1ConfigRestorePutData, RestoreConfigFileApiV1ConfigRestorePutResponse } from './types.gen';
 
 /**
  * Stu
@@ -361,11 +361,16 @@ export const getFileMetaApiV1FilesAnalyzeMetaNameGet = (data: GetFileMetaApiV1Fi
 
 /**
  * Overwrite Post Meta
- * Update post metadata in measurement file
+ * Add or overwrite post metadata in measurement file
+ *
+ * This also works for files that do not have any post metadata yet, and
+ * for a `metadata.profile` that differs from whatever profile the file
+ * previously had (any picture arrays belonging to the old metadata are
+ * removed first).
  * @param data The data for the request.
  * @param data.name
  * @param data.requestBody
- * @returns unknown Metadata successfully overwritten
+ * @returns unknown Metadata successfully saved
  * @throws ApiError
  */
 export const overwritePostMetaApiV1FilesPostMetaNamePost = (data: OverwritePostMetaApiV1FilesPostMetaNamePostData): CancelablePromise<OverwritePostMetaApiV1FilesPostMetaNamePostResponse> => { return __request(OpenAPI, {
@@ -383,12 +388,37 @@ export const overwritePostMetaApiV1FilesPostMetaNamePost = (data: OverwritePostM
 }); };
 
 /**
+ * Delete Post Meta
+ * Delete post metadata from measurement file, if any exists
+ * @param data The data for the request.
+ * @param data.name
+ * @returns unknown Metadata deleted successfully
+ * @throws ApiError
+ */
+export const deletePostMetaApiV1FilesPostMetaNameDelete = (data: DeletePostMetaApiV1FilesPostMetaNameDeleteData): CancelablePromise<DeletePostMetaApiV1FilesPostMetaNameDeleteResponse> => { return __request(OpenAPI, {
+    method: 'DELETE',
+    url: '/api/v1/files/post_meta/{name}',
+    path: {
+        name: data.name
+    },
+    errors: {
+        404: 'File not found. Check your measurement directory.',
+        422: 'Validation Error'
+    }
+}); };
+
+/**
  * Overwrite Pre Meta
- * Update pre metadata in measurement file
+ * Add or overwrite pre metadata in measurement file
+ *
+ * This also works for files that do not have any pre metadata yet, and
+ * for a `metadata.profile` that differs from whatever profile the file
+ * previously had (any picture arrays belonging to the old metadata are
+ * removed first).
  * @param data The data for the request.
  * @param data.name
  * @param data.requestBody
- * @returns unknown Metadata successfully overwritten
+ * @returns unknown Metadata successfully saved
  * @throws ApiError
  */
 export const overwritePreMetaApiV1FilesPreMetaNamePost = (data: OverwritePreMetaApiV1FilesPreMetaNamePostData): CancelablePromise<OverwritePreMetaApiV1FilesPreMetaNamePostResponse> => { return __request(OpenAPI, {
@@ -399,6 +429,26 @@ export const overwritePreMetaApiV1FilesPreMetaNamePost = (data: OverwritePreMeta
     },
     body: data.requestBody,
     mediaType: 'application/json',
+    errors: {
+        404: 'File not found. Check your measurement directory.',
+        422: 'Validation Error'
+    }
+}); };
+
+/**
+ * Delete Pre Meta
+ * Delete pre metadata from measurement file, if any exists
+ * @param data The data for the request.
+ * @param data.name
+ * @returns unknown Metadata deleted successfully
+ * @throws ApiError
+ */
+export const deletePreMetaApiV1FilesPreMetaNameDelete = (data: DeletePreMetaApiV1FilesPreMetaNameDeleteData): CancelablePromise<DeletePreMetaApiV1FilesPreMetaNameDeleteResponse> => { return __request(OpenAPI, {
+    method: 'DELETE',
+    url: '/api/v1/files/pre_meta/{name}',
+    path: {
+        name: data.name
+    },
     errors: {
         404: 'File not found. Check your measurement directory.',
         422: 'Validation Error'
@@ -579,12 +629,20 @@ export const downloadLogFileApiV1LogsDownloadFileGet = (data: DownloadLogFileApi
 /**
  * Download Logs Zip
  * Download log files as zipped file
+ * @param data The data for the request.
+ * @param data.includeSystemInfo
  * @returns unknown Successful Response
  * @throws ApiError
  */
-export const downloadLogsZipApiV1LogsAllGet = (): CancelablePromise<DownloadLogsZipApiV1LogsAllGetResponse> => { return __request(OpenAPI, {
+export const downloadLogsZipApiV1LogsAllGet = (data: DownloadLogsZipApiV1LogsAllGetData = {}): CancelablePromise<DownloadLogsZipApiV1LogsAllGetResponse> => { return __request(OpenAPI, {
     method: 'GET',
-    url: '/api/v1/logs/all'
+    url: '/api/v1/logs/all',
+    query: {
+        include_system_info: data.includeSystemInfo
+    },
+    errors: {
+        422: 'Validation Error'
+    }
 }); };
 
 /**

@@ -659,6 +659,89 @@ export const $LogResponse = {
     title: 'LogResponse'
 } as const;
 
+export const $MeasuredSensor = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        sensor_type: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Sensor Type'
+        },
+        sensor_id: {
+            type: 'string',
+            title: 'Sensor Id'
+        },
+        unit: {
+            type: 'string',
+            title: 'Unit'
+        },
+        dimension: {
+            type: 'string',
+            title: 'Dimension'
+        },
+        phys_min: {
+            type: 'number',
+            title: 'Phys Min'
+        },
+        phys_max: {
+            type: 'number',
+            title: 'Phys Max'
+        },
+        volt_min: {
+            type: 'number',
+            title: 'Volt Min'
+        },
+        volt_max: {
+            type: 'number',
+            title: 'Volt Max'
+        },
+        scaling_factor: {
+            type: 'number',
+            title: 'Scaling Factor',
+            default: 1
+        },
+        offset: {
+            type: 'number',
+            title: 'Offset',
+            default: 0
+        },
+        channel_number: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Channel Number'
+        }
+    },
+    type: 'object',
+    required: ['name', 'sensor_type', 'sensor_id', 'unit', 'dimension', 'phys_min', 'phys_max', 'volt_min', 'volt_max'],
+    title: 'MeasuredSensor',
+    description: `A sensor as recorded on a specific channel in a measurement file
+
+\`Sensor\` plus the physical channel it was read from. Deliberately not a
+field on \`Sensor\` itself - \`Sensor\` is a reusable calibration
+definition, used in places where "which channel" is either meaningless
+(the flat sensor catalog) or redundant (\`PCBSensorConfiguration.channels\`,
+which is already keyed by channel number).
+
+\`channel_number\` is optional (\`None\`) rather than required so that
+files recorded before this field existed still parse - their \`/sensors\`
+table simply has no such column.`
+} as const;
+
 export const $MeasurementFileDetails = {
     properties: {
         name: {
@@ -684,10 +767,6 @@ export const $MeasurementFileDetails = {
 
 export const $MeasurementInstructionChannel = {
     properties: {
-        channel_number: {
-            type: 'integer',
-            title: 'Channel Number'
-        },
         sensor_id: {
             anyOf: [
                 {
@@ -701,7 +780,7 @@ export const $MeasurementInstructionChannel = {
         }
     },
     type: 'object',
-    required: ['channel_number', 'sensor_id'],
+    required: ['sensor_id'],
     title: 'MeasurementInstructionChannel'
 } as const;
 
@@ -783,6 +862,16 @@ export const $MeasurementInstructions_Input = {
             type: 'boolean',
             title: 'Disconnect After Measurement',
             default: false
+        },
+        sensor_configuration: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PCBSensorConfiguration'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
@@ -868,6 +957,16 @@ export const $MeasurementInstructions_Output = {
             type: 'boolean',
             title: 'Disconnect After Measurement',
             default: false
+        },
+        sensor_configuration: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PCBSensorConfiguration'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
@@ -913,6 +1012,17 @@ export const $MeasurementStatus = {
                 }
             ],
             title: 'Tool Name'
+        },
+        start_supply_voltage: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Start Supply Voltage'
         },
         instructions: {
             anyOf: [
@@ -974,6 +1084,17 @@ export const $PCBSensorConfiguration = {
             },
             type: 'object',
             title: 'Channels'
+        },
+        configuration_hash: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Configuration Hash'
         }
     },
     type: 'object',
@@ -1032,7 +1153,7 @@ export const $ParsedMetadata = {
         },
         sensors: {
             items: {
-                '$ref': '#/components/schemas/Sensor'
+                '$ref': '#/components/schemas/MeasuredSensor'
             },
             type: 'array',
             title: 'Sensors'

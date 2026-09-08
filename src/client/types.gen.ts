@@ -196,6 +196,34 @@ export type LogResponse = {
     content: string;
 };
 
+/**
+ * A sensor as recorded on a specific channel in a measurement file
+ *
+ * `Sensor` plus the physical channel it was read from. Deliberately not a
+ * field on `Sensor` itself - `Sensor` is a reusable calibration
+ * definition, used in places where "which channel" is either meaningless
+ * (the flat sensor catalog) or redundant (`PCBSensorConfiguration.channels`,
+ * which is already keyed by channel number).
+ *
+ * `channel_number` is optional (`None`) rather than required so that
+ * files recorded before this field existed still parse - their `/sensors`
+ * table simply has no such column.
+ */
+export type MeasuredSensor = {
+    name: string;
+    sensor_type: string | null;
+    sensor_id: string;
+    unit: string;
+    dimension: string;
+    phys_min: number;
+    phys_max: number;
+    volt_min: number;
+    volt_max: number;
+    scaling_factor?: number;
+    offset?: number;
+    channel_number?: number | null;
+};
+
 export type MeasurementFileDetails = {
     name: string;
     created: string;
@@ -204,7 +232,6 @@ export type MeasurementFileDetails = {
 };
 
 export type MeasurementInstructionChannel = {
-    channel_number: number;
     sensor_id: string | null;
 };
 
@@ -222,6 +249,7 @@ export type MeasurementInstructions_Input = {
     meta: Metadata | null;
     wait_for_post_meta?: boolean;
     disconnect_after_measurement?: boolean;
+    sensor_configuration?: PCBSensorConfiguration | null;
 };
 
 export type MeasurementInstructions_Output = {
@@ -238,6 +266,7 @@ export type MeasurementInstructions_Output = {
     meta: Metadata | null;
     wait_for_post_meta?: boolean;
     disconnect_after_measurement?: boolean;
+    sensor_configuration?: PCBSensorConfiguration | null;
 };
 
 export type MeasurementStatus = {
@@ -245,6 +274,7 @@ export type MeasurementStatus = {
     name?: string | null;
     start_time?: string | null;
     tool_name?: string | null;
+    start_supply_voltage?: number | null;
     instructions?: MeasurementInstructions_Output | null;
 };
 
@@ -262,6 +292,7 @@ export type PCBSensorConfiguration = {
     channels: {
         [key: string]: Sensor;
     };
+    configuration_hash?: string | null;
 };
 
 /**
@@ -282,7 +313,7 @@ export type ParsedMetadata = {
     pictures: {
         [key: string]: Array<(string)>;
     };
-    sensors: Array<Sensor>;
+    sensors: Array<MeasuredSensor>;
     embedded_files: Array<EmbeddedFileInfo>;
 };
 
@@ -486,12 +517,24 @@ export type OverwritePostMetaApiV1FilesPostMetaNamePostData = {
 
 export type OverwritePostMetaApiV1FilesPostMetaNamePostResponse = unknown;
 
+export type DeletePostMetaApiV1FilesPostMetaNameDeleteData = {
+    name: string;
+};
+
+export type DeletePostMetaApiV1FilesPostMetaNameDeleteResponse = unknown;
+
 export type OverwritePreMetaApiV1FilesPreMetaNamePostData = {
     name: string;
     requestBody: Metadata;
 };
 
 export type OverwritePreMetaApiV1FilesPreMetaNamePostResponse = unknown;
+
+export type DeletePreMetaApiV1FilesPreMetaNameDeleteData = {
+    name: string;
+};
+
+export type DeletePreMetaApiV1FilesPreMetaNameDeleteResponse = unknown;
 
 export type UploadFileApiV1CloudUploadPostData = {
     requestBody: Body_upload_file_api_v1_cloud_upload_post;
@@ -539,6 +582,10 @@ export type DownloadLogFileApiV1LogsDownloadFileGetData = {
 };
 
 export type DownloadLogFileApiV1LogsDownloadFileGetResponse = unknown;
+
+export type DownloadLogsZipApiV1LogsAllGetData = {
+    includeSystemInfo?: boolean;
+};
 
 export type DownloadLogsZipApiV1LogsAllGetResponse = unknown;
 
@@ -990,7 +1037,27 @@ export type $OpenApiTs = {
             req: OverwritePostMetaApiV1FilesPostMetaNamePostData;
             res: {
                 /**
-                 * Metadata successfully overwritten
+                 * Metadata successfully saved
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        delete: {
+            req: DeletePostMetaApiV1FilesPostMetaNameDeleteData;
+            res: {
+                /**
+                 * Metadata deleted successfully
                  */
                 200: unknown;
                 /**
@@ -1012,7 +1079,27 @@ export type $OpenApiTs = {
             req: OverwritePreMetaApiV1FilesPreMetaNamePostData;
             res: {
                 /**
-                 * Metadata successfully overwritten
+                 * Metadata successfully saved
+                 */
+                200: unknown;
+                /**
+                 * File not found. Check your measurement directory.
+                 */
+                404: {
+                    detail: string;
+                    status_code: number;
+                };
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+        delete: {
+            req: DeletePreMetaApiV1FilesPreMetaNameDeleteData;
+            res: {
+                /**
+                 * Metadata deleted successfully
                  */
                 200: unknown;
                 /**
@@ -1185,11 +1272,16 @@ export type $OpenApiTs = {
     };
     '/api/v1/logs/all': {
         get: {
+            req: DownloadLogsZipApiV1LogsAllGetData;
             res: {
                 /**
                  * Successful Response
                  */
                 200: unknown;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
             };
         };
     };

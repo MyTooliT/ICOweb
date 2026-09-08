@@ -76,10 +76,10 @@ function wrapUpdate() {
     maxNumberOfPoints.value,
     ift_storage,
     {
-      first: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)) ?? 'First Channel',
-      second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)) ?? 'Second Channel',
-      third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)) ?? 'Third Channel',
-      ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels[mStore.IFTChannel]))})`
+      first: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.first)) ?? 'First Channel',
+      second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.second)) ?? 'Second Channel',
+      third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.third)) ?? 'Third Channel',
+      ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels[mStore.IFTChannel]))})`
     },
     channelUnits.value,
     3175,
@@ -114,9 +114,9 @@ const chartYMinPerUnit = ref<{[key: string] : number}>({})
 const chartYMaxPerUnit = ref<{[key: string] : number}>({})
 const channelUnits = computed(() => {
   return {
-    first: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.first)?.sensor.sensorType.physicalUnit ?? '',
-    second: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.second)?.sensor.sensorType.physicalUnit ?? '',
-    third: hwStore.activeHolder?.sensors.find(sens => sens.channel === mStore.selectedChannels.third)?.sensor.sensorType.physicalUnit ?? '',
+    first: hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.first)?.sensor.sensorType.physicalUnit ?? '',
+    second: hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.second)?.sensor.sensorType.physicalUnit ?? '',
+    third: hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.third)?.sensor.sensorType.physicalUnit ?? '',
   }
 })
 const config = useYamlConfig()
@@ -145,16 +145,13 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
   await startMeasurement({
     name: metaEnabled.value ? assembledFilename.value : null,
     first: {
-      channel_number: mStore.activeChannels.first ?  mStore.selectedChannels.first : 0,
-      sensor_id: mStore.activeChannels.first ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.first)?.sensor.sensor_id ?? null : null
+      sensor_id: mStore.activeChannels.first ? mStore.selectedChannels.first : null
     },
     second: {
-      channel_number: mStore.activeChannels.second ? mStore.selectedChannels.second : 0,
-      sensor_id: mStore.activeChannels.second ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.second)?.sensor.sensor_id ?? null : null
+      sensor_id: mStore.activeChannels.second ? mStore.selectedChannels.second : null
     },
     third: {
-      channel_number: mStore.activeChannels.third ? mStore.selectedChannels.third : 0,
-      sensor_id: mStore.activeChannels.third ? hwStore.activeHolder?.sensors.find(sensor => sensor.channel === mStore.selectedChannels.third)?.sensor.sensor_id ?? null : null
+      sensor_id: mStore.activeChannels.third ? mStore.selectedChannels.third : null
     },
     mac_address: hwStore.activeSTH?.getMacAddress(),
     time: mStore.continuous ? null : mStore.acquisitionTime,
@@ -246,7 +243,7 @@ const canMeasure = computed<boolean>(() => {
       hwStore.hasSTH &&
       hwStore.hasHolder &&
       (mStore.acquisitionTime > 0 || mStore.continuous) &&
-      mStore.selectedChannels.first > 0 &&
+      mStore.selectedChannels.first !== null &&
       (metaEnabled.value ? mStore.preMetaValid : true)
   )
 })
@@ -256,12 +253,12 @@ const scales = ref<Record<string, Chart.ChartYAxe>>(computeScales())
 function computeScales(): Record<string, Chart.ChartYAxe> {
   const scl: Record<string, Chart.ChartYAxe> = {}
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  const relevantChannelNumbers = Object.entries(mStore.selectedChannels).filter(([channel_key, _]) => {
+  const relevantSensorIds = Object.entries(mStore.selectedChannels).filter(([channel_key, _]) => {
     return mStore.activeChannels[channel_key as typeof measurementChannels[number]]
-  }).map(([_, channel_nr]) => channel_nr)
+  }).map(([_, sensor_id]) => sensor_id)
   /* eslint-enable @typescript-eslint/no-unused-vars */
-  const sensorsForChannels = relevantChannelNumbers.map(channelNumber =>
-      hwStore.activeHolder?.sensors.find(sensor => sensor.channel === channelNumber)
+  const sensorsForChannels = relevantSensorIds.map(sensorId =>
+      hwStore.activeHolder?.sensors.find(sensor => sensor.sensor.sensor_id === sensorId)
   )
   const uniqueDimensionChannels: Array<SensorType> = []
   sensorsForChannels.forEach(sensor => {
@@ -301,9 +298,9 @@ onMounted(async () => {
         third: false
       }
       mStore.selectedChannels = {
-        first: hwStore.activeHolder.sensors[0].channel,
-        second: 0,
-        third: 0
+        first: hwStore.activeHolder.sensors[0].sensor.sensor_id,
+        second: null,
+        third: null
       }
     }
   }
@@ -414,7 +411,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 <Select
                   v-model="mStore.selectedChannels[slot]"
                   :options="hwStore.activeHolder?.sensors ?? []"
-                  :option-value="(sens: TAssignedSensor) => sens.channel"
+                  :option-value="(sens: TAssignedSensor) => sens.sensor.sensor_id"
                   :option-label="channelSensorRepr"
                   :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
                   placeholder="No Selection"

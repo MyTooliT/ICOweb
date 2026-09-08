@@ -25,7 +25,7 @@ export type TWebSocketState = 'open' | 'closed' | 'connecting'
 export const measurementChannels = ['first', 'second', 'third'] as const
 
 export type TChannelMap = {
-  [K in typeof measurementChannels[number]]: number
+  [K in typeof measurementChannels[number]]: string | null
 }
 
 export type ActiveChannels = {
@@ -76,9 +76,9 @@ export const useMeasurementStore = defineStore('measurement', () => {
   }
 
   const selectedChannels = ref<TChannelMap>({
-    first: 1,
-    second: 0,
-    third: 0
+    first: null,
+    second: null,
+    third: null
   })
   const activeChannels = ref<ActiveChannels>({
     first: true,
