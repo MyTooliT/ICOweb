@@ -232,7 +232,7 @@ export type MeasurementFileDetails = {
 };
 
 export type MeasurementInstructionChannel = {
-    sensor_id: string | null;
+    sensor_id?: string | null;
 };
 
 export type MeasurementInstructions_Input = {
@@ -245,8 +245,8 @@ export type MeasurementInstructions_Input = {
     ift_requested: boolean;
     ift_channel: string;
     ift_window_width: number;
-    adc: ADCValues | null;
-    meta: Metadata | null;
+    adc?: ADCValues | null;
+    meta?: Metadata | null;
     wait_for_post_meta?: boolean;
     disconnect_after_measurement?: boolean;
     sensor_configuration?: PCBSensorConfiguration | null;
@@ -262,8 +262,8 @@ export type MeasurementInstructions_Output = {
     ift_requested: boolean;
     ift_channel: string;
     ift_window_width: number;
-    adc: ADCValues | null;
-    meta: Metadata | null;
+    adc?: ADCValues | null;
+    meta?: Metadata | null;
     wait_for_post_meta?: boolean;
     disconnect_after_measurement?: boolean;
     sensor_configuration?: PCBSensorConfiguration | null;
@@ -292,7 +292,6 @@ export type PCBSensorConfiguration = {
     channels: {
         [key: string]: Sensor;
     };
-    configuration_hash?: string | null;
 };
 
 /**
@@ -557,6 +556,12 @@ export type StartMeasurementApiV1MeasurementStartPostData = {
 };
 
 export type StartMeasurementApiV1MeasurementStartPostResponse = ControlResponse;
+
+export type ExecuteMeasurementApiV1MeasurementExecutePostData = {
+    requestBody: MeasurementInstructions_Input;
+};
+
+export type ExecuteMeasurementApiV1MeasurementExecutePostResponse = ControlResponse;
 
 export type StopMeasurementApiV1MeasurementStopPostResponse = unknown;
 
@@ -1176,6 +1181,21 @@ export type $OpenApiTs = {
     '/api/v1/measurement/start': {
         post: {
             req: StartMeasurementApiV1MeasurementStartPostData;
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ControlResponse;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/api/v1/measurement/execute': {
+        post: {
+            req: ExecuteMeasurementApiV1MeasurementExecutePostData;
             res: {
                 /**
                  * Successful Response

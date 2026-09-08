@@ -780,7 +780,6 @@ export const $MeasurementInstructionChannel = {
         }
     },
     type: 'object',
-    required: ['sensor_id'],
     title: 'MeasurementInstructionChannel'
 } as const;
 
@@ -875,7 +874,7 @@ export const $MeasurementInstructions_Input = {
         }
     },
     type: 'object',
-    required: ['name', 'mac_address', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
+    required: ['name', 'mac_address', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width'],
     title: 'MeasurementInstructions'
 } as const;
 
@@ -970,7 +969,7 @@ export const $MeasurementInstructions_Output = {
         }
     },
     type: 'object',
-    required: ['name', 'mac_address', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width', 'adc', 'meta'],
+    required: ['name', 'mac_address', 'time', 'first', 'second', 'third', 'ift_requested', 'ift_channel', 'ift_window_width'],
     title: 'MeasurementInstructions'
 } as const;
 
@@ -1084,17 +1083,6 @@ export const $PCBSensorConfiguration = {
             },
             type: 'object',
             title: 'Channels'
-        },
-        configuration_hash: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Configuration Hash'
         }
     },
     type: 'object',
