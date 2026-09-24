@@ -565,12 +565,6 @@ export type ExecuteMeasurementApiV1MeasurementExecutePostResponse = ControlRespo
 
 export type StopMeasurementApiV1MeasurementStopPostResponse = unknown;
 
-export type PostMetaApiV1MeasurementPostMetaPostData = {
-    requestBody: Metadata;
-};
-
-export type PostMetaApiV1MeasurementPostMetaPostResponse = unknown;
-
 export type MeasurementStatusApiV1MeasurementGetResponse = MeasurementStatus;
 
 export type ListLogsApiV1LogsGetResponse = LogListResponse;
@@ -1222,21 +1216,6 @@ export type $OpenApiTs = {
                     detail: string;
                     status_code: number;
                 };
-            };
-        };
-    };
-    '/api/v1/measurement/post_meta': {
-        post: {
-            req: PostMetaApiV1MeasurementPostMetaPostData;
-            res: {
-                /**
-                 * Successful Response
-                 */
-                200: unknown;
-                /**
-                 * Validation Error
-                 */
-                422: HTTPValidationError;
             };
         };
     };

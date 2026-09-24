@@ -284,14 +284,6 @@ export async function sendMeasurementStopFlag(): Promise<void> {
   })
 }
 
-export async function sendMeasurementPostMeta(meta: Metadata): Promise<void> {
-  return new Promise((resolve, reject) => {
-    post<Metadata, undefined>('measurement/post_meta', meta)
-        .then(resolve)
-        .catch(reject)
-  })
-}
-
 export async function sendPreMetaOverride(name: string, meta: Metadata): Promise<void> {
   return new Promise((resolve, reject) => {
     post<Metadata, undefined>(`files/pre_meta/${name}`, meta)

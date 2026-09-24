@@ -126,6 +126,10 @@ export const useMeasurementStore = defineStore('measurement', () => {
     parameters: {}
   })
   const postMetaValid = ref<boolean>(false)
+  // File name (including extension) of the last started measurement and
+  // whether the user still has to be asked for its post-measurement metadata
+  const lastMeasurementFile = ref<string | null>(null)
+  const postMetaPending = ref<boolean>(false)
 
     return {
     continuous,
@@ -157,6 +161,8 @@ export const useMeasurementStore = defineStore('measurement', () => {
     preMetaValid,
     postMetaForm,
     postMetaValid,
+    lastMeasurementFile,
+    postMetaPending,
     disconnectAfterMeasurement
   }
 }, {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {sendMeasurementPostMeta, sendMeasurementStopFlag} from '@/api/icoapi.ts';
+import {sendMeasurementStopFlag, sendPostMetaOverride} from '@/api/icoapi.ts';
 import { startMeasurement } from '@/api/icoapi.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/charts/StreamingChart.vue';
@@ -142,7 +142,8 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ws.value?.close()
   }
   await config.reload()
-  await startMeasurement({
+  const waitForPostMeta = metaEnabled.value && hasPostMeta.value
+  const response = await startMeasurement({
     name: metaEnabled.value ? assembledFilename.value : null,
     first: {
       sensor_id: mStore.activeChannels.first ? mStore.selectedChannels.first : null
@@ -160,9 +161,13 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     ift_window_width: mStore.windowWidth,
     adc: adcStore.values,
     meta: metaEnabled.value ? mStore.preMetaForm : null,
-    wait_for_post_meta: metaEnabled.value && hasPostMeta.value,
+    wait_for_post_meta: waitForPostMeta,
     disconnect_after_measurement: mStore.disconnectAfterMeasurement
   })
+  // The measurement file only exists on the server; remember its name to be
+  // able to add post-meta once the measurement has stopped
+  mStore.lastMeasurementFile = response.data.name ? `${response.data.name}.hdf5` : null
+  mStore.postMetaPending = waitForPostMeta && mStore.lastMeasurementFile !== null
   //scales.value = computeScales()
   if(mStore.autostream) {
     show()
@@ -204,9 +209,24 @@ async function afterMeasurementCleanup() {
 }
 
 async function sendPostMeta() {
-  await sendMeasurementPostMeta(mStore.postMetaForm)
+  if(!mStore.lastMeasurementFile) {
+    throw new Error('Name of measurement file is unknown')
+  }
+  // On failure the error is shown by the API layer and the dialog stays open
+  await sendPostMetaOverride(mStore.lastMeasurementFile, mStore.postMetaForm)
+  mStore.postMetaPending = false
+  gStore.postMetaModalVisible = false
   await afterMeasurementCleanup()
 }
+
+// The API only reports the measurement as stopped after the measurement file
+// was closed, so post-meta can be added right away. A closed WebSocket also
+// resets `running`, which does not mean that the measurement has stopped.
+watch(() => gStore.systemState.running, (running, wasRunning) => {
+  if(wasRunning && !running && gStore.systemState.reachable && mStore.postMetaPending) {
+    gStore.postMetaModalVisible = true
+  }
+})
 
 const show = () => {
   mStore.resetChartBounds();
@@ -317,10 +337,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
     <PostMetaModal
       :loading="postMetaLoading"
       @send="submitPostMeta"
-      @canceled="()=> {
-        submitPostMeta();
-        gStore.postMetaModalVisible = false;
-      }"
+      @canceled="submitPostMeta"
     />
     <SplitLayout class="w-stretch">
       <TextBlock

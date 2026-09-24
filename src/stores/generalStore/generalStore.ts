@@ -24,17 +24,7 @@ export const useGeneralStore = defineStore('general', () => {
     }
 
     const systemState = useSystemState((event: any) => {
-        switch(event.message) {
-            case 'post_meta_request':
-                postMetaModalVisible.value = true
-                break;
-            case 'post_meta_completed':
-                postMetaModalVisible.value = false
-                break;
-            default:
-                console.error(`Unknown event: ${event.data}`)
-                break;
-        }
+        console.error(`Unknown event: ${event.message}`)
     })
 
     /*
