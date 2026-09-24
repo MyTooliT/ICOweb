@@ -76,7 +76,10 @@ router.afterEach(async (_to, _from, _failure) => {
     store.setLoaderInfoMessage('Connecting to system...')
     store.systemState.connectWebSocket()
   }
-  await store.systemState.checkState()
+  // Do not wait for the response: navigation must not depend on how fast the
+  // API answers. The state is updated as soon as the response arrives and is
+  // kept current by the WebSocket in the meantime.
+  void store.systemState.checkState()
   store.setLoaderInfoMessage('Checking system state...')
 
   if(_to.name === 'Home') {

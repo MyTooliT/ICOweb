@@ -1,5 +1,5 @@
-import { getWSLink } from '@/api/icoapi.ts';
-import {Feature, MeasurementStatus} from '@/client';
+import { getSystemState, getWSLink } from '@/api/icoapi.ts';
+import {Feature, MeasurementStatus, SystemStateModel} from '@/client';
 import {computed, ref} from 'vue';
 
 export function useSystemState(
@@ -20,10 +20,20 @@ export function useSystemState(
   let ws: WebSocket | null = null;
   let intervalID = 0;
   let retryTimer: number | null = null;
+  // Number of state updates pushed via WebSocket so far
+  let pushedStateCount = 0;
 
   const hasWS = computed<boolean>(() => {
     return ws !== null;
   })
+
+  function applyState(state: SystemStateModel) {
+    reachable.value = true;
+    canReady.value = state.can_ready;
+    running.value = state.measurement_status.running;
+    measurementStatus.value = state.measurement_status;
+    cloud.value = state.cloud
+  }
 
   function connectWebSocket(retries = 10, delay = 1000) {
     try {
@@ -31,37 +41,15 @@ export function useSystemState(
 
       ws.onopen = () => {
         console.log('[WS] Connected');
-        try {
-          ws?.send(JSON.stringify({
-            message: 'local_storage_state',
-            data: {
-              hardware: JSON.parse(localStorage.getItem('hardware') ?? '{}'),
-              measurement: JSON.parse(localStorage.getItem('measurement') ?? '{}'),
-            }
-          }))
-        } catch(e) {
-
-        }
       };
 
       ws.onmessage = (event: any) => {
         try {
           const parsed = JSON.parse(event.data)
           switch (parsed.message) {
-            case 'local_storage_state':
-              // This could one day sync local state between clients
-              /*const saved_storage = JSON.parse(parsed.data)
-              Object.keys(saved_storage).forEach((key) => {
-                localStorage.setItem(key, saved_storage[key])
-              })*/
-              break;
-
             case 'state':
-              reachable.value = true;
-              canReady.value = parsed.data.can_ready;
-              running.value = parsed.data.measurement_status.running;
-              measurementStatus.value = parsed.data.measurement_status;
-              cloud.value = parsed.data.cloud
+              pushedStateCount++;
+              applyState(parsed.data);
               break;
 
             default:
@@ -104,11 +92,15 @@ export function useSystemState(
   }
 
   async function checkState(): Promise<void> {
+    const pushedBefore = pushedStateCount;
     try {
-      ws?.send(JSON.stringify({
-        message: 'get_state'
-      }));
-      reachable.value = true;
+      const state = await getSystemState();
+      if (pushedBefore === pushedStateCount) {
+        applyState(state);
+      } else {
+        // A more recent state was pushed while waiting for the response
+        reachable.value = true;
+      }
     } catch (e) {
       reachable.value = false;
       canReady.value = false;

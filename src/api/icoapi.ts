@@ -85,9 +85,13 @@ export async function delay(): Promise<any> {
   })
 }
 
+// The state is requested in the background, so failed requests must not show
+// an error message (e.g. when the API is not reachable yet).
+const { get: getQuiet } = useAPI(getAPILink())
+
 export async function getSystemState(): Promise<SystemStateModel> {
   return new Promise((resolve, reject) => {
-    get<SystemStateModel>('state').then(resolve).catch(reject)
+    getQuiet<SystemStateModel>('state').then(resolve).catch(reject)
   })
 }
 
