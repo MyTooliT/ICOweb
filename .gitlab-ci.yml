@@ -19,6 +19,9 @@ deploy-revpi-tt:
 
 # DinD (Docker-in-Docker) settings
 variables:
+  # src/base is the ICOClientBase submodule. Without this the build fails on
+  # unresolved @base/... imports.
+  GIT_SUBMODULE_STRATEGY: recursive
   DOCKER_TLS_CERTDIR: ""             # disable TLS for DinD (simplifies setup)
   IMAGE_LATEST: "$CI_REGISTRY_IMAGE:latest"
   IMAGE_SHA: "$CI_REGISTRY_IMAGE:${CI_COMMIT_SHORT_SHA}"

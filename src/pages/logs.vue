@@ -3,7 +3,7 @@ import { computed, ref, onMounted } from 'vue'
 import Button from 'primevue/button';
 import ToggleSwitch from 'primevue/toggleswitch';
 import TextBlock from '@/components/misc/TextBlock.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DefaultLayout from '@base/layout/DefaultLayout.vue';
 import { LogListResponse } from '@/client';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {getAPILink, getLogs} from '@/api/icoapi.ts';

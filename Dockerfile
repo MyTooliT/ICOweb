@@ -10,7 +10,9 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code. src/base is the ICOClientBase submodule: it must be checked
+# out in the build context (`git submodule update --init --recursive`), otherwise
+# the build fails on unresolved @base/... imports.
 COPY . .
 COPY docker.env .env
 

@@ -21,6 +21,8 @@ export default ({ mode }: { mode: string }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        // ICOClientBase, checked out as a submodule - see src/base/README.md.
+        '@base': path.resolve(__dirname, './src/base'),
         '!@': path.resolve(__dirname, './tests')
       },
     },
