@@ -16,6 +16,9 @@ import Select from 'primevue/select';
 
 const ADCStore = useADCStore()
 const hwStore = useHardwareStore()
+
+const referenceVoltageValue = (voltage: TReferenceOptions): number =>
+  referenceVoltagesMap[voltage]
 </script>
 
 <template>
@@ -98,9 +101,7 @@ const hwStore = useHardwareStore()
             <Select
               v-model="ADCStore.values.reference_voltage"
               :options="referenceVoltageOptions"
-              :option-value="
-                (voltage: TReferenceOptions) => referenceVoltagesMap[voltage]
-              "
+              :option-value="referenceVoltageValue"
               placeholder="Please fetch values"
               :disabled="!ADCStore.values.reference_voltage"
               fluid
