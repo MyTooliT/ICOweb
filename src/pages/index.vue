@@ -6,8 +6,11 @@ import DefaultLayout from '@base/layout/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import {useMessageBus} from '@/message';
+import CANConnectionPanel from '@/components/misc/CANConnectionPanel.vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 
 const store = useHardwareStore()
+const generalStore = useGeneralStore()
 const m = useMessageBus()
 
 const { loading: STULoading, call: STUReload } = useLoadingHandler(
@@ -37,7 +40,14 @@ async function STHClickHandler() {
 
 <template>
   <DefaultLayout class="flex flex-col gap-8">
-    <div>
+    <CANConnectionPanel />
+    <div
+      v-if="generalStore.systemState.canStatus !== 'CONNECTED'"
+      class="text-sm"
+    >
+      Connect to a CAN network to manage STU and STH devices.
+    </div>
+    <div v-if="generalStore.systemState.canStatus === 'CONNECTED'">
       <TextBlock
         heading="Stationary Transceiver Units"
         subheading="Manage the STU all the connections are made from."
@@ -48,7 +58,10 @@ async function STHClickHandler() {
       />
       <STUDeviceTable />
     </div>
-    <div class="mt-8">
+    <div
+      v-if="generalStore.systemState.canStatus === 'CONNECTED'"
+      class="mt-8"
+    >
       <TextBlock
         heading="Sensory Tool Holders"
         subheading="

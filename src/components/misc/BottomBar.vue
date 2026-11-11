@@ -19,10 +19,12 @@ function clearCache() {
 const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
 
 const state = computed<State>(() => {
-  if (store.systemState.running) return State.ACTIVE
-  if (store.systemState.canReady) return State.IDLE
-  if (store.systemState.reachable) return State.WARNING
-  return State.ERROR
+  const system = store.systemState
+  if (!system.reachable) return State.ERROR
+  if (system.canStatus === 'ERROR') return State.ERROR
+  if (system.running) return State.ACTIVE
+  if (system.canConnected) return State.IDLE
+  return State.WARNING
 })
 
 const stateClassMap: Record<State, string> = {
@@ -32,16 +34,40 @@ const stateClassMap: Record<State, string> = {
   [State.ACTIVE]: 'bg-secondary text-on-secondary'
 }
 
-const statusInfos = computed(() => [
-  {
-    name: 'API',
-    status: store.systemState.reachable ? 'reachable' : 'disconnected'
-  },
-  {
-    name: 'CAN',
-    status: store.systemState.canReady ? 'established' : 'disconnected'
+const canStatusText = computed<string>(() => {
+  const system = store.systemState
+  switch (system.canStatus) {
+    case 'CONNECTED': {
+      const network = system.canSelected
+      return network ? `connected (${network.interface}:${network.channel})` : 'connected'
+    }
+    case 'CONNECTING': return 'connecting...'
+    case 'NETWORK_FOUND': return 'network found'
+    case 'ERROR': return 'error'
+    default: return 'no network'
   }
-])
+})
+
+const statusInfos = computed(() => {
+  const system = store.systemState
+  const infos = [
+    {
+      name: 'API',
+      status: system.reachable ? 'reachable' : 'disconnected'
+    },
+    {
+      name: 'CAN',
+      status: canStatusText.value
+    }
+  ]
+  if (system.canStatus === 'CONNECTED') {
+    infos.push({
+      name: 'STU',
+      status: system.stuConnected ? 'responding' : 'not responding'
+    })
+  }
+  return infos
+})
 </script>
 
 <template>
@@ -60,11 +86,11 @@ const statusInfos = computed(() => [
           @click="clearCache()" />
         <Button
           v-if="!store.systemState.running"
-          label="Reset CAN Network"
+          label="Reconnect CAN"
           size="small"
           link
           :loading="loading"
-          :disabled="loading"
+          :disabled="loading || store.systemState.canStatus !== 'CONNECTED'"
           class="!text-inherit"
           @click="resetHandle" />
       </div>

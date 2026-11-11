@@ -407,8 +407,37 @@ export type SupplyVoltageResponseModel = {
 /**
  * Data model for API state
  */
+/**
+ * Status of the CAN network connection
+ */
+export type CANStatus = 'NO_NETWORK' | 'NETWORK_FOUND' | 'CONNECTING' | 'CONNECTED' | 'ERROR';
+
+/**
+ * CAN network (interface and channel) that can be used by the API
+ */
+export type CANNetwork = {
+    interface: string;
+    channel: string;
+    bitrate?: (number | null);
+};
+
+/**
+ * Information about CAN networks and the current connection
+ */
+export type CANNetworksModel = {
+    status: CANStatus;
+    networks: Array<CANNetwork>;
+    selected?: (CANNetwork | null);
+    error?: (string | null);
+};
+
 export type SystemStateModel = {
-    can_ready: boolean;
+    can_network_found: boolean;
+    stu_connected: boolean;
+    can_status: CANStatus;
+    can_networks: Array<CANNetwork>;
+    can_selected?: (CANNetwork | null);
+    can_error?: (string | null);
     disk_capacity: DiskCapacity;
     measurement_status: MeasurementStatus;
     cloud: Feature;

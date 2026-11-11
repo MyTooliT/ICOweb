@@ -1,14 +1,26 @@
 <script setup lang="ts">
 import BottomBar from '@/components/misc/BottomBar.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useDisable } from '@/utils/useDisable.ts';
 import BaseWrapper from '@base/BaseWrapper.vue';
 import Toast from 'primevue/toast';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import logo from '@/theme/logo.png';
 import extraLogo from '@/theme/extra.png';
 
 const store = useGeneralStore()
+const hardwareStore = useHardwareStore()
+
+// Devices are only valid for the CAN network they were found on
+watch(() => store.systemState.canStatus, (status, previous) => {
+  if (status === 'CONNECTED') {
+    void hardwareStore.updateSTUDeviceList()
+  } else if (previous === 'CONNECTED') {
+    hardwareStore.STUDeviceList = []
+    hardwareStore.clearSTHDeviceList()
+  }
+})
 
 const navLogoExtra = import.meta.env.VITE_APPLICATION_THEME_EXTRALOGO === 'true'
   ? extraLogo
