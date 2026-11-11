@@ -356,6 +356,16 @@
   .min-h-full {
     min-height: 100%;
   }
+  .w-fill {
+    width: stretch;
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
+  .w-stretch {
+    width: stretch;
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
   .\!w-min {
     width: min-content !important;
   }
@@ -374,17 +384,11 @@
   .w-24 {
     width: calc(var(--spacing) * 24);
   }
-  .w-fill {
-    width: --webkit-fill-available;
-  }
   .w-fit {
     width: fit-content;
   }
   .w-full {
     width: 100%;
-  }
-  .w-stretch {
-    width: stretch;
   }
   .max-w-16 {
     max-width: calc(var(--spacing) * 16);
