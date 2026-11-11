@@ -1132,6 +1132,11 @@
     }
   }
 }
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    border-color: #e5e7eb;
+  }
+}
 @keyframes enter {
   from {
     opacity: var(--p-enter-opacity, 1);

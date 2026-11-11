@@ -1,2 +1,17 @@
 @import 'tailwindcss';
 @config '../../../tailwind.config.js';
+
+/*
+ * Tailwind v4 changed the default border color from gray-200 to currentColor.
+ * Restore the v3 default so bare `border` utilities (e.g. on accordions) keep
+ * their light outline. See https://tailwindcss.com/docs/upgrade-guide#default-border-color
+ */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #e5e7eb;
+  }
+}
