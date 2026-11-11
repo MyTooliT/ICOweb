@@ -1,48 +1,76 @@
 <script setup lang="ts">
-// eslint-disable-next-line max-len
 import BottomBar from '@/components/misc/BottomBar.vue';
-import ThemeProvider from '@/components/misc/ThemeProvider.vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
-import ProgressSpinner from 'primevue/progressspinner';
+import { useDisable } from '@/utils/useDisable.ts';
+import BaseWrapper from '@base/BaseWrapper.vue';
 import Toast from 'primevue/toast';
-// eslint-disable-next-line max-len
-import NavigationButtons from '@/components/controls/NavigationButtons.vue';
-import NavigationExtras from '@/components/controls/NavigationExtras.vue';
+import { computed } from 'vue';
+import logo from '@/theme/logo.png';
+import extraLogo from '@/theme/extra.png';
 
 const store = useGeneralStore()
+
+const navLogoExtra = import.meta.env.VITE_APPLICATION_THEME_EXTRALOGO === 'true'
+  ? extraLogo
+  : undefined
+
+const navItems = computed(() => [{
+  name: 'Home',
+  to: '/',
+  iconClass: 'pi pi-wrench',
+  text: 'Devices',
+  disabled: store.systemState.running
+}, {
+  name: 'Measure',
+  to: '/measure',
+  iconClass: 'pi pi-chart-bar',
+  text: 'Measure'
+}, {
+  name: 'Files',
+  to: '/files',
+  iconClass: 'pi pi-folder',
+  text: 'Files'
+}, {
+  name: 'Analyze',
+  to: `/analyze${store.fileQuery}`,
+  iconClass: 'pi pi-search-plus',
+  text: 'Analyze'
+}, {
+  name: 'Config',
+  to: '/config',
+  iconClass: 'pi pi-cog',
+  text: 'Config'
+}, {
+  name: 'Logs',
+  to: '/logs',
+  iconClass: 'pi pi-file-word',
+  text: 'Logs'
+}, {
+  name: 'Dataspace',
+  to: '/',
+  iconClass: 'pi pi-box',
+  text: 'Dataspace',
+  disabled: true
+}].filter(item => useDisable().pageEnabled(item.name)))
 </script>
 
 <template>
-  <ThemeProvider>
-    <div class="flex flex-row h-dvh w-dvw bg-surface overflow-hidden">
-      <nav class="bg-surface-container flex flex-col z-50">
-        <NavigationButtons />
-        <NavigationExtras />
-      </nav>
-      <div class="flex flex-col w-full relative">
-        <div
-          v-if="store.globalLoader"
-          class="
-            absolute w-full [height:calc(100%-39px)] flex flex-col gap-3
-            justify-center items-center z-40 backdrop-blur">
-          <ProgressSpinner />
-          <h4> {{ store.getLoaderInfoMessage }} </h4>
-        </div>
-        <div class="w-full min-h-full overflow-y-scroll overflow-x-auto">
-          <router-view />
-        </div>
-        <BottomBar />
-      </div>
+  <BaseWrapper
+    :theme-class="store.getActiveTheme"
+    :nav-items="navItems"
+    :nav-logo="logo"
+    nav-logo-alt="Logo"
+    :nav-extra-logo="navLogoExtra"
+    nav-extra-logo-alt="Extra Logo for ICOweb client"
+    :show-loader="store.globalLoader"
+    :loader-message="store.getLoaderInfoMessage"
+  >
+    <div class="w-full h-dvh overflow-y-scroll overflow-x-auto">
+      <router-view />
     </div>
-    <Toast group="default" />
-  </ThemeProvider>
+    <template #bottom>
+      <BottomBar />
+    </template>
+  </BaseWrapper>
+  <Toast group="default" />
 </template>
-
-<style>
-circle {
-  --p-progressspinner-color-1: var(--md-sys-color-primary) !important;
-  --p-progressspinner-color-2: var(--md-sys-color-primary) !important;
-  --p-progressspinner-color-3: var(--md-sys-color-primary) !important;
-  --p-progressspinner-color-4: var(--md-sys-color-primary) !important;
-}
-</style>

@@ -2,10 +2,9 @@
 import { resetCAN } from '@/api/icoapi.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
+import BaseBottomBar, { State } from '@base/components/bottom/BottomBar.vue';
 import Button from 'primevue/button';
-import {
-  onMounted
-} from 'vue';
+import { computed, onMounted } from 'vue';
 
 const store = useGeneralStore();
 
@@ -18,27 +17,40 @@ function clearCache() {
 }
 
 const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
+
+const state = computed<State>(() => {
+  if (store.systemState.running) return State.ACTIVE
+  if (store.systemState.canReady) return State.IDLE
+  if (store.systemState.reachable) return State.WARNING
+  return State.ERROR
+})
+
+const stateClassMap: Record<State, string> = {
+  [State.ERROR]: 'bg-error-container text-on-error-container',
+  [State.WARNING]: 'bg-primary text-on-primary',
+  [State.IDLE]: 'bg-primary-container text-on-primary-container',
+  [State.ACTIVE]: 'bg-secondary text-on-secondary'
+}
+
+const statusInfos = computed(() => [
+  {
+    name: 'API',
+    status: store.systemState.reachable ? 'reachable' : 'disconnected'
+  },
+  {
+    name: 'CAN',
+    status: store.systemState.canReady ? 'established' : 'disconnected'
+  }
+])
 </script>
 
 <template>
-  <div class="w-full absolute bottom-0 left-0 ">
-    <div
-      :data-api="store.systemState.reachable"
-      :data-can="store.systemState.canReady"
-      :data-running="store.systemState.running"
-      class="
-        w-full pr-6 pb-1 text-right
-        flex flex-row justify-between items-center
-        bg-error-container text-on-error-container
-        data-[api~=false]:bg-error-container
-        data-[api~=false]:text-on-error-container
-        data-[api~=true]:data-[can~=false]:bg-primary
-        data-[api~=true]:data-[can~=false]:text-on-primary
-        data-[can~=true]:bg-primary-container
-        data-[can~=true]:text-on-primary-container
-        data-[running~=true]:bg-secondary
-        data-[running~=true]:text-on-secondary"
-    >
+  <BaseBottomBar
+    :state="state"
+    :state-class-map="stateClassMap"
+    :status-infos="statusInfos"
+  >
+    <template #left>
       <div class="bg-inherit text-inherit">
         <Button
           label="Clear Cache"
@@ -56,15 +68,11 @@ const { loading, call: resetHandle } = useLoadingHandler(resetCAN)
           class="!text-inherit"
           @click="resetHandle" />
       </div>
-      <div
-        v-if="store.systemState.running"
-        class="text-sm h-min flex self-center">
-        Ongoing Measurement
-      </div>
-      <div class="text-sm h-min flex self-center text-inherit">
-        API {{ store.systemState.reachable ? 'reachable' : 'disconnected' }} |
-        CAN {{ store.systemState.canReady ? 'established' : 'disconnected' }}
-      </div>
+    </template>
+    <div
+      v-if="store.systemState.running"
+      class="text-sm h-min flex self-center">
+      Ongoing Measurement
     </div>
-  </div>
+  </BaseBottomBar>
 </template>

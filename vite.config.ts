@@ -21,6 +21,7 @@ export default ({ mode }: { mode: string }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        '@base': path.resolve(__dirname, './src/base'),
         '!@': path.resolve(__dirname, './tests')
       },
     },

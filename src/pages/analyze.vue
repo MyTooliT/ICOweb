@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import StaticChart from '@/components/charts/StaticChart.vue';
-import TextBlock from '@/components/misc/TextBlock.vue';
+import TextBlock from '@base/components/TextBlock.vue';
 import FileSelectionModal from '@/components/modals/FileSelectionModal.vue';
-import SplitLayout from '@/layouts/SplitLayout.vue';
+import SplitLayout from '@base/layout/SplitLayout.vue';
 import { ProgressBar, Button, Divider } from 'primevue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import {ChartData} from 'chart.js';

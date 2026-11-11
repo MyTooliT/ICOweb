@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test-watch": "vitest",
-    "tailwind": "@tailwindcss/cli -i ./src/styles/tailwind/tailwind.css -o ./src/styles/tailwind/tailwind-output.css --watch",
+    "tailwind": "tailwindcss -i ./src/styles/tailwind/tailwind.css -o ./src/styles/tailwind/tailwind-output.css --watch",
     "generate-client": "openapi-ts --input http://localhost:33215/openapi.json --output ./src/client --client fetch",
     "start": "concurrently \"npm run dev \" \"npm run tailwind \""
   },
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.99.0",
     "@pinia/testing": "^2.0.2",
-    "@tailwindcss/cli": "^4.3.0",
+    "@tailwindcss/cli": "^4.3.5",
     "@types/chartjs-plugin-crosshair": "^1.1.4",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^26.6.5",
