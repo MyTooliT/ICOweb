@@ -21,9 +21,17 @@ This repository can be setup manually for Windows and Linux or using the install
 
 ## Manual Installation (Development)
 
-As with any other NPM project, after cloning the repository and ensuring a valid Node installation, run:
+After ensuring a valid Node installation, clone the repository (including its submodule) and install the dependencies:
 
-``npm install``
+```bash
+git clone --recurse-submodules <repo-url>
+npm install
+```
+
+The shared layout/navigation/theme layer lives in the [ICOClientBase](https://github.com/MyTooliT/ICOClientBase) git
+submodule at ``src/base`` (import alias ``@base``). If you cloned without ``--recurse-submodules``, run
+``git submodule update --init --recursive``. To update it: ``git submodule update --remote src/base``. When changing the
+base, commit and push inside ``src/base`` first, then commit the new submodule pointer here.
 
 ## Service Installation (Linux)
 
@@ -121,20 +129,21 @@ npm run generate-client
 
 # Branding
 
-The possibility to customize the client to your brand is currently implemented via ``theme`` folder. It holds:
+The possibility to customize the client to your brand is currently implemented via the ``theme`` folder. It holds:
 - ``logo.png`` as the main logo in the bottom left corner (default: IFT TU Wien logo)
 - ``extra.png`` being the secondary logo on top of the main logo (default: transparent)
-- ``theme.css`` holding the Material Design CSS variables
-- ``theme.ts`` configuring PrimeVue for specific colors
+
+The theme classes (``.blue``, ``.darkblue``, ...) and matching PrimeVue palettes come from ICOClientBase
+(``src/base/configuration/theme.css`` and ``theme.ts``).
 
 ## Theming
 
-To customize the branding, you can replace these files on build-time and set the proper environment variables:
+To customize the branding, you can replace the logos on build-time and set the proper environment variables:
 
 ``VITE_APPLICATION_THEME="<your-theme-name>"`` and ``VITE_APPLICATION_THEME_EXTRALOGO="true"``
 
-``<your-theme-name>`` must be the CSS class name you set in `theme.css` and the object key for the PrimeVue colors in
-`theme.ts`.
+``<your-theme-name>`` must be a CSS class name defined in ICOClientBase's `theme.css` and the matching object key in its `theme.ts`
+(new themes are added in ICOClientBase).
 
 # Run
 

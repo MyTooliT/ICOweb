@@ -25,7 +25,8 @@
 
     /* VS Code Intellisense */
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@base/*": ["./src/base/*"]
     }
   },
   "include": [

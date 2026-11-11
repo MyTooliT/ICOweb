@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import TextBlock from '@/components/misc/TextBlock.vue';
+import TextBlock from '@base/components/TextBlock.vue';
 import STHDeviceTable from '@/components/tables/STHDeviceTable.vue';
 import STUDeviceTable from '@/components/tables/STUDeviceTable.vue';
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DefaultLayout from '@base/layout/DefaultLayout.vue';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import {useMessageBus} from '@/message';
