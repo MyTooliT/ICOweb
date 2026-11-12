@@ -80,6 +80,16 @@ export const useGeneralStore = defineStore('general', () => {
 
     /*
     ******************************************************
+    *                  CAN Discovery                     *
+    ******************************************************
+    */
+
+    // Search for CAN networks periodically while the API is not connected
+    const canAutoScan = ref<boolean>(true)
+    const canScanIntervalMs = 10000
+
+    /*
+    ******************************************************
     *                  Query State                       *
     ******************************************************
     */
@@ -105,6 +115,8 @@ export const useGeneralStore = defineStore('general', () => {
         lastFileQuery,
         fileQuery,
         systemState,
+        canAutoScan,
+        canScanIntervalMs,
         setLoaderInfoMessage,
         resetLoaderInfoMessage,
         getLoaderInfoMessage,

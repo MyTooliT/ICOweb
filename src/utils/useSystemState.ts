@@ -1,5 +1,8 @@
 import { getSystemState, getWSLink } from '@/api/icoapi.ts';
-import {Feature, MeasurementStatus, SystemStateModel} from '@/client';
+import {
+  CANNetwork, CANStatus, ConnectedSTHModel, Feature, MeasurementStatus,
+  SystemStateModel
+} from '@/client';
 import {computed, ref} from 'vue';
 
 export function useSystemState(
@@ -8,7 +11,15 @@ export function useSystemState(
     },
 ) {
   const reachable = ref(false);
-  const canReady = ref(false);
+  const canNetworkFound = ref(false);
+  const stuConnected = ref(false);
+  const canStatus = ref<CANStatus>('NO_NETWORK');
+  const canNetworks = ref<CANNetwork[]>([]);
+  const canSelected = ref<CANNetwork | null>(null);
+  const canError = ref<string | null>(null);
+  // The API is the source of truth for the connected sensor device, since the
+  // page loses its own knowledge about it on reload
+  const sthConnected = ref<ConnectedSTHModel | null>(null);
   const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
   const cloud = ref<Feature>({
@@ -23,13 +34,34 @@ export function useSystemState(
   // Number of state updates pushed via WebSocket so far
   let pushedStateCount = 0;
 
+  // The API is connected to a CAN network and the STU answered
+  const canConnected = computed<boolean>(() => {
+    return canStatus.value === 'CONNECTED' && stuConnected.value;
+  })
+
+  function resetCANState() {
+    canNetworkFound.value = false;
+    stuConnected.value = false;
+    canStatus.value = 'NO_NETWORK';
+    canNetworks.value = [];
+    canSelected.value = null;
+    canError.value = null;
+    sthConnected.value = null;
+  }
+
   const hasWS = computed<boolean>(() => {
     return ws !== null;
   })
 
   function applyState(state: SystemStateModel) {
     reachable.value = true;
-    canReady.value = state.can_ready;
+    canNetworkFound.value = state.can_network_found;
+    stuConnected.value = state.stu_connected;
+    canStatus.value = state.can_status;
+    canNetworks.value = state.can_networks ?? [];
+    canSelected.value = state.can_selected ?? null;
+    canError.value = state.can_error ?? null;
+    sthConnected.value = state.sth_connected ?? null;
     running.value = state.measurement_status.running;
     measurementStatus.value = state.measurement_status;
     cloud.value = state.cloud
@@ -70,7 +102,7 @@ export function useSystemState(
       ws.onclose = (event: any) => {
         console.log('[WS] Closed', event);
         reachable.value = false;
-        canReady.value = false;
+        resetCANState();
         running.value = false;
         cloud.value = {
           enabled: false,
@@ -103,7 +135,7 @@ export function useSystemState(
       }
     } catch (e) {
       reachable.value = false;
-      canReady.value = false;
+      resetCANState();
       running.value = false;
       cloud.value = {
         enabled: false,
@@ -129,7 +161,14 @@ export function useSystemState(
 
   return {
     reachable,
-    canReady,
+    canNetworkFound,
+    stuConnected,
+    canStatus,
+    canNetworks,
+    canSelected,
+    canError,
+    sthConnected,
+    canConnected,
     running,
     measurementStatus,
     checkState,

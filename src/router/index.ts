@@ -82,9 +82,20 @@ router.afterEach(async (_to, _from, _failure) => {
   void store.systemState.checkState()
   store.setLoaderInfoMessage('Checking system state...')
 
+  // The CAN state may not be known yet right after loading the page. Ask once
+  // before talking to the CAN network, so that no request fails with 503.
+  async function canConnected(): Promise<boolean> {
+    if(store.systemState.canStatus !== 'CONNECTED') {
+      await store.systemState.checkState()
+    }
+    return store.systemState.canStatus === 'CONNECTED'
+  }
+
   if(_to.name === 'Home') {
     const hwStore = useHardwareStore()
-    if(hwStore.activeSTU) {
+    if(!await canConnected()) {
+      hwStore.clearSTHDeviceList()
+    } else if(hwStore.activeSTU) {
       store.setLoaderInfoMessage('Checking for active measurement...')
       if(!await hwStore.checkSTUConnection()) {
         store.setLoaderInfoMessage('Checking STU...')
@@ -109,16 +120,19 @@ router.afterEach(async (_to, _from, _failure) => {
           store.setLoaderInfoMessage('')
         }
       }
+      hwStore.applyConnectedSTH(store.systemState.sthConnected)
     } else {
         hwStore.clearSTHDeviceList()
     }
   }
 
   if(_to.name === 'Measure') {
-    if(!store.systemState.running) {
+    if(!store.systemState.running && await canConnected()) {
       const hwStore = useHardwareStore()
       store.setLoaderInfoMessage('Checking for active measurement...')
-      await hwStore.checkSTUConnection()
+      // Reload-safe: take the connected sensor device from the API instead of
+      // trusting (or probing and then overwriting) what local storage says
+      hwStore.applyConnectedSTH(store.systemState.sthConnected)
 
       if(hwStore.activeSTH) {
         const adcStore = useADCStore()

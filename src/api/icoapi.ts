@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import {
   ADCValues,
+  CANNetwork,
+  CANNetworksModel,
   FileListResponseModel,
   STHDeviceResponseModel,
   STHRenameRequestModel,
@@ -92,6 +94,35 @@ const { get: getQuiet } = useAPI(getAPILink())
 export async function getSystemState(): Promise<SystemStateModel> {
   return new Promise((resolve, reject) => {
     getQuiet<SystemStateModel>('state').then(resolve).catch(reject)
+  })
+}
+
+// Used for the periodic search: failed requests must not show an error.
+export async function getCANNetworksQuiet(): Promise<CANNetworksModel> {
+  return new Promise((resolve, reject) => {
+    getQuiet<CANNetworksModel>('can/networks').then(resolve).catch(reject)
+  })
+}
+
+export async function getCANNetworks(): Promise<CANNetworksModel> {
+  return new Promise((resolve, reject) => {
+    get<CANNetworksModel>('can/networks').then(resolve).catch(reject)
+  })
+}
+
+export async function connectCAN(network?: Pick<CANNetwork, 'interface' | 'channel'>): Promise<CANNetworksModel> {
+  return new Promise((resolve, reject) => {
+    put<Pick<CANNetwork, 'interface' | 'channel'> | undefined, CANNetworksModel>('can/connect', network)
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
+export async function disconnectCAN(): Promise<CANNetworksModel> {
+  return new Promise((resolve, reject) => {
+    put<void, CANNetworksModel>('can/disconnect', undefined)
+      .then(resolve)
+      .catch(reject)
   })
 }
 
