@@ -15,7 +15,11 @@ import {
 import { Sensor } from './classes/Sensor.ts';
 import { STHDevice } from './classes/STHDevice.ts';
 import {consumeNewMetadata, parseSensorFromRaw} from './helper.ts';
-import {PCBSensorConfiguration, Sensor as RawSensor} from '@/client/types.gen.ts'
+import {
+  ConnectedSTHModel,
+  PCBSensorConfiguration,
+  Sensor as RawSensor
+} from '@/client/types.gen.ts'
 
 export const useHardwareStore = defineStore('hardware', () => {
   const sensorList = ref<Array<Sensor>>([]);
@@ -56,6 +60,38 @@ export const useHardwareStore = defineStore('hardware', () => {
   const activeSTH = computed(() => {
     return STHDeviceList.value.filter(entry => entry.isConnected())[0]
   })
+  /**
+   * Make the STH list match the sensor device the API is connected to.
+   *
+   * The API is the source of truth: the list is restored from local storage on
+   * reload, but the connection lives in the API.
+   */
+  function applyConnectedSTH(connected: ConnectedSTHModel | null | undefined) {
+    if(!connected) {
+      STHDeviceList.value.forEach(
+        device => device.setConnectionStatus('disconnected'))
+      return
+    }
+    const mac = connected.mac_address.toLowerCase()
+    let found = false
+    STHDeviceList.value.forEach(device => {
+      const match = device.getMacAddress().toLowerCase() === mac
+      found = found || match
+      device.setConnectionStatus(match ? 'connected' : 'disconnected')
+    })
+    if(!found) {
+      // The device was not listed (yet), e.g. because the list is empty after
+      // the local storage was cleared
+      STHDeviceList.value.push(new STHDevice(
+        0,
+        connected.name,
+        connected.mac_address,
+        0,
+        defaultHolderID.value,
+        'connected'
+      ))
+    }
+  }
   function deselectSTHDevices() {
     STHDeviceList.value.forEach(
       device => device.setConnectionStatus('disconnected'));
@@ -179,6 +215,7 @@ export const useHardwareStore = defineStore('hardware', () => {
     activeSTU,
     activeSTH,
     deselectSTHDevices,
+    applyConnectedSTH,
     holderList,
     getHolder,
     activeHolder,

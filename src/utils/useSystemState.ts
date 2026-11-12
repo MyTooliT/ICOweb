@@ -1,6 +1,7 @@
 import { getSystemState, getWSLink } from '@/api/icoapi.ts';
 import {
-  CANNetwork, CANStatus, Feature, MeasurementStatus, SystemStateModel
+  CANNetwork, CANStatus, ConnectedSTHModel, Feature, MeasurementStatus,
+  SystemStateModel
 } from '@/client';
 import {computed, ref} from 'vue';
 
@@ -16,6 +17,9 @@ export function useSystemState(
   const canNetworks = ref<CANNetwork[]>([]);
   const canSelected = ref<CANNetwork | null>(null);
   const canError = ref<string | null>(null);
+  // The API is the source of truth for the connected sensor device, since the
+  // page loses its own knowledge about it on reload
+  const sthConnected = ref<ConnectedSTHModel | null>(null);
   const running = ref(false);
   const measurementStatus = ref<MeasurementStatus | null>(null);
   const cloud = ref<Feature>({
@@ -42,6 +46,7 @@ export function useSystemState(
     canNetworks.value = [];
     canSelected.value = null;
     canError.value = null;
+    sthConnected.value = null;
   }
 
   const hasWS = computed<boolean>(() => {
@@ -56,6 +61,7 @@ export function useSystemState(
     canNetworks.value = state.can_networks ?? [];
     canSelected.value = state.can_selected ?? null;
     canError.value = state.can_error ?? null;
+    sthConnected.value = state.sth_connected ?? null;
     running.value = state.measurement_status.running;
     measurementStatus.value = state.measurement_status;
     cloud.value = state.cloud
@@ -161,6 +167,7 @@ export function useSystemState(
     canNetworks,
     canSelected,
     canError,
+    sthConnected,
     canConnected,
     running,
     measurementStatus,

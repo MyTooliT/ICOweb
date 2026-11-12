@@ -431,6 +431,14 @@ export type CANNetworksModel = {
     error?: (string | null);
 };
 
+/**
+ * The sensor device the STU is currently connected to
+ */
+export type ConnectedSTHModel = {
+    name: string;
+    mac_address: string;
+};
+
 export type SystemStateModel = {
     can_network_found: boolean;
     stu_connected: boolean;
@@ -438,6 +446,7 @@ export type SystemStateModel = {
     can_networks: Array<CANNetwork>;
     can_selected?: (CANNetwork | null);
     can_error?: (string | null);
+    sth_connected?: (ConnectedSTHModel | null);
     disk_capacity: DiskCapacity;
     measurement_status: MeasurementStatus;
     cloud: Feature;

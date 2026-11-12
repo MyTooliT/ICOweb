@@ -120,6 +120,7 @@ router.afterEach(async (_to, _from, _failure) => {
           store.setLoaderInfoMessage('')
         }
       }
+      hwStore.applyConnectedSTH(store.systemState.sthConnected)
     } else {
         hwStore.clearSTHDeviceList()
     }
@@ -129,7 +130,9 @@ router.afterEach(async (_to, _from, _failure) => {
     if(!store.systemState.running && await canConnected()) {
       const hwStore = useHardwareStore()
       store.setLoaderInfoMessage('Checking for active measurement...')
-      await hwStore.checkSTUConnection()
+      // Reload-safe: take the connected sensor device from the API instead of
+      // trusting (or probing and then overwriting) what local storage says
+      hwStore.applyConnectedSTH(store.systemState.sthConnected)
 
       if(hwStore.activeSTH) {
         const adcStore = useADCStore()

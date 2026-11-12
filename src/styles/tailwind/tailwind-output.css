@@ -317,6 +317,11 @@
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
+  .h-stretch {
+    height: stretch;
+    height: -webkit-fill-available;
+    height: -moz-available;
+  }
   .\[height\:calc\(100\%-39px\)\] {
     height: calc(100% - 39px);
   }
@@ -747,6 +752,9 @@
   }
   .text-amber-500 {
     color: var(--color-amber-500);
+  }
+  .text-error {
+    color: var(--md-sys-color-error);
   }
   .text-gray-600 {
     color: var(--color-gray-600);
