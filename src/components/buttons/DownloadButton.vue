@@ -5,6 +5,7 @@ defineProps<{
   label?: string,
   link: string,
   compact?: boolean,
+  small?: boolean,
   tooltip?: string
 }>()
 </script>
@@ -18,7 +19,7 @@ defineProps<{
     as="a"
     download
     :href="link"
-    :size="compact ? 'small' : undefined"
+    :size="compact || small ? 'small' : undefined"
     :rounded="compact"
     :label="compact ? '' : label"
     aria-label="Download"

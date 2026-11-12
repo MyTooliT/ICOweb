@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import StaticChart from '@/components/charts/StaticChart.vue';
-import TextBlock from '@base/components/TextBlock.vue';
-import FileSelectionModal from '@/components/modals/FileSelectionModal.vue';
-import SplitLayout from '@base/layout/SplitLayout.vue';
-import { ProgressBar, Button, Divider } from 'primevue';
-import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import FileSelection from '@/components/misc/FileSelection.vue';
+import DefaultLayout from '@base/layout/DefaultLayout.vue';
+import ContentCard from '@/components/misc/ContentCard.vue';
+import { ProgressBar, Button, Popover } from 'primevue';
 import {ChartData} from 'chart.js';
 import {
   ChartBoundaries,
@@ -14,7 +13,7 @@ import {
   fetchFileReader,
   consumeFileReader,
 } from '@/components/charts/staticChartHelper.ts';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/misc/MetadataAccordion.vue';
@@ -25,7 +24,6 @@ import {parseSensorFromRaw} from '@/stores/hardwareStore/helper.ts';
 
 const route = useRoute();
 const router = useRouter();
-const store = useGeneralStore();
 
 const chartData = ref<ChartData<'line'>>({
   datasets: [{
@@ -48,7 +46,6 @@ const parsedMetadata = ref<ParsedMetadata | undefined>(undefined)
 const routerWatcher = async () => {
   if(route.query['file']) {
     const fileName = route.query['file'].toString();
-    store.fileSelectionModalVisible = false;
     const reader = await fetchFileReader(fileName)
     parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
     if(parsedMetadata.value) {
@@ -62,8 +59,6 @@ const routerWatcher = async () => {
       }
     }
     computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries, datasetUnits.value)
-  } else {
-    store.fileSelectionModalVisible = true;
   }
 }
 
@@ -115,6 +110,31 @@ function getCanvasExport() {
   return canvas.toDataURL( 'image/png')
 }
 
+// File selection for an already opened measurement, next to its button
+const fileSelection = ref<InstanceType<typeof Popover> | null>(null)
+
+function openFile(name: string) {
+  fileSelection.value?.hide()
+  const query = { ...route.query }
+  query['file'] = name
+  router.replace({ query })
+}
+
+const fileName = computed<string>(() => route.query['file']?.toString() ?? '')
+
+// Short summary of the measurement for the card header
+const summary = computed<string>(() => {
+  const data = parsedData.value
+  if(!data) return ''
+  const parts = [`${data.datasets.length} channel${data.datasets.length === 1 ? '' : 's'}`]
+  const timestamps = data.timestamp
+  if(timestamps.length > 1) {
+    parts.push(`${(timestamps[timestamps.length - 1] - timestamps[0]).toFixed(2)} s`)
+  }
+  parts.push(`${timestamps.length.toLocaleString()} samples`)
+  return parts.join(' · ')
+})
+
 function downloadImage() {
   const image = getCanvasExport()
   const link = document.createElement('a')
@@ -125,69 +145,85 @@ function downloadImage() {
 </script>
 
 <template>
-  <SplitLayout
+  <DefaultLayout
     v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
-    class="h-stretch">
-    <TextBlock
-      heading="Analyze Measurement"
-      subheading="Perform simple analysis on existing or external measurement files."
-      :button="true"
-      button-text="Select File"
-      button-icon-class="pi pi-file-import"
-      @button-click="store.fileSelectionModalVisible = true"
-    />
-    <StaticChart
-      v-if="chartData.datasets[0] && chartData.datasets[0].data.length > 0"
-      :data="chartData"
-      :boundaries="chartBoundaries"
-      :scales="scales"
-      :title="route.query['file']?.toString() ?? 'Analyze Measurement'"
-      @zoom="handleZoom"
-    />
-    <template #bottom>
-      <div class="flex flex-col gap-3">
-        <h4>Additional Actions</h4>
-        <div class="flex flex-row gap-3">
+  >
+    <div class="flex flex-col gap-3">
+      <ContentCard
+        :title="fileName"
+        :subtitle="summary"
+      >
+        <template #actions>
           <Button
-            label="Download View as PNG"
-            as="a"
-            variant="outlined"
-            icon="pi pi-download"
+            label="Select File"
+            icon="pi pi-file-import"
+            size="small"
+            outlined
+            @click="(event: Event) => fileSelection?.toggle(event)"
+          />
+          <Popover ref="fileSelection">
+            <FileSelection
+              class="w-[32rem] max-w-[calc(100vw-2rem)]"
+              @upload="openFile"
+            />
+          </Popover>
+          <Button
+            label="PNG"
+            icon="pi pi-image"
+            size="small"
+            outlined
+            aria-label="Download view as PNG"
+            v-tooltip.top="'Download the current view as PNG image'"
             @click="downloadImage"
           />
           <DownloadButton
-            :link="`${getAPILink()}/files/${route.query['file']}`"
-            label="Download HDF5 File" />
-        </div>
-        <Divider />
-        <h4>Measurement File Information</h4>
-        <MetadataAccordion
-          v-if="parsedMetadata"
-          :parsed-metadata="parsedMetadata" />
-      </div>
-    </template>
-  </SplitLayout>
-  <div
+            :link="`${getAPILink()}/files/${fileName}`"
+            label="HDF5"
+            tooltip="Download the measurement file"
+            small
+          />
+        </template>
+        <StaticChart
+          :data="chartData"
+          :boundaries="chartBoundaries"
+          :scales="scales"
+          title=""
+          @zoom="handleZoom"
+        />
+      </ContentCard>
+      <ContentCard
+        v-if="parsedMetadata"
+        title="Measurement File Information"
+        flush
+      >
+        <MetadataAccordion :parsed-metadata="parsedMetadata" />
+      </ContentCard>
+    </div>
+  </DefaultLayout>
+  <DefaultLayout
     v-else-if="fetchingProgress > 0 && fetchingProgress < 100"
-    class="w-full h-stretch max-h-60 flex justify-center items-center"
   >
-    <div class="max-w-60 flex flex-col gap-4">
-      <h4>Fetching Measurement</h4>
+    <ContentCard
+      title="Loading Measurement"
+      :subtitle="fileName"
+      class="max-w-md mx-auto mt-[15vh]"
+    >
       <ProgressBar
-        :value="fetchingProgress"
+        :value="Math.round(fetchingProgress)"
         :pt="{
           value: {
             style: ['transition: none;']
           }
         }" />
-    </div>
-  </div>
-  <FileSelectionModal
-    @upload="(event) => {
-      const query = { ...route.query }
-      query['file'] = (event as string)
-      router.replace( { query } )
-      store.fileSelectionModalVisible = false;
-    }"
-  />
+    </ContentCard>
+  </DefaultLayout>
+  <DefaultLayout v-else>
+    <ContentCard
+      title="Select a Measurement"
+      subtitle="Choose the measurement file to analyze."
+      class="max-w-xl mx-auto mt-[15vh]"
+    >
+      <FileSelection @upload="openFile" />
+    </ContentCard>
+  </DefaultLayout>
 </template>

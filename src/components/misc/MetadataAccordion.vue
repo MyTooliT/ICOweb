@@ -34,7 +34,6 @@ import CustomFileUpload from '@/components/forms/CustomFileUpload.vue';
 import {formatFileSize} from '@/utils/helper.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import DeleteButton from '@/components/buttons/DeleteButton.vue';
-import Fieldset from 'primevue/fieldset';
 import {useMessageBus} from '@/message';
 import {formatAttributeLabel, formatAttributeValue} from '@/utils/helper.ts';
 
@@ -230,10 +229,7 @@ watch(props, async () => {
 </script>
 
 <template>
-  <Accordion
-    value="information"
-    class="border rounded-md [margin-bottom:40px]"
-  >
+  <Accordion value="information">
     <AccordionPanel
       v-if="infoAttributes.length > 0"
       value="information"
@@ -259,15 +255,15 @@ watch(props, async () => {
         Pictures
       </AccordionHeader>
       <AccordionContent>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-col gap-4">
           <div
             v-for="[picture_param, content] in Object.entries(parsedMetadata.pictures)"
             :key="picture_param"
-            class="border rounded">
-            <h4 class="font-semibold m-3">
+          >
+            <h4 class="font-semibold mb-2">
               {{ picture_param.split('_').map(s => capitalize(s)).join(' ') }}
             </h4>
-            <div class="grid grid-cols-3 gap-3 p-3">
+            <div class="grid grid-cols-3 gap-3">
               <div
                 v-for="(picture, index) in content"
                 :key="picture"
@@ -474,9 +470,10 @@ watch(props, async () => {
             </template>
           </Column>
         </DataTable>
-        <Fieldset
-          legend="Embed New Files"
-        >
+        <div class="flex flex-col gap-2 mt-4">
+          <h4 class="font-semibold">
+            Embed New Files
+          </h4>
           <CustomFileUpload
             :url="buildEmbeddedFileUrl(route.query['file'] as string)"
             :max-file-size="1000000"
@@ -491,7 +488,7 @@ watch(props, async () => {
               e.xhr.response?.message || e.xhr.response?.error || 'Unknown Error'
             )"
           />
-        </Fieldset>
+        </div>
       </AccordionContent>
     </AccordionPanel>
   </Accordion>

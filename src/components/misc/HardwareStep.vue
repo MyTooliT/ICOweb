@@ -47,7 +47,7 @@ const badgeClass = computed(() => ({
 
 <template>
   <section
-    class="hardware-step overflow-hidden border transition-colors"
+    class="ico-card hardware-step overflow-hidden transition-colors"
     :class="[cardClass, locked ? 'opacity-60 select-none' : '']"
     :data-state="state"
     :inert="locked"
@@ -110,21 +110,7 @@ const badgeClass = computed(() => ({
 </template>
 
 <style scoped>
-/*
- * Look of the PrimeVue Card (as used for the config files), taken from the
- * global theme tokens so that it follows theme and dark mode.
- *
- * Do not use the `--p-card-*` variables here: PrimeVue only defines the tokens
- * of a component once an instance of it was mounted, so they would be missing
- * until a page with a Card (e.g. the config page) was visited.
- */
-.hardware-step {
-  background: var(--p-content-background);
-  border-radius: var(--p-border-radius-xl);
-  /* Same as the Aura Card */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  color: var(--p-content-color);
-}
+/* The card look itself is the global `.ico-card` (see `style.css`) */
 
 .step-muted {
   color: var(--p-text-muted-color);

@@ -4,30 +4,24 @@ import { startMeasurement } from '@/api/icoapi.ts';
 /* eslint-disable max-len */
 import StreamingChart from '@/components/charts/StreamingChart.vue';
 import { updateChartData } from '@/components/charts/streamingChartHelper.ts';
-import NamedInput from '@/components/inputs/NamedInput.vue';
 import ADCDrawer from '@/components/misc/ADCDrawer.vue';
-import TextBlock from '@base/components/TextBlock.vue';
-import SplitLayout from '@base/layout/SplitLayout.vue';
+import ContentCard from '@/components/misc/ContentCard.vue';
+import DefaultLayout from '@base/layout/DefaultLayout.vue';
 import { useADCStore } from '@/stores/ADCStore/ADCStore.ts';
 import { TAssignedSensor } from '@/stores/hardwareStore/classes/HolderConfig.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import {
   measurementChannels, useMeasurementStore
 } from '@/stores/measurementStore/measurementStore.ts';
-import { MeterItem } from '@/utils/dataModels.ts';
 import { useMeasurementWebsocket } from '@/utils/useMeasurementWebSocket.ts';
 import { ChartData } from 'chart.js';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import MeterGroup from 'primevue/metergroup';
 import Select from 'primevue/select';
+import Tag from 'primevue/tag';
 import Toast from 'primevue/toast';
-import {Accordion} from 'primevue';
-import {AccordionContent} from 'primevue';
-import {AccordionPanel} from 'primevue';
-import {AccordionHeader} from 'primevue';
 import {
   computed, onBeforeUnmount, onMounted, ref, watch
 } from 'vue';
@@ -241,20 +235,24 @@ function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
 // Maximum drawable points per channel for the graph
 const maxNumberOfPoints = ref<number>(1000)
 
-const datalossMeter = computed<MeterItem[]>(() => [
-  {
-    label: 'OK',
-    value: 100 - ((dataloss.value ?? 0) * 100),
-    color: 'green',
-    icon: ''
-  },
-  {
-    label: 'Lost',
-    value: (dataloss.value ?? 0) * 100,
-    color: 'red',
-    icon: ''
-  },
-])
+// Share of lost packets in percent (null before any data was received)
+const lostPercent = computed<number | null>(() =>
+  dataloss.value === null || dataloss.value === undefined
+    ? null
+    : dataloss.value * 100
+)
+
+// Status of the measurement for the header of the chart
+const measurementStatus = computed(() => {
+  if(gStore.systemState.running) {
+    return state.value === 'open'
+      ? { label: 'Recording · live', severity: 'success' }
+      : { label: 'Recording', severity: 'success' }
+  }
+  return canMeasure.value
+    ? { label: 'Ready', severity: 'info' }
+    : { label: 'Not ready', severity: 'warn' }
+})
 
 // Disables measuring if not all requirements are met
 const canMeasure = computed<boolean>(() => {
@@ -339,81 +337,97 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
       @send="submitPostMeta"
       @canceled="submitPostMeta"
     />
-    <SplitLayout class="w-stretch">
-      <TextBlock
-        v-if="hwStore.hasSTU && hwStore.activeSTH"
-        heading="Measure "
-        subheading="Capture a measurement from the connected tool"
-        :button="false" />
-      <StreamingChart
-        v-if="hwStore.hasSTU && hwStore.activeSTH"
-        class="flex flex-col flex-grow"
-        :data="chartData"
-        :boundaries="{
-          xmin: mStore.chartStartTime,
-          xmax: mStore.chartEndTime,
-          ymin: mStore.chartYMin,
-          ymax: mStore.chartYMax
-        }"
-        :scales="scales"
-      />
+    <DefaultLayout class="grow min-w-0">
       <div
-        v-else
-        class="text-center h-stretch flex justify-center w-full"
-      >
-        <div class="flex flex-col gap-4 w-fit my-[20%]">
-          <h2 class="text-lg">
-            Nothing to Measure
-          </h2>
-          <h4>
-            There is no running stream. Connect a device to start measuring.
-          </h4>
-          <Button
-            label="Connect a Device"
-            severity="primary"
-            outlined
-            @click="router.push('/')"
-          />
-        </div>
-      </div>
-      <template
         v-if="hwStore.hasSTU && hwStore.activeSTH"
-        #aside
+        class="flex flex-col lg:flex-row gap-3 items-start"
       >
-        <div
-          class="flex flex-col gap-3"
-        >
-          <NamedInput title="Devices">
-            <InputGroup>
-              <InputGroupAddon class="flex-grow !text-black">
-                {{ hwStore.activeSTU?.getName() }}
-              </InputGroupAddon>
-              <InputGroupAddon class="flex-grow !text-black">
-                {{ hwStore.activeSTH?.getName() }}
-              </InputGroupAddon>
-              <InputGroupAddon class="flex-grow !text-black">
-                {{ hwStore.activeSTH?.getSupplyVoltageRepr() }}
-              </InputGroupAddon>
+        <div class="flex flex-col gap-3 grow min-w-0 w-full">
+          <ContentCard
+            title="Measurement"
+            subtitle="Capture a measurement from the connected sensor device."
+          >
+            <template #title>
+              <Tag
+                :value="measurementStatus.label"
+                :severity="measurementStatus.severity"
+              />
+            </template>
+            <StreamingChart
+              class="h-[clamp(320px,calc(100dvh-200px),1000px)]"
+              :data="chartData"
+              :boundaries="{
+                xmin: mStore.chartStartTime,
+                xmax: mStore.chartEndTime,
+                ymin: mStore.chartYMin,
+                ymax: mStore.chartYMax
+              }"
+              :scales="scales"
+            />
+          </ContentCard>
+          <ContentCard
+            v-if="metaEnabled"
+            title="Metadata"
+            collapsible
+            collapsed
+          >
+            <template #title>
+              <Tag
+                v-if="mStore.preMetaValid"
+                value="Complete"
+                icon="pi pi-check"
+                severity="success"
+              />
+              <Tag
+                v-else
+                value="Incomplete"
+                icon="pi pi-exclamation-triangle"
+                severity="danger"
+              />
+            </template>
+            <PreMetaData
+              phase="pre"
+              :disabled="gStore.systemState.running"
+            />
+          </ContentCard>
+        </div>
+        <aside class="flex flex-col gap-3 w-full lg:w-[24rem] shrink-0">
+          <ContentCard title="Devices">
+            <template #actions>
               <Button
-                :disabled="gStore.systemState.running"
+                v-tooltip.left="'Manage devices'"
                 icon="pi pi-cog"
-                outlined
+                size="small"
+                text
+                rounded
+                aria-label="Manage devices"
+                :disabled="gStore.systemState.running"
                 @click="router.push('/')"
               />
-            </InputGroup>
-          </NamedInput>
-          <ChartStreamControls
-            :ready="canMeasure"
-            :state="state"
-            :start-loading="startLoading"
-            :stop-loading="stopLoading"
-            @start="start"
-            @stop="stop"
-            @show="show"
-            @hide="close"
-          />
-          <div class="flex flex-col">
-            <NamedInput title="Measurement Channels">
+            </template>
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+              <dt class="ico-muted">STU</dt>
+              <dd class="text-right">{{ hwStore.activeSTU?.getName() }}</dd>
+              <dt class="ico-muted">STH</dt>
+              <dd class="text-right">{{ hwStore.activeSTH?.getName() }}</dd>
+              <dt class="ico-muted">Supply voltage</dt>
+              <dd class="text-right">{{ hwStore.activeSTH?.getSupplyVoltageRepr() }}</dd>
+            </dl>
+          </ContentCard>
+          <ContentCard title="Control">
+            <ChartStreamControls
+              :ready="canMeasure"
+              :state="state"
+              :start-loading="startLoading"
+              :stop-loading="stopLoading"
+              @start="start"
+              @stop="stop"
+              @show="show"
+              @hide="close"
+            />
+          </ContentCard>
+          <ContentCard title="Channels">
+            <div class="flex flex-col gap-2">
               <InputGroup
                 v-for="slot in measurementChannels.slice(0, hwStore.activeHolder?.sensors.length ?? 2)"
                 :key="slot"
@@ -422,6 +436,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                   <Checkbox
                     v-model="mStore.activeChannels[slot]"
                     binary
+                    :aria-label="`Use ${slot} channel`"
                     :disabled="slot === 'first'"
                   />
                 </InputGroupAddon>
@@ -432,70 +447,66 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                   :option-label="channelSensorRepr"
                   :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
                   placeholder="No Selection"
-                  class=""
                 />
               </InputGroup>
-            </NamedInput>
-          </div>
-          <NamedInput title="Measurement Integrity (Packet Loss)">
-            <InputGroup>
-              <MeterGroup
-                :value="datalossMeter"
-                class="w-full">
-                <template #label="{ value }">
-                  <div class="flex flex-wrap gap-3 items-center">
-                    <template
-                      v-for="val in value"
-                      :key="val.label"
-                    >
-                      <span
-                        :data-color="val.color"
-                        class="w-4 h-4 rounded-full"
-                        :style="`background-color: ${val.color}`"
-                      />
-                      <span>{{ val.label }} ({{ val.value.toFixed(2) }}%)</span>
-                    </template>
-                  </div>
-                </template>
-              </MeterGroup>
-            </InputGroup>
-          </NamedInput>
-          <div class="[min-width:36ch]" />
-        </div>
-      </template>
-      <template #bottom>
-        <Accordion
-          v-if="metaEnabled"
-          class="border rounded-md mt-3"
-        >
-          <AccordionPanel value="0">
-            <AccordionHeader>
-              Metadata
-              <span
-                v-if="mStore.preMetaValid"
-                class="pi pi-check text-primary ml-3 mr-auto"
+            </div>
+          </ContentCard>
+          <ContentCard title="Packet Loss">
+            <template #title>
+              <Tag
+                v-if="lostPercent !== null"
+                :value="`${lostPercent.toFixed(2)} % lost`"
+                :severity="lostPercent === 0 ? 'success' : lostPercent < 1 ? 'warn' : 'danger'"
               />
-              <span
-                v-else
-                class="pi pi-exclamation-triangle text-red-500 ml-3 mr-auto"
+            </template>
+            <div
+              v-if="lostPercent !== null"
+              class="h-2 rounded-full overflow-hidden flex flex-row bg-error"
+              role="meter"
+              aria-label="Received packets"
+              :aria-valuenow="Math.round(100 - lostPercent)"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div
+                class="h-full bg-[var(--p-green-500)]"
+                :style="{ width: `${100 - lostPercent}%` }"
               />
-            </AccordionHeader>
-            <AccordionContent>
-              <PreMetaData
-                phase="pre"
-                :disabled="gStore.systemState.running"
-              />
-            </AccordionContent>
-          </AccordionPanel>
-        </Accordion>
-      </template>
-    </SplitLayout>
+            </div>
+            <p
+              v-else
+              class="text-sm ico-muted"
+            >
+              Shown once data is received.
+            </p>
+          </ContentCard>
+        </aside>
+      </div>
+      <ContentCard
+        v-else
+        title="Nothing to Measure"
+        class="max-w-md mx-auto mt-[15vh]"
+      >
+        <p class="text-sm ico-muted mb-3">
+          There is no running stream. Connect a sensor device to start
+          measuring.
+        </p>
+        <Button
+          label="Connect a Device"
+          icon="pi pi-wrench"
+          size="small"
+          outlined
+          @click="router.push('/')"
+        />
+      </ContentCard>
+    </DefaultLayout>
     <ADCDrawer v-if="featureEnabled('ADC')" />
     <button
       v-if="hwStore.activeSTH && featureEnabled('ADC')"
       class="
-        vertical-writing-lr orientation-mixed rotate-180
-        bg-gray-200 [height:calc(100%-39px)]"
+        vertical-writing-lr orientation-mixed rotate-180 text-sm px-1
+        bg-surface-container hover:bg-surface-container-high border-r ico-divider
+        [height:calc(100%-39px)]"
       @click="adcStore.ADCDrawerVisible = true"
     >
       Show ADC Config

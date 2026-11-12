@@ -1,16 +1,12 @@
 <script setup lang="ts">
 /* eslint-disable max-len */
 import { refreshTridentAuth } from '@/api/icoapi.ts';
-import NamedInput from '@/components/inputs/NamedInput.vue';
-import TextBlock from '@base/components/TextBlock.vue';
+import ContentCard from '@/components/misc/ContentCard.vue';
 import DefaultLayout from '@base/layout/DefaultLayout.vue';
 import { useMeasurementStore } from '@/stores/measurementStore/measurementStore.ts';
-import { MeterItem } from '@/utils/dataModels.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import MeterGroup from 'primevue/metergroup';
+import Tag from 'primevue/tag';
 import { computed } from 'vue';
 import FileTable from '@/components/tables/FileTable.vue';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
@@ -26,23 +22,31 @@ const { loading: authLoading, call: refreshAuth, error: authError, errorMessage 
   await gStore.systemState.checkState()
 })
 
-const meterItems = computed<MeterItem[]>(() => {
-  if(!mStore.driveCapacity.total || !mStore.driveCapacity.available) return []
-  return [
-    {
-      label: `Available: ${mStore.driveCapacity.available.toFixed(2)} GiB`,
-      value: (mStore.driveCapacity.available / mStore.driveCapacity.total) * 100,
-      color: 'green',
-      icon: ''
-    },
-    {
-      label: `Used: ${(mStore.driveCapacity.total - mStore.driveCapacity.available).toFixed(2)} GiB`,
-      value: ((mStore.driveCapacity.total - mStore.driveCapacity.available) / mStore.driveCapacity.total * 100),
-      color: 'red',
-      icon: ''
-    }
-  ]
+// Drive capacity in GiB, shown as a single bar of the used space
+const capacity = computed(() => {
+  const { total, available } = mStore.driveCapacity
+  if(!total || available === undefined || available === null) return null
+  const used = total - available
+  return {
+    total,
+    available,
+    usedPercent: Math.min(100, Math.max(0, used / total * 100))
+  }
 })
+
+const cloudConnected = computed<boolean>(() =>
+  !authError.value && gStore.systemState.cloud.healthy
+)
+
+async function refreshCloud() {
+  // The loading handler catches errors and only sets `authError`
+  await refreshAuth()
+  if(authError.value) {
+    m.error('Error refreshing Dataspace connection', errorMessage.value)
+    return
+  }
+  await loadFiles()
+}
 
 function copyLinkToClipboard(link: string): void {
   if (!window.navigator.clipboard) {
@@ -57,86 +61,110 @@ function copyLinkToClipboard(link: string): void {
 
 <template>
   <DefaultLayout>
-    <TextBlock
-      heading="Measurement Files"
-      :subheading="`All files found under ${mStore.measurementDirectory}`"
-      button-text="Load Files"
-      button-icon-class="pi pi-sync"
-      :button-loading="filesLoading"
-      @button-click="loadFiles"
-    />
-    <div class="flex flex-col gap-3">
-      <div class="flex flex-row gap-3 flex-wrap">
-        <NamedInput title="Drive Capacity">
-          <InputGroup>
-            <MeterGroup :value="meterItems" />
-          </InputGroup>
-        </NamedInput>
-        <NamedInput
-          v-if="gStore.systemState.cloud.enabled"
-          title="Dataspace Connection"
-          class="ml-auto"
+    <ContentCard
+      title="Measurement Files"
+      :subtitle="mStore.measurementDirectory ? `Stored in ${mStore.measurementDirectory}` : ''"
+      flush
+    >
+      <template #title>
+        <Tag
+          :value="`${mStore.measurementFiles.length} files`"
+          severity="secondary"
+        />
+      </template>
+      <template #actions>
+        <Button
+          label="Reload"
+          icon="pi pi-sync"
+          size="small"
+          outlined
+          :loading="filesLoading"
+          @click="loadFiles"
+        />
+      </template>
+      <div
+        class="flex flex-row flex-wrap items-center gap-x-8 gap-y-2 px-4 py-2
+          border-b ico-divider text-sm"
+      >
+        <div
+          v-if="capacity"
+          class="flex flex-row items-center gap-3 grow min-w-64 max-w-xl"
         >
-          <InputGroup>
-            <InputGroupAddon>
-              <span :class="authError || !gStore.systemState.cloud.healthy ? 'text-red-500' : ''">
-                {{ authError || !gStore.systemState.cloud.healthy ? 'Disconnected' : 'Connected' }}
-              </span>
-            </InputGroupAddon>
-            <Button
-              v-tooltip.top="{
-                value: 'Refresh the Dataspace connection'
-              }"
-              :severity="authError || !gStore.systemState.cloud.healthy ? 'danger' : 'primary'"
-              label="Refresh"
-              icon="pi pi-sync"
-              outlined
-              :loading="authLoading"
-              @click="async () => {
-                try {
-                  await refreshAuth()
-                  await loadFiles()
-                } catch(e: any) {
-                  m.error('Error refreshing Dataspace connection', errorMessage || e.message)
-                }
-              }"
+          <span class="ico-muted shrink-0">Drive</span>
+          <div
+            class="grow h-2 rounded-full overflow-hidden bg-surface-container-highest"
+            role="meter"
+            aria-label="Used drive space"
+            :aria-valuenow="Math.round(capacity.usedPercent)"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <div
+              class="h-full rounded-full"
+              :class="capacity.usedPercent > 90 ? 'bg-error' : 'bg-primary'"
+              :style="{ width: `${capacity.usedPercent}%` }"
             />
+          </div>
+          <span class="shrink-0 whitespace-nowrap">
+            {{ capacity.available.toFixed(1) }} GiB free of
+            {{ capacity.total.toFixed(1) }} GiB
+          </span>
+        </div>
+        <div
+          v-if="gStore.systemState.cloud.enabled"
+          class="flex flex-row items-center gap-2 ml-auto"
+        >
+          <span class="ico-muted">Dataspace</span>
+          <Tag
+            :value="cloudConnected ? 'Connected' : 'Disconnected'"
+            :severity="cloudConnected ? 'success' : 'danger'"
+          />
+          <Button
+            v-tooltip.top="'Refresh the Dataspace connection'"
+            icon="pi pi-sync"
+            size="small"
+            text
+            rounded
+            aria-label="Refresh the Dataspace connection"
+            :severity="cloudConnected ? 'secondary' : 'danger'"
+            :loading="authLoading"
+            @click="refreshCloud"
+          />
+          <template v-if="gStore.systemState.cloud.manage_url">
             <Button
-              v-if="gStore.systemState.cloud.manage_url"
-              v-tooltip.top="{
-                value: 'Open the Dataspace asset management platform'
-              }"
+              v-tooltip.top="'Open the Dataspace asset management platform'"
               label="Manage Assets"
               icon="pi pi-external-link"
               icon-pos="right"
-              severity="primary"
+              size="small"
+              text
               as="a"
-              outlined
               :href="gStore.systemState.cloud.manage_url"
               target="_blank"
-              rel="noopener norefferer"
+              rel="noopener noreferrer"
             />
             <Button
-              v-if="gStore.systemState.cloud.manage_url"
-              v-tooltip.top="{
-                value: 'Copy the asset management URL to clipboard'
-              }"
+              v-tooltip.top="'Copy the asset management URL to clipboard'"
               icon="pi pi-copy"
-              severity="primary"
-              outlined
+              size="small"
+              text
+              rounded
+              aria-label="Copy the asset management URL"
               @click="copyLinkToClipboard(gStore.systemState.cloud.manage_url)"
             />
-          </InputGroup>
-        </NamedInput>
+          </template>
+        </div>
       </div>
       <FileTable
         :cloud="gStore.systemState.cloud"
         @needs-refresh="loadFiles"
       />
-    </div>
+      <p
+        v-if="mStore.measurementFiles.length === 0"
+        class="px-4 py-3 text-sm ico-muted"
+      >
+        {{ filesLoading ? 'Loading files...' : 'No measurement files found.' }}
+      </p>
+    </ContentCard>
   </DefaultLayout>
 </template>
-
-<style scoped>
-
-</style>

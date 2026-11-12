@@ -88,7 +88,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
     plugins: {
       title: {
         text: props.title,
-        display: true,
+        display: props.title.length > 0,
         position: 'top',
         font: {
           size: '16',

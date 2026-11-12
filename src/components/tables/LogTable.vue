@@ -58,6 +58,7 @@ const formatTimestamp = (ts: string): string => {
     v-model:expanded-rows="expandedRows"
     :value="logs?.files"
     data-key="name"
+    size="small"
     responsive-layout="scroll"
     :loading="loadingList"
     row-expansion
@@ -95,7 +96,7 @@ const formatTimestamp = (ts: string): string => {
       </template>
     </Column>
     <template #expansion="slotProps">
-      <div class="p-4 bg-gray-900 rounded">
+      <div class="p-2 bg-gray-900 rounded">
         <div
           v-if="loadingLog[slotProps.data.name]"
           class="flex items-center justify-center h-80">

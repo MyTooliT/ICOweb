@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import InputNumber from 'primevue/inputnumber';
-import NamedInput from '@/components/inputs/NamedInput.vue';
 import ToggleSwitch from 'primevue/toggleswitch';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -19,53 +18,52 @@ defineProps<{
 }>()
 
 const emit = defineEmits(['start', 'stop', 'show', 'hide'])
+
+const options: Array<{
+  id: string
+  model: 'continuous' | 'autostream' | 'disconnectAfterMeasurement'
+  label: string
+  tooltip: string
+}> = [
+  {
+    id: 'continuous',
+    model: 'continuous',
+    label: 'Manual stop',
+    tooltip: 'Manual stop will let the measurement run until the user stops it manually.\n\nDisabling this will stop the measurement after the acquisition time is reached.'
+  },
+  {
+    id: 'autostream',
+    model: 'autostream',
+    label: 'Show data on start',
+    tooltip: 'Immediately show the data in the graph on start.\n\nDisabling this will start the measurement but not display the data.'
+  },
+  {
+    id: 'disconnect',
+    model: 'disconnectAfterMeasurement',
+    label: 'Disconnect after measurement',
+    tooltip: 'Disconnect the tool after the measurement is finished for inspection. Disabling this will keep the tool connected.'
+  }
+]
 </script>
 
 <template>
-  <NamedInput title="Measurement Control">
-    <div class="flex flex-col gap-2 flex-wrap">
-      <div class="flex flex-row items-center">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-2 text-sm">
+      <label
+        v-for="option in options"
+        :key="option.id"
+        :for="option.id"
+        class="flex flex-row items-center gap-2"
+      >
         <ToggleSwitch
-          v-model="mStore.continuous"
+          v-model="mStore[option.model]"
           :disabled="gStore.systemState.running"
-          input-id="continuous" />
-        <label
-          for="continuous"
-          class="ml-3">Manual Stop</label>
+          :input-id="option.id" />
+        {{ option.label }}
         <i
-          v-tooltip.top="{
-            value: 'Manual stop will let the measurement run until the user stops it manually.\n\nDisabling this will stop the measurement after the acquisition time is reached.'
-          }"
-          class="pi pi-info-circle ml-2" />
-      </div>
-      <div class="flex flex-row items-center">
-        <ToggleSwitch
-          v-model="mStore.autostream"
-          :disabled="gStore.systemState.running"
-          input-id="continuous" />
-        <label
-          for="continuous"
-          class="ml-3">Show data on start</label>
-        <i
-          v-tooltip.top="{
-            value: 'Immediately show the data in the graph on start. \n\nDisabling this will start the measurement but not display the data.'
-          }"
-          class="pi pi-info-circle ml-2" />
-      </div>
-      <div class="flex flex-row items-center">
-        <ToggleSwitch
-          v-model="mStore.disconnectAfterMeasurement"
-          :disabled="gStore.systemState.running"
-          input-id="disconnect" />
-        <label
-          for="disconnect"
-          class="ml-3">Disconnect after measurement</label>
-        <i
-          v-tooltip.left="{
-            value: 'Disconnect the tool after the measurement is finished for inspection. Disabling this will keep the tool connected.'
-          }"
-          class="pi pi-info-circle ml-2" />
-      </div>
+          v-tooltip.left="{ value: option.tooltip }"
+          class="pi pi-info-circle ico-muted" />
+      </label>
     </div>
     <InputGroup>
       <InputNumber
@@ -74,6 +72,7 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
             || !gStore.systemState.running"
         v-model="mStore.acquisitionTime"
         input-id="acqTime"
+        aria-label="Acquisition time in seconds"
         :min="0"
         :disabled="mStore.continuous"
         :use-grouping="false"
@@ -83,7 +82,6 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
         v-if="
           (gStore.systemState.running && !mStore.continuous)
             || !gStore.systemState.running"
-        class="!text-black"
         :disabled="mStore.continuous"
       >
         s
@@ -123,5 +121,5 @@ const emit = defineEmits(['start', 'stop', 'show', 'hide'])
         @click="emit('start')"
       />
     </InputGroup>
-  </NamedInput>
+  </div>
 </template>
