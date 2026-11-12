@@ -87,7 +87,7 @@ describe('CANConnectionPanel', () => {
     const { wrapper } = await mountPanel(state({
       can_status: 'CONNECTED', can_selected: NETWORK, stu_connected: true
     }))
-    expect(wrapper.text()).toContain('STU responding')
+    expect(wrapper.text()).toContain('Connected')
     await button(wrapper, 'Disconnect')!.trigger('click')
     expect(disconnectCAN).toHaveBeenCalled()
   })

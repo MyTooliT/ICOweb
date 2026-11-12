@@ -63,7 +63,7 @@ const statusInfos = computed(() => {
   if (system.canStatus === 'CONNECTED') {
     infos.push({
       name: 'STU',
-      status: system.stuConnected ? 'responding' : 'not responding'
+      status: system.stuConnected ? 'responsive' : 'not responsive'
     })
   }
   return infos

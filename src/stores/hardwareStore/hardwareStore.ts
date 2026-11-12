@@ -64,7 +64,8 @@ export const useHardwareStore = defineStore('hardware', () => {
    * Make the STH list match the sensor device the API is connected to.
    *
    * The API is the source of truth: the list is restored from local storage on
-   * reload, but the connection lives in the API.
+   * reload, but the connection lives in the API. The list is never extended
+   * here, only the connection status of listed devices is updated.
    */
   function applyConnectedSTH(connected: ConnectedSTHModel | null | undefined) {
     if(!connected) {
@@ -72,25 +73,32 @@ export const useHardwareStore = defineStore('hardware', () => {
         device => device.setConnectionStatus('disconnected'))
       return
     }
-    const mac = connected.mac_address.toLowerCase()
-    let found = false
-    STHDeviceList.value.forEach(device => {
-      const match = device.getMacAddress().toLowerCase() === mac
-      found = found || match
-      device.setConnectionStatus(match ? 'connected' : 'disconnected')
-    })
-    if(!found) {
-      // The device was not listed (yet), e.g. because the list is empty after
-      // the local storage was cleared
-      STHDeviceList.value.push(new STHDevice(
-        0,
-        connected.name,
-        connected.mac_address,
-        0,
-        defaultHolderID.value,
-        'connected'
-      ))
+
+    const normalize = (mac: string) => mac.toLowerCase().replace(/[^0-9a-f]/g, '')
+    let match = STHDeviceList.value.find(
+      device => normalize(device.getMacAddress()) === normalize(connected.mac_address)
+    )
+    if(!match) {
+      // The device reports its MAC itself, which may differ from the one the
+      // STU listed. Fall back to the name, if that is unambiguous.
+      const sameName = STHDeviceList.value.filter(
+        device => device.getName() === connected.name)
+      if(sameName.length === 1) {
+        match = sameName[0]
+        console.warn(
+          `[STH] Matched ${connected.name} by name: API reports MAC ` +
+          `${connected.mac_address}, list has ${match.getMacAddress()}`)
+      }
     }
+    if(!match) {
+      // Do not guess, and do not invent a device either
+      console.warn(`[STH] Connected device not in list: ${connected.name} ` +
+        `(${connected.mac_address})`)
+      return
+    }
+    STHDeviceList.value.forEach(
+      device => device.setConnectionStatus(
+        device === match ? 'connected' : 'disconnected'))
   }
   function deselectSTHDevices() {
     STHDeviceList.value.forEach(

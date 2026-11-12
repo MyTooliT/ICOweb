@@ -263,9 +263,6 @@
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
-  .mt-8 {
-    margin-top: calc(var(--spacing) * 8);
-  }
   .mt-auto {
     margin-top: auto;
   }
@@ -292,6 +289,9 @@
   }
   .ml-3 {
     margin-left: calc(var(--spacing) * 3);
+  }
+  .ml-\[42px\] {
+    margin-left: 42px;
   }
   .ml-auto {
     margin-left: auto;
@@ -327,6 +327,12 @@
   }
   .h-4 {
     height: calc(var(--spacing) * 4);
+  }
+  .h-6 {
+    height: calc(var(--spacing) * 6);
+  }
+  .h-9 {
+    height: calc(var(--spacing) * 9);
   }
   .h-20 {
     height: calc(var(--spacing) * 20);
@@ -380,6 +386,9 @@
   .w-4 {
     width: calc(var(--spacing) * 4);
   }
+  .w-9 {
+    width: calc(var(--spacing) * 9);
+  }
   .w-12 {
     width: calc(var(--spacing) * 12);
   }
@@ -404,6 +413,9 @@
   .\[min-width\:36ch\] {
     min-width: 36ch;
   }
+  .min-w-0 {
+    min-width: 0px;
+  }
   .min-w-36 {
     min-width: calc(var(--spacing) * 36);
   }
@@ -426,6 +438,9 @@
     flex-shrink: 0;
   }
   .flex-grow {
+    flex-grow: 1;
+  }
+  .grow {
     flex-grow: 1;
   }
   .\[flex-basis\:25\%\] {
@@ -490,9 +505,6 @@
   }
   .gap-6 {
     gap: calc(var(--spacing) * 6);
-  }
-  .gap-8 {
-    gap: calc(var(--spacing) * 8);
   }
   .gap-y-1 {
     row-gap: var(--spacing);
@@ -579,6 +591,10 @@
     border-left-style: var(--tw-border-style);
     border-left-width: 0px;
   }
+  .border-l-2 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 2px;
+  }
   .\!border-dashed {
     --tw-border-style: dashed !important;
     border-style: dashed !important;
@@ -590,6 +606,9 @@
   .\!border-gray-400 {
     border-color: var(--color-gray-400) !important;
   }
+  .border-\[var\(--p-content-border-color\)\] {
+    border-color: var(--p-content-border-color);
+  }
   .border-amber-500 {
     border-color: var(--color-amber-500);
   }
@@ -598,6 +617,15 @@
   }
   .border-outline-variant {
     border-color: var(--md-sys-color-outline-variant);
+  }
+  .border-primary {
+    border-color: var(--md-sys-color-primary);
+  }
+  .border-primary\/50 {
+    border-color: var(--md-sys-color-primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--md-sys-color-primary) 50%, transparent);
+    }
   }
   .border-surface-300 {
     border-color: var(--p-surface-300);
@@ -662,6 +690,9 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
+  .p-5 {
+    padding: calc(var(--spacing) * 5);
+  }
   .p-\[\.375rem\] {
     padding: .375rem;
   }
@@ -673,6 +704,9 @@
   }
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
+  }
+  .px-5 {
+    padding-inline: calc(var(--spacing) * 5);
   }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
@@ -688,6 +722,9 @@
   }
   .pb-3 {
     padding-bottom: calc(var(--spacing) * 3);
+  }
+  .pb-5 {
+    padding-bottom: calc(var(--spacing) * 5);
   }
   .pl-3 {
     padding-left: calc(var(--spacing) * 3);
@@ -816,6 +853,9 @@
   .underline-offset-2 {
     text-underline-offset: 2px;
   }
+  .opacity-60 {
+    opacity: 60%;
+  }
   .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -843,9 +883,18 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
+  .transition-colors {
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
   .duration-100 {
     --tw-duration: 100ms;
     transition-duration: 100ms;
+  }
+  .select-none {
+    -webkit-user-select: none;
+    user-select: none;
   }
   .horizontal-writing-tb {
     writing-mode: horizontal-tb;

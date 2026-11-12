@@ -5,11 +5,10 @@ import {
 import { CANNetwork, CANStatus } from '@/client';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
-import TextBlock from '@base/components/TextBlock.vue';
+import HardwareStep from '@/components/misc/HardwareStep.vue';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import Tag from 'primevue/tag';
 import ToggleSwitch from 'primevue/toggleswitch';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 
@@ -86,37 +85,28 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div>
-    <TextBlock
-      heading="CAN Network"
-      subheading="Search for CAN adapters and connect the API to one of them."
-      button-text="Search"
-      button-icon-class="pi pi-search"
-      :button-loading="scanLoading"
-      @button-click="scan()"
-    />
-    <div class="flex flex-row items-center gap-4 mb-3">
-      <Tag
-        :value="statusText[state.canStatus]"
-        :severity="statusSeverity[state.canStatus]"
-      />
-      <span
-        v-if="state.canStatus === 'CONNECTED'"
-        class="text-sm"
-      >
-        STU {{ state.stuConnected ? 'responding' : 'not responding' }}
-      </span>
-      <span
-        v-if="state.canError"
-        class="text-sm text-error"
-      >
-        {{ state.canError }}
-      </span>
-      <label class="flex flex-row items-center gap-2 ml-auto text-sm">
+  <HardwareStep
+    :step="1"
+    :state="state.canStatus === 'CONNECTED' ? 'done' : 'current'"
+    title="CAN Network"
+    subtitle="Search for CAN adapters and connect the API to one of them."
+    :status="statusText[state.canStatus]"
+    :severity="statusSeverity[state.canStatus]"
+    :error="state.canError ?? ''"
+  >
+    <template #actions>
+      <label class="flex flex-row items-center gap-2 text-sm">
         <ToggleSwitch v-model="store.canAutoScan" />
         Search automatically
       </label>
-    </div>
+      <Button
+        outlined
+        label="Search"
+        icon="pi pi-search"
+        :loading="scanLoading"
+        @click="scan()"
+      />
+    </template>
     <DataTable :value="state.canNetworks">
       <template #empty>
         No CAN network found. Check that the adapter is plugged in and,
@@ -162,5 +152,5 @@ onBeforeUnmount(() => {
         </template>
       </Column>
     </DataTable>
-  </div>
+  </HardwareStep>
 </template>
