@@ -514,6 +514,9 @@
   .justify-end {
     justify-content: flex-end;
   }
+  .gap-1 {
+    gap: var(--spacing);
+  }
   .gap-1\.5 {
     gap: calc(var(--spacing) * 1.5);
   }
@@ -737,6 +740,9 @@
   .\!px-5 {
     padding-inline: calc(var(--spacing) * 5) !important;
   }
+  .px-1 {
+    padding-inline: var(--spacing);
+  }
   .px-3 {
     padding-inline: calc(var(--spacing) * 3);
   }
@@ -824,6 +830,12 @@
   }
   .\[overflow-wrap\:anywhere\] {
     overflow-wrap: anywhere;
+  }
+  .break-all {
+    word-break: break-all;
+  }
+  .\!whitespace-pre-line {
+    white-space: pre-line !important;
   }
   .\!text-black {
     color: var(--color-black) !important;
@@ -1030,6 +1042,14 @@
     .hover\:border-0:hover {
       border-style: var(--tw-border-style);
       border-width: 0px;
+    }
+    .hover\:bg-black\/10:hover {
+      background-color: color-mix(in srgb, #000 10%, transparent);
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-black\/10:hover {
+        background-color: color-mix(in oklab, var(--color-black) 10%, transparent);
+      }
     }
     .hover\:bg-surface-variant:hover {
       background-color: var(--md-sys-color-surface-variant);
