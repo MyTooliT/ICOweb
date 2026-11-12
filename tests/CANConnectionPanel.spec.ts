@@ -8,13 +8,15 @@ const getCANNetworks = vi.fn()
 const getCANNetworksQuiet = vi.fn()
 const connectCAN = vi.fn()
 const disconnectCAN = vi.fn()
+const resetCAN = vi.fn()
 vi.mock('@/api/icoapi.ts', () => ({
   getSystemState: () => getSystemState(),
   getWSLink: () => 'ws://test/api/v1',
   getCANNetworks: () => getCANNetworks(),
   getCANNetworksQuiet: () => getCANNetworksQuiet(),
   connectCAN: (network: any) => connectCAN(network),
-  disconnectCAN: () => disconnectCAN()
+  disconnectCAN: () => disconnectCAN(),
+  resetCAN: () => resetCAN()
 }))
 
 import CANConnectionPanel from '@/components/misc/CANConnectionPanel.vue'
@@ -59,7 +61,7 @@ describe('CANConnectionPanel', () => {
     vi.useFakeTimers()
     setActivePinia(createPinia())
     vi.stubGlobal('WebSocket', FakeWebSocket)
-    for (const mock of [getSystemState, getCANNetworks, getCANNetworksQuiet, connectCAN, disconnectCAN]) {
+    for (const mock of [getSystemState, getCANNetworks, getCANNetworksQuiet, connectCAN, disconnectCAN, resetCAN]) {
       mock.mockReset()
     }
     getCANNetworksQuiet.mockResolvedValue({} as CANNetworksModel)
@@ -90,6 +92,18 @@ describe('CANConnectionPanel', () => {
     expect(wrapper.text()).toContain('Connected')
     await button(wrapper, 'Disconnect')!.trigger('click')
     expect(disconnectCAN).toHaveBeenCalled()
+  })
+
+  it('offers to reset the connected network', async () => {
+    resetCAN.mockResolvedValue(undefined)
+    const { wrapper } = await mountPanel(state())
+    expect(button(wrapper, 'Reset')).toBeUndefined()
+
+    const connected = await mountPanel(state({
+      can_status: 'CONNECTED', can_selected: NETWORK, stu_connected: true
+    }))
+    await button(connected.wrapper, 'Reset')!.trigger('click')
+    expect(resetCAN).toHaveBeenCalled()
   })
 
   it('disables the buttons while connecting and during a measurement', async () => {

@@ -31,9 +31,10 @@ const canConnected = computed(
 // Status shown in the header of each step
 const stuStatus = computed(() => {
   if(!canConnected.value) return { label: 'Waiting', severity: 'secondary' }
-  return store.hasSTU
-    ? { label: 'Loaded', severity: 'success' }
-    : { label: 'Not loaded', severity: 'secondary' }
+  // Same wording as the STU status in the bottom bar
+  return generalStore.systemState.stuConnected
+    ? { label: 'Connected', severity: 'success' }
+    : { label: 'Not connected', severity: 'danger' }
 })
 const sthStatus = computed(() => {
   if(!canConnected.value) return { label: 'Waiting', severity: 'secondary' }
