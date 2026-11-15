@@ -22,7 +22,9 @@ import {
   FileCloudDetails,
   DeleteEmbeddedFileApiV1FilesNameEmbeddedDatasetNameDeleteData,
   Body_update_file_api_v1_cloud_update_post,
-  SupplyVoltageResponseModel
+  SupplyVoltageResponseModel,
+  PreflightResponse,
+  UnitStateModel
 } from '@/client';
 import { useAPI } from './api.ts';
 import ToastEventBus from 'primevue/toasteventbus';
@@ -91,6 +93,17 @@ export async function delay(): Promise<any> {
 // an error message (e.g. when the API is not reachable yet).
 const { get: getQuiet } = useAPI(getAPILink())
 
+/**
+ * Add the unit to the endpoint (multi STU support).
+ *
+ * Without a unit the API uses the first one.
+ */
+export function forUnit(endpoint: string, unit?: string | null): string {
+  if(!unit) return endpoint
+  const separator = endpoint.includes('?') ? '&' : '?'
+  return `${endpoint}${separator}unit=${encodeURIComponent(unit)}`
+}
+
 export async function getSystemState(): Promise<SystemStateModel> {
   return new Promise((resolve, reject) => {
     getQuiet<SystemStateModel>('state').then(resolve).catch(reject)
@@ -118,106 +131,112 @@ export async function connectCAN(network?: Pick<CANNetwork, 'interface' | 'chann
   })
 }
 
-export async function disconnectCAN(): Promise<CANNetworksModel> {
+export async function getUnits(): Promise<UnitStateModel[]> {
   return new Promise((resolve, reject) => {
-    put<void, CANNetworksModel>('can/disconnect', undefined)
+    get<UnitStateModel[]>('can/units').then(resolve).catch(reject)
+  })
+}
+
+export async function disconnectCAN(unit?: string): Promise<CANNetworksModel> {
+  return new Promise((resolve, reject) => {
+    put<void, CANNetworksModel>(forUnit('can/disconnect', unit), undefined)
       .then(resolve)
       .catch(reject)
   })
 }
 
-export async function getSTHDevicesMeta(): Promise<STHDeviceResponseModel[]> {
+export async function getSTHDevicesMeta(unit?: string | null): Promise<STHDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
-    get<(STHDeviceResponseModel)[]>('sth')
+    get<(STHDeviceResponseModel)[]>(forUnit('sth', unit))
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function connectSTHDevice(mac_address: string): Promise<void> {
+export async function connectSTHDevice(mac_address: string, unit?: string | null): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<{ mac_address: string }, void>('sth/connect', { mac_address: mac_address })
+    put<{ mac_address: string }, void>(forUnit('sth/connect', unit), { mac_address: mac_address })
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function disconnectSTHDevice(): Promise<void> {
+export async function disconnectSTHDevice(unit?: string | null): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<any, void>('sth/disconnect', {})
+    put<any, void>(forUnit('sth/disconnect', unit), {})
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function renameSTHDevice(model: STHRenameRequestModel): Promise<STHRenameResponseModel> {
+export async function renameSTHDevice(model: STHRenameRequestModel, unit?: string | null): Promise<STHRenameResponseModel> {
   return new Promise((resolve, reject) => {
-    put<STHRenameRequestModel, STHRenameResponseModel>('sth/rename', model)
+    put<STHRenameRequestModel, STHRenameResponseModel>(forUnit('sth/rename', unit), model)
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function getSTUDevices(): Promise<STUDeviceResponseModel[]> {
+export async function getSTUDevices(unit?: string | null): Promise<STUDeviceResponseModel[]> {
   return new Promise((resolve, reject) => {
-    get<STUDeviceResponseModel[]>('stu')
+    get<STUDeviceResponseModel[]>(forUnit('stu', unit))
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function requestSTUConnectionStatus(): Promise<boolean> {
+export async function requestSTUConnectionStatus(unit?: string | null): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    get<boolean>('stu/connected')
+    get<boolean>(forUnit('stu/connected', unit))
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function getADCValues(): Promise<ADCValues> {
+export async function getADCValues(unit?: string | null): Promise<ADCValues> {
   return new Promise((resolve, reject) => {
-    get<ADCValues>('sth/read-adc')
+    get<ADCValues>(forUnit('sth/read-adc', unit))
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function writeADCValues(values: ADCValues): Promise<void> {
+export async function writeADCValues(values: ADCValues, unit?: string | null): Promise<void> {
   return new Promise((resolve, reject) => {
     put<{ config: ADCValues }, void>
-      ('sth/write-adc', { config: values })
+      (forUnit('sth/write-adc', unit), { config: values })
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function getSupplyVoltage(): Promise<SupplyVoltageResponseModel> {
+export async function getSupplyVoltage(unit?: string | null): Promise<SupplyVoltageResponseModel> {
   return new Promise((resolve, reject) => {
-    get<SupplyVoltageResponseModel>('sth/supply-voltage')
+    get<SupplyVoltageResponseModel>(forUnit('sth/supply-voltage', unit))
         .then(data => resolve(data))
         .catch(reject)
   })
 }
 
-export async function resetSTUDevice(): Promise<void> {
+export async function resetSTUDevice(unit?: string | null): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<any, void>('stu/reset', {})
+    put<any, void>(forUnit('stu/reset', unit), {})
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function enableSTUOTA(): Promise<void> {
+export async function enableSTUOTA(unit?: string | null): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<any, void>('stu/ota/enable', {})
+    put<any, void>(forUnit('stu/ota/enable', unit), {})
       .then(data => resolve(data))
       .catch(reject)
   })
 }
 
-export async function disableSTUOTA(): Promise<void> {
+export async function disableSTUOTA(unit?: string | null): Promise<void> {
   return new Promise((resolve, reject) => {
-    put<any, void>('stu/ota/disable', {})
+    put<any, void>(forUnit('stu/ota/disable', unit), {})
       .then(data => resolve(data))
       .catch(reject)
   })
@@ -258,6 +277,17 @@ export async function getMeasurementStatus(): Promise<MeasurementStatus> {
 export async function startMeasurement(instructions: MeasurementInstructions_Input): Promise<ControlResponse> {
   return new Promise((resolve, reject) => {
     post<MeasurementInstructions_Input, ControlResponse>('measurement/start', instructions)
+        .then(data => resolve(data))
+        .catch(reject)
+  })
+}
+
+/**
+ * Check if all units are ready for a measurement (nothing is changed)
+ */
+export async function getPreflight(): Promise<PreflightResponse> {
+  return new Promise((resolve, reject) => {
+    get<PreflightResponse>('measurement/preflight')
         .then(data => resolve(data))
         .catch(reject)
   })

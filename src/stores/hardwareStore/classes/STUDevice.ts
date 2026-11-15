@@ -16,19 +16,23 @@ export type TOTAState = 'enabled' | 'enabling' | 'disabled' | 'disabling'
 
 export class STUDevice extends Device {
   private OTAState: TOTAState;
+  /** Unit (CAN network) of the STU, `null` without multi STU support */
+  public readonly unit: string | null;
   constructor(
     device_number: TDeviceNumber,
     name: TName,
     mac_address: TMac,
     status: TDeviceConnectionStatus = 'disconnected',
-    ota: TOTAState = 'disabled'
+    ota: TOTAState = 'disabled',
+    unit: string | null = null
   ) {
     super(device_number, name, mac_address, status);
     this.OTAState = ota
+    this.unit = unit
   }
   public async reset(): Promise<void> {
     try {
-      await resetSTUDevice()
+      await resetSTUDevice(this.unit)
     } catch(e) {
       throw e
     }
@@ -37,7 +41,7 @@ export class STUDevice extends Device {
   public async enableOTA(): Promise<void> {
     try {
       this.OTAState = 'enabling'
-      await enableSTUOTA()
+      await enableSTUOTA(this.unit)
       this.OTAState = 'enabled'
     } catch(e) {
       throw e;
@@ -47,7 +51,7 @@ export class STUDevice extends Device {
   public async disableOTA(): Promise<void> {
     try {
       this.OTAState = 'disabling'
-      await disableSTUOTA()
+      await disableSTUOTA(this.unit)
       this.OTAState = 'disabled'
     } catch(e) {
       throw e;
@@ -60,7 +64,7 @@ export class STUDevice extends Device {
 
   public async checkConnection() {
     try {
-      this.connection_status = await requestSTUConnectionStatus()
+      this.connection_status = await requestSTUConnectionStatus(this.unit)
         ? 'connected'
         : 'disconnected'
     } catch(e) {
@@ -79,6 +83,7 @@ export class STUDevice extends Device {
       mac_address: this.mac_address,
       status: this.connection_status,
       ota: this.OTAState,
+      unit: this.unit,
       classtype: 'STU'
     }
   }

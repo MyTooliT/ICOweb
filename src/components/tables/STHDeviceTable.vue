@@ -10,12 +10,18 @@ import { useLoadingHandler } from '@/utils/useLoadingHandler.ts';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import Select from 'primevue/select';
 import { format } from 'date-fns';
 
+// The unit of the sensor devices (multi STU support). Without it all devices
+// are shown.
+const props = defineProps<{ unit?: string | null }>()
+
 const hwStore = useHardwareStore()
 const store = useGeneralStore()
+const unitName = computed(() => props.unit ?? null)
+const active = computed(() => hwStore.activeSTHFor(unitName.value))
 
 function rowClass(data: STHDevice) {
   // eslint-disable-next-line max-len
@@ -31,9 +37,9 @@ const device = ref<STHDevice | null>(null)
 const {call, loading} = useLoadingHandler<void>(handleSubmit)
 
 async function handleConnect(device: STHDevice) {
-  if(hwStore.activeSTH) {
-    await hwStore.activeSTH.disconnect()
-    await hwStore.activeSTU.reset()
+  if(active.value) {
+    await active.value.disconnect()
+    await hwStore.stuListFor(unitName.value)[0]?.reset()
   }
   await device.connect()
 }
@@ -46,25 +52,33 @@ function isValidHolderID(id: string | undefined): boolean {
 const {
   loading: supplyVoltageLoading, call: updateSupplyVoltage
 } = useLoadingHandler(async () => {
-  if(!hwStore.activeSTH) return
-  await hwStore.activeSTH.requestSupplyVoltage()
+  if(!active.value) return
+  await active.value.requestSupplyVoltage()
 })
 </script>
 
 <template>
   <DataTable
-    :value="hwStore.STHDeviceList"
+    :value="hwStore.sthListFor(unitName)"
     :row-class="rowClass"
   >
-    <Column
-      header="ID">
-      <template #body="{ data }: { data: STHDevice }">
-        {{ data.getDeviceNumber() }}
-      </template>
-    </Column>
     <Column header="Name">
       <template #body="{ data }: { data: STHDevice }">
-        {{ data.getName() }}
+        <div class="flex flex-row items-center justify-between gap-2">
+          {{ data.getName() }}
+          <Button
+            outlined
+            rounded
+            size="small"
+            icon="pi pi-pencil"
+            aria-label="Rename"
+            v-tooltip.top="'Rename'"
+            @click="() => {
+              device = data
+              store.renameSTHModalVisible = true
+            }"
+          />
+        </div>
       </template>
     </Column>
     <Column
@@ -96,7 +110,7 @@ const {
             {{ data.getSupplyVoltageRepr() }}
           </span>
           <Button
-            v-if="hwStore.activeSTH"
+            v-if="active"
             class="my-auto ml-2 !border-none"
             icon="pi pi-sync"
             outlined
@@ -126,22 +140,13 @@ const {
     <Column header="Actions">
       <template #body="{ data }: { data: STHDevice }">
         <div class="flex flex-wrap gap-3">
-          <Button
-            rounded
-            size="small"
-            label="Rename"
-            icon="pi pi-pencil"
-            @click="() => {
-              device = data
-              store.renameSTHModalVisible = true
-            }"
-          />
           <ConnectionButton
             :device="data"
             @connect="() => handleConnect(data)"
             @disconnect="() => data.disconnect()"
           />
           <Button
+            v-if="!store.systemState.multiUnit"
             rounded
             size="small"
             label="Measure"

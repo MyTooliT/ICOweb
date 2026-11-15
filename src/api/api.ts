@@ -69,7 +69,7 @@ async function sendRequest<ResponseType>(
         } else {
           try {
             const json = await response.json()
-            onError(json['detail'])
+            onError(describeDetail(json['detail']))
           } catch(e) {
             const text = await response.text()
             onError(text)
@@ -91,6 +91,21 @@ async function sendRequest<ResponseType>(
         });
       });
   });
+}
+
+/**
+ * Get the text of the `detail` of an error response.
+ *
+ * Most errors have a text. Others (e.g. a measurement that did not start
+ * because units are not ready) have an object with a `message`.
+ */
+export function describeDetail(detail: unknown): string {
+  if(typeof detail === 'string') return detail
+  if(detail && typeof detail === 'object' && 'message' in detail
+    && typeof (detail as { message: unknown }).message === 'string') {
+    return (detail as { message: string }).message
+  }
+  return JSON.stringify(detail)
 }
 
 function joinUrl(base: string, path: string): string {

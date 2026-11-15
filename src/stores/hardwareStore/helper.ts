@@ -17,7 +17,8 @@ export function consumeNewMetadata(
   list: Array<STHDevice>,
   newList: Array<STHDeviceResponseModel>,
   defaultHolderId: string,
-  holderList: Array<HolderConfig>
+  holderList: Array<HolderConfig>,
+  unit: string | null = null
 ): Array<STHDevice> {
   const assembledList: Array<STHDevice> = [];
   list.forEach(item => {
@@ -40,7 +41,10 @@ export function consumeNewMetadata(
         item.name,
         item.mac_address,
         item.rssi,
-        defaultHolderId
+        defaultHolderId,
+        'disconnected',
+        null,
+        unit
       ))
     })
   }
