@@ -9,9 +9,8 @@ import HardwareStep from '@/components/misc/HardwareStep.vue';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import Popover from 'primevue/popover';
 import ToggleSwitch from 'primevue/toggleswitch';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 
 const store = useGeneralStore()
 const state = store.systemState
@@ -28,7 +27,7 @@ const { loading: disconnectLoading, call: disconnect } = useLoadingHandler(
 )
 
 const { loading: resetLoading, call: reset } = useLoadingHandler(resetCAN)
-const resetInfo = ref<InstanceType<typeof Popover> | null>(null)
+const resetTooltip = 'Closes the CAN connection, discovers the CAN networks again and reconnects to this network, if it is still available.\n\nUse it when the STU stops responding.'
 
 const busy = computed(() => {
   return scanLoading.value
@@ -151,21 +150,12 @@ onBeforeUnmount(() => {
               rounded
               outlined
               size="small"
+              v-tooltip.top="{ value: resetTooltip }"
               label="Reset"
               icon="pi pi-refresh"
               :loading="resetLoading"
               :disabled="locked"
               @click="reset()"
-            />
-            <Button
-              text
-              rounded
-              size="small"
-              icon="pi pi-info-circle"
-              aria-label="What does Reset do?"
-              @mouseenter="resetInfo?.show($event)"
-              @mouseleave="resetInfo?.hide()"
-              @click="resetInfo?.toggle($event)"
             />
           </div>
           <Button
@@ -181,12 +171,5 @@ onBeforeUnmount(() => {
         </template>
       </Column>
     </DataTable>
-    <Popover ref="resetInfo">
-      <div class="max-w-xs text-sm">
-        Closes the CAN connection, discovers the CAN networks again and
-        reconnects to this network, if it is still available. Use it when the
-        STU stops responding.
-      </div>
-    </Popover>
   </HardwareStep>
 </template>

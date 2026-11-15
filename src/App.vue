@@ -22,6 +22,12 @@ watch(() => store.systemState.canStatus, (status, previous) => {
   }
 })
 
+// The API is the source of truth for the connected sensor device. Follow it,
+// also when another client (e.g. a remote user) connects or disconnects one.
+watch(() => store.systemState.sthConnected, (connected) => {
+  hardwareStore.applyConnectedSTH(connected)
+})
+
 const navLogoExtra = import.meta.env.VITE_APPLICATION_THEME_EXTRALOGO === 'true'
   ? extraLogo
   : undefined

@@ -127,14 +127,17 @@ router.afterEach(async (_to, _from, _failure) => {
   }
 
   if(_to.name === 'Measure') {
-    if(!store.systemState.running && await canConnected()) {
+    if(await canConnected()) {
       const hwStore = useHardwareStore()
       store.setLoaderInfoMessage('Checking for active measurement...')
       // Reload-safe: take the connected sensor device from the API instead of
-      // trusting (or probing and then overwriting) what local storage says
+      // trusting (or probing and then overwriting) what local storage says.
+      // This is also needed while a measurement is running, e.g. one that
+      // another client started.
       hwStore.applyConnectedSTH(store.systemState.sthConnected)
 
-      if(hwStore.activeSTH) {
+      // Reading from the sensor device is only possible without measurement
+      if(hwStore.activeSTH && !store.systemState.running) {
         const adcStore = useADCStore()
         try {
           store.setLoaderInfoMessage('Checking ADC settings...')

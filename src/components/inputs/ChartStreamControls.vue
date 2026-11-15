@@ -48,7 +48,10 @@ const options: Array<{
 
 <template>
   <div class="flex flex-col gap-3">
-    <div class="flex flex-col gap-2 text-sm">
+    <div
+      v-if="!gStore.systemState.running"
+      class="flex flex-col gap-2 text-sm"
+    >
       <label
         v-for="option in options"
         :key="option.id"
@@ -67,9 +70,7 @@ const options: Array<{
     </div>
     <InputGroup>
       <InputNumber
-        v-if="
-          (gStore.systemState.running && !mStore.continuous)
-            || !gStore.systemState.running"
+        v-if="!gStore.systemState.running"
         v-model="mStore.acquisitionTime"
         input-id="acqTime"
         aria-label="Acquisition time in seconds"
@@ -79,9 +80,7 @@ const options: Array<{
         class="!w-min"
       />
       <InputGroupAddon
-        v-if="
-          (gStore.systemState.running && !mStore.continuous)
-            || !gStore.systemState.running"
+        v-if="!gStore.systemState.running"
         :disabled="mStore.continuous"
       >
         s

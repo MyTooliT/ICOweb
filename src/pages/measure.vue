@@ -33,7 +33,10 @@ import {useDisable} from '@/utils/useDisable.ts';
 import PreMetaData from '@/components/forms/PreMetaData.vue';
 import PostMetaModal from '@/components/modals/PostMetaModal.vue';
 import {useYamlConfig} from '@/utils/useYamlConfig.ts';
-import {SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
+import {Sensor, SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
+import {ActiveChannels} from '@/stores/measurementStore/measurementStore.ts';
+import {MeasurementStatus} from '@/client';
+import {format} from 'date-fns';
 /* eslint-enable max-len */
 
 const chartData = ref<ChartData<'line'>>({
@@ -61,19 +64,96 @@ const {
 () => gStore.systemState.checkState()
 )
 
+/*
+ * Several people can use the same device at the same time (e.g. remotely).
+ * The API is the source of truth for the connected sensor device and for a
+ * running measurement, so everything about them comes from the system state,
+ * not from the settings stored in this browser. This also works for a
+ * measurement another client started.
+ */
+type TSlot = typeof measurementChannels[number]
+type TSlotSensor = { channel?: number, sensor: Sensor }
+
+const running = computed<boolean>(() => gStore.systemState.running)
+const runningStatus = computed<MeasurementStatus | null>(() =>
+  gStore.systemState.running ? gStore.systemState.measurementStatus : null
+)
+const runningInstructions = computed(() => runningStatus.value?.instructions ?? null)
+
+// Sensor device the API is connected to
+const connectedSTH = computed(() => gStore.systemState.sthConnected)
+const hasDevice = computed<boolean>(() => running.value || connectedSTH.value !== null)
+
+// Holder configuration chosen for the sensor device in this browser, or the
+// default one (e.g. in a browser that never listed the sensor devices)
+const holder = computed(() =>
+  hwStore.activeHolder ?? hwStore.getHolder(hwStore.defaultHolderID)
+)
+
+// Channels of the running measurement, otherwise the local selection
+const slots = computed<Record<TSlot, { active: boolean, sensorId: string | null }>>(() => {
+  const instructions = runningInstructions.value
+  const result = {} as Record<TSlot, { active: boolean, sensorId: string | null }>
+  measurementChannels.forEach(slot => {
+    if(instructions) {
+      const sensorId = instructions[slot]?.sensor_id ?? null
+      result[slot] = { active: sensorId !== null, sensorId }
+    } else {
+      result[slot] = {
+        active: mStore.activeChannels[slot],
+        sensorId: mStore.selectedChannels[slot]
+      }
+    }
+  })
+  return result
+})
+const activeSlots = computed<ActiveChannels>(() => ({
+  first: slots.value.first.active,
+  second: slots.value.second.active,
+  third: slots.value.third.active
+}))
+const iftRequested = computed<boolean>(() =>
+  runningInstructions.value ? runningInstructions.value.ift_requested : mStore.IFTRequested
+)
+const iftChannel = computed<TSlot>(() => {
+  const channel = runningInstructions.value?.ift_channel
+  return (measurementChannels as readonly string[]).includes(channel ?? '')
+    ? channel as TSlot
+    : mStore.IFTChannel
+})
+
+function findSensor(sensorId: string | null | undefined): TSlotSensor | undefined {
+  if(!sensorId) return undefined
+  const assigned = holder.value?.sensors.find(sens => sens.sensor.sensor_id === sensorId)
+  if(assigned) return assigned
+  const sensor = hwStore.sensorList.find(sens => sens.sensor_id === sensorId)
+  return sensor ? { sensor } : undefined
+}
+
+function sensorRepr(slotSensor?: TSlotSensor): string {
+  if(!slotSensor) return ''
+  return slotSensor.channel === undefined
+    ? slotSensor.sensor.name
+    : `[${slotSensor.channel}] ${slotSensor.sensor.name}`
+}
+
+function slotRepr(slot: TSlot): string {
+  return sensorRepr(findSensor(slots.value[slot].sensorId))
+}
+
 function wrapUpdate() {
   updateChartData(
     storage.value,
     chartData,
-    mStore.activeChannels,
-    mStore.IFTRequested,
+    activeSlots.value,
+    iftRequested.value,
     maxNumberOfPoints.value,
     ift_storage,
     {
-      first: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.first)) ?? 'First Channel',
-      second: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.second)) ?? 'Second Channel',
-      third: channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.third)) ?? 'Third Channel',
-      ift: `IFT Value (${channelSensorRepr(hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels[mStore.IFTChannel]))})`
+      first: slotRepr('first') || 'First Channel',
+      second: slotRepr('second') || 'Second Channel',
+      third: slotRepr('third') || 'Third Channel',
+      ift: `IFT Value (${slotRepr(iftChannel.value)})`
     },
     channelUnits.value,
     3175,
@@ -108,9 +188,9 @@ const chartYMinPerUnit = ref<{[key: string] : number}>({})
 const chartYMaxPerUnit = ref<{[key: string] : number}>({})
 const channelUnits = computed(() => {
   return {
-    first: hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.first)?.sensor.sensorType.physicalUnit ?? '',
-    second: hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.second)?.sensor.sensorType.physicalUnit ?? '',
-    third: hwStore.activeHolder?.sensors.find(sens => sens.sensor.sensor_id === mStore.selectedChannels.third)?.sensor.sensorType.physicalUnit ?? '',
+    first: findSensor(slots.value.first.sensorId)?.sensor.sensorType.physicalUnit ?? '',
+    second: findSensor(slots.value.second.sensorId)?.sensor.sensorType.physicalUnit ?? '',
+    third: findSensor(slots.value.third.sensorId)?.sensor.sensorType.physicalUnit ?? '',
   }
 })
 const config = useYamlConfig()
@@ -148,7 +228,7 @@ const { loading: startLoading, call: start } = useLoadingHandler(async () => {
     third: {
       sensor_id: mStore.activeChannels.third ? mStore.selectedChannels.third : null
     },
-    mac_address: hwStore.activeSTH?.getMacAddress(),
+    mac_address: hwStore.activeSTH?.getMacAddress() ?? connectedSTH.value?.mac_address,
     time: mStore.continuous ? null : mStore.acquisitionTime,
     ift_requested: mStore.IFTRequested,
     ift_channel: mStore.IFTChannel,
@@ -223,14 +303,61 @@ watch(() => gStore.systemState.running, (running, wasRunning) => {
 })
 
 const show = () => {
+  // Already open or opening (e.g. started here and pushed as running)
+  if(state.value !== 'closed') return
   mStore.resetChartBounds();
   open()
 }
 
+// Show the data of a measurement that someone else started, or that was
+// already running when this page was opened
+watch(running, (isRunning) => {
+  if(isRunning && mStore.autostream) show()
+})
+
 function channelSensorRepr(assignedSensor?: TAssignedSensor): string {
-  if (!assignedSensor) return ''
-  return `[${assignedSensor.channel}] ${assignedSensor.sensor.name}`
+  return sensorRepr(assignedSensor)
 }
+
+// Running time of the measurement, updated every second. The API reports the
+// start time with UTC offset, so this is also correct in other time zones.
+const now = ref<number>(Date.now())
+let clock: number | undefined = undefined
+
+function formatDuration(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+  const mmss = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+  return hours > 0 ? `${hours}:${mmss}` : mmss
+}
+
+const startTime = computed<Date | null>(() => {
+  const start = runningStatus.value?.start_time
+  return start ? new Date(start) : null
+})
+const elapsed = computed<string | null>(() => {
+  if(!startTime.value) return null
+  return formatDuration(Math.max(0, Math.floor((now.value - startTime.value.getTime()) / 1000)))
+})
+const duration = computed<string>(() => {
+  const time = runningInstructions.value?.time
+  return time ? formatDuration(time) : 'Until stopped'
+})
+const runningChannels = computed(() =>
+  measurementChannels
+    .filter(slot => slots.value[slot].active)
+    .map(slot => slotRepr(slot) || slots.value[slot].sensorId || slot)
+)
+const supplyVoltage = computed<string>(() => {
+  if(running.value) {
+    const voltage = runningStatus.value?.start_supply_voltage
+    return voltage === null || voltage === undefined
+      ? 'N/A'
+      : `${voltage.toFixed(2)}V (at start)`
+  }
+  return hwStore.activeSTH?.getSupplyVoltageRepr() ?? 'N/A'
+})
 
 // Maximum drawable points per channel for the graph
 const maxNumberOfPoints = ref<number>(1000)
@@ -243,7 +370,7 @@ const lostPercent = computed<number | null>(() =>
 )
 
 // Status of the measurement for the header of the chart
-const measurementStatus = computed(() => {
+const statusTag = computed(() => {
   if(gStore.systemState.running) {
     return state.value === 'open'
       ? { label: 'Recording · live', severity: 'success' }
@@ -258,8 +385,8 @@ const measurementStatus = computed(() => {
 const canMeasure = computed<boolean>(() => {
   return (
       hwStore.hasSTU &&
-      hwStore.hasSTH &&
-      hwStore.hasHolder &&
+      connectedSTH.value !== null &&
+      holder.value !== undefined &&
       (mStore.acquisitionTime > 0 || mStore.continuous) &&
       mStore.selectedChannels.first !== null &&
       (metaEnabled.value ? mStore.preMetaValid : true)
@@ -270,14 +397,9 @@ const scales = ref<Record<string, Chart.ChartYAxe>>(computeScales())
 
 function computeScales(): Record<string, Chart.ChartYAxe> {
   const scl: Record<string, Chart.ChartYAxe> = {}
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const relevantSensorIds = Object.entries(mStore.selectedChannels).filter(([channel_key, _]) => {
-    return mStore.activeChannels[channel_key as typeof measurementChannels[number]]
-  }).map(([_, sensor_id]) => sensor_id)
-  /* eslint-enable @typescript-eslint/no-unused-vars */
-  const sensorsForChannels = relevantSensorIds.map(sensorId =>
-      hwStore.activeHolder?.sensors.find(sensor => sensor.sensor.sensor_id === sensorId)
-  )
+  const sensorsForChannels = measurementChannels
+    .filter(slot => slots.value[slot].active)
+    .map(slot => findSensor(slots.value[slot].sensorId))
   const uniqueDimensionChannels: Array<SensorType> = []
   sensorsForChannels.forEach(sensor => {
     if(!sensor) return
@@ -307,16 +429,19 @@ function computeScales(): Record<string, Chart.ChartYAxe> {
 const metaEnabled = ref<boolean>(false)
 
 onMounted(async () => {
+  clock = window.setInterval(() => now.value = Date.now(), 1000)
+  if(running.value && mStore.autostream) show()
   await hwStore.refetchSensorsAndHolders()
-  if(hwStore.activeHolder) {
-    if(hwStore.activeHolder.sensors.length < Object.values(mStore.activeChannels).filter(channel => channel).length) {
+  const currentHolder = holder.value
+  if(currentHolder) {
+    if(currentHolder.sensors.length < Object.values(mStore.activeChannels).filter(channel => channel).length) {
       mStore.activeChannels = {
         first: true,
         second: false,
         third: false
       }
       mStore.selectedChannels = {
-        first: hwStore.activeHolder.sensors[0].sensor.sensor_id,
+        first: currentHolder.sensors[0].sensor.sensor_id,
         second: null,
         third: null
       }
@@ -325,9 +450,13 @@ onMounted(async () => {
   metaEnabled.value = await useYamlConfig().isEnabled()
   scales.value = computeScales()
 })
-watch(mStore.selectedChannels, () => scales.value = computeScales())
-watch(mStore.activeChannels, () => scales.value = computeScales())
-onBeforeUnmount(() => window.setTimeout(close, 0))
+// Channels or sensors change with the local selection, when a measurement
+// starts or stops, and once the sensors are loaded
+watch([slots, holder, () => hwStore.sensorList.length], () => scales.value = computeScales())
+onBeforeUnmount(() => {
+  if(clock !== undefined) window.clearInterval(clock)
+  window.setTimeout(close, 0)
+})
 </script>
 
 <template>
@@ -339,7 +468,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
     />
     <DefaultLayout class="grow min-w-0">
       <div
-        v-if="hwStore.hasSTU && hwStore.activeSTH"
+        v-if="hasDevice"
         class="flex flex-col lg:flex-row gap-3 items-start"
       >
         <div class="flex flex-col gap-3 grow min-w-0 w-full">
@@ -349,8 +478,8 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
           >
             <template #title>
               <Tag
-                :value="measurementStatus.label"
-                :severity="measurementStatus.severity"
+                :value="statusTag.label"
+                :severity="statusTag.severity"
               />
             </template>
             <StreamingChart
@@ -407,14 +536,50 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
             </template>
             <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
               <dt class="ico-muted">STU</dt>
-              <dd class="text-right">{{ hwStore.activeSTU?.getName() }}</dd>
+              <dd class="text-right">{{ hwStore.activeSTU?.getName() ?? '–' }}</dd>
               <dt class="ico-muted">STH</dt>
-              <dd class="text-right">{{ hwStore.activeSTH?.getName() }}</dd>
+              <dd class="text-right">
+                {{ connectedSTH?.name ?? runningStatus?.tool_name ?? '–' }}
+              </dd>
+              <template v-if="connectedSTH">
+                <dt class="ico-muted">MAC</dt>
+                <dd class="text-right font-mono">{{ connectedSTH.mac_address }}</dd>
+              </template>
               <dt class="ico-muted">Supply voltage</dt>
-              <dd class="text-right">{{ hwStore.activeSTH?.getSupplyVoltageRepr() }}</dd>
+              <dd class="text-right">{{ supplyVoltage }}</dd>
             </dl>
           </ContentCard>
-          <ContentCard title="Control">
+          <ContentCard :title="running ? 'Running Measurement' : 'Control'">
+            <dl
+              v-if="runningStatus"
+              class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm mb-3"
+            >
+              <dt class="ico-muted">File</dt>
+              <dd class="text-right font-mono [overflow-wrap:anywhere]">
+                {{ runningStatus.name ?? '–' }}
+              </dd>
+              <dt class="ico-muted">Started</dt>
+              <dd class="text-right">
+                {{ startTime ? format(startTime, 'HH:mm:ss') : '–' }}
+              </dd>
+              <dt class="ico-muted">Elapsed</dt>
+              <dd class="text-right font-mono">{{ elapsed ?? '–' }}</dd>
+              <dt class="ico-muted">Duration</dt>
+              <dd class="text-right">{{ duration }}</dd>
+              <dt class="ico-muted">Channels</dt>
+              <dd class="text-right">
+                <div
+                  v-for="channel in runningChannels"
+                  :key="channel"
+                >
+                  {{ channel }}
+                </div>
+              </dd>
+              <template v-if="iftRequested">
+                <dt class="ico-muted">IFT</dt>
+                <dd class="text-right">{{ slotRepr(iftChannel) || iftChannel }}</dd>
+              </template>
+            </dl>
             <ChartStreamControls
               :ready="canMeasure"
               :state="state"
@@ -426,10 +591,13 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
               @hide="close"
             />
           </ContentCard>
-          <ContentCard title="Channels">
+          <ContentCard
+            v-if="!running"
+            title="Channels"
+          >
             <div class="flex flex-col gap-2">
               <InputGroup
-                v-for="slot in measurementChannels.slice(0, hwStore.activeHolder?.sensors.length ?? 2)"
+                v-for="slot in measurementChannels.slice(0, holder?.sensors.length ?? 2)"
                 :key="slot"
               >
                 <InputGroupAddon class="w-12">
@@ -442,7 +610,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
                 </InputGroupAddon>
                 <Select
                   v-model="mStore.selectedChannels[slot]"
-                  :options="hwStore.activeHolder?.sensors ?? []"
+                  :options="holder?.sensors ?? []"
                   :option-value="(sens: TAssignedSensor) => sens.sensor.sensor_id"
                   :option-label="channelSensorRepr"
                   :disabled="!mStore.activeChannels[slot] || gStore.systemState.running"
@@ -502,7 +670,7 @@ onBeforeUnmount(() => window.setTimeout(close, 0))
     </DefaultLayout>
     <ADCDrawer v-if="featureEnabled('ADC')" />
     <button
-      v-if="hwStore.activeSTH && featureEnabled('ADC')"
+      v-if="hasDevice && featureEnabled('ADC')"
       class="
         vertical-writing-lr orientation-mixed rotate-180 text-sm px-1
         bg-surface-container hover:bg-surface-container-high border-r ico-divider
