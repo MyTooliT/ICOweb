@@ -20,7 +20,7 @@ import {
   mergeSources,
   SourceMeasurement,
 } from '@/components/charts/staticChartHelper.ts';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/misc/MetadataAccordion.vue';
@@ -48,7 +48,8 @@ const chartBoundaries = ref<ChartBoundaries>({
 })
 
 const fetchingProgress = ref<number>(0)
-const parsedData = ref<DisplayableMeasurement|undefined>(undefined)
+// Shallow: the data has hundreds of thousands of points that must not become reactive
+const parsedData = shallowRef<DisplayableMeasurement|undefined>(undefined)
 const parsedMetadata = ref<ParsedMetadata | undefined>(undefined)
 
 const m = useMessageBus()
@@ -279,8 +280,9 @@ function downloadImage() {
               Overlay
             </label>
             <Select
-              v-if="!overlay"
+              :disabled="overlay"
               :model-value="selectedSource"
+              placeholder="All sources"
               :options="sourceNames"
               aria-label="Source"
               size="small"
