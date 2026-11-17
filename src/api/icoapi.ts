@@ -27,46 +27,18 @@ import {
   UnitStateModel
 } from '@/client';
 import { useAPI } from './api.ts';
+import { buildApiLink, buildWsLink } from './apiEndpoint.ts';
 import ToastEventBus from 'primevue/toasteventbus';
 
+// The address is an override of the user (localStorage) or the default of
+// the environment, see `apiEndpoint.ts`. It only changes with a page reload.
 export function getAPILink(): string {
-  const version = import.meta.env.VITE_API_VERSION || 'v1';
-
-  // If VITE_API_HOSTNAME is set, treat env as an explicit override
-  const envHost = import.meta.env.VITE_API_HOSTNAME;
-  const envPort = import.meta.env.VITE_API_PORT;
-  const envProto = import.meta.env.VITE_API_PROTOCOL;
-
-  if (envHost && envHost.trim().length > 0) {
-    const protocol = envProto || 'http';
-    const portPart = envPort && envPort.toString().trim().length > 0 ? `:${envPort}` : '';
-    return `${protocol}://${envHost}${portPart}/api/${version}`;
-  }
-
-  // Default: same-origin
-  const { origin } = window.location;
-  return `${origin}/api/${version}`;
+  return buildApiLink();
 }
 
 export function getWSLink(): string {
-  const version = import.meta.env.VITE_API_VERSION || 'v1';
-
-  const envHost = import.meta.env.VITE_API_HOSTNAME;
-  const envPort = import.meta.env.VITE_API_PORT;
-  const envWsProto = import.meta.env.VITE_API_WS_PROTOCOL;
-
-  if (envHost && envHost.trim().length > 0) {
-    const protocol = envWsProto || 'ws';
-    const portPart = envPort && envPort.toString().trim().length > 0 ? `:${envPort}` : '';
-    return `${protocol}://${envHost}${portPart}/api/${version}`;
-  }
-
-  // Default: same-origin
-  const { protocol, host } = window.location;
-  const wsProtocol = protocol === 'https:' ? 'wss' : 'ws';
-  return `${wsProtocol}://${host}/api/${version}`;
+  return buildWsLink();
 }
-
 
 const {
   del,

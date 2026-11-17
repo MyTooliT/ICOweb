@@ -89,6 +89,37 @@ which decided between SSL or not.
 VITE_API_WS_PROTOCOL=ws
 ```
 
+These values are only the **default** address. Users can connect to a different ICOapi at runtime via
+"Change API" in the bottom bar (protocol, hostname, port). The override is stored in the browser's
+`localStorage` (`icoweb.apiEndpoint`), the page reloads when it is applied, and "Reset to default" removes it. Both also clear all other persisted state (devices, measurements, ...), because another API is another machine.
+An override takes the WebSocket protocol from its HTTP protocol (`http` → `ws`, `https` → `wss`).
+Without `VITE_API_HOSTNAME`, the default is the origin the page is served from. The target ICOapi must allow
+the origin of ICOweb (CORS), and a page served via `https` cannot talk to an `http` API.
+
+#### Reaching `http` APIs from an `https` ICOweb (reverse proxy)
+
+Browsers block `http`/`ws` requests from an `https` page. To serve ICOweb over `https` and still connect to many
+plain-`http` ICOapi instances (e.g. development sessions in the local network), let the ICOweb server forward the
+requests:
+
+1. Build ICOweb with `VITE_API_PROXY_PREFIX=/proxy` (for the Docker image: in `docker.env`).
+2. Configure your reverse proxy to forward `/proxy/<host>:<port>/...` to `http://<host>:<port>/...`, including
+   WebSockets. [`Caddyfile.example`](Caddyfile.example) does this and restricts the allowed targets.
+
+When the page is served via `https` and the chosen API uses `http`, ICOweb then calls
+`https://<icoweb-host>/proxy/<host>:<port>/api/<version>` (and `wss://` for the WebSocket). The browser only talks `https`
+to the ICOweb host, so no CORS setup or certificate exception is needed for the APIs. Other cases (`http` page,
+`https` API) connect directly as before. Note that:
+
+A ready-to-run setup is in [`docker-compose.yml`](docker-compose.yml): it builds ICOweb (with the prefix) and a Caddy
+using [`deploy/caddy/Caddyfile`](deploy/caddy/Caddyfile) from this repository. Set `ICOWEB_HOST` (address of the
+server), and optionally `ICOWEB_TLS` (`internal` or an e-mail for Let's Encrypt) and `ICOAPI_ALLOWED_HOSTS` (regular
+expression without capturing groups of the allowed ICOapi hosts; default: private IPv4 ranges). Ports 80 and 443 are used.
+
+- The proxy connects from the **server**. The ICOapi must be reachable from it (firewall, listening on a non-loopback
+  address), and `localhost` means the server itself, not the user's computer.
+- Restrict the targets the proxy may forward to (see the example), as it otherwise reaches everything the server can.
+
 ### Enable/Disable Settings
 
 To make the application configurable, pages and features can be enabled and disabled separately. By default, all pages

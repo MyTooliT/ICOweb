@@ -14,6 +14,11 @@ RUN npm ci
 COPY . .
 COPY docker.env .env
 
+# Optional build argument, see README: path prefix of the reverse proxy that
+# forwards https requests to http ICOapi instances. Empty: no proxy.
+ARG VITE_API_PROXY_PREFIX=""
+ENV VITE_API_PROXY_PREFIX=$VITE_API_PROXY_PREFIX
+
 # Build the app
 RUN npm run build
 

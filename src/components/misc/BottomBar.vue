@@ -7,7 +7,9 @@ import Button from 'primevue/button';
 import Popover from 'primevue/popover';
 import Tag from 'primevue/tag';
 import { unitColor, unitLabel } from '@/utils/unitColors.ts';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { clearStoredState } from '@/api/apiEndpoint.ts';
+import ApiEndpointDialog from '@/components/misc/ApiEndpointDialog.vue';
 
 const store = useGeneralStore();
 const hardwareStore = useHardwareStore();
@@ -16,8 +18,16 @@ onMounted(async () => {
   await store.systemState.checkState()
 })
 
+const apiDialogVisible = ref(false)
+
+function openApiDialog() {
+  popovers.forEach((popover) => popover.hide())
+  apiDialogVisible.value = true
+}
+
+// The chosen API address is a setting, not cache: it is kept
 function clearCache() {
-  window?.localStorage?.clear()
+  clearStoredState()
 }
 
 const state = computed<State>(() => {
@@ -280,6 +290,13 @@ function hideDetails(name: string) {
           link
           class="!text-inherit"
           @click="clearCache()" />
+        <Button
+          label="Change API"
+          size="small"
+          link
+          class="!text-inherit"
+          @click="apiDialogVisible = true" />
+        <ApiEndpointDialog v-model:visible="apiDialogVisible" />
       </div>
     </template>
     <div
@@ -292,15 +309,19 @@ function hideDetails(name: string) {
         <div
           v-for="section in sections"
           :key="section.name"
-          class="flex flex-row items-center gap-2 px-4 cursor-default
+          class="flex flex-row items-center gap-2 px-4
             transition-[filter] hover:brightness-110"
-          :class="healthClass[section.health]"
+          :class="[
+            healthClass[section.health],
+            section.name === 'API' ? 'cursor-pointer' : 'cursor-default'
+          ]"
           :style="section.accent
             ? { boxShadow: `inset 6px 0 0 ${section.accent}`, paddingLeft: '1.5rem' }
             : undefined"
           :aria-label="`${section.name}: ${section.status}`"
           @mouseenter="showDetails(section.name, $event)"
           @mouseleave="hideDetails(section.name)"
+          @click="section.name === 'API' && openApiDialog()"
         >
           <span>{{ section.name }}</span>
           <span :class="healthIcon[section.health]" />

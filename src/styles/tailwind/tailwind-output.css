@@ -408,6 +408,12 @@
   .w-24 {
     width: calc(var(--spacing) * 24);
   }
+  .w-28 {
+    width: calc(var(--spacing) * 28);
+  }
+  .w-\[28rem\] {
+    width: 28rem;
+  }
   .w-\[32rem\] {
     width: 32rem;
   }
@@ -419,6 +425,9 @@
   }
   .max-w-16 {
     max-width: calc(var(--spacing) * 16);
+  }
+  .max-w-\[95vw\] {
+    max-width: 95vw;
   }
   .max-w-\[calc\(100vw-2rem\)\] {
     max-width: calc(100vw - 2rem);

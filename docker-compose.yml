@@ -1,0 +1,43 @@
+# ICOweb over https, able to connect to many plain-http ICOapi instances.
+# Everything is built from this repository (no prebuilt images).
+#
+# Environment (all optional, see README):
+#   ICOWEB_HOST           address of this server, e.g. icoweb.lab
+#   ICOWEB_TLS            "internal" (default) or an e-mail for Let's Encrypt
+#   ICOAPI_ALLOWED_HOSTS  regex of ICOapi hosts that may be reached via /proxy
+
+name: icoweb
+
+services:
+  icoweb:
+    build:
+      context: .
+      args:
+        # Must match the path in deploy/caddy/Caddyfile
+        VITE_API_PROXY_PREFIX: /proxy
+    restart: unless-stopped
+    # nginx forwards /api/ (the default, same-origin API) to an ICOapi on this
+    # host and refuses to start if the name does not resolve
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  caddy:
+    build: ./deploy/caddy
+    restart: unless-stopped
+    depends_on:
+      - icoweb
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ICOWEB_HOST: '${ICOWEB_HOST:-localhost}'
+      ICOWEB_TLS: '${ICOWEB_TLS:-internal}'
+      ICOAPI_ALLOWED_HOSTS: '${ICOAPI_ALLOWED_HOSTS:-(?:192\.168|10\.\d+|172\.(?:1[6-9]|2\d|3[01]))\.\d+\.\d+}'
+    volumes:
+      # Certificates and Caddy's local CA, keep them between rebuilds
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
