@@ -4,6 +4,7 @@ import ToggleSwitch from 'primevue/toggleswitch';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Button from 'primevue/button';
+import { computed } from 'vue';
 import {TWebSocketState, useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts';
 import {useGeneralStore} from '@/stores/generalStore/generalStore.ts';
 
@@ -16,6 +17,37 @@ defineProps<{
   stopLoading: boolean,
   ready: boolean
 }>()
+
+const liveSettings: Array<{
+  id: string
+  model: 'liveRate' | 'liveUpdates'
+  label: string
+  unit: string
+  min: number
+  max: number
+  tooltip: string
+}> = [
+  {
+    id: 'liveRate',
+    model: 'liveRate',
+    label: 'Live points per unit',
+    unit: 'Samples/Second',
+    min: 0,
+    max: 3175,
+    tooltip: 'How many points per second ICOapi sends for each unit to draw the charts. The file always has all points. 0 sends all points.\n\nLower values make the charts smoother.'
+  },
+  {
+    id: 'liveUpdates',
+    model: 'liveUpdates',
+    label: 'Chart updates',
+    unit: 'Hz',
+    min: 1,
+    max: 300,
+    tooltip: 'How often the charts are updated. The points that were collected in between are sent together.'
+  }
+]
+
+const liveLimited = computed(() => (gStore.systemState.units?.length ?? 0) > 1)
 
 const emit = defineEmits(['start', 'stop', 'show', 'hide'])
 
@@ -67,6 +99,39 @@ const options: Array<{
           v-tooltip.left="{ value: option.tooltip }"
           class="pi pi-info-circle ico-muted" />
       </label>
+    </div>
+    <!-- Several units: how much of the live data ICOapi sends to this page -->
+    <div
+      v-if="liveLimited && state !== 'open'"
+      class="flex flex-col gap-2 text-sm"
+      data-test="live-settings"
+    >
+      <div
+        v-for="setting in liveSettings"
+        :key="setting.id"
+        class="flex flex-col gap-1"
+      >
+        <label
+          :for="setting.id"
+          class="flex flex-row items-center gap-2"
+        >
+          {{ setting.label }}
+          <i
+            v-tooltip.left="{ value: setting.tooltip }"
+            class="pi pi-info-circle ico-muted" />
+        </label>
+        <InputGroup>
+          <InputNumber
+            v-model="mStore[setting.model]"
+            :input-id="setting.id"
+            :min="setting.min"
+            :max="setting.max"
+            :use-grouping="false"
+            class="!w-min"
+          />
+          <InputGroupAddon>{{ setting.unit }}</InputGroupAddon>
+        </InputGroup>
+      </div>
     </div>
     <InputGroup>
       <InputNumber

@@ -40,7 +40,7 @@ const icon = computed<string>(() => {
       return 'spinner'
 
     case 'disconnected':
-      return 'wifi'
+      return 'link'
 
     case 'disconnecting':
       return 'spinner'

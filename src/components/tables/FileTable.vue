@@ -8,7 +8,7 @@ import {useMeasurementStore} from '@/stores/measurementStore/measurementStore.ts
 import {useDisable} from '@/utils/useDisable.ts';
 import {useLoadingHandler} from '@/utils/useLoadingHandler.ts';
 import {deleteMeasurementFile, updateFile, uploadFile} from '@/api/icoapi.ts';
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {getAPILink} from '@/api/icoapi.ts';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
@@ -21,6 +21,10 @@ const router = useRouter()
 const { pageEnabled } = useDisable()
 const { loading: deletionLoading, call: deleteFile } = useLoadingHandler(deleteMeasurementFile)
 const { loading: uploadLoading, call: upload } = useLoadingHandler(uploadFile)
+
+// Only files in the new format (multi STU support) have sources
+const hasSources = computed<boolean>(() =>
+  mStore.measurementFiles.some(file => (file.sources?.length ?? 0) > 0))
 
 const uploadedFile = ref<string>('')
 const disableTooltip = ref<boolean>(false)
@@ -143,6 +147,21 @@ function getSeverity(status: FileCloudStatus): string {
       :sortable="true">
       <template #body="{ data }: { data: MeasurementFileDetails }">
         {{ format(new Date(data.created), 'dd.MM.yyyy, HH:mm:ss') }}
+      </template>
+    </Column>
+    <Column
+      v-if="hasSources"
+      header="Sources"
+    >
+      <template #body="{ data }: { data: MeasurementFileDetails }">
+        <span
+          v-if="data.sources && data.sources.length > 0"
+          v-tooltip.top="data.sources.join(', ')"
+          class="underline decoration-dotted"
+        >
+          {{ data.sources.length }}
+        </span>
+        <span v-else>–</span>
       </template>
     </Column>
     <Column

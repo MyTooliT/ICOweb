@@ -89,3 +89,56 @@ describe('useSystemState CAN state', () => {
     expect(system.stuConnected.value).toBe(false)
   })
 })
+
+describe('useSystemState units', () => {
+  beforeEach(() => {
+    getSystemState.mockReset()
+    vi.stubGlobal('WebSocket', FakeWebSocket)
+  })
+
+  const NETWORK = { interface: 'pcan', channel: 'PCAN_USBBUS1', bitrate: 1000000 }
+
+  it('has no units without multi STU support', async () => {
+    getSystemState.mockResolvedValue(state())
+    const system = useSystemState()
+    await system.checkState()
+
+    expect(system.units.value).toBeNull()
+    expect(system.multiUnit.value).toBe(false)
+  })
+
+  it('maps the units of the state', async () => {
+    getSystemState.mockResolvedValue(state({
+      units: [
+        { unit: 'pcan:PCAN_USBBUS1', network: NETWORK, stu_connected: true,
+          sth_connected: { name: 'STH-A', mac_address: '00-00-00-00-00-01' } },
+        { unit: 'pcan:PCAN_USBBUS2', network: NETWORK, stu_connected: false }
+      ]
+    }))
+    const system = useSystemState()
+    await system.checkState()
+
+    expect(system.multiUnit.value).toBe(true)
+    expect(system.units.value).toHaveLength(2)
+    expect(system.units.value?.[0].sth_connected?.name).toBe('STH-A')
+  })
+
+  it('is multi unit without a unit, too', async () => {
+    getSystemState.mockResolvedValue(state({ units: [] }))
+    const system = useSystemState()
+    await system.checkState()
+
+    expect(system.multiUnit.value).toBe(true)
+    expect(system.units.value).toEqual([])
+  })
+
+  it('forgets the units if the API is not reachable', async () => {
+    getSystemState.mockResolvedValueOnce(state({ units: [] }))
+    const system = useSystemState()
+    await system.checkState()
+    getSystemState.mockRejectedValueOnce(new Error('down'))
+    await system.checkState()
+
+    expect(system.units.value).toBeNull()
+  })
+})

@@ -8,6 +8,9 @@ import DataTable from 'primevue/datatable';
 import {useDisable} from '@/utils/useDisable.ts';
 import {useMessageBus} from '@/message';
 
+// The unit of the STU (multi STU support). Without it all STUs are shown.
+const props = defineProps<{ unit?: string | null }>()
+
 const store = useHardwareStore()
 const m = useMessageBus()
 
@@ -30,13 +33,7 @@ const {
 </script>
 
 <template>
-  <DataTable :value="store.STUDeviceList">
-    <Column
-      header="ID">
-      <template #body="{ data }: { data: STUDevice }">
-        {{ data.getDeviceNumber() }}
-      </template>
-    </Column>
+  <DataTable :value="store.stuListFor(props.unit ?? null)">
     <Column header="Name">
       <template #body="{ data }: { data: STUDevice }">
         {{ data.getName() }}

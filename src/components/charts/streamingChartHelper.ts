@@ -76,24 +76,38 @@ export function updateChartData(
 
   // Take a subset of the rawData every <interval> interval to display, starting
   // at the calculated startIndex
+  // Range of every channel. Note: Do not spread the (growing) subset into
+  // `Math.min` for every point: that is quadratic and made the chart the
+  // slowest part of the page.
+  const ranges = {
+    first: { min: Infinity, max: -Infinity },
+    second: { min: Infinity, max: -Infinity },
+    third: { min: Infinity, max: -Infinity }
+  }
+  const subsets = {
+    first: firstChannelSubset,
+    second: secondChannelSubset,
+    third: thirdChannelSubset
+  }
+  const slots = ['first', 'second', 'third'] as const
   for(let i = startIndex; i < rawData.length; i += interval) {
-    x_values_visible.push(rawData[i].timestamp)
-
-    if(rawData[i].first) {
-      firstChannelSubset.push(<number>rawData[i].first)
-      minRefPerUnit.value[channelUnits.first] = Math.min(...firstChannelSubset, minRefPerUnit.value[channelUnits.first] ?? Number.MAX_SAFE_INTEGER)
-      maxRefPerUnit.value[channelUnits.first] = Math.max(...firstChannelSubset, maxRefPerUnit.value[channelUnits.first] ?? Number.MIN_SAFE_INTEGER)
+    const frame = rawData[i]
+    x_values_visible.push(frame.timestamp)
+    for(const slot of slots) {
+      const value = frame[slot]
+      if(!value) continue
+      subsets[slot].push(<number>value)
+      if(value < ranges[slot].min) ranges[slot].min = value
+      if(value > ranges[slot].max) ranges[slot].max = value
     }
-    if(rawData[i].second) {
-      secondChannelSubset.push(<number>rawData[i].second)
-      minRefPerUnit.value[channelUnits.second] = Math.min(...secondChannelSubset, minRefPerUnit.value[channelUnits.second] ?? Number.MAX_SAFE_INTEGER)
-      maxRefPerUnit.value[channelUnits.second] = Math.max(...secondChannelSubset, maxRefPerUnit.value[channelUnits.second] ?? Number.MIN_SAFE_INTEGER)
-    }
-    if(rawData[i].third) {
-      thirdChannelSubset.push(<number>rawData[i].third)
-      minRefPerUnit.value[channelUnits.third] = Math.min(...thirdChannelSubset, minRefPerUnit.value[channelUnits.third] ?? Number.MAX_SAFE_INTEGER)
-      maxRefPerUnit.value[channelUnits.third] = Math.max(...thirdChannelSubset, maxRefPerUnit.value[channelUnits.third] ?? Number.MIN_SAFE_INTEGER)
-    }
+  }
+  for(const slot of slots) {
+    if(subsets[slot].length === 0) continue
+    const unit = channelUnits[slot]
+    minRefPerUnit.value[unit] = Math.min(
+      ranges[slot].min, minRefPerUnit.value[unit] ?? Number.MAX_SAFE_INTEGER)
+    maxRefPerUnit.value[unit] = Math.max(
+      ranges[slot].max, maxRefPerUnit.value[unit] ?? Number.MIN_SAFE_INTEGER)
   }
 
   const datasets: Array<Chart.ChartDataset> = []

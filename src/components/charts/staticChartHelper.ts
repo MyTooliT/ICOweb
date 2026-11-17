@@ -3,6 +3,7 @@ import {ParsedMeasurement, ParsedMetadata} from '@/client';
 import {Ref} from 'vue';
 import {ChartData, ChartDataset} from 'chart.js';
 import {getAPILink} from '@/api/icoapi.ts';
+import {describeDetail} from '@/api/api.ts';
 
 export type ChartBoundaries = {
     xmin: number,
@@ -187,8 +188,33 @@ export async function consumeFileReader(
     return combinedResult;
 }
 
-export async function fetchFileReader(fileName: string): Promise<ReadableStreamDefaultReader> {
-    const response = await fetch(`${getAPILink()}/files/analyze/${fileName}`);
+/**
+ * Get the text of an error response of the API (the `detail` of the error).
+ */
+async function errorText(response: Response): Promise<string> {
+    try {
+        return describeDetail((await response.json())['detail'])
+    } catch {
+        return `${response.status} ${response.statusText}`
+    }
+}
+
+/**
+ * Request the data of a measurement file.
+ *
+ * @param fileName The name of the file
+ * @param source The source of the file (a file of several STUs has one source
+ *   for every STU). The API needs it for files with more than one source.
+ */
+export async function fetchFileReader(
+    fileName: string,
+    source: string | null = null
+): Promise<ReadableStreamDefaultReader> {
+    const query = source ? `?source=${encodeURIComponent(source)}` : ''
+    const response = await fetch(`${getAPILink()}/files/analyze/${fileName}${query}`);
+    if (!response.ok) {
+        throw new Error(await errorText(response))
+    }
     const reader = response.body?.getReader();
     if (!reader) {
         throw new Error('Failed to read response body');
@@ -209,4 +235,128 @@ export function decode(content: string): string {
         return content.substring(2,content.length - 1)
     }
     return content
+}
+
+/*
+ * Several sources in one chart (a file of several STUs)
+ *
+ * Every source has its own clock: its timestamps start at 0 with its first
+ * message. The start times of the sources (`start_offset` of the metadata)
+ * place them on a common time axis.
+ */
+
+export type SourceMeasurement = {
+    source: string,
+    /** Seconds between the earliest start of all sources and this one */
+    offset: number,
+    data: DisplayableMeasurement
+}
+
+/** Colors of the datasets (enough for four sources with three channels) */
+const OVERLAY_COLORS = [
+    'black', 'red', 'green', 'blue', 'orange', 'purple',
+    'brown', 'teal', 'magenta', 'olive', 'navy', 'gray'
+]
+
+/**
+ * Combine the data of several sources in one measurement.
+ *
+ * The datasets are named after their source and shifted by the offset of the
+ * source.
+ */
+export function mergeSources(items: SourceMeasurement[]): DisplayableMeasurement {
+    return {
+        name: items.map(item => item.data.name)[0] ?? '',
+        counter: [],
+        timestamp: items[0]?.data.timestamp ?? [],
+        datasets: items.flatMap(item => item.data.datasets.map(dataset => ({
+            name: `${item.source}: ${dataset.name}`,
+            data: item.offset === 0
+                ? dataset.data
+                : dataset.data.map(point => ({
+                    x: (point.x as number) + item.offset,
+                    y: point.y
+                }))
+        })))
+    }
+}
+
+/**
+ * Index of the first point at or after `x` (the length, if there is none).
+ * With `after` the first point behind `x`.
+ */
+function firstIndexFrom(
+    points: Array<Chart.ChartPoint>, x: number, after: boolean = false
+): number {
+    let left = 0
+    let right = points.length
+    while (left < right) {
+        const mid = Math.floor((left + right) / 2)
+        const value = points[mid].x as number
+        if (after ? value <= x : value < x) left = mid + 1
+        else right = mid
+    }
+    return left
+}
+
+/**
+ * Get the points of every dataset between two times.
+ *
+ * Unlike :func:`getSubsetOfMeasurement` every dataset is looked at on its own,
+ * since datasets of different sources have different lengths.
+ */
+export function getSubsetByTime(
+    data: DisplayableMeasurement,
+    datasetUnits: Array<string>,
+    start: number,
+    end: number,
+    maxPointsPerSet: number = 5000
+): Chart.ChartDataSets[] {
+    return data.datasets.map((dataset, index) => {
+        const from = firstIndexFrom(dataset.data, start)
+        // The range includes both ends
+        const to = firstIndexFrom(dataset.data, end, true)
+        const stride = Math.max(1, Math.ceil((to - from) / maxPointsPerSet))
+        const subset: Chart.ChartPoint[] = []
+        for (let i = from; i < to; i += stride) {
+            subset.push(dataset.data[i])
+        }
+        return {
+            data: subset,
+            label: dataset.name,
+            pointRadius: 1,
+            borderColor: OVERLAY_COLORS[index % OVERLAY_COLORS.length],
+            yAxisID: datasetUnits[index]
+        }
+    })
+}
+
+/**
+ * Show a time range of merged sources (the whole measurement by default).
+ */
+export function computeOverlayChart(
+    merged: DisplayableMeasurement,
+    data: Ref<ChartData<'line'>>,
+    boundaries: Ref<ChartBoundaries>,
+    datasetUnits: Array<string>,
+    start: number | undefined = undefined,
+    end: number | undefined = undefined
+): void {
+    const points = merged.datasets.filter(dataset => dataset.data.length > 0)
+    if (points.length === 0) return
+    const from = start ?? Math.min(...points.map(set => set.data[0].x as number))
+    const to = end ?? Math.max(
+        ...points.map(set => set.data[set.data.length - 1].x as number))
+
+    const subsets = getSubsetByTime(merged, datasetUnits, from, to)
+    data.value.datasets = subsets as ChartDataset<'line', Chart.Point[]>[]
+    const values = subsets
+        .flatMap(set => set.data as Chart.ChartPoint[])
+        .map(point => point.y as number)
+    boundaries.value = {
+        xmin: from,
+        xmax: to,
+        ymin: Math.min(...values),
+        ymax: Math.max(...values)
+    }
 }

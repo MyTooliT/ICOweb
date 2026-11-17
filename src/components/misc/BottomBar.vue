@@ -6,6 +6,7 @@ import BaseBottomBar, { State } from '@base/components/bottom/BottomBar.vue';
 import Button from 'primevue/button';
 import Popover from 'primevue/popover';
 import Tag from 'primevue/tag';
+import { unitColor, unitLabel } from '@/utils/unitColors.ts';
 import { computed, onMounted } from 'vue';
 
 const store = useGeneralStore();
@@ -38,23 +39,26 @@ const stateClassMap: Record<State, string> = {
   [State.ACTIVE]: `${layout} bg-[var(--p-green-600)] text-white`
 }
 
-type Health = 'ok' | 'error' | 'unknown'
+type Health = 'ok' | 'error' | 'warn' | 'unknown'
 
 const healthIcon: Record<Health, string> = {
   ok: 'pi pi-check-circle',
   error: 'pi pi-times-circle',
+  warn: 'pi pi-exclamation-triangle',
   unknown: 'pi pi-question-circle'
 }
 
 const healthClass: Record<Health, string> = {
   ok: 'bg-primary text-on-primary',
   error: 'bg-error text-on-error',
+  warn: 'bg-[var(--p-amber-400)] text-black',
   unknown: 'bg-[var(--p-amber-400)] text-black'
 }
 
 const healthSeverity: Record<Health, string> = {
   ok: 'success',
   error: 'danger',
+  warn: 'warn',
   unknown: 'warn'
 }
 
@@ -71,6 +75,8 @@ type StatusSection = {
   status: string
   rows: DetailRow[]
   hint?: string
+  // Colour of the unit (multi STU support)
+  accent?: string
 }
 
 function apiAddressRows(): DetailRow[] {
@@ -82,6 +88,52 @@ function apiAddressRows(): DetailRow[] {
   } catch {
     return [{ label: 'Address', value: getAPILink(), mono: true }]
   }
+}
+
+const worst = (...healths: Health[]): Health =>
+  healths.includes('error') ? 'error'
+    : healths.includes('warn') ? 'warn'
+      : healths.includes('unknown') ? 'unknown' : 'ok'
+
+/** One section per unit: its network, STU and STH in one place */
+function unitSections(): StatusSection[] {
+  const system = store.systemState
+  return (system.units ?? []).map((unit, index) => {
+    const stu = hardwareStore.stuListFor(unit.unit)[0]
+    // No STU (or one that is not loaded) is an error, no STH a warning
+    const stuHealth: Health = unit.stu_connected && stu ? 'ok' : 'error'
+    const sthHealth: Health = !unit.stu_connected || !stu
+      ? 'unknown'
+      : (unit.sth_connected ? 'ok' : 'warn')
+    const sth = unit.sth_connected
+    const rows: DetailRow[] = [
+      { label: 'Network', value: unit.network.channel, mono: true },
+      { label: 'Interface', value: unit.network.interface, mono: true },
+      {
+        label: 'STU',
+        value: !unit.stu_connected
+          ? 'Not connected'
+          : (stu ? 'Connected' : 'Not loaded')
+      }
+    ]
+    if (stu) rows.push({ label: 'STU MAC', value: stu.getMacAddress(), mono: true })
+    rows.push({ label: 'STH', value: sth ? sth.name : 'Not connected' })
+    if (sth) rows.push({ label: 'STH MAC', value: sth.mac_address, mono: true })
+    const health = worst(stuHealth, sthHealth)
+    return {
+      name: unitLabel(index),
+      title: `Unit ${unit.unit}`,
+      health,
+      status: health === 'ok' ? 'Ready' : 'Not ready',
+      rows,
+      accent: unitColor(index),
+      hint: !unit.stu_connected
+        ? 'The STU of this unit does not answer.'
+        : !stu
+          ? 'The STU is not loaded. Load it on the Devices page.'
+          : (sth ? undefined : 'Connect a sensor device on the Devices page.')
+    }
+  })
 }
 
 const sections = computed<StatusSection[]>(() => {
@@ -173,7 +225,7 @@ const sections = computed<StatusSection[]>(() => {
   const sthSection: StatusSection = {
     name: 'STH',
     title: 'Sensor device',
-    health: stuResponsive ? (sth ? 'ok' : 'error') : 'unknown',
+    health: stuResponsive ? (sth ? 'ok' : 'warn') : 'unknown',
     status: stuResponsive ? (sth ? 'Connected' : 'Not connected') : 'Unknown',
     rows: [],
     hint: stuResponsive
@@ -187,6 +239,10 @@ const sections = computed<StatusSection[]>(() => {
     )
   }
 
+  if (system.multiUnit) {
+    // A unit replaces the separate CAN, STU and STH sections
+    return [api, ...unitSections()]
+  }
   return [api, can, stuSection, sthSection]
 })
 
@@ -239,6 +295,9 @@ function hideDetails(name: string) {
           class="flex flex-row items-center gap-2 px-4 cursor-default
             transition-[filter] hover:brightness-110"
           :class="healthClass[section.health]"
+          :style="section.accent
+            ? { boxShadow: `inset 6px 0 0 ${section.accent}`, paddingLeft: '1.5rem' }
+            : undefined"
           :aria-label="`${section.name}: ${section.status}`"
           @mouseenter="showDetails(section.name, $event)"
           @mouseleave="hideDetails(section.name)"

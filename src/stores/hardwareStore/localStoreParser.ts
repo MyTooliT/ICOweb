@@ -32,7 +32,8 @@ function parseItem(item: any): any {
           item.name,
           item.mac_address,
           item.status,
-          item.OTAState,
+          item.ota ?? item.OTAState,
+          item.unit ?? null
         )
 
       case 'STH':
@@ -43,7 +44,8 @@ function parseItem(item: any): any {
           item.rssi,
           item.holderConfigId,
           item.status,
-          item.supplyVoltage
+          item.supplyVoltage,
+          item.unit ?? null
         )
 
       case 'Sensor':

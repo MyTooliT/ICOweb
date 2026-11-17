@@ -17,7 +17,9 @@ export type MeasurementDataFrame = {
   ift: Array<{x: number, y: number}> | null
   timestamp: number,
   counter: number,
-  dataloss: number | null
+  dataloss: number | null,
+  /** Name of the source (multi STU support only) */
+  source?: string
 }
 
 export type TWebSocketState = 'open' | 'closed' | 'connecting'
@@ -47,6 +49,11 @@ export const useMeasurementStore = defineStore('measurement', () => {
   const disconnectAfterMeasurement = ref<boolean>(true);
   const acquisitionTime = ref<number>(10)
   const chartMaximumDisplayedTime = ref<number>(10)
+  // Live data of several units (multi STU support): ICOapi sends this many
+  // points per second and unit (0: all) in this many messages per second.
+  // The file always has all points.
+  const liveRate = ref<number>(200)
+  const liveUpdates = ref<number>(30)
   const chartStartTime = ref<number>(chartDefaults.xmin)
   const chartEndTime = ref<number>(chartDefaults.xmax)
   const chartYMin = ref<number>(chartDefaults.ymin)
@@ -85,6 +92,13 @@ export const useMeasurementStore = defineStore('measurement', () => {
     second: false,
     third: false
   })
+
+  // Sensors chosen for every unit (multi STU support). Units without entry use
+  // `selectedChannels`.
+  const unitChannels = ref<Record<string, TChannelMap>>({})
+  // Which channels every unit uses: units do not have to measure the same
+  // number of channels. Units without entry use `activeChannels`.
+  const unitActive = ref<Record<string, ActiveChannels>>({})
 
   const chartData = ref<ChartData<'line'>>({
     labels: [],
@@ -144,7 +158,11 @@ export const useMeasurementStore = defineStore('measurement', () => {
     chartYMin,
     chartYMax,
     chartMaximumDisplayedTime,
+    liveRate,
+    liveUpdates,
     selectedChannels,
+    unitChannels,
+    unitActive,
     activeChannels,
     lastIFTTimestamp,
     IFTChannel,

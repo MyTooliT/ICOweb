@@ -12,6 +12,7 @@ import HardwareStep, {
 } from '@/components/misc/HardwareStep.vue';
 import { computed } from 'vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
+import UnitHardware from '@/components/misc/UnitHardware.vue';
 
 const store = useHardwareStore()
 const generalStore = useGeneralStore()
@@ -74,8 +75,30 @@ async function STHClickHandler() {
 
 <template>
   <DefaultLayout class="flex flex-col">
-    <CANConnectionPanel />
+    <!-- One unit: the network is the first step of the sequence -->
+    <CANConnectionPanel v-if="!generalStore.systemState.multiUnit" />
 
+    <template v-if="generalStore.systemState.multiUnit">
+      <!--
+        Every unit is the whole sequence network -> STU -> STH on its own.
+        Units are not steps one after the other: they measure at the same
+        time. Every unit has its own colour (also used in the bottom bar).
+      -->
+      <div
+        class="grid grid-cols-1 2xl:grid-cols-2 gap-4 items-start"
+        data-test="unit-list"
+      >
+        <UnitHardware
+          v-for="(unit, index) in generalStore.systemState.units ?? []"
+          :key="unit.unit"
+          :unit="unit"
+          :index="index + 1"
+        />
+        <!-- Adding a unit: after the units, as wide as they are -->
+        <CANConnectionPanel />
+      </div>
+    </template>
+    <template v-else>
     <div
       class="ml-[42px] h-6 border-l-2"
       :class="canConnected ? 'border-primary' : 'border-outline-variant'"
@@ -129,5 +152,6 @@ async function STHClickHandler() {
       </template>
       <STHDeviceTable />
     </HardwareStep>
+    </template>
   </DefaultLayout>
 </template>

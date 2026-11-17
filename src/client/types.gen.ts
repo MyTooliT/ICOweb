@@ -229,10 +229,26 @@ export type MeasurementFileDetails = {
     created: string;
     size: number;
     cloud: FileCloudDetails;
+    /**
+     * Names of the sources of the file (`null` for files in the old format)
+     */
+    sources?: (Array<(string)> | null);
 };
 
 export type MeasurementInstructionChannel = {
     sensor_id?: string | null;
+};
+
+/**
+ * Instructions that differ between the units of a measurement (multi STU support only)
+ */
+export type UnitInstructions = {
+    first?: (MeasurementInstructionChannel | null);
+    second?: (MeasurementInstructionChannel | null);
+    third?: (MeasurementInstructionChannel | null);
+    adc?: (ADCValues | null);
+    sensor_configuration?: (PCBSensorConfiguration | null);
+    mac_address?: (string | null);
 };
 
 export type MeasurementInstructions_Input = {
@@ -250,6 +266,14 @@ export type MeasurementInstructions_Input = {
     wait_for_post_meta?: boolean;
     disconnect_after_measurement?: boolean;
     sensor_configuration?: PCBSensorConfiguration | null;
+    /**
+     * Instructions that differ per unit, by name of the unit (multi STU support only)
+     */
+    units?: { [key: string]: UnitInstructions } | null;
+    /**
+     * MAC address of the sensor device of every unit (`/measurement/execute`)
+     */
+    unit_mac_addresses?: { [key: string]: string } | null;
 };
 
 export type MeasurementInstructions_Output = {
@@ -267,6 +291,27 @@ export type MeasurementInstructions_Output = {
     wait_for_post_meta?: boolean;
     disconnect_after_measurement?: boolean;
     sensor_configuration?: PCBSensorConfiguration | null;
+    /**
+     * Instructions that differ per unit, by name of the unit (multi STU support only)
+     */
+    units?: { [key: string]: UnitInstructions } | null;
+    /**
+     * MAC address of the sensor device of every unit (`/measurement/execute`)
+     */
+    unit_mac_addresses?: { [key: string]: string } | null;
+};
+
+/**
+ * A unit that takes part in a measurement (multi STU support only)
+ */
+export type MeasurementUnit = {
+    /** Name of the unit (`interface:channel` of its network) */
+    unit: string;
+    /** Name of the source of the unit in the measurement file */
+    source: string;
+    tool_name?: string | null;
+    stu_mac_address?: string | null;
+    sth_mac_address?: string | null;
 };
 
 export type MeasurementStatus = {
@@ -276,6 +321,8 @@ export type MeasurementStatus = {
     tool_name?: string | null;
     start_supply_voltage?: number | null;
     instructions?: MeasurementInstructions_Output | null;
+    /** The units of the measurement (`null` without multi STU support) */
+    units?: Array<MeasurementUnit> | null;
 };
 
 export type Metadata = {
@@ -305,10 +352,24 @@ export type ParsedMeasurement = {
 };
 
 /**
+ * A source of a measurement file: the data of one STU/STH combination
+ */
+export type SourceInfo = {
+    name: string;
+    stu_mac?: string | null;
+    sth_mac?: string | null;
+    /** Time of the first message of the source (ISO 8601, without time zone) */
+    start_time?: string | null;
+    /** Seconds between the earliest start of all sources and this one */
+    start_offset?: number | null;
+};
+
+/**
  * HDF5 metadata
  */
 export type ParsedMetadata = {
     acceleration: HDF5NodeInfo;
+    sources?: Array<SourceInfo>;
     pictures: {
         [key: string]: Array<(string)>;
     };
@@ -439,6 +500,38 @@ export type ConnectedSTHModel = {
     mac_address: string;
 };
 
+/**
+ * State of a unit: a CAN network with its STU and sensor device
+ */
+export type UnitStateModel = {
+    /** Name of the unit (`interface:channel` of its network) */
+    unit: string;
+    network: CANNetwork;
+    stu_connected: boolean;
+    sth_connected?: (ConnectedSTHModel | null);
+};
+
+/**
+ * Result of the check of one unit (`/measurement/preflight`)
+ */
+export type UnitCheck = {
+    unit: string;
+    ok: boolean;
+    problems: Array<(string)>;
+    tool_name?: string | null;
+    stu_mac_address?: string | null;
+    sth_mac_address?: string | null;
+    rssi?: number | null;
+    supply_voltage?: number | null;
+    sample_rate?: number | null;
+    messages_per_second?: number | null;
+};
+
+export type PreflightResponse = {
+    ready: boolean;
+    units: Array<UnitCheck>;
+};
+
 export type SystemStateModel = {
     can_network_found: boolean;
     stu_connected: boolean;
@@ -450,6 +543,8 @@ export type SystemStateModel = {
     disk_capacity: DiskCapacity;
     measurement_status: MeasurementStatus;
     cloud: Feature;
+    /** All units (`null` without multi STU support) */
+    units?: Array<UnitStateModel> | null;
 };
 
 export type ValidationError = {

@@ -15,7 +15,7 @@ vi.mock('@/api/icoapi.ts', () => ({
   getCANNetworks: () => getCANNetworks(),
   getCANNetworksQuiet: () => getCANNetworksQuiet(),
   connectCAN: (network: any) => connectCAN(network),
-  disconnectCAN: () => disconnectCAN(),
+  disconnectCAN: (unit?: string) => disconnectCAN(unit),
   resetCAN: () => resetCAN()
 }))
 
@@ -140,5 +140,110 @@ describe('CANConnectionPanel', () => {
       await vi.advanceTimersByTimeAsync(store.canScanIntervalMs * 2)
       expect(getCANNetworksQuiet).not.toHaveBeenCalled()
     }
+  })
+})
+
+describe('CANConnectionPanel with several units', () => {
+  const SECOND = { interface: 'pcan', channel: 'PCAN_USBBUS2', bitrate: 1000000 }
+  const unit = (network: typeof NETWORK) => ({
+    unit: `${network.interface}:${network.channel}`,
+    network,
+    stu_connected: true,
+    sth_connected: null
+  })
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+    setActivePinia(createPinia())
+    vi.stubGlobal('WebSocket', FakeWebSocket)
+    for (const mock of [getSystemState, getCANNetworks, getCANNetworksQuiet, connectCAN, disconnectCAN, resetCAN]) {
+      mock.mockReset()
+    }
+    getCANNetworksQuiet.mockResolvedValue({} as CANNetworksModel)
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('only offers networks that are not units yet', async () => {
+    const { wrapper } = await mountPanel(state({
+      can_status: 'CONNECTED',
+      stu_connected: true,
+      can_networks: [NETWORK, SECOND],
+      can_selected: NETWORK,
+      units: [unit(NETWORK)]
+    }))
+
+    expect(wrapper.text()).toContain('Add Unit')
+    // A dropdown with the network that can be added, no table
+    expect(wrapper.find('[data-test="add-unit"]').text()).toContain('PCAN_USBBUS2')
+    expect(wrapper.text()).not.toContain('PCAN_USBBUS1')
+    expect(wrapper.find('table').exists()).toBe(false)
+    // Disconnecting is done in the card of the unit
+    expect(button(wrapper, 'Disconnect')).toBeUndefined()
+    expect(button(wrapper, 'Add')).toBeDefined()
+  })
+
+  it('only has the headline and the discover inputs without a network', async () => {
+    const { wrapper } = await mountPanel(state({
+      can_status: 'CONNECTED',
+      stu_connected: true,
+      can_networks: [NETWORK],
+      can_selected: NETWORK,
+      units: [unit(NETWORK)]
+    }))
+
+    expect(wrapper.text()).toContain('Add Unit')
+    expect(button(wrapper, 'Discover')).toBeDefined()
+    expect(wrapper.text()).toContain('Discover automatically')
+    expect(wrapper.find('[data-test="add-unit"]').exists()).toBe(false)
+    expect(button(wrapper, 'Add')).toBeUndefined()
+  })
+
+  it('adds a network without disconnecting the others', async () => {
+    connectCAN.mockResolvedValue({})
+    const { wrapper } = await mountPanel(state({
+      can_status: 'CONNECTED',
+      stu_connected: true,
+      can_networks: [NETWORK, SECOND],
+      can_selected: NETWORK,
+      units: [unit(NETWORK)]
+    }))
+
+    await button(wrapper, 'Add').trigger('click')
+    await flushPromises()
+
+    expect(connectCAN).toHaveBeenCalledWith({
+      interface: 'pcan', channel: 'PCAN_USBBUS2'
+    })
+    expect(disconnectCAN).not.toHaveBeenCalled()
+  })
+
+  it('keeps searching for networks while units are connected', async () => {
+    await mountPanel(state({
+      can_status: 'CONNECTED',
+      stu_connected: true,
+      can_networks: [NETWORK],
+      can_selected: NETWORK,
+      units: [unit(NETWORK)]
+    }))
+    getCANNetworksQuiet.mockClear()
+
+    await vi.advanceTimersByTimeAsync(10_000)
+
+    expect(getCANNetworksQuiet).toHaveBeenCalled()
+  })
+
+  it('disconnects without a unit if there is no multi STU support', async () => {
+    disconnectCAN.mockResolvedValue({})
+    const { wrapper } = await mountPanel(state({
+      can_status: 'CONNECTED', stu_connected: true, can_selected: NETWORK
+    }))
+
+    await button(wrapper, 'Disconnect').trigger('click')
+    await flushPromises()
+
+    expect(disconnectCAN).toHaveBeenCalledWith(undefined)
   })
 })

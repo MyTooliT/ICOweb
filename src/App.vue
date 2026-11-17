@@ -14,6 +14,8 @@ const hardwareStore = useHardwareStore()
 
 // Devices are only valid for the CAN network they were found on
 watch(() => store.systemState.canStatus, (status, previous) => {
+  // With several units every unit has its own devices, see below
+  if (store.systemState.multiUnit) return
   if (status === 'CONNECTED') {
     void hardwareStore.updateSTUDeviceList()
   } else if (previous === 'CONNECTED') {
@@ -25,8 +27,33 @@ watch(() => store.systemState.canStatus, (status, previous) => {
 // The API is the source of truth for the connected sensor device. Follow it,
 // also when another client (e.g. a remote user) connects or disconnects one.
 watch(() => store.systemState.sthConnected, (connected) => {
+  if (store.systemState.multiUnit) return
   hardwareStore.applyConnectedSTH(connected)
 })
+
+// With several units (multi STU support) every unit has its own STU and
+// sensor devices: Load the STU of new units, forget those of units that are
+// gone and follow the sensor device each unit is connected to.
+const unitsKey = computed(() =>
+  (store.systemState.units ?? [])
+    .map(unit => `${unit.unit}|${unit.stu_connected}`)
+    .join(','))
+watch(unitsKey, async () => {
+  const units = store.systemState.units
+  if (!units) return
+  hardwareStore.forgetUnitsExcept(units.map(unit => unit.unit))
+  for (const unit of units) {
+    if (!unit.stu_connected) {
+      hardwareStore.clearSTUDeviceList(unit.unit)
+      hardwareStore.clearSTHDeviceList(unit.unit)
+    } else if (hardwareStore.stuListFor(unit.unit).length === 0) {
+      await hardwareStore.updateSTUDeviceList(unit.unit)
+    }
+  }
+}, { immediate: true })
+watch(() => store.systemState.units, (units) => {
+  if (units) hardwareStore.applyConnectedSTHs(units)
+}, { deep: true, immediate: true })
 
 const navLogoExtra = import.meta.env.VITE_APPLICATION_THEME_EXTRALOGO === 'true'
   ? extraLogo

@@ -1,4 +1,6 @@
 import { useSystemState } from '@/utils/useSystemState.ts';
+import { describeRecordingEvent } from '@/utils/recordingEvents.ts';
+import ToastEventBus from 'primevue/toasteventbus';
 import { defineStore } from 'pinia';
 import {
     computed,
@@ -24,6 +26,19 @@ export const useGeneralStore = defineStore('general', () => {
     }
 
     const systemState = useSystemState((event: any) => {
+        // Events about recordings are shown to everyone who is connected,
+        // also to those who did not start the measurement
+        const notice = describeRecordingEvent(event)
+        if(notice) {
+            ToastEventBus.emit('add', {
+                severity: notice.severity,
+                summary: notice.summary,
+                detail: notice.detail,
+                life: notice.severity === 'error' ? 8000 : 5000,
+                group: 'default'
+            })
+            return
+        }
         console.error(`Unknown event: ${event.message}`)
     })
 

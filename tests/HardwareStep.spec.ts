@@ -43,4 +43,10 @@ describe('HardwareStep', () => {
     expect(wrapper.text()).not.toContain('act')
     expect(mountStep({}).attributes('inert')).toBeUndefined()
   })
+
+  it('shows a badge text and an accent colour for a unit', () => {
+    const wrapper = mountStep({ badge: 'U2', accent: '#d97706' })
+    expect(wrapper.text()).toContain('U2')
+    expect(wrapper.find('section').attributes('style')).toContain('border-left')
+  })
 })

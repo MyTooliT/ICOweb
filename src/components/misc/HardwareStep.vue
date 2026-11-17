@@ -25,12 +25,18 @@ const props = withDefaults(defineProps<{
   // Nothing in a locked step can be used (the earlier step is not done)
   locked?: boolean
   lockedMessage?: string
+  // Text for the badge instead of the step number (e.g. `U1` for a unit)
+  badge?: string
+  // Colour that identifies the card (units): stripe at the edge, badge colour
+  accent?: string
 }>(), {
   subtitle: '',
   severity: 'secondary',
   error: '',
   locked: false,
-  lockedMessage: ''
+  lockedMessage: '',
+  badge: '',
+  accent: ''
 })
 
 const cardClass = computed(() => props.state === 'current'
@@ -51,15 +57,21 @@ const badgeClass = computed(() => ({
     :class="[cardClass, locked ? 'opacity-60 select-none' : '']"
     :data-state="state"
     :inert="locked"
+    :style="accent ? { borderLeft: `6px solid ${accent}` } : undefined"
   >
     <header class="flex flex-row items-start gap-4 p-5">
       <span
-        class="flex items-center justify-center shrink-0 w-9 h-9 rounded-full border-2 font-medium"
-        :class="badgeClass"
+        class="flex items-center justify-center shrink-0 rounded-full border-2 font-medium"
+        :class="[
+          'w-9 h-9',
+          accent ? 'text-white' : badgeClass
+        ]"
+        :style="accent ? { backgroundColor: accent, borderColor: accent } : undefined"
         aria-hidden="true"
       >
+        <template v-if="badge">{{ badge }}</template>
         <i
-          v-if="state === 'done'"
+          v-else-if="state === 'done'"
           class="pi pi-check"
         />
         <template v-else>{{ step }}</template>

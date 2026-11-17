@@ -19,6 +19,8 @@ export class STHDevice extends Device {
   private rssi: number = 0;
   public supplyVoltage: SupplyVoltageResponseModel | null = null;
   public holderConfigId: string | undefined = undefined;
+  /** Unit (CAN network) the device was found by, `null` without multi STU support */
+  public readonly unit: string | null;
 
   constructor(
     device_number: TDeviceNumber,
@@ -27,9 +29,11 @@ export class STHDevice extends Device {
     rssi: number,
     holderConfigId: string,
     status: TDeviceConnectionStatus = 'disconnected',
-    supplyVoltage: SupplyVoltageResponseModel | null = null
+    supplyVoltage: SupplyVoltageResponseModel | null = null,
+    unit: string | null = null
   ) {
     super(device_number, name, mac_address, status)
+    this.unit = unit
     this.rssi = rssi
     this.holderConfigId = holderConfigId
     this.supplyVoltage = supplyVoltage
@@ -51,7 +55,7 @@ export class STHDevice extends Device {
         const response = await renameSTHDevice({
           new_name: name,
           mac_address: this.mac_address
-        })
+        }, this.unit)
         this.name = response.name
       } catch(e) {
         throw e
@@ -74,7 +78,7 @@ export class STHDevice extends Device {
   public async connect(): Promise<void> {
     this.connection_status = 'connecting'
     try {
-      await connectSTHDevice(this.mac_address)
+      await connectSTHDevice(this.mac_address, this.unit)
       await this.requestSupplyVoltage()
       this.connection_status = 'connected';
     } catch(e) {
@@ -85,7 +89,7 @@ export class STHDevice extends Device {
   public async disconnect(): Promise<void> {
     this.connection_status = 'disconnecting'
     try {
-      await disconnectSTHDevice()
+      await disconnectSTHDevice(this.unit)
       this.connection_status = 'disconnected';
     } catch(e) {
       this.connection_status = 'connected';
@@ -103,7 +107,7 @@ export class STHDevice extends Device {
   }
 
   public async requestSupplyVoltage(): Promise<void> {
-    this.supplyVoltage = await getSupplyVoltage()
+    this.supplyVoltage = await getSupplyVoltage(this.unit)
   }
 
   public toJSON() {
@@ -115,6 +119,7 @@ export class STHDevice extends Device {
       holderConfigId: this.holderConfigId,
       status: this.connection_status,
       supplyVoltage: this.supplyVoltage,
+      unit: this.unit,
       classtype: 'STH'
     }
   }

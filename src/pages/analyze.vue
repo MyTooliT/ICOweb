@@ -4,6 +4,10 @@ import FileSelection from '@/components/misc/FileSelection.vue';
 import DefaultLayout from '@base/layout/DefaultLayout.vue';
 import ContentCard from '@/components/misc/ContentCard.vue';
 import { ProgressBar, Button, Popover } from 'primevue';
+import Select from 'primevue/select';
+import ToggleSwitch from 'primevue/toggleswitch';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
 import {ChartData} from 'chart.js';
 import {
   ChartBoundaries,
@@ -12,12 +16,16 @@ import {
   findNextClosestSmaller,
   fetchFileReader,
   consumeFileReader,
+  computeOverlayChart,
+  mergeSources,
+  SourceMeasurement,
 } from '@/components/charts/staticChartHelper.ts';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {ParsedMetadata} from '@/client';
 import MetadataAccordion from '@/components/misc/MetadataAccordion.vue';
-import {getAPILink} from '@/api/icoapi.ts';
+import {getAPILink, getMeasurementFiles} from '@/api/icoapi.ts';
+import {useMessageBus} from '@/message';
 import DownloadButton from '@/components/buttons/DownloadButton.vue';
 import {Sensor, SensorType} from '@/stores/hardwareStore/classes/Sensor.ts';
 import {parseSensorFromRaw} from '@/stores/hardwareStore/helper.ts';
@@ -40,33 +48,133 @@ const chartBoundaries = ref<ChartBoundaries>({
 })
 
 const fetchingProgress = ref<number>(0)
-const parsedData = ref<DisplayableMeasurement|undefined>(undefined)
+// Shallow: the data has hundreds of thousands of points that must not become reactive
+const parsedData = shallowRef<DisplayableMeasurement|undefined>(undefined)
 const parsedMetadata = ref<ParsedMetadata | undefined>(undefined)
 
-const routerWatcher = async () => {
-  if(route.query['file']) {
-    const fileName = route.query['file'].toString();
-    const reader = await fetchFileReader(fileName)
-    parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
-    if(parsedMetadata.value) {
-      const sensors = getDatasetSensors(parsedMetadata.value)
-      scales.value = computeChartScales(sensors)
-      datasetUnits.value = sensors.map(sensor => sensor.sensorType.physicalUnit)
-      if(parsedMetadata.value.sensors.length > 0) {
-        parsedData.value.datasets.forEach((dataset, index) => {
-          dataset.name = parsedMetadata.value?.sensors[index].name ?? dataset.name
-        })
-      }
+const m = useMessageBus()
+
+/*
+ * A file of several STUs has one source for every STU (see the multi STU
+ * support of the API). Every source has its own data and its own clock. They
+ * are shown one at a time, or all together (overlay): Then the start time of
+ * every source places its data on a common time axis.
+ */
+const sourceNames = ref<string[]>([])
+const selectedSource = computed<string | null>(
+  () => route.query['source']?.toString() ?? null)
+const overlay = computed<boolean>(() => route.query['overlay'] === '1')
+const hasSeveralSources = computed(() => sourceNames.value.length > 1)
+
+/** The names of the sources of a file (empty for files in the old format) */
+async function sourcesOf(fileName: string): Promise<string[]> {
+  try {
+    const listing = await getMeasurementFiles()
+    return listing.files.find(file => file.name === fileName)?.sources ?? []
+  } catch {
+    return []
+  }
+}
+
+/** Give the datasets the names of their sensors */
+function nameDatasets(data: DisplayableMeasurement, meta: ParsedMetadata | undefined) {
+  if(meta && meta.sensors.length > 0) {
+    data.datasets.forEach((dataset, index) => {
+      dataset.name = meta.sensors[index]?.name ?? dataset.name
+    })
+  }
+}
+
+async function showSingle(fileName: string, source: string | null) {
+  const reader = await fetchFileReader(fileName, source)
+  parsedData.value = await consumeFileReader(reader, fetchingProgress, parsedMetadata, fileName)
+  if(parsedMetadata.value) {
+    const sensors = getDatasetSensors(parsedMetadata.value)
+    scales.value = computeChartScales(sensors)
+    datasetUnits.value = sensors.map(sensor => sensor.sensorType.physicalUnit)
+    nameDatasets(parsedData.value, parsedMetadata.value)
+  }
+  computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries, datasetUnits.value)
+}
+
+async function showOverlay(fileName: string) {
+  const items: SourceMeasurement[] = []
+  const sensors: Sensor[] = []
+  let firstMetadata: ParsedMetadata | undefined = undefined
+  for(const source of sourceNames.value) {
+    const meta = ref<ParsedMetadata | undefined>(undefined)
+    const reader = await fetchFileReader(fileName, source)
+    const data = await consumeFileReader(reader, fetchingProgress, meta, fileName)
+    nameDatasets(data, meta.value)
+    if(meta.value) {
+      firstMetadata ??= meta.value
+      sensors.push(...getDatasetSensors(meta.value))
     }
-    computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries, datasetUnits.value)
+    items.push({
+      source,
+      offset: meta.value?.sources?.find(info => info.name === source)?.start_offset ?? 0,
+      data
+    })
+  }
+  parsedMetadata.value = firstMetadata
+  parsedData.value = mergeSources(items)
+  scales.value = computeChartScales(sensors)
+  datasetUnits.value = sensors.map(sensor => sensor.sensorType.physicalUnit)
+  computeOverlayChart(parsedData.value, chartData, chartBoundaries, datasetUnits.value)
+}
+
+const routerWatcher = async () => {
+  const fileName = route.query['file']?.toString()
+  if(!fileName) return
+  try {
+    sourceNames.value = await sourcesOf(fileName)
+    if(hasSeveralSources.value && !overlay.value && !selectedSource.value) {
+      // The API needs to know which source to show: this runs again
+      await router.replace({
+        query: { ...route.query, source: sourceNames.value[0] }
+      })
+      return
+    }
+    if(hasSeveralSources.value && overlay.value) {
+      await showOverlay(fileName)
+    } else {
+      await showSingle(fileName, hasSeveralSources.value ? selectedSource.value : null)
+    }
+  } catch(e: any) {
+    fetchingProgress.value = 0
+    m.error('The file could not be opened', e?.message ?? String(e), 6000)
   }
 }
 
 function handleZoom(start: number, end: number): void {
   if(!parsedData.value) {return}
+  if(overlay.value && hasSeveralSources.value) {
+    computeOverlayChart(
+      parsedData.value, chartData, chartBoundaries, datasetUnits.value, start, end)
+    return
+  }
   const startIndex = findNextClosestSmaller(parsedData.value.timestamp, start)
   const endIndex = findNextClosestSmaller(parsedData.value.timestamp, end)
   computeChartDataAndBoundaries(parsedData.value, chartData, chartBoundaries,  datasetUnits.value, startIndex, endIndex)
+}
+
+function selectSource(source: string | null) {
+  const query = { ...route.query }
+  if(source) query['source'] = source
+  delete query['overlay']
+  router.replace({ query })
+}
+
+function setOverlay(on: boolean) {
+  const query = { ...route.query }
+  if(on) {
+    query['overlay'] = '1'
+    delete query['source']
+  } else {
+    delete query['overlay']
+    query['source'] = sourceNames.value[0]
+  }
+  router.replace({ query })
 }
 
 const scales = ref<Record<string, Chart.ChartYAxe>>({})
@@ -102,7 +210,11 @@ function computeChartScales(sensors: Sensor[]): Record<string, Chart.ChartYAxe> 
   return scales
 }
 
-watch(() => route.query['file'], routerWatcher, { immediate: true });
+watch(
+  () => [route.query['file'], route.query['source'], route.query['overlay']],
+  routerWatcher,
+  { immediate: true }
+);
 
 function getCanvasExport() {
   const canvas = document.getElementsByTagName('canvas')[0]
@@ -154,6 +266,29 @@ function downloadImage() {
         :subtitle="summary"
       >
         <template #actions>
+          <div
+            v-if="hasSeveralSources"
+            class="flex flex-row items-center gap-3"
+            data-test="source-selection"
+          >
+            <label class="flex flex-row items-center gap-2 text-sm">
+              <ToggleSwitch
+                :model-value="overlay"
+                aria-label="Show all sources in one chart"
+                @update:model-value="setOverlay"
+              />
+              Overlay
+            </label>
+            <Select
+              :disabled="overlay"
+              :model-value="selectedSource"
+              placeholder="All sources"
+              :options="sourceNames"
+              aria-label="Source"
+              size="small"
+              @update:model-value="selectSource"
+            />
+          </div>
           <Button
             label="Select File"
             icon="pi pi-file-import"
@@ -190,6 +325,39 @@ function downloadImage() {
           title=""
           @zoom="handleZoom"
         />
+      </ContentCard>
+      <ContentCard
+        v-if="(parsedMetadata?.sources?.length ?? 0) > 1"
+        title="Sources"
+        subtitle="Every STU is a source with its own clock. The offset is the time between the earliest start and the start of the source."
+        flush
+      >
+        <DataTable
+          :value="parsedMetadata?.sources"
+          data-test="sources-table"
+        >
+          <Column
+            field="name"
+            header="Source"
+          />
+          <Column
+            field="stu_mac"
+            header="STU"
+          />
+          <Column
+            field="sth_mac"
+            header="STH"
+          />
+          <Column
+            field="start_time"
+            header="Start"
+          />
+          <Column header="Offset">
+            <template #body="{ data }">
+              {{ data.start_offset == null ? '–' : `${data.start_offset.toFixed(3)} s` }}
+            </template>
+          </Column>
+        </DataTable>
       </ContentCard>
       <ContentCard
         v-if="parsedMetadata"
