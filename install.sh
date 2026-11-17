@@ -14,6 +14,9 @@ if [[ "$1" == "--force" ]]; then
   echo "Forcing reinstallation: Deleting existing installation..."
 fi
 
+echo "Fetching the ICOClientBase submodule..."
+git submodule update --init --recursive
+
 echo "Stopping service..."
 sudo systemctl stop $SERVICE_NAME.service || true
 

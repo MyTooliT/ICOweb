@@ -19,6 +19,7 @@ deploy-revpi-tt:
 
 # DinD (Docker-in-Docker) settings
 variables:
+  GIT_SUBMODULE_STRATEGY: recursive   # src/base (ICOClientBase) is a submodule
   DOCKER_TLS_CERTDIR: ""             # disable TLS for DinD (simplifies setup)
   IMAGE_LATEST: "$CI_REGISTRY_IMAGE:latest"
   IMAGE_SHA: "$CI_REGISTRY_IMAGE:${CI_COMMIT_SHORT_SHA}"

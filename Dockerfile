@@ -12,6 +12,22 @@ RUN npm ci
 
 # Copy source code
 COPY . .
+
+# ICOClientBase (src/base) is a git submodule. A build context from a plain
+# checkout, or from a git sync that does not fetch submodules, has it empty:
+# fetch it from the repository metadata, or else at the fallback commit
+# (keep it in sync with `git ls-tree HEAD src/base`).
+ARG ICOCLIENTBASE_REF=3b312cda693d2f3da4cabe3c5b14f4601e5c04b5
+RUN if [ ! -f src/base/layout/DefaultLayout.vue ]; then \
+      apk add --no-cache git && \
+      if [ -d .git ]; then \
+        git submodule update --init --recursive; \
+      else \
+        rm -rf src/base && \
+        git clone https://github.com/MyTooliT/ICOClientBase src/base && \
+        git -C src/base checkout "$ICOCLIENTBASE_REF"; \
+      fi; \
+    fi
 COPY docker.env .env
 
 # Optional build argument, see README: path prefix of the reverse proxy that
