@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getAPILink } from '@/api/icoapi.ts';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 import { useHardwareStore } from '@/stores/hardwareStore/hardwareStore.ts';
 import BaseBottomBar, { State } from '@base/components/bottom/BottomBar.vue';
@@ -8,7 +7,7 @@ import Popover from 'primevue/popover';
 import Tag from 'primevue/tag';
 import { unitColor, unitLabel } from '@/utils/unitColors.ts';
 import { computed, onMounted, ref } from 'vue';
-import { clearStoredState } from '@/api/apiEndpoint.ts';
+import { clearStoredState, getApiEndpoint, isProxied } from '@/api/apiEndpoint.ts';
 import ApiEndpointDialog from '@/components/misc/ApiEndpointDialog.vue';
 
 const store = useGeneralStore();
@@ -90,14 +89,12 @@ type StatusSection = {
 }
 
 function apiAddressRows(): DetailRow[] {
-  try {
-    const url = new URL(getAPILink())
-    const rows: DetailRow[] = [{ label: 'Host', value: url.hostname, mono: true }]
-    if (url.port) rows.push({ label: 'Port', value: url.port, mono: true })
-    return rows
-  } catch {
-    return [{ label: 'Address', value: getAPILink(), mono: true }]
-  }
+  // Not parsed from the API link: a proxied one has the ICOweb server as host
+  const endpoint = getApiEndpoint()
+  const rows: DetailRow[] = [{ label: 'Host', value: endpoint.hostname, mono: true }]
+  if (endpoint.port) rows.push({ label: 'Port', value: endpoint.port, mono: true })
+  if (isProxied(endpoint)) rows.push({ label: 'Via', value: 'ICOweb server (proxy)' })
+  return rows
 }
 
 const worst = (...healths: Health[]): Health =>
