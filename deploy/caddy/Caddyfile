@@ -1,13 +1,13 @@
 # Caddy for the compose setup (docker-compose.yml), configured via environment:
-#   ICOWEB_HOST            address of the server, e.g. icoweb.lab (default: localhost)
-#   ICOWEB_TLS             "internal" (Caddy's own CA, default), or an e-mail
-#                          address for a Let's Encrypt certificate
+#   ICOWEB_HOST            site address of the server (default: localhost). Caddy
+#                          picks the protocol from it:
+#                            http://128.130.104.56   plain http, no certificate
+#                            128.130.104.56          https with Caddy's own CA
+#                            icoweb.example.org      https, Let's Encrypt (public DNS)
 #   ICOAPI_ALLOWED_HOSTS   regular expression (no capturing groups) of the hosts
 #                          of ICOapi instances that may be reached via /proxy
 
 {$ICOWEB_HOST:localhost} {
-	tls {$ICOWEB_TLS:internal}
-
 	# Only these targets may be reached, on ports 33000-33999
 	@icoapi path_regexp icoapi ^/proxy/({$ICOAPI_ALLOWED_HOSTS}):(33[0-9][0-9][0-9])/
 

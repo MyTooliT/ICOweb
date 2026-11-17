@@ -106,15 +106,16 @@ requests:
 2. Configure your reverse proxy to forward `/proxy/<host>:<port>/...` to `http://<host>:<port>/...`, including
    WebSockets. [`Caddyfile.example`](Caddyfile.example) does this and restricts the allowed targets.
 
-When the page is served via `https` and the chosen API uses `http`, ICOweb then calls
-`https://<icoweb-host>/proxy/<host>:<port>/api/<version>` (and `wss://` for the WebSocket). The browser only talks `https`
-to the ICOweb host, so no CORS setup or certificate exception is needed for the APIs. Other cases (`http` page,
-`https` API) connect directly as before. Note that:
+When the chosen API uses `http` (and is not the server of ICOweb itself), ICOweb then calls
+`<icoweb-origin>/proxy/<host>:<port>/api/<version>` (and `ws://`/`wss://` for the WebSocket). The browser only talks to
+the ICOweb host, so no CORS setup, certificate exception or mixed-content problem exists for the APIs, also from a plain
+`http` page. `https` APIs connect directly as before. Note that:
 
 A ready-to-run setup is in [`docker-compose.yml`](docker-compose.yml): it builds ICOweb (with the prefix) and a Caddy
 using [`deploy/caddy/Caddyfile`](deploy/caddy/Caddyfile) from this repository. Set `ICOWEB_HOST` (address of the
-server), and optionally `ICOWEB_TLS` (`internal` or an e-mail for Let's Encrypt) and `ICOAPI_ALLOWED_HOSTS` (regular
-expression without capturing groups of the allowed ICOapi hosts; default: private IPv4 ranges). Ports 80 and 443 are used.
+server; the protocol decides: `http://128.130.104.56` is plain http without certificate, a bare IP gets https with
+Caddy's own CA, a public domain gets Let's Encrypt) and optionally `ICOAPI_ALLOWED_HOSTS` (regular expression without
+capturing groups of the allowed ICOapi hosts; default: private IPv4 ranges). Ports 80 and 443 are used.
 
 - The proxy connects from the **server**. The ICOapi must be reachable from it (firewall, listening on a non-loopback
   address), and `localhost` means the server itself, not the user's computer.

@@ -153,14 +153,17 @@ export function getProxyPrefix(): string | null {
 /**
  * Whether requests go through the proxy of the ICOweb server.
  *
- * Browsers block `http`/`ws` requests from an `https` page. With a proxy
- * prefix such an API is reached via the server of the page instead, which
- * forwards to it.
+ * With a proxy prefix, an `http` API on another host is reached via the
+ * server of the page, which forwards to it. That is required from an `https`
+ * page (browsers block `http`/`ws` requests from it) and, from an `http` page,
+ * keeps everything same-origin, so the API needs no CORS setup.
  */
 export function isProxied(endpoint: ApiEndpoint = getApiEndpoint()): boolean {
-  return window.location.protocol === 'https:'
-    && endpoint.protocol === 'http'
-    && getProxyPrefix() !== null
+  if (getProxyPrefix() === null || endpoint.protocol !== 'http') return false
+  // The API of the server of the page itself needs no proxy
+  const samePage = window.location.protocol === 'http:'
+    && authority(endpoint) === window.location.host
+  return !samePage
 }
 
 export function buildApiLink(endpoint: ApiEndpoint = getApiEndpoint()): string {
@@ -172,7 +175,8 @@ export function buildApiLink(endpoint: ApiEndpoint = getApiEndpoint()): string {
 
 export function buildWsLink(endpoint: ApiEndpoint = getApiEndpoint()): string {
   if (isProxied(endpoint)) {
-    return `wss://${window.location.host}${getProxyPrefix()}/${authority(endpoint)}/api/${version()}`
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    return `${wsProtocol}://${window.location.host}${getProxyPrefix()}/${authority(endpoint)}/api/${version()}`
   }
   // An override follows its HTTP protocol. `VITE_API_WS_PROTOCOL` belongs to the
   // environment default.

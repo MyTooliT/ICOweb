@@ -2,8 +2,7 @@
 # Everything is built from this repository (no prebuilt images).
 #
 # Environment (all optional, see README):
-#   ICOWEB_HOST           address of this server, e.g. icoweb.lab
-#   ICOWEB_TLS            "internal" (default) or an e-mail for Let's Encrypt
+#   ICOWEB_HOST           site address, e.g. http://128.130.104.56 (plain http)
 #   ICOAPI_ALLOWED_HOSTS  regex of ICOapi hosts that may be reached via /proxy
 
 name: icoweb
@@ -31,7 +30,6 @@ services:
       - "443:443"
     environment:
       ICOWEB_HOST: '${ICOWEB_HOST:-localhost}'
-      ICOWEB_TLS: '${ICOWEB_TLS:-internal}'
       ICOAPI_ALLOWED_HOSTS: '${ICOAPI_ALLOWED_HOSTS:-(?:192\.168|10\.\d+|172\.(?:1[6-9]|2\d|3[01]))\.\d+\.\d+}'
     volumes:
       # Certificates and Caddy's local CA, keep them between rebuilds
