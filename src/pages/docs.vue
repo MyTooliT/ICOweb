@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 
 // The handbook is a static site (built from `docs/` in the ICOdaq repository):
 // - in the ICOdaq app the main process serves the bundled copy
@@ -7,8 +8,13 @@ import { onMounted, ref } from 'vue';
 // - in a browser it is looked for next to ICOweb under `<base>docs/`.
 // `docs.json` identifies a real handbook; a missing page would otherwise look
 // like a normal answer, because the web server falls back to index.html.
+//
+// The handbook has a flavour for one STU and one for several STUs. This page
+// tells it which one applies to the connected backend (see docs/.vitepress/theme/variant.ts).
+const store = useGeneralStore()
 const url = ref<string>()
 const loading = ref(true)
+const frame = ref<HTMLIFrameElement>()
 
 async function locateHandbook(): Promise<string | undefined> {
   const bundled = await window.electronAPI?.getDocsUrl?.()
@@ -25,8 +31,21 @@ async function locateHandbook(): Promise<string | undefined> {
   return undefined
 }
 
+function sendVariant() {
+  // Unknown while the API is not reachable: the handbook keeps its last flavour
+  if (!store.systemState.reachable) return
+  frame.value?.contentWindow?.postMessage(
+    { type: 'icodaq-docs-variant', multiStu: store.systemState.multiUnit },
+    '*'
+  )
+}
+
+watch(() => store.systemState.multiUnit, sendVariant)
+
 onMounted(async () => {
-  url.value = await locateHandbook()
+  // Know the flavour before the handbook is shown, so it does not flicker
+  const [found] = await Promise.all([locateHandbook(), store.systemState.checkState()])
+  url.value = found
   loading.value = false
 })
 </script>
@@ -35,10 +54,12 @@ onMounted(async () => {
   <!-- The bottom bar is 39px high and overlays the page -->
   <iframe
     v-if="url"
+    ref="frame"
     :src="url"
     title="ICOdaq Handbook"
     data-test="docs-frame"
     class="block w-full border-0"
+    @load="sendVariant"
     style="height: calc(100dvh - 39px)"
   />
   <div

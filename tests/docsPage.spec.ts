@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { reactive } from 'vue'
+
+const systemState = reactive({ reachable: true, multiUnit: true, checkState: vi.fn(async () => {}) })
+vi.mock('@/stores/generalStore/generalStore.ts', () => ({ useGeneralStore: () => ({ systemState }) }))
 
 import DocsPage from '@/pages/docs.vue'
 
@@ -18,6 +22,7 @@ function stubFetch(response: { ok: boolean; contentType: string } | 'offline') {
 
 describe('Docs page', () => {
   afterEach(() => {
+    vi.restoreAllMocks()
     vi.unstubAllGlobals()
     delete (window as any).electronAPI
   })
@@ -52,5 +57,47 @@ describe('Docs page', () => {
     const wrapper = mount(DocsPage)
     await flushPromises()
     expect(wrapper.find('[data-test=docs-missing]').text()).toContain('Handbook not available')
+  })
+
+  describe('flavour of the handbook (one STU / several STUs)', () => {
+    // happy-dom does not load iframe pages: give the iframe a window that records messages
+    async function mountWithFrame() {
+      const post = vi.fn()
+      vi.spyOn(HTMLIFrameElement.prototype, 'contentWindow', 'get').mockReturnValue({ postMessage: post } as any)
+      stubElectron(async () => 'icodaq-docs://app/docs/')
+      const wrapper = mount(DocsPage, { attachTo: document.body })
+      await flushPromises()
+      return { wrapper, post }
+    }
+
+    it('asks the backend state before showing the handbook', async () => {
+      systemState.checkState.mockClear()
+      stubElectron(async () => 'icodaq-docs://app/docs/')
+      mount(DocsPage)
+      await flushPromises()
+      expect(systemState.checkState).toHaveBeenCalled()
+    })
+
+    it('tells the handbook that several STUs are supported, and when that changes', async () => {
+      systemState.reachable = true
+      systemState.multiUnit = true
+      const { wrapper, post } = await mountWithFrame()
+      await wrapper.find('iframe').trigger('load')
+      expect(post).toHaveBeenLastCalledWith({ type: 'icodaq-docs-variant', multiStu: true }, '*')
+
+      systemState.multiUnit = false
+      await flushPromises()
+      expect(post).toHaveBeenLastCalledWith({ type: 'icodaq-docs-variant', multiStu: false }, '*')
+      wrapper.unmount()
+    })
+
+    it('stays silent while the API is not reachable', async () => {
+      systemState.reachable = false
+      const { wrapper, post } = await mountWithFrame()
+      await wrapper.find('iframe').trigger('load')
+      expect(post).not.toHaveBeenCalled()
+      systemState.reachable = true
+      wrapper.unmount()
+    })
   })
 })
