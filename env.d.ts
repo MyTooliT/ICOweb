@@ -20,5 +20,7 @@ interface VersionManifest {
 interface Window {
   electronAPI?: {
     getVersionManifest: () => Promise<VersionManifest | undefined>
+    // URL of the bundled handbook; undefined if the app was built without it
+    getDocsUrl?: () => Promise<string | undefined>
   }
 }
