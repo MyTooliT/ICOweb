@@ -184,6 +184,7 @@ function getSeverity(status: FileCloudStatus): string {
             }"
             class="min-w-[15ch]"
             :disabled="isDisabled(data.cloud.status)"
+            data-test="file-cloud"
             :label="getLabel(data.cloud.status)"
             :icon="getIcon(data.cloud.status)"
             :severity="getSeverity(data.cloud.status)"
@@ -223,6 +224,7 @@ function getSeverity(status: FileCloudStatus): string {
             as="a"
             size="small"
             rounded
+            data-test="file-analyze"
             aria-label="Analyze File"
             outlined
             @click.prevent="router.push(`/analyze?file=${data.name}`)"
@@ -243,6 +245,7 @@ function getSeverity(status: FileCloudStatus): string {
             severity="danger"
             size="small"
             rounded
+            data-test="file-delete"
             aria-label="Delete"
             outlined
             :loading="deletionLoading"

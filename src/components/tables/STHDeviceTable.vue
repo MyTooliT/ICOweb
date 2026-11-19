@@ -71,6 +71,7 @@ const {
             rounded
             size="small"
             icon="pi pi-pencil"
+            data-test="sth-rename"
             aria-label="Rename"
             v-tooltip.top="'Rename'"
             @click="() => {
@@ -141,6 +142,7 @@ const {
       <template #body="{ data }: { data: STHDevice }">
         <div class="flex flex-wrap gap-3">
           <ConnectionButton
+            data-test="sth-connection"
             :device="data"
             @connect="() => handleConnect(data)"
             @disconnect="() => data.disconnect()"
@@ -149,6 +151,7 @@ const {
             v-if="!store.systemState.multiUnit"
             rounded
             size="small"
+            data-test="sth-measure"
             label="Measure"
             icon="pi pi-chart-bar"
             :disabled="!data.isConnected()"

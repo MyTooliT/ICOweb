@@ -152,6 +152,7 @@ const options: Array<{
       </InputGroupAddon>
       <Button
         v-if="gStore.systemState.running && state !== 'open'"
+        data-test="stream-show"
         label="Show Stream"
         severity="success"
         class="!px-5"
@@ -159,6 +160,7 @@ const options: Array<{
       />
       <Button
         v-if="gStore.systemState.running && state === 'open'"
+        data-test="stream-hide"
         label="Hide Stream"
         severity="primary"
         outlined
@@ -167,6 +169,7 @@ const options: Array<{
       />
       <Button
         v-if="gStore.systemState.running"
+        data-test="measurement-stop"
         label="Stop"
         :loading="stopLoading"
         severity="danger"
@@ -177,6 +180,7 @@ const options: Array<{
       <Button
         v-if="!gStore.systemState.running"
         fluid
+        data-test="measurement-start"
         label="Start Recording"
         :loading="startLoading"
         severity="primary"

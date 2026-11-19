@@ -437,6 +437,7 @@ onBeforeUnmount(() => {
           >
             <template #title>
               <Tag
+                data-test="measurement-status"
                 :value="statusTag.label"
                 :severity="statusTag.severity"
               />
@@ -484,6 +485,7 @@ onBeforeUnmount(() => {
           </ContentCard>
           <ContentCard
             v-if="metaEnabled"
+            data-test="metadata-card"
             title="Metadata"
             collapsible
             collapsed

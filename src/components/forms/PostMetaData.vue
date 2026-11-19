@@ -67,12 +67,14 @@ onMounted(async () => {
     <div class="mt-4 pt-3 border-t">
       <div class="w-full flex justify-between">
         <Button
+          data-test="post-meta-skip"
           label="Finish Without Post-Metadata"
           variant="outlined"
           :loading="loading"
           @click="emits('canceled')"
         />
         <Button
+          data-test="post-meta-send"
           label="Send & Finish Measurement"
           :disabled="!mStore.postMetaValid"
           :loading="loading"

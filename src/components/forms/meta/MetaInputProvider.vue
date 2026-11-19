@@ -32,6 +32,7 @@ const title = computed(() => {
 <template>
   <NamedInput
     v-if="definition"
+    :data-test="`meta-${definition.id}`"
     :tooltip="definition.description"
     :title="title"
   >

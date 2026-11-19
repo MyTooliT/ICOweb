@@ -43,6 +43,7 @@ function channelCount(unit: string | null): number {
         </InputGroupAddon>
         <Select
           v-model="mStore.selectedChannels[slot]"
+          :data-test="`channel-select-${slot}`"
           :options="holder?.sensors ?? []"
           :option-value="(sens: TAssignedSensor) => sens.sensor.sensor_id"
           :option-label="sensorRepr"
@@ -88,6 +89,7 @@ function channelCount(unit: string | null): number {
           <Select
             v-if="mStore.unitChannels[unit.unit] && mStore.unitActive[unit.unit]"
             v-model="mStore.unitChannels[unit.unit][slot]"
+            :data-test="`channel-select-${unit.unit}-${slot}`"
             :options="holderOf(unit.unit)?.sensors ?? []"
             :option-value="(sens: TAssignedSensor) => sens.sensor.sensor_id"
             :option-label="sensorRepr"

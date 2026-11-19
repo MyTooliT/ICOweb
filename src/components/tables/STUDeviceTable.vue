@@ -50,6 +50,7 @@ const {
         <Button
           rounded
           size="small"
+          data-test="stu-reset"
           label="Reset"
           icon="pi pi-sync"
           :loading="resetLoading"

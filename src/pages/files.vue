@@ -74,6 +74,7 @@ function copyLinkToClipboard(link: string): void {
       </template>
       <template #actions>
         <Button
+          data-test="files-reload"
           label="Reload"
           icon="pi pi-sync"
           size="small"
@@ -116,6 +117,7 @@ function copyLinkToClipboard(link: string): void {
         >
           <span class="ico-muted">Dataspace</span>
           <Tag
+            data-test="dataspace-status"
             :value="cloudConnected ? 'Connected' : 'Disconnected'"
             :severity="cloudConnected ? 'success' : 'danger'"
           />
@@ -125,6 +127,7 @@ function copyLinkToClipboard(link: string): void {
             size="small"
             text
             rounded
+            data-test="dataspace-refresh"
             aria-label="Refresh the Dataspace connection"
             :severity="cloudConnected ? 'secondary' : 'danger'"
             :loading="authLoading"
@@ -133,6 +136,7 @@ function copyLinkToClipboard(link: string): void {
           <template v-if="gStore.systemState.cloud.manage_url">
             <Button
               v-tooltip.top="'Open the Dataspace asset management platform'"
+              data-test="dataspace-manage"
               label="Manage Assets"
               icon="pi pi-external-link"
               icon-pos="right"

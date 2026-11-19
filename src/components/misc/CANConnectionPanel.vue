@@ -151,6 +151,7 @@ onBeforeUnmount(() => {
     <div class="flex flex-col items-center gap-3">
       <Button
         outlined
+        data-test="can-discover"
         label="Discover"
         icon="pi pi-sitemap"
         :loading="scanLoading"
@@ -179,6 +180,7 @@ onBeforeUnmount(() => {
       />
       <Button
         rounded
+        data-test="can-add"
         label="Add"
         :loading="connectLoading"
         :disabled="locked || !chosen"
@@ -211,6 +213,7 @@ onBeforeUnmount(() => {
       </label>
       <Button
         outlined
+        data-test="can-discover"
         label="Discover"
         icon="pi pi-sitemap"
         :loading="scanLoading"
@@ -252,6 +255,7 @@ onBeforeUnmount(() => {
             <Button
               rounded
               size="small"
+              data-test="can-disconnect"
               label="Disconnect"
               icon="pi pi-times"
               severity="danger"
@@ -264,6 +268,7 @@ onBeforeUnmount(() => {
               outlined
               size="small"
               v-tooltip.top="{ value: resetTooltip }"
+              data-test="can-reset"
               label="Reset"
               icon="pi pi-refresh"
               :loading="resetLoading"
@@ -275,6 +280,7 @@ onBeforeUnmount(() => {
             v-else
             rounded
             size="small"
+            data-test="can-connect"
             :label="state.multiUnit ? 'Add unit' : 'Connect'"
             :icon="state.multiUnit ? 'pi pi-plus' : 'pi pi-link'"
             :loading="connectLoading && isSelected(data)"

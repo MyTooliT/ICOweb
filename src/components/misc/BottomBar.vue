@@ -315,6 +315,7 @@ function hideDetails(name: string) {
           :style="section.accent
             ? { boxShadow: `inset 6px 0 0 ${section.accent}`, paddingLeft: '1.5rem' }
             : undefined"
+          :data-test="`status-${section.name.toLowerCase()}`"
           :aria-label="`${section.name}: ${section.status}`"
           @mouseenter="showDetails(section.name, $event)"
           @mouseleave="hideDetails(section.name)"

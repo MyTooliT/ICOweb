@@ -149,6 +149,7 @@ const stepClass: Record<StepState, string> = {
           rounded
           outlined
           size="small"
+          data-test="unit-reset"
           label="Reset"
           icon="pi pi-refresh"
           v-tooltip.top="{ value: 'Closes the CAN connections, discovers the networks again and reconnects. Affects all units. Use it when an STU stops responding.' }"
@@ -159,6 +160,7 @@ const stepClass: Record<StepState, string> = {
         <Button
           rounded
           size="small"
+          data-test="unit-disconnect"
           label="Disconnect"
           icon="pi pi-times"
           severity="danger"
@@ -236,6 +238,7 @@ const stepClass: Record<StepState, string> = {
           outlined
           rounded
           size="small"
+          data-test="unit-stu-load"
           :label="stu ? 'Reload STU' : 'Attach STU'"
           icon="pi pi-sync"
           :loading="STULoading"
@@ -285,6 +288,7 @@ const stepClass: Record<StepState, string> = {
         <Button
           rounded
           size="small"
+          data-test="unit-discover-sth"
           label="Discover STH"
           icon="pi pi-wifi"
           :loading="STHLoading"

@@ -117,6 +117,7 @@ async function STHClickHandler() {
       <template #actions>
         <Button
           outlined
+          data-test="stu-load"
           :label="store.hasSTU ? 'Reload' : 'Load'"
           :icon="store.hasSTU ? 'pi pi-sync' : 'pi pi-download'"
           :loading="STULoading"
@@ -144,6 +145,7 @@ async function STHClickHandler() {
       <template #actions>
         <Button
           outlined
+          data-test="sth-load"
           :label="store.hasSTH ? 'Reload' : 'Load'"
           :icon="store.hasSTH ? 'pi pi-sync' : 'pi pi-download'"
           :loading="STHLoading"
