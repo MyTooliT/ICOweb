@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useGeneralStore } from '@/stores/generalStore/generalStore.ts';
 
 // The handbook is a static site (built from `docs/` in the ICOdaq repository):
@@ -42,12 +42,21 @@ function sendVariant() {
 
 watch(() => store.systemState.multiUnit, sendVariant)
 
+// The handbook asks for the flavour once it is listening (our first message may be too early)
+function onMessage(event: MessageEvent) {
+  if (event.source === frame.value?.contentWindow && event.data?.type === 'icodaq-docs-ready') sendVariant()
+}
+
 onMounted(async () => {
   // Know the flavour before the handbook is shown, so it does not flicker
   const [found] = await Promise.all([locateHandbook(), store.systemState.checkState()])
-  url.value = found
+  // The flavour is also part of the address: the handbook reads it before its first paint
+  url.value = found && `${found}?stu=${store.systemState.multiUnit ? 'multi' : 'single'}`
   loading.value = false
+  window.addEventListener('message', onMessage)
 })
+
+onBeforeUnmount(() => window.removeEventListener('message', onMessage))
 </script>
 
 <template>

@@ -31,7 +31,7 @@ describe('Docs page', () => {
     stubElectron(async () => 'icodaq-docs://app/docs/')
     const wrapper = mount(DocsPage)
     await flushPromises()
-    expect(wrapper.find('[data-test=docs-frame]').attributes('src')).toBe('icodaq-docs://app/docs/')
+    expect(wrapper.find('[data-test=docs-frame]').attributes('src')).toBe('icodaq-docs://app/docs/?stu=multi')
   })
 
   it('embeds a handbook deployed next to ICOweb, if docs.json is served', async () => {
@@ -39,7 +39,7 @@ describe('Docs page', () => {
     stubFetch({ ok: true, contentType: 'application/json' })
     const wrapper = mount(DocsPage)
     await flushPromises()
-    expect(wrapper.find('[data-test=docs-frame]').attributes('src')).toMatch(/\/docs\/$/)
+    expect(wrapper.find('[data-test=docs-frame]').attributes('src')).toMatch(/\/docs\/\?stu=multi$/)
   })
 
   it('does not take the SPA fallback page for a handbook', async () => {
