@@ -90,12 +90,6 @@ const navItems = computed(() => [{
   to: '/logs',
   iconClass: 'pi pi-file-word',
   text: 'Logs'
-}, {
-  name: 'Dataspace',
-  to: '/',
-  iconClass: 'pi pi-box',
-  text: 'Dataspace',
-  disabled: true
 }].filter(item => useDisable().pageEnabled(item.name)))
 </script>
 
